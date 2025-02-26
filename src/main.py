@@ -62,7 +62,7 @@ def main(context):
             "assertion" : token,
             "token" : responsejson["access_token"]
         }
-    return set_response_header(resp)
+    return set_response_header(resp,functions)
     # context.res.json(
     #     {
     #         "assertion" : token,
@@ -71,7 +71,7 @@ def main(context):
     #)
 
 # Define the function to set the context response header
-def set_response_header(r):
+def set_response_header(r,functions):
     response = functions.create_execution(
         function_id='67bf6bce002ee43082da',
         data=  json.dumps(r)
