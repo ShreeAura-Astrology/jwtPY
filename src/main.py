@@ -1,6 +1,7 @@
 from appwrite.client import Client
 from appwrite.services.users import Users
 from appwrite.exception import AppwriteException
+from appwrite.services.functions import Functions
 import os
 import jwt
 import datetime
@@ -18,6 +19,8 @@ def main(context):
         .set_key(context.req.headers["x-appwrite-key"])
     )
     users = Users(client)
+    # Initialize the Functions service
+    functions = Functions(client)
 
     try:
         response = users.list()
