@@ -1,2 +1,2 @@
 appwrite
-pyjwt
+pyjwt[crypto]
