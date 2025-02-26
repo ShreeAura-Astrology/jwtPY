@@ -60,7 +60,7 @@ def main(context):
             "connect": "https://appwrite.io/discord",
             "getInspired": "https://builtwith.appwrite.io",
             "assertion" : token,
-            "token" : response.text
+            "token" : json.loads(response.text).access_token
         }
     )
 
