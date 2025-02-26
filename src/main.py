@@ -58,7 +58,7 @@ def main(context):
     return context.res.json(
         {
             "assertion" : token,
-            "token" : responsejson[access_token]
+            "token" : responsejson["access_token"]
         }
     )
 
