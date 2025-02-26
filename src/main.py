@@ -88,7 +88,7 @@ def main(context):
 
 def create_signed_jwt(private_key, payload, algorithm='RS256'):
     # Read the private key
-    with open('./private.key', 'r') as key_file:
+    with open('private.key', 'r') as key_file:
         private_key = key_file.read()
 
     # Define the headers and payload
