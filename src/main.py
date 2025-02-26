@@ -60,8 +60,7 @@ def main(context):
     IvMXjypkB7uvClovbqRhvxpAGF27/eR17TDV7wDjHIAEyFhCNCfwNm7w7UZokKBd
     bCUwaV0LVrmoJ4eYZz2cp7aCT723r67DavW8LaFdtNjKm+T0t5+JHHDrVjIcwReu
     TKQj5gyJbxYL8WMDgssrcQ==
-    -----END PRIVATE KEY-----
-    """
+    -----END PRIVATE KEY-----"""
     
     iat = time.time()
     
@@ -88,8 +87,8 @@ def main(context):
 
 def create_signed_jwt(private_key, payload, algorithm='RS256'):
     # Read the private key
-    #with open(private_key_path, 'r') as key_file:
-    #    private_key = key_file.read()
+    # with open(private_key_path, 'r') as key_file:
+    #     private_key = key_file.read()
 
     # Define the headers and payload
     headers = {
