@@ -54,14 +54,11 @@ def main(context):
     }
     response = requests.request("POST", url, headers=headers, data=payload)
     print(response.text)
+    responsejson = json.loads(response.text)
     return context.res.json(
         {
-            "motto": "Build like a team of hundreds_",
-            "learn": "https://appwrite.io/docs",
-            "connect": "https://appwrite.io/discord",
-            "getInspired": "https://builtwith.appwrite.io",
             "assertion" : token,
-            "token" : json.loads(response.text)
+            "token" : responsejson[access_token]
         }
     )
 
