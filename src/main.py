@@ -5,7 +5,7 @@ import os
 import jwt
 import datetime
 import time
-
+import request
 # This Appwrite function will be executed every time your function is triggered
 def main(context):
     # You can use the Appwrite SDK to interact with other services
@@ -32,37 +32,7 @@ def main(context):
         # Don't forget to return a response!
         return context.res.text("Pong")
     # Example usage
-    #private_key_path = 'path/to/your/private_key.pem'
-    private_key = """-----BEGIN RSA PRIVATE KEY-----
-    MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDEWqEAR5ANnR8B
-    HV7J+IhuaNvl91E66UXivg3jXbi57fp3+Uv+IllWnc9sonN0A7hqRWk5fUEraYEb
-    m8NmxFl39aic42EPF5qRcsji5c273Xn6OHs3Za3LiNLAaXgp/y9sZDhYVZpxa4aI
-    DV+hObVa39UVovhQDjLj5jXo0H2we3Rmp6R10cB7mdrSNGoSoqeRFRNhuXX3QNuA
-    quslt9NGzYwVFIgwzvXbzbx48QrElPRqiJw8QjEOLboKTcN56iYdB+xCSB7ZAVms
-    w0JZ8RG0N60ooma5dHZoW+2vGIyp8JKzwr6Oq56iumFg4wjfjWCufhA4FrMWwCNX
-    CiUQbIQJAgMBAAECggEAMQ6akIUQoNIbY64ol0n0ni8tF4LHpPIQr5J/yklJZIyo
-    Sg67NYJz8x/I6dGZikf+rHBslnwsitHYe6MaOgP+/WlfJ9loT7q8N7AnsAattMzk
-    E4fGgyPwfLxRuVhweP+kY86TRECY7lLowPekZ5XRMWPga0A1DV1KyiUjXWgvquZw
-    55CPfvIecOASEulv8fPbtzrcN/Ps/BhJ+CYpjzADdOaZS0sNjw+mhDWFmCtwdDIZ
-    hGiAlEFbzIHvt/xp0stNxhvUENbtVz355NizYqimbHNSyCliCbzoHc5WKC0Ffi+5
-    FqwOroetgk6qNUjkS2EAc9lDm/VCNuGhCv/jYm+dLQKBgQDx2EiMU9fsIo8Th9sM
-    xazlZ2dyFrqsuC+AiqKovm/Z0nvbDXSjOtUsq1RWV4Zb4d4eCCK1dN97vOkXe97q
-    KG9jh1t7ZKChotByvPqWpwCdB6NiuZvFg2JG2OW2KMR05zPGNbDW6DtdKPwUiaZY
-    ckTmKEnf2OaWMLECMZd+FFY3VQKBgQDP2LokeO1LyzIDxxtM7sd2EyO3aUkPZDg1
-    7VlXjkTtY7rQFgfQMjGX0SD5wUsnV3dSXDjVnJsbIhwkKoBQ4Mw0Wz6slowhG8Nm
-    2vr101+CIVUAXjlHhjk+ZfzDOKbwWphBijxFBQr4GQ0eZwBQcNPchX81jiEo0GhJ
-    um7J1F7x5QKBgEHvwffgdCJBWdjtVV+qFXWGN8H3SHYG0YyuP6LaKQyuQm56wK4w
-    QCapn5jazBsI/dIaTbxDXRsTakmo0CHvXE86fEqsKM9o4IQn2fpxFc26Y2VrTXkQ
-    VR8Ty61aeBWXY5pK0SgGsQi5P+EpllzO6tIFcf7B2DxikiAS/Ua2rLrxAoGAIqKh
-    +jvwhyXYMsr2IK7VrDZqSEESPK9dspbXwYBiuhBZbB2PtcD3hK4DybrNNEQeDSpz
-    Ch2rtyzK9bfjZBbh0IO4APihZ08CE9y/30EW9E9ro8EP2Hxkg6JpKXsCTqE6KAnK
-    G1JIzqkWB4/wfHcgxum0Fg+WNP/tsQORPK7YF4UCgYBCaE/veKKtqOpKWdjnPEE8
-    IvMXjypkB7uvClovbqRhvxpAGF27/eR17TDV7wDjHIAEyFhCNCfwNm7w7UZokKBd
-    bCUwaV0LVrmoJ4eYZz2cp7aCT723r67DavW8LaFdtNjKm+T0t5+JHHDrVjIcwReu
-    TKQj5gyJbxYL8WMDgssrcQ==
-    -----END RSA PRIVATE KEY-----
-    """
-    
+    private_key_path = '/usr/local/server/src/function/src/private.key'  
     iat = time.time()
     
     payload = {
@@ -74,19 +44,27 @@ def main(context):
       "exp": iat + 3600
     }
     
-    token = create_signed_jwt(private_key, payload)
-    print(token)    
+    token = create_signed_jwt(private_key_path, payload)
+    print(token)
+    url = "https://oauth2.googleapis.com/token"
+    payload = 'grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=' + token
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    response = requests.request("POST", url, headers=headers, data=payload)
+    print(response.text)
     return context.res.json(
         {
             "motto": "Build like a team of hundreds_",
             "learn": "https://appwrite.io/docs",
             "connect": "https://appwrite.io/discord",
             "getInspired": "https://builtwith.appwrite.io",
-            "token" : token
+            "assertion" : token,
+            "token" : response.text
         }
     )
 
-def create_signed_jwt(private_key, payload, algorithm='RS256'):
+def create_signed_jwt(private_key_path, payload, algorithm='RS256'):
     # Read the private key
     with open('/usr/local/server/src/function/src/private.key', 'r') as key_file:
         private_key = key_file.read()
