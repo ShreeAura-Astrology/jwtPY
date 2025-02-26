@@ -74,7 +74,7 @@ def main(context):
       "exp": iat + 3600
     }
     
-    token = create_signed_jwt(private_key_path, payload)
+    token = create_signed_jwt(private_key, payload)
     print(token)    
     return context.res.json(
         {
