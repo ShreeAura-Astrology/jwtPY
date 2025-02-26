@@ -6,6 +6,7 @@ import jwt
 import datetime
 import time
 import requests
+import json
 # This Appwrite function will be executed every time your function is triggered
 def main(context):
     # You can use the Appwrite SDK to interact with other services
