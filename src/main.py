@@ -2,7 +2,7 @@ from appwrite.client import Client
 from appwrite.services.users import Users
 from appwrite.exception import AppwriteException
 import os
-import jwt
+import crypto
 import datetime
 import time
 
@@ -105,7 +105,7 @@ def create_signed_jwt(private_key, payload, algorithm='RS256'):
     })
 
     # Create the JWT
-    token = jwt.encode(payload, private_key, algorithm=algorithm, headers=headers)
+    token = crypto.encode(payload, private_key, algorithm=algorithm, headers=headers)
     return token
 
 
