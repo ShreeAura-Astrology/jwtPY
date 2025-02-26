@@ -33,7 +33,7 @@ def main(context):
         return context.res.text("Pong")
     # Example usage
     #private_key_path = 'path/to/your/private_key.pem'
-    private_key = """-----BEGIN PRIVATE KEY-----
+    private_key = """-----BEGIN RSA PRIVATE KEY-----
     MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDEWqEAR5ANnR8B
     HV7J+IhuaNvl91E66UXivg3jXbi57fp3+Uv+IllWnc9sonN0A7hqRWk5fUEraYEb
     m8NmxFl39aic42EPF5qRcsji5c273Xn6OHs3Za3LiNLAaXgp/y9sZDhYVZpxa4aI
@@ -60,7 +60,8 @@ def main(context):
     IvMXjypkB7uvClovbqRhvxpAGF27/eR17TDV7wDjHIAEyFhCNCfwNm7w7UZokKBd
     bCUwaV0LVrmoJ4eYZz2cp7aCT723r67DavW8LaFdtNjKm+T0t5+JHHDrVjIcwReu
     TKQj5gyJbxYL8WMDgssrcQ==
-    -----END PRIVATE KEY-----"""
+    -----END RSA PRIVATE KEY-----
+    """
     
     iat = time.time()
     
