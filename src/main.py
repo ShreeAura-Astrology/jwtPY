@@ -105,7 +105,7 @@ def create_signed_jwt(private_key, payload, algorithm='RS256'):
     })
 
     # Create the JWT
-    token = crypto.encode(payload, private_key, algorithm=algorithm, headers=headers)
+    token = jwt.encode(payload, private_key, algorithm=algorithm, headers=headers)
     return token
 
 
