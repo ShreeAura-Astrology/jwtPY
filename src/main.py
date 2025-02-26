@@ -63,7 +63,7 @@ def main(context):
             "token" : responsejson["access_token"]
         }
     # return set_response_header(resp,functions)
-    context.res.json(
+    return context.res.json(
         {
             "assertion" : token,
             "token" : responsejson["access_token"]
