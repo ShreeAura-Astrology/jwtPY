@@ -55,6 +55,7 @@ def main(context):
     response = requests.request("POST", url, headers=headers, data=payload)
     print(response.text)
     responsejson = json.loads(response.text)
+    context.res.headers["Access-Control-Allow-Origin"] = "*"
     return context.res.json(
         {
             "assertion" : token,
