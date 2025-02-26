@@ -2,7 +2,7 @@ from appwrite.client import Client
 from appwrite.services.users import Users
 from appwrite.exception import AppwriteException
 import os
-import crypto
+import jwt
 import datetime
 import time
 
