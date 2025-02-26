@@ -62,13 +62,15 @@ def main(context):
             "assertion" : token,
             "token" : responsejson["access_token"]
         }
-    return set_response_header(resp,functions)
-    # context.res.json(
-    #     {
-    #         "assertion" : token,
-    #         "token" : responsejson["access_token"]
-    #     }
-    #)
+    # return set_response_header(resp,functions)
+    context.res.json(
+        {
+            "assertion" : token,
+            "token" : responsejson["access_token"]
+        }, 200, {
+            "Access-Control-Allow-Origin": "*"
+        }
+    )
 
 # Define the function to set the context response header
 def set_response_header(r,functions):
