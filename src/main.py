@@ -55,13 +55,26 @@ def main(context):
     response = requests.request("POST", url, headers=headers, data=payload)
     print(response.text)
     responsejson = json.loads(response.text)
-    context.res.headers["Access-Control-Allow-Origin"] = "*"
-    return context.res.json(
-        {
+    resp = {
             "assertion" : token,
             "token" : responsejson["access_token"]
         }
+    return set_response_header(resp)
+    # context.res.json(
+    #     {
+    #         "assertion" : token,
+    #         "token" : responsejson["access_token"]
+    #     }
     )
+#
+# Define the function to set the context response header
+def set_response_header(r):
+    response = functions.create_execution(
+        function_id='67bf6bce002ee43082da',
+        data=  json.dumps(r)
+    )
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 def create_signed_jwt(private_key_path, payload, algorithm='RS256'):
     # Read the private key
