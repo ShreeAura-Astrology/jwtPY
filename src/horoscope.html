@@ -481,7 +481,7 @@ console.log('Successfully Refreshed Access Token:', response.data);
                         };
                     }
                     else {
-					$scope.StorageHoroscope[$scope.nativeName] = {};
+					$scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {};
                         $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
                             "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge,
                             "horoscope": $scope.varshphalChart,
