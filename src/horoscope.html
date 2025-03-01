@@ -1406,6 +1406,7 @@ console.log('Successfully Refreshed Access Token:', response.data);
             }
         }
         $scope.getHoroscope = function () {
+		$scope.resetConfig();
             console.log($scope.selectedHoroscope);
             houses = JSON.parse(JSON.stringify($scope.selectedHoroscope.horoscope));
             $scope.nativeName = $scope.selectedHoroscope.name;
