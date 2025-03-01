@@ -1,0 +1,1852 @@
+<!--Jai Shree Ganesh v27Feb25 access token-->
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+<style>
+
+    body {
+        zoom: 80%;
+    }
+
+    #horoscope-chart {
+        position: absolute;
+        width: 500px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        top: 15%;
+        left: 40%;
+        transform: translate(-50%, -50%);
+    }
+
+   /* Styles for desktops */
+@media only screen and (min-width: 1025px) {
+    
+
+    .container {
+        padding: 30px;
+    }
+
+    .header {
+        font-size: 2.5em;
+    }
+ #varshphal-horoscope-chart {
+        position: absolute;
+        width: 500px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        top: 15%;
+         left: 75%;
+        transform: translate(-50%, -50%);
+    }
+
+.result-container {
+    position: absolute;
+    top: 29%;
+    left: 22%;
+    }
+}
+
+/* Styles for mobile devices */
+@media only screen and (max-width: 767px) {
+    body {
+        background-color: lightblue;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    .header {
+        font-size: 1.5em;
+    }
+ #varshphal-horoscope-chart {
+        position: absolute;
+        width: 500px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        top: 25%;
+        left: 40%;
+        transform: translate(-50%, -50%);
+    }
+ .result-container {
+        position: absolute;
+        top: 50%;
+        left: 26%;
+    }
+}
+
+    .house-span {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        color: rgb(197, 13, 13);
+        /* Adjust color as needed */
+    }
+
+    /* Example positioning for all 12 houses, adjust as per your image */
+    #house-1 {
+        top: 15%;
+        left: 30%;
+        width: 20%;
+        height: 19%;
+    }
+
+    #house-2 {
+        top: 6%;
+        left: 10%;
+        width: 30%;
+        height: 10%;
+    }
+
+    #house-3 {
+        top: 14%;
+        left: 1%;
+        width: 13%;
+        height: 20%;
+    }
+
+    #house-4 {
+        top: 40%;
+        left: 7%;
+        width: 20%;
+        height: 17%;
+    }
+
+    #house-5 {
+        top: 61%;
+        left: 1%;
+        width: 10%;
+        height: 25%;
+    }
+
+    #house-6 {
+        top: 79%;
+        left: 13%;
+        width: 23%;
+        height: 12%;
+    }
+
+    #house-7 {
+        top: 66%;
+        left: 30%;
+        width: 42%;
+        height: 18%;
+    }
+
+    #house-8 {
+        top: 79%;
+        left: 59%;
+        width: 28%;
+        height: 13%;
+    }
+
+    #house-9 {
+        top: 66%;
+        left: 86%;
+        width: 13%;
+        height: 20%;
+    }
+
+    #house-10 {
+        top: 41%;
+        left: 61%;
+        width: 30%;
+        height: 17%;
+    }
+
+    #house-11 {
+        top: 14%;
+        left: 87%;
+        width: 9%;
+        height: 20%;
+    }
+
+    #house-12 {
+        top: 6%;
+        left: 62%;
+        width: 28%;
+        height: 13%;
+    }
+
+    button {
+        background-color: #c0392b;
+        /* Red background */
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease;
+        /* Smooth transition on hover */
+    }
+
+    button:hover {
+        background-color: #e74c3c;
+        /* Lighter red on hover */
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #db1818;
+        font-size: 21px;
+    }
+
+    input {
+        border-radius: 15px;
+        width: 100%;
+        height: 30px;
+        padding: 10px;
+        border-color: crimson;
+    }
+
+    select {
+        width: 200px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(234, 30, 30, 0.1);
+    }
+
+    select option:hover {
+        background-color: #e74c3c;
+        /* Lighter red on hover */
+        color: white;
+    }
+
+    p {
+        margin-top: 10px;
+        color: #cd3131;
+    }
+
+    span {
+        font-weight: bold;
+        color: #d63636;
+    }
+
+    img {
+        width: 100%;
+    }
+
+    .select-container {
+        position: absolute;
+        margin-top: 5%;
+        margin-left: 2%;
+    }
+
+    
+
+
+    .varshphalCtrl {
+        position: relative;
+        left: 8%;
+    }
+
+    .popup {
+        background-color: #fafafa;
+        width: 366px;
+        height: 222px;
+        border-radius: 26px;
+        text-align: center;
+        transition: all 0.5s ease;
+        transition-duration: 1s;
+    }
+
+    .outer {
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        z-index: 1;
+        background-color: rgb(0 0 0 / 82%);
+    }
+	
+	.hide {
+         display: none;
+    position: absolute;
+    margin-top: 365px;
+    margin-left: -419px;
+    background: #494646;
+    padding: 33px;
+    color: #FFC107;
+    font-size: 20px;
+    border-radius: 15px;
+}
+
+   
+#house-1:hover + .hide {
+  display: block;
+  color: white;
+}
+
+#house-2:hover + .hide {
+  display: block;
+ color: white;
+}
+
+#house-3:hover + .hide {
+  display: block;
+color: white;
+}
+
+#house-4:hover + .hide {
+  display: block;
+  color: white;
+}
+
+#house-5:hover + .hide {
+  display: block;
+  color: white;
+}
+
+#house-6:hover + .hide {
+  display: block;
+  color: white;
+}
+
+#house-7:hover + .hide {
+  display: block;
+  color: white;
+}
+
+#house-8:hover + .hide {
+  display: block;
+  color: white;
+}
+
+#house-9:hover + .hide {
+  display: block;
+  color: white;
+}
+
+
+#house-10:hover + .hide {
+  display: block;
+  color: white;
+}
+
+
+#house-11:hover + .hide {
+  display: block;
+  color: white;
+}
+
+
+#house-12:hover + .hide {
+  display: block;
+  color: white;
+}
+
+
+</style>
+<script>
+    var app = angular.module('myApp', []);
+	var newRefreshToken = "";
+    app.controller('myCtrl', function ($scope, $http) {
+		
+$scope.refreshAccessToken = function(chartType){
+$http.get('https://67bf6bd0da25caced8fb.appwrite.global/').then(function(response) {
+console.log('Successfully Refreshed Access Token:', response.data);
+		  accessToken = response.data.token;
+		  newRefreshToken = response.data.assertion;
+		  $scope.pullPushHoroscope(chartType);
+        })
+        .catch(function(error) {
+          console.error('Error in refreshing access token :', error);
+        });
+
+
+}
+		$scope.refreshAccessTokenz = function(chartType){
+
+		var postData = {
+		"client_id":"174274796007-75qmckk51irgj0eentqr7armskkle9qo.apps.googleusercontent.com",
+        "client_secret":"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",
+        "grant_type":"refresh_token",
+"refresh_token":newRefreshToken
+		}
+		 $http.post('https://oauth2.googleapis.com/token', formEncode(postData),{headers:{
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+       }})
+    .then(function(response) {
+          console.log('Successfully Refreshed Access Token:', response.data);
+		  accessToken = response.data.access_token;
+		  newRefreshToken = response.data.refresh_token;
+		  $scope.pullPushHoroscope(chartType);
+        })
+        .catch(function(error) {
+          console.error('Error in refreshing access token :', error);
+        });
+	
+	
+	//.success(function(data) {
+        //do stuff with response
+    //});
+		
+		}
+		
+		function formEncode(obj) {
+    var encodedString = '';
+    for (var key in obj) {
+        if (encodedString.length !== 0) {
+              encodedString += '&';
+        }
+
+        encodedString += key + '=' + encodeURIComponent(obj[key]);
+    }
+    return encodedString.replace(/%20/g, '+');
+}
+        var accessToken = "ya29.a0ARW5m74JFWfhtaXGh7tqpBuwey1N41fzYVRkTsrV7e3A6pGVCJ8bOMSdNKt4nvDJUhI__E8unXwr3c3VuLsiXF8W46DbfUM08VCqzxvNG42pdy511LSBPmUyTRfeSXXuTA4TX3sTj_8mbE0q1qXdT5KCHZbpMEUlw-CxaOW8aCgYKAcsSARESFQHGX2Miiw7vi40oV2Qpm33m2HcEnQ0175";
+		$scope.saveKundali = function(horoscopeInfo){
+		const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/A2:B2?valueInputOption=RAW';
+        const data = {
+					  "values": [
+						[
+						  newRefreshToken,
+						  horoscopeInfo
+						]
+					  ]
+					};
+
+		  const config = {
+			headers: {
+			  'Authorization': 'Bearer ' + accessToken,
+			  'Content-Type': 'application/json'
+			}
+		  };
+
+      $http.put(url, data, config)
+        .then(function(response) {
+          console.log('Success:', response.data);
+		  console.log('saveKundali Data',horoscopeInfo);
+		  $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
+          $scope.toggleMessage = true;
+		  $scope.getKundali();
+        })
+        .catch(function(error) {
+          console.error('Error:', error);
+        });
+		
+		}
+		
+		$scope.getKundali = function(){
+		const config = {
+			headers: {
+			  'Authorization': 'Bearer ' + accessToken
+			}
+		};
+	   const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/A2:B2?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc';
+		$http.get(url).then(function(response) {
+          console.log('Success:', response.data);
+		  newRefreshToken = response.data.values[0][0];
+		  $scope.horoscopes = JSON.parse(response.data.values[0][1]);
+          console.log(Object.keys($scope.horoscopes).length + ' Horoscopes loaded.');
+		  console.log("Refresh_Token:" + newRefreshToken);
+		  $scope.message = 'Loaded Horoscope for ' + Object.keys($scope.horoscopes).length;
+		  $scope.toggleMessage = true;
+        })
+        .catch(function(error) {
+          console.error('Error:', error);
+        });
+		}
+		
+		
+		$scope.pullPushHoroscope = function(chartType){
+		var getData;
+		var putData;
+		const config = {
+        headers: {
+          'Authorization': 'Bearer ' + accessToken,
+        }
+      };
+	   const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/B2';
+	   $http.get(url, config).then(function(response1) {
+          console.log(chartType + ' Get Kundali Response:', response1.data.values[0][0]);
+			$scope.StorageHoroscope = JSON.parse(response1.data.values[0][0]);
+			console.log($scope.StorageHoroscope,$scope.nativeName);
+                    if (chartType == 'Lagna') {
+					$scope.StorageHoroscope[$scope.nativeName] = {};
+                        $scope.StorageHoroscope[$scope.nativeName] = {
+                            "name": $scope.nativeName,
+                            "horoscope": $scope.horoscope,
+                            "date": (new Date()).toDateString(),
+                            "day": $scope.selectedDay,
+                            "month": $scope.selectedMonth,
+                            "year": $scope.selectedYear,
+                            "charttype": "Lagna"
+                        };
+                    }
+                    else {
+					$scope.StorageHoroscope[$scope.nativeName] = {};
+                        $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
+                            "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge,
+                            "horoscope": $scope.varshphalChart,
+                            "date": (new Date()).toDateString(),
+                            "day": $scope.selectedDay,
+                            "month": $scope.selectedMonth,
+                            "year": $scope.selectedYear,
+                            "charttype": "Varshphal"
+                        };
+						}
+						console.log($scope.StorageHoroscope);
+						//localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+						$scope.saveKundali(JSON.stringify($scope.StorageHoroscope));
+                        //alert('Saved Horoscope for ' + $scope.nativeName);
+                        $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
+                        $scope.toggleMessage = true;
+          // Second API Call after the first completes
+         // return $http.put(purl, pdata, pconfig);
+        })
+        .catch(function(error) {
+          console.error('Error in API calls:', error);
+		  if(error.status == '401'){
+			console.log("Attempting to refresh the Access Token");
+			$scope.refreshAccessToken(chartType);
+			
+		  }
+        });
+		
+		}
+        var varshphalHouses = {
+            "1": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "2": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "3": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "4": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "5": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "6": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "7": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "8": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "9": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "10": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "11": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "12": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            }
+        };
+        var houses = {
+            "1": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "2": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "3": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "4": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "5": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "6": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "7": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "8": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "9": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "10": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "11": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "12": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            }
+        };
+        var rinEffects = [];
+        var maleficPlanets = [];
+        var beneficPlanets = [];
+        var neutralPlanets = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Rahu", "Ketu"];
+        var maleficHouses = [];
+        var beneficHouses = [];
+        var neutralMaleficHouses = [];
+        var neutralBenificHouses = [];
+        var moonState = [];
+        var finalHoro = [];
+        var diseases = [];
+        var rakeshEffect = false;
+        var vakri = [];
+        var analysis = [];
+        var drishti = [];
+        var bala = [];
+        var blindPlanets = [];
+        var balaOfPlanets = {
+            "Sun": 0,
+            "Moon": 0,
+            "Mercury": 0,
+            "Ketu": 0,
+            "Rahu": 0,
+            "Saturn": 0,
+            "Venus": 0,
+            "Jupiter": 0,
+            "Mars": 0
+        };
+        var planetsTable = {
+            "Sun": {
+                "houses": [1],
+                "friends": ["Moon", "Jupiter", "Mars"],
+                "enemies": ["Venus", "Saturn"]
+            },
+            "Jupiter": {
+                "houses": [2, 5, 9, 11],
+                "friends": ["Sun", "Moon", "Mars"],
+                "enemies": ["Mercury", "Venus"]
+            },
+            "Mars": {
+                "houses": [3],
+                "friends": ["Sun", "Moon", "Jupiter"],
+                "enemies": ["Mercury", "Ketu"]
+            },
+            "Moon": {
+                "houses": [4],
+                "friends": ["Sun", "Mercury"],
+                "enemies": ["Rahu", "Ketu"]
+            },
+            "Ketu": {
+                "houses": [6],
+                "friends": ["Venus", "Rahu"],
+                "enemies": ["Sun", "Moon", "Mars"]
+            },
+            "Venus": {
+                "houses": [7],
+                "friends": ["Mercury", "Saturn", "Ketu"],
+                "enemies": ["Sun", "Moon", "Rahu"]
+            },
+            "Saturn": {
+                "houses": [8, 10],
+                "friends": ["Mercury", "Venus", "Rahu"],
+                "enemies": ["Sun", "Moon", "Mars"]
+            },
+            "Rahu": {
+                "houses": [12],
+                "friends": ["Mercury", "Saturn", "Ketu"],
+                "enemies": ["Sun", "Moon", "Mars", "Venus"]
+            },
+            "Mercury": {
+                "houses": [0],
+                "friends": ["Sun", "Venus"],
+                "enemies": ["Moon"]
+            }
+        };
+
+        var housesTable = {
+            "1": {
+                "karak": "Sun",
+                "house": 1,
+                "friends": ["Moon", "Jupiter", "Mars"],
+                "enemies": ["Venus", "Saturn"],
+                "drishti": ["7"],
+                "percent": 100,
+                "vakri": [],
+                "helps": "5"
+            },
+            "2": {
+                "karak": "Jupiter",
+                "house": 2,
+                "friends": ["Sun", "Moon", "Mars"],
+                "enemies": ["Mercury", "Venus"],
+                "drishti": ["6"],
+                "percent": 25,
+                "vakri": [],
+                "helps": "6"
+            },
+            "3": {
+                "karak": "Mars",
+                "house": 3,
+                "friends": ["Sun", "Moon", "Jupiter"],
+                "enemies": ["Mercury", "Ketu"],
+                "drishti": ["9", "11"],
+                "percent": 50,
+                "vakri": [],
+                "helps": "7"
+            },
+            "4": {
+                "karak": "Moon",
+                "house": 4,
+                "friends": ["Sun", "Mercury"],
+                "enemies": ["Rahu", "Ketu"],
+                "drishti": ["10"],
+                "percent": 100,
+                "vakri": [],
+                "helps": "8"
+            },
+            "5": {
+                "karak": "Jupiter",
+                "house": 5,
+                "friends": ["Sun", "Moon", "Mars"],
+                "enemies": ["Mercury", "Venus"],
+                "drishti": ["9"],
+                "percent": 50,
+                "vakri": [],
+                "helps": "9"
+            },
+            "6": {
+                "karak": "Ketu",
+                "house": 6,
+                "friends": ["Venus", "Rahu"],
+                "enemies": ["Sun", "Moon", "Mars"],
+                "drishti": ["12"],
+                "percent": 25,
+                "vakri": ["2"],
+                "helps": "10"
+            },
+            "7": {
+                "karak": "Venus",
+                "house": 7,
+                "friends": ["Mercury", "Saturn", "Ketu"],
+                "enemies": ["Sun", "Moon", "Rahu"],
+                "drishti": [],
+                "percent": 0,
+                "vakri": [],
+                "helps": "11"
+            },
+            "8": {
+                "karak": "Saturn",
+                "house": 8,
+                "friends": ["Mercury", "Venus", "Rahu"],
+                "enemies": ["Sun", "Moon", "Mars"],
+                "drishti": ["12"],
+                "percent": 25,
+                "vakri": ["2"],
+                "helps": "12"
+            },
+            "9": {
+                "karak": "Jupiter",
+                "house": 9,
+                "friends": ["Sun", "Moon", "Mars"],
+                "enemies": ["Mercury", "Venus"],
+                "drishti": [],
+                "percent": 0,
+                "vakri": ["3"],
+                "helps": "1"
+            },
+            "10": {
+                "karak": "Saturn",
+                "house": 10,
+                "friends": ["Mercury", "Venus", "Rahu"],
+                "enemies": ["Sun", "Moon", "Mars"],
+                "drishti": [],
+                "percent": 0,
+                "vakri": [],
+                "helps": "2"
+            },
+            "11": {
+                "karak": "Jupiter",
+                "house": 11,
+                "friends": ["Sun", "Moon", "Mars"],
+                "enemies": ["Mercury", "Venus"],
+                "drishti": [],
+                "percent": 0,
+                "vakri": [],
+                "helps": "3"
+            },
+            "12": {
+                "karak": "Rahu",
+                "house": 12,
+                "friends": ["Mercury", "Saturn", "Ketu"],
+                "enemies": ["Sun", "Moon", "Mars", "Venus"],
+                "drishti": [],
+                "percent": 0,
+                "vakri": [],
+                "helps": "4"
+            }
+
+        };
+        var varshphalMovement = {
+            "1": { "1": 1, "2": 9, "3": 10, "4": 3, "5": 5, "6": 2, "7": 11, "8": 7, "9": 6, "10": 12, "11": 4, "12": 8 },
+            "2": { "1": 4, "2": 1, "3": 12, "4": 9, "5": 3, "6": 7, "7": 5, "8": 6, "9": 2, "10": 8, "11": 10, "12": 11 },
+            "3": { "1": 9, "2": 4, "3": 1, "4": 2, "5": 8, "6": 3, "7": 10, "8": 5, "9": 7, "10": 11, "11": 12, "12": 6 },
+            "4": { "1": 3, "2": 8, "3": 4, "4": 1, "5": 10, "6": 9, "7": 6, "8": 11, "9": 5, "10": 7, "11": 2, "12": 12 },
+            "5": { "1": 11, "2": 3, "3": 8, "4": 4, "5": 1, "6": 5, "7": 9, "8": 2, "9": 12, "10": 6, "11": 7, "12": 10 },
+            "6": { "1": 5, "2": 12, "3": 3, "4": 8, "5": 4, "6": 11, "7": 2, "8": 9, "9": 1, "10": 10, "11": 6, "12": 7 },
+            "7": { "1": 7, "2": 6, "3": 9, "4": 5, "5": 12, "6": 4, "7": 1, "8": 10, "9": 11, "10": 2, "11": 8, "12": 3 },
+            "8": { "1": 2, "2": 7, "3": 6, "4": 12, "5": 9, "6": 10, "7": 3, "8": 1, "9": 8, "10": 5, "11": 11, "12": 4 },
+            "9": { "1": 12, "2": 2, "3": 7, "4": 6, "5": 11, "6": 1, "7": 8, "8": 4, "9": 10, "10": 3, "11": 5, "12": 9 },
+            "10": { "1": 10, "2": 11, "3": 2, "4": 7, "5": 6, "6": 12, "7": 4, "8": 8, "9": 3, "10": 1, "11": 9, "12": 5 },
+            "11": { "1": 8, "2": 5, "3": 11, "4": 10, "5": 7, "6": 6, "7": 12, "8": 3, "9": 9, "10": 4, "11": 1, "12": 2 },
+            "12": { "1": 6, "2": 10, "3": 5, "4": 11, "5": 2, "6": 8, "7": 7, "8": 12, "9": 4, "10": 9, "11": 3, "12": 1 },
+            "13": { "1": 1, "2": 5, "3": 10, "4": 8, "5": 11, "6": 6, "7": 7, "8": 2, "9": 12, "10": 3, "11": 9, "12": 4 },
+            "14": { "1": 4, "2": 1, "3": 3, "4": 2, "5": 5, "6": 7, "7": 8, "8": 11, "9": 6, "10": 12, "11": 10, "12": 9 },
+            "15": { "1": 9, "2": 4, "3": 1, "4": 6, "5": 8, "6": 5, "7": 2, "8": 7, "9": 11, "10": 10, "11": 12, "12": 3 },
+            "16": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 12, "6": 8, "7": 6, "8": 5, "9": 2, "10": 7, "11": 11, "12": 10 },
+            "17": { "1": 11, "2": 3, "3": 9, "4": 4, "5": 1, "6": 10, "7": 5, "8": 6, "9": 7, "10": 8, "11": 2, "12": 12 },
+            "18": { "1": 5, "2": 11, "3": 6, "4": 9, "5": 4, "6": 1, "7": 12, "8": 8, "9": 10, "10": 2, "11": 3, "12": 7 },
+            "19": { "1": 7, "2": 10, "3": 11, "4": 3, "5": 9, "6": 4, "7": 1, "8": 12, "9": 8, "10": 5, "11": 6, "12": 2 },
+            "20": { "1": 2, "2": 7, "3": 5, "4": 12, "5": 3, "6": 9, "7": 10, "8": 1, "9": 4, "10": 6, "11": 8, "12": 11 },
+            "21": { "1": 12, "2": 2, "3": 8, "4": 5, "5": 10, "6": 3, "7": 9, "8": 4, "9": 1, "10": 11, "11": 7, "12": 6 },
+            "22": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 6, "6": 11, "7": 3, "8": 9, "9": 5, "10": 1, "11": 4, "12": 8 },
+            "23": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 7, "6": 2, "7": 11, "8": 3, "9": 9, "10": 4, "11": 1, "12": 5 },
+            "24": { "1": 6, "2": 8, "3": 7, "4": 11, "5": 2, "6": 12, "7": 4, "8": 10, "9": 3, "10": 9, "11": 5, "12": 1 },
+            "25": { "1": 1, "2": 6, "3": 10, "4": 3, "5": 2, "6": 8, "7": 7, "8": 4, "9": 11, "10": 5, "11": 12, "12": 9 },
+            "26": { "1": 4, "2": 1, "3": 3, "4": 8, "5": 6, "6": 7, "7": 2, "8": 11, "9": 12, "10": 9, "11": 5, "12": 10 },
+            "27": { "1": 9, "2": 4, "3": 1, "4": 5, "5": 10, "6": 11, "7": 12, "8": 7, "9": 6, "10": 8, "11": 2, "12": 3 },
+            "28": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 11, "6": 5, "7": 6, "8": 8, "9": 7, "10": 2, "11": 10, "12": 12 },
+            "29": { "1": 11, "2": 3, "3": 9, "4": 4, "5": 1, "6": 6, "7": 8, "8": 2, "9": 10, "10": 12, "11": 7, "12": 5 },
+            "30": { "1": 5, "2": 11, "3": 8, "4": 9, "5": 4, "6": 1, "7": 3, "8": 12, "9": 2, "10": 10, "11": 6, "12": 7 },
+            "31": { "1": 7, "2": 5, "3": 11, "4": 12, "5": 9, "6": 4, "7": 1, "8": 10, "9": 8, "10": 6, "11": 3, "12": 2 },
+            "32": { "1": 2, "2": 7, "3": 5, "4": 11, "5": 3, "6": 12, "7": 10, "8": 6, "9": 4, "10": 1, "11": 9, "12": 8 },
+            "33": { "1": 12, "2": 2, "3": 6, "4": 10, "5": 8, "6": 3, "7": 9, "8": 1, "9": 5, "10": 7, "11": 4, "12": 11 },
+            "34": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 5, "6": 9, "7": 11, "8": 3, "9": 1, "10": 4, "11": 8, "12": 6 },
+            "35": { "1": 8, "2": 10, "3": 12, "4": 6, "5": 7, "6": 2, "7": 4, "8": 5, "9": 9, "10": 3, "11": 11, "12": 1 },
+            "36": { "1": 6, "2": 8, "3": 7, "4": 2, "5": 12, "6": 10, "7": 5, "8": 9, "9": 3, "10": 11, "11": 1, "12": 4 },
+            "37": { "1": 1, "2": 3, "3": 10, "4": 6, "5": 9, "6": 12, "7": 7, "8": 5, "9": 11, "10": 2, "11": 4, "12": 8 },
+            "38": { "1": 4, "2": 1, "3": 3, "4": 8, "5": 6, "6": 5, "7": 2, "8": 7, "9": 12, "10": 10, "11": 11, "12": 9 },
+            "39": { "1": 9, "2": 4, "3": 1, "4": 12, "5": 8, "6": 2, "7": 10, "8": 11, "9": 6, "10": 3, "11": 5, "12": 7 },
+            "40": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 11, "6": 8, "7": 6, "8": 12, "9": 2, "10": 5, "11": 7, "12": 10 },
+            "41": { "1": 11, "2": 7, "3": 9, "4": 4, "5": 1, "6": 6, "7": 8, "8": 2, "9": 10, "10": 12, "11": 3, "12": 5 },
+            "42": { "1": 5, "2": 11, "3": 8, "4": 9, "5": 12, "6": 1, "7": 3, "8": 4, "9": 7, "10": 6, "11": 10, "12": 2 },
+            "43": { "1": 7, "2": 5, "3": 11, "4": 2, "5": 3, "6": 4, "7": 1, "8": 10, "9": 8, "10": 9, "11": 12, "12": 6 },
+            "44": { "1": 2, "2": 10, "3": 5, "4": 3, "5": 4, "6": 9, "7": 12, "8": 8, "9": 1, "10": 7, "11": 6, "12": 11 },
+            "45": { "1": 12, "2": 2, "3": 6, "4": 5, "5": 10, "6": 7, "7": 9, "8": 1, "9": 3, "10": 11, "11": 8, "12": 4 },
+            "46": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 5, "6": 3, "7": 11, "8": 6, "9": 4, "10": 8, "11": 9, "12": 1 },
+            "47": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 7, "6": 11, "7": 4, "8": 9, "9": 5, "10": 1, "11": 2, "12": 3 },
+            "48": { "1": 6, "2": 8, "3": 7, "4": 11, "5": 2, "6": 10, "7": 5, "8": 3, "9": 9, "10": 4, "11": 1, "12": 12 },
+            "49": { "1": 1, "2": 7, "3": 10, "4": 6, "5": 12, "6": 2, "7": 8, "8": 4, "9": 11, "10": 9, "11": 3, "12": 5 },
+            "50": { "1": 4, "2": 1, "3": 8, "4": 3, "5": 6, "6": 12, "7": 5, "8": 11, "9": 2, "10": 7, "11": 10, "12": 9 },
+            "51": { "1": 9, "2": 4, "3": 1, "4": 2, "5": 8, "6": 3, "7": 10, "8": 5, "9": 7, "10": 11, "11": 12, "12": 6 },
+            "52": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 10, "6": 9, "7": 6, "8": 11, "9": 5, "10": 7, "11": 2, "12": 12 },
+            "53": { "1": 11, "2": 3, "3": 8, "4": 4, "5": 1, "6": 5, "7": 9, "8": 2, "9": 12, "10": 6, "11": 7, "12": 10 },
+            "54": { "1": 5, "2": 12, "3": 3, "4": 8, "5": 4, "6": 11, "7": 2, "8": 9, "9": 1, "10": 10, "11": 6, "12": 7 },
+            "55": { "1": 7, "2": 6, "3": 9, "4": 5, "5": 12, "6": 4, "7": 1, "8": 10, "9": 11, "10": 2, "11": 8, "12": 3 },
+            "56": { "1": 2, "2": 7, "3": 6, "4": 12, "5": 9, "6": 10, "7": 3, "8": 1, "9": 8, "10": 5, "11": 11, "12": 4 },
+            "57": { "1": 12, "2": 2, "3": 7, "4": 6, "5": 11, "6": 1, "7": 8, "8": 4, "9": 10, "10": 3, "11": 5, "12": 9 },
+            "58": { "1": 10, "2": 11, "3": 2, "4": 7, "5": 6, "6": 12, "7": 4, "8": 8, "9": 3, "10": 1, "11": 9, "12": 5 },
+            "59": { "1": 8, "2": 5, "3": 11, "4": 10, "5": 7, "6": 6, "7": 12, "8": 3, "9": 9, "10": 4, "11": 1, "12": 2 },
+            "60": { "1": 6, "2": 10, "3": 5, "4": 11, "5": 2, "6": 8, "7": 7, "8": 12, "9": 4, "10": 9, "11": 3, "12": 1 },
+            "61": { "1": 1, "2": 11, "3": 10, "4": 6, "5": 12, "6": 2, "7": 4, "8": 7, "9": 8, "10": 9, "11": 5, "12": 3 },
+            "62": { "1": 4, "2": 1, "3": 6, "4": 8, "5": 3, "6": 12, "7": 2, "8": 10, "9": 9, "10": 5, "11": 7, "12": 11 },
+            "63": { "1": 9, "2": 4, "3": 1, "4": 2, "5": 8, "6": 6, "7": 12, "8": 11, "9": 7, "10": 3, "11": 10, "12": 5 },
+            "64": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 6, "6": 8, "7": 7, "8": 12, "9": 5, "10": 2, "11": 11, "12": 10 },
+            "65": { "1": 11, "2": 2, "3": 9, "4": 4, "5": 1, "6": 5, "7": 8, "8": 3, "9": 10, "10": 12, "11": 6, "12": 7 },
+            "66": { "1": 5, "2": 10, "3": 3, "4": 9, "5": 2, "6": 1, "7": 6, "8": 8, "9": 11, "10": 7, "11": 12, "12": 4 },
+            "67": { "1": 7, "2": 5, "3": 11, "4": 3, "5": 10, "6": 4, "7": 1, "8": 9, "9": 12, "10": 6, "11": 8, "12": 2 },
+            "68": { "1": 2, "2": 3, "3": 5, "4": 11, "5": 9, "6": 7, "7": 10, "8": 1, "9": 6, "10": 8, "11": 4, "12": 12 },
+            "69": { "1": 12, "2": 8, "3": 7, "4": 5, "5": 11, "6": 3, "7": 9, "8": 4, "9": 1, "10": 10, "11": 2, "12": 6 },
+            "70": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 5, "6": 11, "7": 3, "8": 6, "9": 4, "10": 1, "11": 9, "12": 8 },
+            "71": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 7, "6": 9, "7": 11, "8": 5, "9": 2, "10": 4, "11": 3, "12": 1 },
+            "72": { "1": 6, "2": 7, "3": 8, "4": 12, "5": 4, "6": 10, "7": 5, "8": 2, "9": 3, "10": 11, "11": 1, "12": 9 },
+            "73": { "1": 1, "2": 4, "3": 10, "4": 6, "5": 12, "6": 11, "7": 7, "8": 8, "9": 2, "10": 5, "11": 9, "12": 3 },
+            "74": { "1": 4, "2": 2, "3": 3, "4": 8, "5": 6, "6": 12, "7": 1, "8": 11, "9": 7, "10": 10, "11": 5, "12": 9 },
+            "75": { "1": 9, "2": 10, "3": 1, "4": 3, "5": 8, "6": 6, "7": 2, "8": 7, "9": 5, "10": 4, "11": 12, "12": 11 },
+            "76": { "1": 3, "2": 9, "3": 6, "4": 1, "5": 2, "6": 8, "7": 5, "8": 11, "9": 11, "10": 7, "11": 10, "12": 4 },
+            "77": { "1": 11, "2": 3, "3": 9, "4": 4, "5": 1, "6": 2, "7": 8, "8": 10, "9": 12, "10": 6, "11": 7, "12": 5 },
+            "78": { "1": 5, "2": 11, "3": 4, "4": 9, "5": 7, "6": 1, "7": 2, "8": 8, "9": 10, "10": 12, "11": 3, "12": 6 },
+            "79": { "1": 7, "2": 5, "3": 11, "4": 2, "5": 9, "6": 4, "7": 1, "8": 8, "9": 10, "10": 12, "11": 6, "12": 3 },
+            "80": { "1": 2, "2": 7, "3": 5, "4": 11, "5": 3, "6": 9, "7": 4, "8": 1, "9": 8, "10": 10, "11": 12, "12": 6 },
+            "81": { "1": 12, "2": 1, "3": 7, "4": 5, "5": 11, "6": 10, "7": 9, "8": 4, "9": 8, "10": 3, "11": 2, "12": 6 },
+            "82": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 5, "6": 3, "7": 4, "8": 9, "9": 6, "10": 8, "11": 11, "12": 1 },
+            "83": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 3, "6": 5, "7": 11, "8": 1, "9": 9, "10": 2, "11": 4, "12": 7 },
+            "84": { "1": 6, "2": 7, "3": 8, "4": 12, "5": 10, "6": 9, "7": 3, "8": 5, "9": 4, "10": 11, "11": 1, "12": 2 },
+            "85": { "1": 1, "2": 3, "3": 10, "4": 6, "5": 12, "6": 2, "7": 8, "8": 11, "9": 5, "10": 4, "11": 9, "12": 7 },
+            "86": { "1": 4, "2": 1, "3": 8, "4": 3, "5": 6, "6": 12, "7": 11, "8": 2, "9": 7, "10": 9, "11": 10, "12": 5 },
+            "87": { "1": 9, "2": 4, "3": 1, "4": 7, "5": 3, "6": 8, "7": 12, "8": 5, "9": 2, "10": 6, "11": 11, "12": 10 },
+            "88": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 8, "6": 10, "7": 2, "8": 7, "9": 12, "10": 5, "11": 6, "12": 11 },
+            "89": { "1": 11, "2": 10, "3": 9, "4": 4, "5": 1, "6": 6, "7": 7, "8": 12, "9": 3, "10": 8, "11": 5, "12": 2 },
+            "90": { "1": 5, "2": 11, "3": 6, "4": 9, "5": 4, "6": 1, "7": 3, "8": 8, "9": 10, "10": 2, "11": 7, "12": 12 },
+            "91": { "1": 7, "2": 5, "3": 11, "4": 2, "5": 10, "6": 4, "7": 6, "8": 9, "9": 8, "10": 3, "11": 12, "12": 1 },
+            "92": { "1": 2, "2": 7, "3": 5, "4": 11, "5": 9, "6": 3, "7": 10, "8": 4, "9": 1, "10": 12, "11": 8, "12": 6 },
+            "93": { "1": 12, "2": 8, "3": 7, "4": 5, "5": 2, "6": 11, "7": 9, "8": 1, "9": 6, "10": 10, "11": 3, "12": 4 },
+            "94": { "1": 10, "2": 12, "3": 2, "4": 8, "5": 11, "6": 5, "7": 4, "8": 6, "9": 9, "10": 7, "11": 1, "12": 3 },
+            "95": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 5, "6": 7, "7": 1, "8": 3, "9": 4, "10": 11, "11": 2, "12": 9 },
+            "96": { "1": 6, "2": 2, "3": 3, "4": 12, "5": 7, "6": 9, "7": 5, "8": 10, "9": 11, "10": 1, "11": 4, "12": 9 },
+            "97": { "1": 1, "2": 9, "3": 10, "4": 6, "5": 12, "6": 2, "7": 7, "8": 5, "9": 3, "10": 4, "11": 8, "12": 11 },
+            "98": { "1": 4, "2": 1, "3": 6, "4": 8, "5": 10, "6": 12, "7": 11, "8": 2, "9": 9, "10": 7, "11": 3, "12": 5 },
+            "99": { "1": 9, "2": 4, "3": 1, "4": 2, "5": 6, "6": 8, "7": 12, "8": 11, "9": 5, "10": 3, "11": 10, "12": 7 },
+            "100": { "1": 3, "2": 10, "3": 8, "4": 1, "5": 5, "6": 7, "7": 6, "8": 12, "9": 2, "10": 9, "11": 11, "12": 4 },
+            "101": { "1": 11, "2": 3, "3": 9, "4": 4, "5": 1, "6": 6, "7": 8, "8": 10, "9": 7, "10": 5, "11": 12, "12": 2 },
+            "102": { "1": 5, "2": 11, "3": 3, "4": 9, "5": 4, "6": 1, "7": 2, "8": 6, "9": 8, "10": 12, "11": 7, "12": 10 },
+            "103": { "1": 7, "2": 5, "3": 11, "4": 3, "5": 9, "6": 4, "7": 1, "8": 8, "9": 12, "10": 10, "11": 2, "12": 6 },
+            "104": { "1": 2, "2": 7, "3": 5, "4": 11, "5": 3, "6": 9, "7": 10, "8": 1, "9": 6, "10": 8, "11": 4, "12": 12 },
+            "105": { "1": 12, "2": 2, "3": 4, "4": 5, "5": 11, "6": 3, "7": 9, "8": 7, "9": 10, "10": 6, "11": 1, "12": 8 },
+            "106": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 8, "6": 5, "7": 3, "8": 9, "9": 4, "10": 11, "11": 6, "12": 1 },
+            "107": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 7, "6": 11, "7": 4, "8": 3, "9": 1, "10": 2, "11": 5, "12": 9 },
+            "108": { "1": 6, "2": 8, "3": 7, "4": 12, "5": 2, "6": 10, "7": 5, "8": 4, "9": 11, "10": 1, "11": 9, "12": 3 },
+            "109": { "1": 1, "2": 9, "3": 10, "4": 6, "5": 12, "6": 2, "7": 7, "8": 11, "9": 5, "10": 3, "11": 4, "12": 8 },
+            "110": { "1": 4, "2": 1, "3": 6, "4": 8, "5": 10, "6": 12, "7": 11, "8": 2, "9": 9, "10": 7, "11": 3, "12": 5 },
+            "111": { "1": 9, "2": 4, "3": 1, "4": 2, "5": 6, "6": 8, "7": 12, "8": 11, "9": 5, "10": 3, "11": 10, "12": 7 },
+            "112": { "1": 3, "2": 10, "3": 8, "4": 9, "5": 11, "6": 7, "7": 4, "8": 1, "9": 2, "10": 12, "11": 6, "12": 5 },
+            "113": { "1": 11, "2": 3, "3": 9, "4": 4, "5": 1, "6": 6, "7": 2, "8": 7, "9": 10, "10": 5, "11": 8, "12": 12 },
+            "114": { "1": 5, "2": 11, "3": 3, "4": 1, "5": 4, "6": 10, "7": 6, "8": 8, "9": 12, "10": 9, "11": 7, "12": 2 },
+            "115": { "1": 7, "2": 5, "3": 11, "4": 3, "5": 9, "6": 4, "7": 1, "8": 12, "9": 8, "10": 10, "11": 2, "12": 6 },
+            "116": { "1": 2, "2": 7, "3": 5, "4": 11, "5": 3, "6": 9, "7": 10, "8": 1, "9": 6, "10": 8, "11": 4, "12": 12 },
+            "117": { "1": 12, "2": 2, "3": 4, "4": 5, "5": 11, "6": 3, "7": 9, "8": 7, "9": 10, "10": 6, "11": 1, "12": 8 },
+            "118": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 8, "6": 11, "7": 9, "8": 3, "9": 1, "10": 6, "11": 5, "12": 4 },
+            "119": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 7, "6": 5, "7": 11, "8": 2, "9": 9, "10": 4, "11": 1, "12": 3 },
+            "120": { "1": 6, "2": 8, "3": 7, "4": 12, "5": 2, "6": 3, "7": 5, "8": 4, "9": 11, "10": 1, "11": 9, "12": 10 }
+        };
+        $scope.getVarshphal = function (age) {
+            console.log('Calculating Varshphal for Age: ' + age);
+            for (const house in houses) {
+                varshphalHouses[varshphalMovement[age][house]].planets = houses[house].planets;
+                console.log(varshphalMovement[age][house] + " : " + houses[house].planets);
+            }
+            $scope.varshphalChart = varshphalHouses;
+        }
+
+        $scope.nextVarshphal = function () {
+            $scope.varshphalAge = $scope.varshphalAge + 1;
+            $scope.getVarshphal($scope.varshphalAge);
+        }
+
+        $scope.prevVarshphal = function () {
+            $scope.varshphalAge = $scope.varshphalAge - 1;
+            $scope.getVarshphal($scope.varshphalAge);
+        }
+
+        $scope.resetConfig = function () {
+            maleficPlanets = [];
+            beneficPlanets = [];
+            neutralPlanets = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Rahu", "Ketu"];
+            maleficHouses = [];
+            beneficHouses = [];
+            neutralMaleficHouses = [];
+            neutralBenificHouses = [];
+            moonState = [];
+            finalHoro = [];
+            diseases = [];
+            rakeshEffect = false;
+            vakri = [];
+            analysis = [];
+            drishti = [];
+            bala = [];
+            blindPlanets = [];
+            rinEffects = [];
+            balaOfPlanets = {
+                "Sun": 0,
+                "Moon": 0,
+                "Mercury": 0,
+                "Ketu": 0,
+                "Rahu": 0,
+                "Saturn": 0,
+                "Venus": 0,
+                "Jupiter": 0,
+                "Mars": 0
+            };
+        }
+
+        function isVakri() {
+            if (houses["8"].planets.length > 0 && houses["2"].planets.length > 0) {
+                console.log(houses["8"].planets + ' is/are having vakri drishti on ' + houses["2"].planets);
+                vakri.push(houses["8"].planets + ' is/are having vakri drishti on ' + houses["2"].planets);
+            }
+            if (houses["9"].planets.includes("Mercury") && houses["3"].planets.length > 0) {
+                vakri.push('Mercury of 9th House is vakri drishti on ' + houses["3"].planets);
+            }
+            if (houses["12"].planets.includes("Mercury") && houses["6"].planets.length > 0) {
+                vakri.push('Mercury of 12th house is having vakri drishti on ' + houses["6"].planets);
+            }
+            if (houses["6"].planets.includes("Saturn") && houses["2"].planets.length > 0) {
+                vakri.push('Saturn of 6th House is having vakri drishti on ' + houses["6"].planets);
+            }
+        }
+
+        function isBlindPlanetKundali() {
+            if (houses["10"].planets.length > 1) {
+                //Check if mutual enmical planets are sitting in the 10th house
+                houses["10"].planets.forEach(function (planetinTenthHouse) {
+                    // Check the enmical relationship of planets here
+                    planetsTable[planetinTenthHouse].enemies.forEach(function (enemyOfPlanetInTenthHouse) {
+                        //Checking if enemy of 10th house planet sitting in 10th house
+                        if (houses["10"].planets.includes(enemyOfPlanetInTenthHouse)) {
+                            blindPlanets.push('Enemy of ' + planetinTenthHouse + ' is sitting in 10th house: ' + enemyOfPlanetInTenthHouse)
+                        }
+                    })
+                })
+            }
+            if (houses["4"].planets.includes("Sun") && houses["7"].planets.includes("Saturn")) {
+                blindPlanets.push("Rathand Kundali present: Native will have unstable profression and disturbed mental peace with lack of domestic happiness");
+            }
+        }
+
+        function getDhrishti() {
+            for (const house in houses) {
+                if (housesTable[house].drishti.length > 0 && houses[house].planets.length > 0) {
+                    // Checking each to drishti house
+                    housesTable[house].drishti.forEach(function (drishtitoHouse) {
+                        // For Each Planet of current House
+                        houses[house].planets.forEach(function (planetofcurrenthouse) {
+                            if (houses[drishtitoHouse].planets.length > 0) {
+                                //drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% drishti on planet: ' + houses[drishtitoHouse].planets);
+                                houses[drishtitoHouse].planets.forEach(function (planetOfToDrishtiHouse) {
+                                    if (planetsTable[planetofcurrenthouse].friends.includes(planetOfToDrishtiHouse)) {
+                                        balaOfPlanets[planetOfToDrishtiHouse] += 100;
+                                        drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% friendly drishti on planet: ' + planetOfToDrishtiHouse);
+                                    }
+                                    else if (planetsTable[planetofcurrenthouse].enemies.includes(planetOfToDrishtiHouse)) {
+                                        balaOfPlanets[planetOfToDrishtiHouse] -= 100;
+                                        drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% enimical drishti on planet: ' + planetOfToDrishtiHouse);
+                                    }
+                                });
+                            }
+                        })
+                    })
+                }
+            }
+            console.log(balaOfPlanets);
+            for (planet in balaOfPlanets) {
+                bala.push(planet + " : " + balaOfPlanets[planet]);
+            }
+        }
+
+        function checkRealityOfNeutralHousesAndRakeshEffect(houses) {
+            // Check if Neutral 4th house has either Rahu/Ketu
+            if (houses["4"].status == "N" && (houses["4"].planets.includes("Rahu") || houses["4"].planets.includes("Ketu"))) {
+                houses["4"].status = "NM";
+                neutralMaleficHouses.push("4");
+                console.log("Rahu/Ketu found in 4th house hence 4th house is Neutral malefic");
+                analysis.push("Rahu/Ketu found in 4th house hence 4th house is Neutral malefic");
+            }
+
+            for (const house in houses) {
+                // Scan for Neutral Houses only
+                if (!maleficHouses.includes(house) && !beneficHouses.includes(house)) {
+                    console.log(`Evaluating reality of Neutral House :${house} Current Status: ${house}.status`);
+                    // Check if Moon is with Rahu/Ketu in any house or if Rahu/Ketu are occupying the 4th house
+                    if (houses[house].planets.includes("Moon")) {
+                        if (houses[house].planets.includes("Rahu") || houses[house].planets.includes("Ketu")) {
+                            moonState.push(house);
+                            console.log('Moon with Rahu/Ketu found in House: ' + house + ' hence house is Neutral malefic');
+                            analysis.push('Moon with Rahu/Ketu found in House: ' + house + ' hence house is Neutral malefic');
+                            houses[house].status = 'NM';
+                            neutralMaleficHouses.push(house);
+                        }
+                    }
+                    else {
+                        houses[house].status = "NB";
+                        neutralBenificHouses.push(house);
+                        console.log(house + ' house is Neutral benefic');
+                    }
+                }
+                //Evaluating Rakesh Effect
+                if (houses[house].planets.includes("Saturn") && (houses[house].planets.includes("Rahu") || houses[house].planets.includes("Ketu"))) {
+                    houses[house].rakesheffect = "150%";
+                    console.log(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                    analysis.push(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                }
+                else if (!houses[house].planets.includes("Saturn") && (houses[house].planets.includes("Rahu") || houses[house].planets.includes("Ketu"))) {
+                    houses[house].rakesheffect = "100%";
+                    console.log(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                    analysis.push(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                }
+                else if (houses[house].planets.includes("Saturn") && !houses[house].planets.includes("Rahu") && !houses[house].planets.includes("Ketu")) {
+                    houses[house].rakesheffect = "50%";
+                    console.log(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                    analysis.push(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                }
+            }
+            if (houses["4"].status == "N") {
+                houses["4"].status = "NB";
+                neutralBenificHouses.push("4");
+                console.log("4th house is Neutral benefic");
+            }
+        }
+
+        function maleficRule1(houses) {
+            for (const house in houses) {
+                console.log(`Evaluating malefic Rule1 House:${house}`);
+                if (houses[house].planets.length > 0) {
+                    //iterate through each plant of current house for karak's enemies presence
+                    houses[house].planets.forEach(function (planet) {
+                        // Current house enemies are karaks enemies
+                        if (housesTable[house].enemies.includes(planet)) {
+                            houses[house].status = "M";
+                            console.log(planet + " is an enemy of " + housesTable[house].karak + " hence " + house + " is malefic");
+                            // Add to the list of malefic houses
+                            if (!maleficHouses.includes(house)) {
+                                maleficHouses.push(house);
+                            }
+                        }
+                    });
+
+
+                }
+            }
+        }
+
+        function maleficRule2(houses) {
+            for (const house in houses) {
+                console.log(`Evaluating malefic Rule2 House:${house}`);
+                if (houses[house].planets.length > 1) {
+                    //iterate through each planet of current house to find of enemy planets are present in the house
+                    houses[house].planets.forEach(function (planet) {
+                        // Current Planet in check :Sun
+                        planetsTable[planet].enemies.forEach(function (enemy) {
+                            // Each Enemies of Sun say Venus
+                            // Check if Venus is present in Current house
+                            if (houses[house].planets.includes(enemy)) {
+                                // Then mark the house as malefic of which the current planet is karak of
+                                // Find each Karak house of current planet and mark it as malefic
+                                planetsTable[planet].houses.forEach(function (mhouse) {
+                                    // Mark the house Sun as malefic
+                                    houses[mhouse].status = "M";
+                                    console.log('House ' + mhouse + ' is malefic as ' + planet + ' is sitting with its enemy ' + enemy);
+                                    if (!maleficHouses.includes(mhouse)) {
+                                        maleficHouses.push(mhouse + "");
+                                    }
+
+                                })
+                                // Adding the current planet to malefic planet as its with its enemy
+                                if (!maleficPlanets.includes(planet)) {
+                                    maleficPlanets.push(planet);
+                                    console.log(planet + ' is sitting with its enemy ' + enemy);
+                                    // Remove the malefic planet from the neutral planets list
+                                    neutralPlanets = neutralPlanets.filter(rmplanet => rmplanet !== planet);
+                                }
+                            }
+                        })
+
+                    });
+                }
+
+            }
+        }
+
+        function benificRule1(houses) {
+            console.log(typeof (maleficHouses[0]));
+            for (const house in houses) {
+                console.log(typeof (house));
+                console.log(`Evaluating benific Rule1 House:${house} Checking if current house ${house} if malefic: ` + maleficHouses.includes(house + ""));
+                // Check if current house is not malefic
+
+                if (houses[house].planets.length > 0 && !maleficHouses.includes(house)) {
+                    //Check if current house's karak planet is present in the current house 
+                    if (houses[house].planets.includes(housesTable[house].karak)) {
+                        houses[house].status = "B";
+                        console.log(housesTable[house].karak + " is an karak of " + house + " hence " + house + " is benific");
+                        if (!beneficHouses.includes(house)) {
+                            beneficHouses.push(house);
+                        }
+                    }
+                    // Check if any of friend of current house's Kara planet is sitting in current house
+                    //iterate through each planet of current house and check if its friend of current house karak
+                    else {
+                        houses[house].planets.forEach(function (planet) {
+                            // Current house friends are karaks enemies
+                            if (housesTable[house].friends.includes(planet)) {
+                                houses[house].status = "B";
+                                console.log(planet + " is an friend of " + housesTable[house].karak + " hence " + house + " is benific");
+                                // Add to the list of malefic houses
+                                if (!beneficHouses.includes(house)) {
+                                    beneficHouses.push(house);
+                                }
+                            }
+
+                        });
+                    }
+                }
+                // Check if freindly planets are sitting together
+                houses[house].planets.forEach(function (planet) {
+                    // Proceed for checking benific planet only when current planet is not malefic
+                    if (!maleficPlanets.includes(planet)) {
+                        planetsTable[planet].friends.forEach(function (freindCurrentPlanet) {
+                            if (houses[house].planets.includes(freindCurrentPlanet)) {
+                                if (!beneficPlanets.includes(planet)) {
+                                    beneficPlanets.push(planet);
+                                    // Remove the benific planet from the neutral planets list
+                                    neutralPlanets = neutralPlanets.filter(rmplanet => rmplanet !== planet);
+                                }
+                            }
+                        })
+                    }
+                })
+
+            }
+        }
+
+        function benificRule3(houses) {
+            for (const house in houses) {
+                console.log(`Evaluating benefic Rule3 House:${house}`);
+                // Checking if there are more than 1 planet in the curent house and the house is Neutral - neither benefic nor malefic
+                if (houses[house].planets.length > 1 && !maleficHouses.includes(house) && !beneficHouses.includes(house)) {
+                    //iterate through each plant of current house to find of if the friendly planets are present together in the house
+                    houses[house].planets.forEach(function (planet) {
+                        // Current Planet in check :Sun
+                        planetsTable[planet].friends.forEach(function (friend) {
+                            // Each Friends of Sun say Moon
+                            // Check if Moon is present in Current house
+                            if (houses[house].planets.includes(friend)) {
+                                // Then mark the house as benific of which the current planet is karak of
+                                // Find each Karak house of current planet and mark it as benific if it not already malefic
+                                planetsTable[planet].houses.forEach(function (bhouse) {
+                                    // Mark the house Sun as benific if its not already malefic
+                                    if (!maleficHouses.includes(bhouse)) {
+                                        houses[bhouse].status = "B";
+                                        console.log('House ' + bhouse + ' is benefic as Karaka planet ' + planet + ' of House ' + bhouse + ' is sitting with its friend ' + friend + ' in house ' + house);
+                                        if (!beneficHouses.includes(bhouse)) {
+                                            beneficHouses.push(bhouse + "");
+                                        }
+                                    }
+
+                                })
+                            }
+                        })
+
+                    });
+                }
+
+            }
+        }
+        $scope.toggleMessage = false;
+        $scope.horoscope = {};
+        $scope.currentAge = 0;
+        $scope.getHouseStatus = function () {
+            
+            $scope.checkName();
+            maleficRule1(houses);
+
+            console.log("maleficHouses from Rule1:", maleficHouses);
+
+            maleficRule2(houses);
+            console.log("maleficHouses from Rule1 and 2 are :", maleficHouses);
+
+            benificRule1(houses);
+            console.log("BenificHouses from Rule1 and Rule2 are:", beneficHouses);
+
+            benificRule3(houses);
+            console.log("BenificHouses from Rule3 are:", beneficHouses);
+
+            checkRealityOfNeutralHousesAndRakeshEffect(houses);
+
+            console.log("Malefic Houses", maleficHouses, "Benific Houses", beneficHouses, "Neutral Malefic Houses", neutralMaleficHouses, "Neutral benefic Houses", neutralBenificHouses);
+
+            console.log(houses);
+            console.log("Malefic Planets", maleficPlanets, "Benific Planets", beneficPlanets, "Nuetral Planets", neutralPlanets);
+            isVakri();
+            getDhrishti();
+            getRinReport();
+            showResult();
+            $scope.horoscope = houses;
+
+            $scope.currentAge = $scope.calculateAge();
+            $scope.varshphalAge = $scope.currentAge;
+            //$scope.saveHoroscope();
+            $scope.getVarshphal($scope.currentAge);
+        }
+
+        $scope.saveHoroscope = function (chartType) {
+            if ($scope.nativeName != undefined && $scope.selectedDay != undefined && $scope.selectedMonth != undefined && $scope.selectedYear != undefined) {
+			$scope.pullPushHoroscope(chartType);
+                if (localStorage.getItem("horoscope") !== null) {
+                    $scope.localStorageHoroscope = JSON.parse(localStorage.getItem("horoscope"));
+                    if (chartType == 'Lagna') {
+                        $scope.localStorageHoroscope[$scope.nativeName] = {
+                            "name": $scope.nativeName,
+                            "horoscope": $scope.horoscope,
+                            "date": (new Date()).toDateString(),
+                            "day": $scope.selectedDay,
+                            "month": $scope.selectedMonth,
+                            "year": $scope.selectedYear,
+                            "charttype": "Lagna"
+                        };
+                        localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+                        //alert('Saved Horoscope for ' + $scope.nativeName);
+                        $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
+                        $scope.toggleMessage = true;
+                    }
+                    else {
+                        $scope.localStorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
+                            "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge,
+                            "horoscope": $scope.varshphalChart,
+                            "date": (new Date()).toDateString(),
+                            "day": $scope.selectedDay,
+                            "month": $scope.selectedMonth,
+                            "year": $scope.selectedYear,
+                            "charttype": "Varshphal"
+                        };
+                        localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+                        //alert('Saved Varshaphal Horoscope for ' + $scope.nativeName + 'with as ' + $scope.nativeName + "_Varshphal_" + $scope.varshphalAge);
+                        $scope.message = 'Saved Varshaphal Horoscope for ' + $scope.nativeName + 'with as ' + $scope.nativeName + "_Varshphal_" + $scope.varshphalAge;
+                        $scope.toggleMessage = true;
+                    }
+
+
+                }
+                else {
+                    console.log('Local Storage Not found. Creating localStorage with name: horoscope');
+                    $scope.localStorageHoroscope = {};
+                    if (chartType == 'Lagna') {
+                        $scope.localStorageHoroscope[$scope.nativeName] = {
+                            "name": chartType == 'Lagna' ? $scope.nativeName : $scope.nativeName + "_Varshphal_" + $scope.varshphalAge,
+                            "horoscope": chartType == 'Lagna' ? $scope.horoscope : $scope.varshphalChart,
+                            "date": (new Date()).toDateString(),
+                            "day": $scope.selectedDay,
+                            "month": $scope.selectedMonth,
+                            "year": $scope.selectedYear,
+                            "charttype": "Lagna"
+                        };
+                        localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+                    }
+                    else {
+                        $scope.localStorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
+                            "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge,
+                            "horoscope": $scope.varshphalChart,
+                            "date": (new Date()).toDateString(),
+                            "day": $scope.selectedDay,
+                            "month": $scope.selectedMonth,
+                            "year": $scope.selectedYear,
+                            "charttype": "Varshphal"
+                        };
+                        localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+                    }
+                }
+                //alert('Saved Horoscope for ' + $scope.nativeName);
+                $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
+                $scope.toggleMessage = true;
+            }
+            else {
+                $scope.message = 'Please enter a name and age details of this horoscope';
+                $scope.toggleMessage = true;
+                //alert('Please enter a name and age details of this horoscope');
+            }
+        }
+        $scope.getHoroscope = function () {
+            console.log($scope.selectedHoroscope);
+            houses = JSON.parse(JSON.stringify($scope.selectedHoroscope.horoscope));
+            $scope.nativeName = $scope.selectedHoroscope.name;
+            $scope.selectedDay = $scope.selectedHoroscope.day;
+            $scope.selectedMonth = $scope.selectedHoroscope.month;
+            $scope.selectedYear = $scope.selectedHoroscope.year;
+			//$scope.$apply();
+            $scope.getHouseStatus();
+			
+			console.log($scope.nativeName , $scope.selectedHoroscope.name);
+        }
+
+        $scope.loadHoroscopes = function () {
+		$scope.getKundali();
+            if (localStorage.getItem("horoscope") !== null) {
+                console.log('Local Storage found with name: horoscope');
+               // $scope.horoscopes = JSON.parse(localStorage.getItem("horoscope"));
+               // console.log(Object.keys($scope.horoscopes).length + ' Horoscopes loaded.');
+            }
+            else {
+                console.log('Local Storage Not found. Creating localStorage with name: horoscope');
+                localStorage.setItem("horoscope", JSON.stringify({}));
+                //$scope.horoscopes = JSON.parse(localStorage.getItem("horoscope"));
+                //console.log('No horoscopes present. Hence creating it');
+            }
+        }
+
+        $scope.deleteHoroscope = function () {
+            $scope.localStorageHoroscope = JSON.parse(localStorage.getItem("horoscope"));
+            delete $scope.localStorageHoroscope[$scope.selectedHoroscope.name];
+            localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+            //alert('Removed the ' + $scope.selectedHoroscope.name);
+            $scope.message = 'Removed the ' + $scope.selectedHoroscope.name;
+            $scope.toggleMessage = true;
+            location.reload();
+        }
+
+        function getPlanetStatus() { }
+
+
+
+        function showResult() {
+            document.getElementById("M").innerHTML = maleficHouses.toString();
+            document.getElementById("B").innerHTML = beneficHouses.toString();
+            document.getElementById("NM").innerHTML = neutralMaleficHouses.toString();
+            document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
+            document.getElementById("MP").innerHTML = maleficPlanets.toString();
+            document.getElementById("BP").innerHTML = beneficPlanets.toString();
+            document.getElementById("NP").innerHTML = neutralPlanets.toString();
+            document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: ' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: ' + rinEffects.toString().replaceAll(',', '<br>');
+        }
+
+        // const planetDropdown = document.getElementById('planetDropdown');
+        // const selectedPlanet = document.getElementById('selectedPlanet');
+
+        // planetDropdown.addEventListener('change', (event) => {
+        //     selectedPlanet.textContent = event.target.value;
+        // });
+
+        // const houseDropdown = document.getElementById('houseDropdown');
+        // const selectedHouse = document.getElementById('selectedHouse');
+
+        // houseDropdown.addEventListener('change', (event) => {
+        //     selectedHouse.textContent = event.target.value;
+        // });
+        $scope.planets = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Rahu", "Ketu"];
+        $scope.houses = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+
+        $scope.houseAndPlanetSelected = function () {
+            if ($scope.selectedPlanet != '' && $scope.selectedHouse != '') {
+                houses[$scope.selectedHouse].planets.push($scope.selectedPlanet);
+                //$scope.planets = $scope.planets.filter(planet => planet !== $scope.selectedPlanet);
+                //$scope.houses = $scope.houses.filter(house => house !== $scope.selectedHouse);
+                $scope.horoscope = houses;
+            }
+            else {
+                $scope.horoscope = houses;
+            }
+        }
+
+        $scope.removePlanetFromHouse = function () {
+            houses[$scope.selectedHouse].planets = houses[$scope.selectedHouse].planets.filter(planet => planet !== $scope.selectedPlanet);
+        }
+
+        $scope.removePlanetHouse = function () {
+            if ($scope.selectedPlanet != '' && $scope.selectedHouse != '') {
+                $scope.removePlanetFromHouse($scope.selectedHouse, $scope.selectedPlanet);
+                $scope.horoscope = houses;
+            }
+        }
+        $scope.checkName = function () {
+            console.log('Checking Name:' + $scope.nativeName);
+            if ($scope.nativeName == undefined) {
+                //alert("Please enter the name");
+                $scope.message = "Please enter the name";
+                $scope.toggleMessage = true;
+            }
+        }
+        $scope.days = [];
+        $scope.years = [];
+
+        // Populate day dropdown
+        for (var i = 1; i <= 31; i++) {
+            $scope.days.push(i);
+        }
+
+        // Populate year dropdown
+        var currentYear = new Date().getFullYear();
+        for (var i = currentYear + 20; i >= 1900; i--) {
+            $scope.years.push(i);
+        }
+
+        $scope.calculateAge = function () {
+            var day = parseInt($scope.selectedDay);
+            var month = parseInt($scope.selectedMonth);
+            var year = parseInt($scope.selectedYear);
+            console.log(day, month, year)
+            var today = new Date();
+            var birthDate = new Date(year, month - 1, day); // Month is 0-indexed
+
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+
+            // if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            //     age--;
+            // }
+
+            document.getElementById("result").innerHTML = "Your age is: " + age + " years old";
+            return age;
+        }
+
+        $scope.reset = function () {
+            location.reload();
+        }
+
+        function getRinReport() {
+            // Pitru Rin
+            if (houses[2].planets.includes("Mercury") || houses[2].planets.includes("Venus") || houses[2].planets.includes("Rahu")) {
+                rinEffects.push("Pitru Rin detected in 2nd House due to presence of Mercury/Venus/Rahu");
+             }
+             else if(houses[5].planets.includes("Mercury") || houses[5].planets.includes("Venus") || houses[5].planets.includes("Rahu")) {
+                rinEffects.push("Pitru Rin detected in 2nd House due to presence of Mercury/Venus/Rahu");
+             }
+             else if(houses[9].planets.includes("Mercury") || houses[9].planets.includes("Venus") || houses[9].planets.includes("Rahu")) {
+                rinEffects.push("Pitru Rin detected in 2nd House due to presence of Mercury/Venus/Rahu");
+             }
+             else if(houses[11].planets.includes("Mercury") || houses[11].planets.includes("Venus") || houses[11].planets.includes("Rahu")) {
+                rinEffects.push("Pitru Rin detected in 2nd House due to presence of Mercury/Venus/Rahu");
+             }
+             else if(houses[12].planets.includes("Mercury") || houses[12].planets.includes("Venus") || houses[12].planets.includes("Rahu")) {
+                rinEffects.push("Pitru Rin detected in 2nd House due to presence of Mercury/Venus/Rahu");
+             }
+            
+
+             // Matru Rin
+             if (houses[4].planets.includes("Ketu")) {
+                rinEffects.push("Matru Rin detected in 4th House due to presence of Ketu");
+             }
+
+             // Sva Rin
+             if(houses[5].planets.includes("Venus") || houses[5].planets.includes("Saturn") || houses[5].planets.includes("Rahu") || houses[5].planets.includes("Ketu")) {
+                rinEffects.push("Sva Rin detected in 5th House due to presence of Ketu/Venus/Rahu/Saturn");
+             }
+
+             // Stree Rin
+             if (houses[2].planets.includes("Sun") || houses[2].planets.includes("Moon") || houses[2].planets.includes("Rahu")) {
+                rinEffects.push("Stree Rin detected in 2nd House due to presence of Sum/Moon/Rahu");
+             }
+             else if (houses[7].planets.includes("Sun") || houses[7].planets.includes("Moon") || houses[7].planets.includes("Rahu")) {
+                rinEffects.push("Stree Rin detected in 7th House due to presence of Sum/Moon/Rahu");
+             }
+
+             // Dargahi Rin or Nature's Rin
+             if (houses[6].planets.includes("Mars") || houses[6].planets.includes("Moon")) {
+                rinEffects.push("Dargahi Rin detected in 2nd House due to presence of Mars/Moon");
+             }
+        }
+
+
+        function getRemedies(){
+            
+        }
+    });
+</script>
+
+<body>
+<div class="container">
+    <div ng-app="myApp" ng-controller="myCtrl">
+        <div class="select-container">
+            <label for="horoscopename">Enter Name of the Native:</label>
+            <input type="text" id="horoscopename" ng-model="nativeName" />
+            <div class="age-container">
+                <h2></h2>
+                <label for="day">Date of Birth details:</label>
+                <select id="day" ng-model="selectedDay" ng-change="checkName()" ng-options="d for d in days">
+                </select>
+
+                <label for="month">Month:</label>
+                <select id="month" ng-model="selectedMonth" ng-change="checkName()">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+
+                <label for="year">Year:</label>
+                <select id="year" ng-model="selectedYear" ng-change="calculateAge()" ng-options="y for y in years">
+                </select>
+                <br> <br>
+                <!-- <button ng-click="calculateAge()">Calculate Age</button> -->
+
+                <div id="result"></div>
+            </div>
+            <label for="houseDropdown">Choose a house:</label>
+            <select id="houseDropdown" ng-model="selectedHouse" ng-change="checkName()" ng-options="x for x in houses">
+            </select>
+
+            <p>Selected house: <span id="selectedHouse">{{selectedHouse}}</span></p>
+            <label for="planetDropdown">Choose a Planet:</label>
+            <select id="planetDropdown" ng-model="selectedPlanet" ng-options="x for x in planets">
+            </select>
+
+            <p>Selected celestial body: <span id="selectedPlanet">{{selectedPlanet}}</span></p>
+
+            <div>{{selectedPlanet}} {{selectedHouse}}</div>
+            <span>
+                <button ng-click="houseAndPlanetSelected()">Add</button>
+                <button ng-click="removePlanetFromHouse()">Remove</button>
+
+            </span><br><br>
+            <div ng-init="loadHoroscopes()">
+                <label for="Saved Horoscopes">Open a Horoscope:</label>
+                <select id="horoscopesDropdown" ng-model="selectedHoroscope" ng-change="getHoroscope()"
+                    ng-options="x for (x,y) in horoscopes">
+                </select>
+
+            </div>
+			
+
+        </div>
+
+        <div id="horoscope-chart">
+            <span style="align-items: center;">{{nativeName}} Horoscope</span>
+            <img src="https://www.acharyainduprakash.com/blog/wp-content/uploads/2019/03/New-Kundli.png"
+                alt="Indian Horoscope Chart">
+            <span class="house-span" id="house-1">{{horoscope["1"].planets.toString()}}</span>
+			
+			<span class="hide">Colour, Looks, Nature, Caste, Physique, Forehead, Age, Diseases, Success, Reputation, 
+Wealth, Wisdom, Health
+<pre>
+Lord – Mangal 
+Karak Grah – Surya 
+Do Helps To – 5th House 
+Colour, Looks, Nature, Caste, Physique, Forehead, Age, Diseases, Success, Reputation, 
+Wealth, Wisdom, Health etc. 
+Points to learn:- 
+1. If you will find Chandra, Rahu, Budh &amp; Guru together in the first house and Ketu in the 
+7th House, the person will have only 1 child alive. 2nd child will born after 48 and the 
+child will survive. 
+2. If 7th House is vacant, marrying after 24 years of age will improve the luck. 
+3. If enemy of the 1st house is sitting in the 2nd house then it will make the person poor.</pre>
+			</span>
+
+            <span class="house-span" id="house-2">{{horoscope["2"].planets.toString()}}</span>
+			<span class="hide"><pre>Lord – Shukra 
+Karak Grah – Guru 
+Do Helps To – 6th House 
+Family, Mother, Wealth, Food, Mouth, Water, Elder Uncle (Mother’s Elder Brother), Sister, 
+State, Society, etc. 
+Points to learn:- 
+1. Defines old age. 
+2. Show the results of your efforts 
+3. If 2nd & 8th both houses are vacant, the 2nd house is very fruitful. 
+4. If Rahu is there in the 2nd house, the person always rely on Guru. 
+5. If Chandra is sitting in the 4th house, every negativity of the 2nd house gets removed.</pre></span>
+            <span class="house-span" id="house-3">{{horoscope["3"].planets.toString()}}</span>
+			<span class="hide"><pre>Lord – Budh 
+Karak Grah – Mangal 
+Do Helps To – 7th House 
+Younger brother, Younger Sister, Power, Friends, Neighbour, Short Travels, Biceps, Lungs, 
+Hard work, etc. 
+Points to learn:- 
+1. Decides quality of death. 
+2. It is the door of the death. 
+3. Presence of Rahu/Ketu in this house will always give difficult death to the person also 
+early death if 8th house is negative.</pre></span>
+            <span class="house-span" id="house-4">{{horoscope["4"].planets.toString()}}</span>
+			<span class="hide"><pre>Lord – Chandra 
+Karak Grah – Chandra 
+Do Helps To – 8th House 
+Happiness, Prosperity, Mother, Assets, Vehicles, People, Friends, Heart, In laws, etc. 
+Points to learn:- 
+1. Take care of miscarriages. 
+2. Mangal’s and Rahu’s presence in this house is always negative.</pre></span>
+            <span class="house-span" id="house-5">{{horoscope["5"].planets.toString()}}</span>
+			<span class="hide"><pre>Lord – Surya 
+Karak Grah – Guru 
+Do Helps To – 9th House 
+Growth, Sudden Money, Hidden Wealth, Education, Lovers, Children, Stomach, Pregnancy, 
+Betting, Fathers lifeline, Husband of Elder Sister, Exams. 
+Points to learn:- 
+1. Guru & Surya should not be negative anyhow to get the positive results of the house. 
+2. After the birth of child the effects of 5th house gets transferred to the 9th house.</pre></span>
+            <span class="house-span" id="house-6">{{horoscope["6"].planets.toString()}}</span>
+			<span class="hide"><pre>Lord – Budh 
+Karak Grah – Ketu 
+Do Helps To – 10th House 
+Enemies, Injuries, Loan, Diseases, Court cases, Turbulences, Uncle (Mother’s Younger 
+Brother), Stomach, Father’s Luck, Children’s Wealth 
+Points to learn:- 
+1. Vacant 6th house is always good. 
+2. While doing the prediction of this house always concentrate on 6th and 8th house as they 
+are always related.</pre></span>
+            <span class="house-span" id="house-7">{{horoscope["7"].planets.toString()}}</span>
+			<span class="hide"><pre>Lord – Shukra 
+Karak Grah – Shukra 
+Do Helps To – 11th House 
+Partnership, Life partner, Sperm count, Lust, Niece, Nephew, etc. 
+Points to learn:- 
+1. 7th house never watches any house. 
+2. 1st House always watches 7th house. 
+3. Combination of Shukra & budh in this house will strengthen the Shani and person 
+definitely becomes rich after marriage. </pre></span>
+            <span class="house-span" id="house-8">{{horoscope["8"].planets.toString()}}</span>
+			<span class="hide"><pre>Lord – Mangal 
+Karak Grah – Shani 
+Do Helps To – 12th House 
+Lifeline, Efforts, Testicles Problems, Sudden Money, Sea Traveling, Lottery, Sexual 
+Disorders, Spouses Wealth, etc. 
+Points to learn:- 
+1. Presence of Surya, Mangal and Guru in this house will eliminates its nature of death 
+house. 
+2. Presence of Rahu, Ketu or Shukra in the house will attract the person towards tantra
+mantra, jadu-tona or bhoot prakriya. </pre>
+</span>
+            <span class="house-span" id="house-9">{{horoscope["9"].planets.toString()}}</span>
+			<span class="hide"><pre>Lord – Guru 
+Karak Grah – Guru 
+Do Helps To – 1st House 
+Luck, Religion, Higher education, Samadhi, Donations, etc. 
+Points to learn:- 
+1. Entire luck is determined by this house.</pre></span>
+            <span class="house-span" id="house-10">{{horoscope["10"].planets.toString()}}</span>
+			<span class="hide"><pre>Lord – Shani 
+Karak Grah – Shani 
+Get Help From – 2nd House 
+Karma, Father, Business, Government Job, Knees, Mother-in-law, etc. 
+Points to learn:- 
+1. If the Sun is in the 10th house and moon is in the 5th house the native will have very short 
+life 
+2. If the Sun is in the 10th house and 4th house is vacant the native will be deprived of 
+Government favours and benefits 
+3. Jupiter in the 10th house and Venus & Mars in the 4th house ensure multi marriages for 
+the native 
+4. Venus in the 10th house bring the native under the control & guidance of spouse</pre></span>
+            <span class="house-span" id="house-11">{{horoscope["11"].planets.toString()}}</span>
+			<span class="hide"><pre>Lord – Shani 
+Karak Grah – Guru 
+Do Helps To – 3rd House 
+Income through Business & Work, Contractor, Son-in-law, Daughter-in-law, Benefits, 
+Jewelleries, Elder Brother, Injuries, Calves, etc. 
+Points to learn:- 
+1. Rahu/Ketu & Shani in 3rd, 5th, 9th and 11th house increase the power of this house. 
+2. Presence of Guru’s friends (Surya, Chandra or Mangal) in 3rd house makes 11th house 
+more powerful. 
+3. If 1st and 3rd house is vacant than we will not get complete benefit of 11th house. 
+4. If planet in the 8th house is the enemy of the planet in the 11th house or vice versa then 
+don’t bring the things belongs to the planet of the 11th house. 
+5. Positive 9th house + Positive 11th house = Extremely Positive 2nd house.</pre></span>
+            <span class="house-span" id="house-12">{{horoscope["12"].planets.toString()}}</span>
+			<span class="hide"><pre>Lord – Guru 
+Karak Grah – Rahu 
+Do Helps To – 4th House 
+Expenses, Donation, Losses, Moksh, Compromises, Aunt, Ankles & Knees, Sleep, Dreams 
+Concentration Power, Uncle (Father’s Brother), Aunt (Father’s Sister), etc. 
+Points to learn:- 
+1. Also determines your level of sleep. 
+2. Planet sitting in this house will give the happiness and relaxation from the person 
+belonging to that planet. If Ketu is sitting in the house, the person will get happiness and 
+relaxation from Son as Ketu belongs to Son.</pre></span>
+
+        </div>
+        <div id="varshphal-horoscope-chart" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
+            <span style="align-items: center;">{{nativeName}} Varshphal Horoscope</span><span> Age: {{ varshphalAge }}
+            </span>
+            <img src="https://www.acharyainduprakash.com/blog/wp-content/uploads/2019/03/New-Kundli.png"
+                alt="Indian Varshphal Horoscope Chart">
+            <span class="house-span" id="house-1">{{varshphalChart["1"].planets.toString()}}</span>
+            <span class="house-span" id="house-2">{{varshphalChart["2"].planets.toString()}}</span>
+            <span class="house-span" id="house-3">{{varshphalChart["3"].planets.toString()}}</span>
+            <span class="house-span" id="house-4">{{varshphalChart["4"].planets.toString()}}</span>
+            <span class="house-span" id="house-5">{{varshphalChart["5"].planets.toString()}}</span>
+            <span class="house-span" id="house-6">{{varshphalChart["6"].planets.toString()}}</span>
+            <span class="house-span" id="house-7">{{varshphalChart["7"].planets.toString()}}</span>
+            <span class="house-span" id="house-8">{{varshphalChart["8"].planets.toString()}}</span>
+            <span class="house-span" id="house-9">{{varshphalChart["9"].planets.toString()}}</span>
+            <span class="house-span" id="house-10">{{varshphalChart["10"].planets.toString()}}</span>
+            <span class="house-span" id="house-11">{{varshphalChart["11"].planets.toString()}}</span>
+            <span class="house-span" id="house-12">{{varshphalChart["12"].planets.toString()}}</span>
+        </div>
+        <div class="result-container">
+            <span class="lagnaCtrl">
+                <span><button ng-click="getHouseStatus()">Predict House Status</button></span>
+                <span><button ng-click="saveHoroscope('Lagna')">Save</button></span>
+                <span><button ng-click="deleteHoroscope()">Remove Horoscope</button></span>
+                <span><button ng-click="reset()">Reset</button></span>
+
+            </span>
+            <span class="varshphalCtrl" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
+                <button ng-click="prevVarshphal()">
+                    < Previous Age</button>
+                        <button ng-click="saveHoroscope('Varshphal')">Save Varshaphal</button>
+                        <button ng-click="nextVarshphal()"> Next Age ></button>
+            </span>
+            <p> Melefic Houses : <span id="M"></span></p>
+            <p> Benefic Houses : <span id="B"></span></p>
+            <p> Neutral Benific Houses : <span id="NB"></span></p>
+            <p> Neutral Malefic Houses : <span id="NM"></span></p>
+            <p> Malefic Planets : <span id="MP"></span></p>
+            <p> Benefic Planets : <span id="BP"></span></p>
+            <p> Neutral Planets : <span id="NP"></span></p>
+            <p> Vakri drishti : <span id="VD"></span></p>
+        </div>
+        <div class="outer" ng-show="toggleMessage">
+            <div class="popup">
+                <h2>{{message}}</h2>
+                <br />
+                <button id="closebtn" ng-click="toggleMessage = !toggleMessage">Close</button>
+            </div>
+        </div>
+		</div>
+    </div>
+	</div>
+</body>
+
+</html>
