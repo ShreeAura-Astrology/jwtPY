@@ -35,6 +35,17 @@ def main(context):
         # Use res object to respond with text(), json(), or binary()
         # Don't forget to return a response!
         return context.res.text("Pong")
+    
+    # The req object contains html the request data
+    if context.req.path == "/horoscope":
+        # Use res object to respond with text(), json(), or binary()
+        # Don't forget to return a response!
+        # Read the private key
+        with open('/usr/local/server/src/function/src/horoscope.html', 'r') as html_file:
+            html = html_file.read()
+        return context.res.text(html, 200, {
+            "content-type": "text/html"
+        })
     # Example usage
     private_key_path = '/usr/local/server/src/function/src/private.key'  
     iat = time.time()
