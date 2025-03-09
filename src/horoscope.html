@@ -402,7 +402,7 @@ console.log('Successfully Refreshed Access Token:', response.data);
 }
         var accessToken = "ya29.a0ARW5m74JFWfhtaXGh7tqpBuwey1N41fzYVRkTsrV7e3A6pGVCJ8bOMSdNKt4nvDJUhI__E8unXwr3c3VuLsiXF8W46DbfUM08VCqzxvNG42pdy511LSBPmUyTRfeSXXuTA4TX3sTj_8mbE0q1qXdT5KCHZbpMEUlw-CxaOW8aCgYKAcsSARESFQHGX2Miiw7vi40oV2Qpm33m2HcEnQ0175";
 		$scope.saveKundali = function(horoscopeInfo){
-		const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/A2:B2?valueInputOption=RAW';
+		const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/A2:B2??key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc&valueInputOption=RAW';
         const data = {
 					  "values": [
 						[
@@ -463,7 +463,7 @@ console.log('Successfully Refreshed Access Token:', response.data);
           'Authorization': 'Bearer ' + accessToken,
         }
       };
-	   const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/B2';
+	   const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/B2?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc';
 	   $http.get(url, config).then(function(response1) {
           console.log(chartType + ' Get Kundali Response:', response1.data.values[0][0]);
 			$scope.StorageHoroscope = JSON.parse(response1.data.values[0][0]);
