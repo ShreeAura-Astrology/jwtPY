@@ -4,7 +4,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 <style>
-
     body {
         zoom: 80%;
     }
@@ -18,60 +17,63 @@
         transform: translate(-50%, -50%);
     }
 
-   /* Styles for desktops */
-@media only screen and (min-width: 1025px) {
-    
+    /* Styles for desktops */
+    @media only screen and (min-width: 1025px) {
 
-    .container {
-        padding: 30px;
-    }
 
-    .header {
-        font-size: 2.5em;
-    }
- #varshphal-horoscope-chart {
-        position: absolute;
-        width: 500px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        top: 15%;
-         left: 80%;
-        transform: translate(-50%, -50%);
-    }
+        .container {
+            padding: 30px;
+        }
 
-.result-container {
-    position: absolute;
-    top: 29%;
-    left: 22%;
-    }
-}
+        .header {
+            font-size: 2.5em;
+        }
 
-/* Styles for mobile devices */
-@media only screen and (max-width: 767px) {
-    body {
-        background-color: lightblue;
+        #varshphal-horoscope-chart {
+            position: absolute;
+            width: 500px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            top: 15%;
+            left: 80%;
+            transform: translate(-50%, -50%);
+        }
+
+        .result-container {
+            position: absolute;
+            top: 29%;
+            left: 22%;
+        }
     }
 
-    .container {
-        padding: 10px;
-    }
+    /* Styles for mobile devices */
+    @media only screen and (max-width: 767px) {
+        body {
+            background-color: lightblue;
+        }
 
-    .header {
-        font-size: 1.5em;
+        .container {
+            padding: 10px;
+        }
+
+        .header {
+            font-size: 1.5em;
+        }
+
+        #varshphal-horoscope-chart {
+            position: absolute;
+            width: 500px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            top: 25%;
+            left: 40%;
+            transform: translate(-50%, -50%);
+        }
+
+        .result-container {
+            position: absolute;
+            top: 50%;
+            left: 26%;
+        }
     }
- #varshphal-horoscope-chart {
-        position: absolute;
-        width: 500px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        top: 25%;
-        left: 40%;
-        transform: translate(-50%, -50%);
-    }
- .result-container {
-        position: absolute;
-        top: 50%;
-        left: 26%;
-    }
-}
 
     .house-span {
         position: absolute;
@@ -236,7 +238,7 @@
         margin-left: 2%;
     }
 
-    
+
 
 
     .varshphalCtrl {
@@ -264,253 +266,253 @@
         z-index: 1;
         background-color: rgb(0 0 0 / 82%);
     }
-	
-	.hide {
-         display: none;
-    position: absolute;
-    margin-top: 365px;
-    margin-left: 265px;
-    background: #494646;
-    padding: 33px;
-    color: #FFC107;
-    font-size: 20px;
-    border-radius: 15px;
-}
 
-   
-#house-1:hover + .hide {
-  display: block;
-  color: white;
-}
-
-#house-2:hover + .hide {
-  display: block;
- color: white;
-}
-
-#house-3:hover + .hide {
-  display: block;
-color: white;
-}
-
-#house-4:hover + .hide {
-  display: block;
-  color: white;
-}
-
-#house-5:hover + .hide {
-  display: block;
-  color: white;
-}
-
-#house-6:hover + .hide {
-  display: block;
-  color: white;
-}
-
-#house-7:hover + .hide {
-  display: block;
-  color: white;
-}
-
-#house-8:hover + .hide {
-  display: block;
-  color: white;
-}
-
-#house-9:hover + .hide {
-  display: block;
-  color: white;
-}
+    .hide {
+        display: none;
+        position: absolute;
+        margin-top: 365px;
+        margin-left: 265px;
+        background: #494646;
+        padding: 33px;
+        color: #FFC107;
+        font-size: 20px;
+        border-radius: 15px;
+    }
 
 
-#house-10:hover + .hide {
-  display: block;
-  color: white;
-}
+    #house-1:hover+.hide {
+        display: block;
+        color: white;
+    }
+
+    #house-2:hover+.hide {
+        display: block;
+        color: white;
+    }
+
+    #house-3:hover+.hide {
+        display: block;
+        color: white;
+    }
+
+    #house-4:hover+.hide {
+        display: block;
+        color: white;
+    }
+
+    #house-5:hover+.hide {
+        display: block;
+        color: white;
+    }
+
+    #house-6:hover+.hide {
+        display: block;
+        color: white;
+    }
+
+    #house-7:hover+.hide {
+        display: block;
+        color: white;
+    }
+
+    #house-8:hover+.hide {
+        display: block;
+        color: white;
+    }
+
+    #house-9:hover+.hide {
+        display: block;
+        color: white;
+    }
 
 
-#house-11:hover + .hide {
-  display: block;
-  color: white;
-}
+    #house-10:hover+.hide {
+        display: block;
+        color: white;
+    }
 
 
-#house-12:hover + .hide {
-  display: block;
-  color: white;
-}
+    #house-11:hover+.hide {
+        display: block;
+        color: white;
+    }
 
 
+    #house-12:hover+.hide {
+        display: block;
+        color: white;
+    }
 </style>
 <script>
     var app = angular.module('myApp', []);
-	var newRefreshToken = "";
+    var newRefreshToken = "";
     app.controller('myCtrl', function ($scope, $http) {
-		
-$scope.refreshAccessToken = function(chartType){
-$http.get('https://67bf6bd0da25caced8fb.appwrite.global/').then(function(response) {
-console.log('Successfully Refreshed Access Token:', response.data);
-		  accessToken = response.data.token;
-		  newRefreshToken = response.data.assertion;
-		  $scope.pullPushHoroscope(chartType);
-        })
-        .catch(function(error) {
-          console.error('Error in refreshing access token :', error);
-        });
+
+        $scope.refreshAccessToken = function (chartType) {
+            $http.get('https://67bf6bd0da25caced8fb.appwrite.global/').then(function (response) {
+                console.log('Successfully Refreshed Access Token:', response.data);
+                accessToken = response.data.token;
+                newRefreshToken = response.data.assertion;
+                $scope.pullPushHoroscope(chartType);
+            })
+                .catch(function (error) {
+                    console.error('Error in refreshing access token :', error);
+                });
 
 
-}
-		$scope.refreshAccessTokenz = function(chartType){
+        }
+        $scope.refreshAccessTokenz = function (chartType) {
 
-		var postData = {
-		"client_id":"174274796007-75qmckk51irgj0eentqr7armskkle9qo.apps.googleusercontent.com",
-        "client_secret":"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",
-        "grant_type":"refresh_token",
-"refresh_token":newRefreshToken
-		}
-		 $http.post('https://oauth2.googleapis.com/token', formEncode(postData),{headers:{
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-       }})
-    .then(function(response) {
-          console.log('Successfully Refreshed Access Token:', response.data);
-		  accessToken = response.data.access_token;
-		  newRefreshToken = response.data.refresh_token;
-		  $scope.pullPushHoroscope(chartType);
-        })
-        .catch(function(error) {
-          console.error('Error in refreshing access token :', error);
-        });
-	
-	
-	//.success(function(data) {
-        //do stuff with response
-    //});
-		
-		}
-		
-		function formEncode(obj) {
-    var encodedString = '';
-    for (var key in obj) {
-        if (encodedString.length !== 0) {
-              encodedString += '&';
+            var postData = {
+                "client_id": "174274796007-75qmckk51irgj0eentqr7armskkle9qo.apps.googleusercontent.com",
+                "client_secret": "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",
+                "grant_type": "refresh_token",
+                "refresh_token": newRefreshToken
+            }
+            $http.post('https://oauth2.googleapis.com/token', formEncode(postData), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                }
+            })
+                .then(function (response) {
+                    console.log('Successfully Refreshed Access Token:', response.data);
+                    accessToken = response.data.access_token;
+                    newRefreshToken = response.data.refresh_token;
+                    $scope.pullPushHoroscope(chartType);
+                })
+                .catch(function (error) {
+                    console.error('Error in refreshing access token :', error);
+                });
+
+
+            //.success(function(data) {
+            //do stuff with response
+            //});
+
         }
 
-        encodedString += key + '=' + encodeURIComponent(obj[key]);
-    }
-    return encodedString.replace(/%20/g, '+');
-}
+        function formEncode(obj) {
+            var encodedString = '';
+            for (var key in obj) {
+                if (encodedString.length !== 0) {
+                    encodedString += '&';
+                }
+
+                encodedString += key + '=' + encodeURIComponent(obj[key]);
+            }
+            return encodedString.replace(/%20/g, '+');
+        }
         var accessToken = "ya29.a0ARW5m74JFWfhtaXGh7tqpBuwey1N41fzYVRkTsrV7e3A6pGVCJ8bOMSdNKt4nvDJUhI__E8unXwr3c3VuLsiXF8W46DbfUM08VCqzxvNG42pdy511LSBPmUyTRfeSXXuTA4TX3sTj_8mbE0q1qXdT5KCHZbpMEUlw-CxaOW8aCgYKAcsSARESFQHGX2Miiw7vi40oV2Qpm33m2HcEnQ0175";
-		$scope.saveKundali = function(horoscopeInfo){
-		const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/A2:B2?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc&valueInputOption=RAW';
-        const data = {
-					  "values": [
-						[
-						  newRefreshToken,
-						  horoscopeInfo
-						]
-					  ]
-					};
+        $scope.saveKundali = function (horoscopeInfo) {
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/A2:B2?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc&valueInputOption=RAW';
+            const data = {
+                "values": [
+                    [
+                        newRefreshToken,
+                        horoscopeInfo
+                    ]
+                ]
+            };
 
-		  const config = {
-			headers: {
-			  'Authorization': 'Bearer ' + accessToken,
-			  'Content-Type': 'application/json'
-			}
-		  };
+            const config = {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Content-Type': 'application/json'
+                }
+            };
 
-      $http.put(url, data, config)
-        .then(function(response) {
-          console.log('Success:', response.data);
-		  console.log('saveKundali Data',horoscopeInfo);
-		  $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
-          $scope.toggleMessage = true;
-		  $scope.getKundali();
-        })
-        .catch(function(error) {
-          console.error('Error:', error);
-        });
-		
-		}
-		
-		$scope.getKundali = function(){
-		const config = {
-			headers: {
-			  'Authorization': 'Bearer ' + accessToken
-			}
-		};
-	   const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/A2:B2?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc';
-		$http.get(url).then(function(response) {
-          console.log('Success:', response.data);
-		  newRefreshToken = response.data.values[0][0];
-		  $scope.horoscopes = JSON.parse(response.data.values[0][1]);
-          console.log(Object.keys($scope.horoscopes).length + ' Horoscopes loaded.');
-		  console.log("Refresh_Token:" + newRefreshToken);
-		  $scope.message = 'Loaded Horoscope for ' + Object.keys($scope.horoscopes).length;
-		  $scope.toggleMessage = true;
-        })
-        .catch(function(error) {
-          console.error('Error:', error);
-        });
-		}
-		
-		
-		$scope.pullPushHoroscope = function(chartType){
-		var getData;
-		var putData;
-		const config = {
-        headers: {
-          'Authorization': 'Bearer ' + accessToken,
+            $http.put(url, data, config)
+                .then(function (response) {
+                    console.log('Success:', response.data);
+                    console.log('saveKundali Data', horoscopeInfo);
+                    $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
+                    $scope.toggleMessage = true;
+                    $scope.getKundali();
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+
         }
-      };
-	   const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/B2?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc';
-	   $http.get(url, config).then(function(response1) {
-          console.log(chartType + ' Get Kundali Response:', response1.data.values[0][0]);
-			$scope.StorageHoroscope = JSON.parse(response1.data.values[0][0]);
-			console.log($scope.StorageHoroscope,$scope.nativeName);
-                    if (chartType == 'Lagna') {
-					$scope.StorageHoroscope[$scope.nativeName] = {};
-                        $scope.StorageHoroscope[$scope.nativeName] = {
-                            "name": $scope.nativeName,
-                            "horoscope": $scope.horoscope,
-                            "date": (new Date()).toDateString(),
-                            "day": $scope.selectedDay,
-                            "month": $scope.selectedMonth,
-                            "year": $scope.selectedYear,
-                            "charttype": "Lagna"
-                        };
+
+        $scope.getKundali = function () {
+            const config = {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            };
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/A2:B2?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc';
+            $http.get(url).then(function (response) {
+                console.log('Success:', response.data);
+                newRefreshToken = response.data.values[0][0];
+                $scope.horoscopes = JSON.parse(response.data.values[0][1]);
+                console.log(Object.keys($scope.horoscopes).length + ' Horoscopes loaded.');
+                console.log("Refresh_Token:" + newRefreshToken);
+                $scope.message = 'Loaded Horoscope for ' + Object.keys($scope.horoscopes).length;
+                $scope.toggleMessage = true;
+            })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        }
+
+
+        $scope.pullPushHoroscope = function (chartType) {
+            var getData;
+            var putData;
+            const config = {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                }
+            };
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/B2?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc';
+            $http.get(url, config).then(function (response1) {
+                console.log(chartType + ' Get Kundali Response:', response1.data.values[0][0]);
+                $scope.StorageHoroscope = JSON.parse(response1.data.values[0][0]);
+                console.log($scope.StorageHoroscope, $scope.nativeName);
+                if (chartType == 'Lagna') {
+                    $scope.StorageHoroscope[$scope.nativeName] = {};
+                    $scope.StorageHoroscope[$scope.nativeName] = {
+                        "name": $scope.nativeName,
+                        "horoscope": $scope.horoscope,
+                        "date": (new Date()).toDateString(),
+                        "day": $scope.selectedDay,
+                        "month": $scope.selectedMonth,
+                        "year": $scope.selectedYear,
+                        "charttype": "Lagna"
+                    };
+                }
+                else {
+                    $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {};
+                    $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
+                        "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge,
+                        "horoscope": $scope.varshphalChart,
+                        "date": (new Date()).toDateString(),
+                        "day": $scope.selectedDay,
+                        "month": $scope.selectedMonth,
+                        "year": $scope.selectedYear,
+                        "charttype": "Varshphal"
+                    };
+                }
+                console.log($scope.StorageHoroscope);
+                //localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+                $scope.saveKundali(JSON.stringify($scope.StorageHoroscope));
+                //alert('Saved Horoscope for ' + $scope.nativeName);
+                $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
+                $scope.toggleMessage = true;
+                // Second API Call after the first completes
+                // return $http.put(purl, pdata, pconfig);
+            })
+                .catch(function (error) {
+                    console.error('Error in API calls:', error);
+                    if (error.status == '401') {
+                        console.log("Attempting to refresh the Access Token");
+                        $scope.refreshAccessToken(chartType);
+
                     }
-                    else {
-					$scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {};
-                        $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
-                            "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge,
-                            "horoscope": $scope.varshphalChart,
-                            "date": (new Date()).toDateString(),
-                            "day": $scope.selectedDay,
-                            "month": $scope.selectedMonth,
-                            "year": $scope.selectedYear,
-                            "charttype": "Varshphal"
-                        };
-						}
-						console.log($scope.StorageHoroscope);
-						//localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
-						$scope.saveKundali(JSON.stringify($scope.StorageHoroscope));
-                        //alert('Saved Horoscope for ' + $scope.nativeName);
-                        $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
-                        $scope.toggleMessage = true;
-          // Second API Call after the first completes
-         // return $http.put(purl, pdata, pconfig);
-        })
-        .catch(function(error) {
-          console.error('Error in API calls:', error);
-		  if(error.status == '401'){
-			console.log("Attempting to refresh the Access Token");
-			$scope.refreshAccessToken(chartType);
-			
-		  }
-        });
-		
-		}
+                });
+
+        }
         var varshphalHouses = {
             "1": {
                 "status": "N",
@@ -659,6 +661,7 @@ console.log('Successfully Refreshed Access Token:', response.data);
                 "planets": []
             }
         };
+        var predictions = [];
         var rinEffects = [];
         var maleficPlanets = [];
         var beneficPlanets = [];
@@ -691,47 +694,65 @@ console.log('Successfully Refreshed Access Token:', response.data);
             "Sun": {
                 "houses": [1],
                 "friends": ["Moon", "Jupiter", "Mars"],
-                "enemies": ["Venus", "Saturn","Rahu","Ketu"]
+                "enemies": ["Venus", "Saturn", "Rahu", "Ketu"],
+                "uch": [1],
+                "neech": [7]
             },
             "Jupiter": {
                 "houses": [2, 5, 9, 11],
                 "friends": ["Sun", "Moon", "Mars"],
-                "enemies": ["Mercury", "Venus","Rahu"]
+                "enemies": ["Mercury", "Venus", "Rahu"],
+                "uch": [4],
+                "neech": [10]
             },
             "Mars": {
                 "houses": [3],
                 "friends": ["Sun", "Moon", "Jupiter"],
-                "enemies": ["Mercury", "Ketu"]
+                "enemies": ["Mercury", "Ketu"],
+                "uch": [10],
+                "neech": [4]
             },
             "Moon": {
                 "houses": [4],
                 "friends": ["Sun", "Mercury"],
-                "enemies": ["Rahu", "Ketu"]
+                "enemies": ["Rahu", "Ketu"],
+                "uch": [2],
+                "neech": [8]
             },
             "Ketu": {
                 "houses": [6],
                 "friends": ["Venus", "Rahu"],
-                "enemies": ["Sun", "Moon", "Mars"]
+                "enemies": ["Sun", "Moon", "Mars"],
+                "uch": [9],
+                "neech": [3, 12]
             },
             "Venus": {
                 "houses": [7],
                 "friends": ["Mercury", "Saturn", "Ketu"],
-                "enemies": ["Sun", "Moon", "Rahu"]
+                "enemies": ["Sun", "Moon", "Rahu"],
+                "uch": [12],
+                "neech": [6]
             },
             "Saturn": {
                 "houses": [8, 10],
                 "friends": ["Mercury", "Venus", "Rahu"],
-                "enemies": ["Sun", "Moon", "Mars"]
+                "enemies": ["Sun", "Moon", "Mars"],
+                "uch": [7],
+                "neech": [1]
             },
             "Rahu": {
                 "houses": [12],
                 "friends": ["Mercury", "Saturn", "Ketu"],
-                "enemies": ["Sun", "Moon", "Mars", "Venus"]
+                "enemies": ["Sun", "Moon", "Mars", "Venus"],
+                "uch": [3, 6],
+                "neech": [9]
             },
             "Mercury": {
                 "houses": [0],
-                "friends": ["Sun", "Venus","Rahu"],
-                "enemies": ["Moon"]
+                "friends": ["Sun", "Venus", "Rahu"],
+                "enemies": ["Moon"],
+                "uch": [6],
+                "neech": [12]
             }
         };
 
@@ -980,6 +1001,354 @@ console.log('Successfully Refreshed Access Token:', response.data);
             "119": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 7, "6": 5, "7": 11, "8": 2, "9": 9, "10": 4, "11": 1, "12": 3 },
             "120": { "1": 6, "2": 8, "3": 7, "4": 12, "5": 2, "6": 3, "7": 5, "8": 4, "9": 11, "10": 1, "11": 9, "12": 10 }
         };
+
+        var planetInHouses = {
+            "1": {
+                "Jupiter": {
+                    "effects": "ghar ke saamne Sundar teacher / consultant hoga<br> Jupiter gets activated when native is well educated<br> best if studied in govt school/ college ( at least one year) if study left in half, Jupiter kharaab ho jaata hai<br>( also first house becomes bad) remedy - take up a course in govt school or institute<br> when these people bless others it always comes true, but if they curse others it back fires to them badly<br> native is beautiful can be a consultant <br> ",
+                    "remedy": "wear silver in nose ( spetum peirce with pure chandi ka tar) no sterling silver"
+                },
+                "Ketu": {
+                    "effects": "native ka birth apne ghar mein nai hota, eg : nani house mein birth hoga ya ghar se door hoga<br> <br>band gali ya gali ke aakhri gahr mein rehna mana hai <br>apne ghar dog nai paalna, bahar ke kutte ki seva acha result dega<br> <br>after marriage of native, father ko pareshaani aati hai<br> <br>aise insaan ko govt se connection ya govt job pasand hai, but will get only if the native is a vegetarian <br>health, name, fame issues aate hain <br>father se doori bani hoti hai, strained relations with father ",
+                    "remedy": "wear a gold chain in neck"
+                },
+                "Mars": {
+                    "effects": "insaaf ki talwaar – very honest, never dishonest<br> bold, progress after 28 years of life, looks like a body builder<br> ek brother ki isske pehle death hui hoti hai, or else not settled in life<br> mostly all family responsibility is on this person should take responsibility else badresults of first house ",
+                    "remedy": "cow ki seva karo"
+                },
+                "Mercury": {
+                    "effects": "choti umar mein laanchan lagti hai<br> headstrong, good in mathematics apni chalane wala<br> business minded, talkative, samajhdaar<br> highly dominating<br> <br>apni wisdom aur talent se kamata hai<br> <br>mostly 1st child is a female of the native<br> <br>avoid egg, alcohol and non veg completely<br> ( if mind or brain related issues) ",
+                    "remedy": "ek jagah baith ke kaam kare, if any issues - avoid eggs"
+                },
+                "Moon": {
+                    "effects": "jitna gyaan mile acha, knowledge ke liye very good placement<br> education mein lagaye hue paise ka worth milta hai<br> yeh native maangi hui aulaad hoti hai, iske birth ke pehle iske kissi sibling ki death hui hoti hai ya mother ka abortion hua hota hai<br> kuch bhi free mein nai lena chaiye loves to take bath, loves to be by himself<br> maa jab tak hai, dhan daulat ka malik hoga<br> ( if mom is no more wear silver chain) ",
+                    "remedy": "do not marry bet age of 24 – 27 yrs"
+                },
+                "Rahu": {
+                    "effects": "bad results here<br> never do work with in laws<br> regular headaches, chakkar aate hain<br>   dimaagi fitoor hota hai<br>  (they want more and more ) sab kuch hote hue, unhappy <br>har kaam mein adhanga aaata hai<br> <br>native ko kissi ki help nehi milti<br> <br>ganje ko kanghi bech aaega<br>  chalaak n tez hota hai<br>  worst if placed with Sun, will get financial ups and downs<br> ",
+                    "remedy": "keep silver solid elephant at home"
+                },
+                "Saturn": {
+                    "effects": "tensions, health issues, low immunity, govt related problems, issues with father/boss, respect issues, financial problems<br> the results of Saturn depends on Rahu and Ketu toota hua makaan negative shani ki nishaani break in education<br> sar par chot lagi hui hoti hai, with stiches<br> gareebi dega band galli ka makaan hota hai<br> ( dead end mein ghar hota hai) ",
+                    "remedy": "never stay in a west facing home feed crow with roti"
+                },
+                "Sun": {
+                    "effects": "yogi, hukumat karne wala, owns house<br> dominating, angry natured, reeti rivaaj nibhane wala, apni mehnat se ameer banta hai<br> face pe tej hoga<br> dharam ka paalan karne se surya ke ache results milenge<br> anyone taking or giving bribe, weakens Sun<br> follow ur rituals for good results ",
+                    "remedy": "rishwat nai lena"
+                },
+                "Venus": {
+                    "effects": "music and arts lover, Sundar & tez wife<br> owner of luxury car, loves being up to date<br> modelling and photography ka shaukeen<br> loves drinking beer<br> loves comfort life <br> they like helping others ",
+                    "remedy": "stop eating gud"
+                }
+            },
+            "11": {
+                "Jupiter": {
+                    "effects": "father in law ki early death hoti hai, ya father in law ka sukh nai milta<br> ghar ke aas paas bada sa temple/ worship place hota hai<br> ghar se door jaakr death hoti hai, never near the house<br> jealous kind of nature hoti hai ",
+                    "remedy": "copper ki bangle pehne "
+                },
+                "Ketu": {
+                    "effects": "logon  se  saamne  apni  problem zyada  describe  karte  hain  ",
+                    "remedy": "11 days 11 mooli donate "
+                },
+                "Mars": {
+                    "effects": "ghar ke aas paas community hall hoga<br>  ghar mein koi doctor hoga taya ki aulaad taraskar hoti hai, ya taaya apni aulaad se pareshaan hota hai<br> high position in job or business<br> ",
+                    "remedy": "offer roti to crow "
+                },
+                "Mercury": {
+                    "effects": "ghar ke aas paas broad leaves wali trees hoti hain<br> initial 35 years full of wrong decision making, 34th year is very difficult<br> here Mercury results depends on Jupiter, if good then Mercury good ",
+                    "remedy": "wear a copper coin in neck "
+                },
+                "Moon": {
+                    "effects": "either fully educated or completely anpadh<br> khule dil ka nai hota<br> (controlled talks) daadi aur pote ka jhagda rehta hai<br> ghar ke aas paas badi aur famous aate ki chakki hoti hai<br> ",
+                    "remedy": "11 units milk bhairon temple pe chadhao after Sunset only once "
+                },
+                "Rahu": {
+                    "effects": "dad aur pote ka jhagda rehta hai<br> ghar ke aas paas koi handicapped person rehta hai, ya jiska ang bhang hua ho<br>  ghar mein kissi ke pairon mein rod lagi hoti hai, ya koi na koi nuksaan hota hai<br>  sarkaari jurmaane lagte rehte hain<br> ",
+                    "remedy": "donate to sweeper "
+                },
+                "Saturn": {
+                    "effects": "if eats non veg – male child nai hoga<br>  ghar ka main gate toota hua hota hai<br>  apna bhagya khud likhta hai  if shani bad results ghar hospital ban jaega<br> if oldage parents is sick and hospital set at home shani karab ho jata hai best if does max dharam pooja path<br> ",
+                    "remedy": "saturday ko no kirtan or jagran<br> by self or others in family  "
+                },
+                "Sun": {
+                    "effects": "native ki nanke parivaar mein kissi ki aankh kharaab hoti hai<br> zubaan ka chaska hota hai<br> aish pasand insaan hota hai<br> dharmic, pooja path karne wala<br> will progress if doesn’t have alcohol and non veg<br> ",
+                    "remedy": "almonds, shalgam, mooli patte samet apne paas rakhien in morn mein dan kar dein – for health n santaan "
+                },
+                "Venus": {
+                    "effects": "runs behind money lifetime<br>  Sundar native, bhola nature<br> wife looks bholi bahli, andar se very clever<br> late child conception hota hai<br> good finance<br>  shani ke saare gunn aa jaenge,  patience well disciplined ",
+                    "remedy": "have fish oil capsules "
+                }
+            },
+            "12": {
+                "Jupiter": {
+                    "effects": " bure ka bhi bhala karta hai – sadhu swabhaav n gyaani person<br> ( likes mehman nawazi) kissi bade sansthaan se connected hote hain, ya wahaan ke trustee hote hai<br> ghar ke paas bada tuition centre hota hai<br> aise insaan ke peeche khud dhan bhaag kar aata hai<br> ghar mein dher saara gangajal hota hai<br> ",
+                    "remedy": "sadhu fakir ko jitna help utna better "
+                },
+                "Ketu": {
+                    "effects": "jitna native aish se rehe, ghoome phire utne ache result of Ketu<br> foreign ka result abhut acha hota hai kabhi kissi beaulaad insaan se property nai khareedni chaiye bada bhai, taya ya mama teeno mein se ek struggling hota hai apna hi beta taarega ",
+                    "remedy": "if child nai ho raha, dip thumb in milk and suck it 43 times everyday for 43 days "
+                },
+                "Mars": {
+                    "effects": "inki oonchi awaaz se saamne wala poora dab jata hai, sasural wale dab ke rehte hain<br>  (daba bol wale lo), very loud very hot headed, apni man marzi chalata hai<br> padosi security wale hote hain, ya unke paas gun hoti hai<br> ",
+                    "remedy": "avoid red cap/ pagdi "
+                },
+                "Mercury": {
+                    "effects": "ghar ke chatt pe kabaad hota hai,  gandagi / khai padi hoti hai<br>  bimar, stress, fights in house always<br> ups and downs in life<br> ",
+                    "remedy": "visit temple regularly "
+                },
+                "Moon": {
+                    "effects": " samajhdaar but gadbad karne wala<br> ( ek problemm jaega phir aega)  ya aisi lady jo bahut jhagdalu hoti hai<br> bina padhe likhe ameer insaan<br> stock market mein invest nai karna chaiye          ( even if Rahu is good) log is native se kaafi jealous feel karte hain<br> kamaya hua dhan barbaad hota hai<br> ",
+                    "remedy": "keep rain water on terrace "
+                },
+                "Rahu": {
+                    "effects": "pados mein koi na koi bahut late marriage ka case hota hai, after 35 ( aaj k tme mein 40) ki shaadi<br> diya hua udhaar doob jaati hai<br> sleep issues<br>  extra expenses,  foreign travel  ",
+                    "remedy": "don’t work with in laws if Rahu is bad<br> eat in kitchen "
+                },
+                "Saturn": {
+                    "effects": "ghar ke nazdeek railway track hoga, ya native ka birth railway track ke nazdeek hua hoga, ya family ke kissi member ka conncetion railway se hoga<br>  apna ghar adhoora sa bana hua hota hai<br>  family members generally pareshaan hote hain<br> kissi family member ki continuos medicines chalti hain, lambi bimaari hoti hai eg dialysis<br> divine help milti hai<br>  ghar ke end mein andhera hota hai – good results of shani will face major problems if alcholic and liar native has eye problems not very attached to money, gets enemies around<br> fall into controversy  ",
+                    "remedy": "normal badaam piswa kar one muthi who aata fishes ko daalein "
+                },
+                "Sun": {
+                    "effects": "bina matlab doosron ki musibat apne sar leta hai<br> raat ki neend subah ka nashta kharaab<br> duniya bhar ka tension sar pe lete hain – choti problem se hyper ho jaate hain, unnecessary tension for othrs, cant or dont hv breakfast,  sleep issues thru out life , addicted to slleeping pills , sleeping issues life long ",
+                    "remedy": "always forgive your enemies "
+                },
+                "Venus": {
+                    "effects": "lattoo ki tarah nature n mood change hota hai  wife se support milega,  good marital life<br>  this native is loving/supportive to spouse father in law ko one eye mein problem hoti hai<br> motive of life of such a native is to enjoy and live<br> ",
+                    "remedy": "lit desi cow ghee ka diya at home for 43 days "
+                }
+            },
+            "2": {
+                "Jupiter": {
+                    "effects": "dharam guru bola gaya hai, vidya ka maalik hota hai<br> highly educated, polite,  helps others with self wisdom<br> ghar ke aas paas dharam sthaan hota hai<br>            very good agricultural gains,  paise judte rehte hain<br>  keeps growing in life always<br>                     sasural ke aas paas education centre hota hai<br>       sasuraal se tarraki milti hai<br>  ( growth after marriage) ",
+                    "remedy": "cow ko chaara dalein ( green grass)"
+                },
+                "Ketu": {
+                    "effects": "<br>santaan zyada poochta nai <br>saale ki patni ghar chod kar jaati hai<br> <br>saale ko aulaad esp boy child ki pareshaani rehti hai<br> <br>sasur ke leg mein nuks <br>sasural se milkar kaam nai karna chaiye <br>old age mein problems badhti hain <br>speculation nai karni chaiye <br>24 ki age ke baad earning shuru karte hain ",
+                    "remedy": "wear  gold earrings in ear"
+                },
+                "Mars": {
+                    "effects": "pradhangiri jhadta hai, kadvi boli<br>  has very strong connection with a govt person<br>  apne bhai ko paalta hai<br>  very helpful in nature<br>  ",
+                    "remedy": "2  kg  gud  ki revdi  mandir mein donate"
+                },
+                "Mercury": {
+                    "effects": " swarthi<br>  koyal si meethi boli<br> runs behind money father ko respiratory issues honge, father par bhari hota hai native<br> aulaad mannaton se hogi<br> difficulty in conceiveing foodie and food lover<br> avoid speculation doosron ko taar dega, jo inse sampark mein aaenge, tarr jaenge – doosron ke liye taaran haar ",
+                    "remedy": "avoid donating green items in temple"
+                },
+                "Moon": {
+                    "effects": " jaaydaad bhi milti hai, maa ka pyaar milta hai gets oppurtunity to do good education  khud paida ki hui maaya ki devi – apne mehnat ke balbute par apnea ap ko establish karta hai<br> native ka bedroom generally 1st floor pe hota hai<br>  ghar mein mandir ki ghanta ya shiv ji ka idol zaroor hota hai ",
+                    "remedy": "keep a square piece of silver at  home entrance"
+                },
+                "Rahu": {
+                    "effects": "never do anything for free shouldn’t keep swing in house<br> loves free things, shouldn’t take free things<br> can be a cheater in family business, even in dhram sthan paise gum hote rehte hain addiction prone,  can be a speculation lover<br>  jhootha number 1<br>  shd not eat for free<br>  ",
+                    "remedy": "keep silver ki thos goli with self"
+                },
+                "Saturn": {
+                    "effects": "sasural ka makaan band gali ka hota hai<br> generally good results as guru ka ghar hai<br> koi na koi famous criminal ghar ke as paas hota hai<br> ancestral jaaydaad milti hai<br> kadvi boli ( matlab se bolte hain )<br>  dental issues ( esp tooth)  non veg ka shaukeen<br>  will earn well  in Saturn’s period esp by profession<br> if Rahu with shani here  he will have pan stains, will have - non veg daru , cigs <br>   ",
+                    "remedy": "feed a brown dog tikka ya tilak nai lagana<br> have non veg"
+                },
+                "Sun": {
+                    "effects": " takes care of family trusts self,  vaani ka kadwa<br> ghar mein desi ghee ka diya khud nai jalaana<br>  langar ka khane wale barbaad hote hain<br> govt ka fal acha hota hai apne hunnar se progress karta hai<br>  should not eat for free even in marriage ",
+                    "remedy": "feed monkey with jaggery"
+                },
+                "Venus": {
+                    "effects": "generally their home is narrow in the beginning and broadens<br> gow mukhi house ghar mein aurtein zyada hoti hain<br>  ishwar se jo maangta hai usko milta hai<br>  maalik se maangne par hi kami poori kare<br> rich native, sweet tongue<br> andar se aashiq (flirty) , loves to be around opp gender ",
+                    "remedy": "avoid south facing home"
+                }
+            },
+            "3": {
+                "Jupiter": {
+                    "effects": "ghar kea as paas ujda hua dharam sthaan ya toota hua school ya cremation ground hoga<br>  girls school hoga<br>                         is insaan ko khushaamad nai karni chaiye<br> bachpan mein typhoid hota hai<br> grahasti bahut achi hoti hai – khandaani guru, grahasta sher kehte hain<br> ( good with family life) iski kismet ka faisla siblings se hota hai<br>      ( connected to younger siblings) ",
+                    "remedy": "kanjak seva best results ( girls below 10 yrs) "
+                },
+                "Ketu": {
+                    "effects": "lifetime financial ups and downs,             can give tan/man/dhan ki problem<br> to an extent of mrityu tulya kasht bhai se rishta banake rakhna chaiye  animal lovers<br>  saala barbaad,( even deaht) ya struggling hota hai<br> ya life mein sukh nai milta usko bhai, ya bhai ke bete ko kamar ya leg ki problem hoti hai<br>  bhai ko bacha hone mein problem band galli ka makaan hota hai ",
+                    "remedy": "wear gold on both ears, apply kesar tilak "
+                },
+                "Mars": {
+                    "effects": "doosron ke liye phalon ka jungle – doosron ke liye faaydemand<br>( people tx advantage of u) saahsi aur courageous chacha ya bhai ko cervical issues honge<br>  sister faces domestic problems<br> apne aap ke liye ashubh hota hai, but lucky for others a good risk taker, bold and courageous person<br>  ",
+                    "remedy": "wear a hathi daant ka locket"
+                },
+                "Mercury": {
+                    "effects": "thookne wala kaudi - thookne ki aadat hoti hai<br> teeth related problems aaenge<br> keeps changing job often<br> kissi fakeer ko follow karte hain<br> <br>has strong communication skills<br> very good result of budh – samjhane ki power<br> <br>logic sahi jagah lagaana<br> good with business not in personal relationship ",
+                    "remedy": "donate white cow"
+                },
+                "Moon": {
+                    "effects": "education mein problem aaeygi<br>              ( native unable to study , he cries as he is not supported or unable to study as per his wish)  jitni zyada education utna father ko money problem<br>                                 maa ki responsibility life mein zyada hoti hai<br> chori aur maut ka rakshak, umar ka farishta – isse maut bhi darti hai<br> jitna zyada acha rishta apni behen se hoga utna zyada paisa aaega<br> apni beti ya behen ke paise kabhi use nehi karni chaiye, never do business with them<br> if lives like a sadhu, then he will get sidhi<br> ",
+                    "remedy": "after  birth  of son  offer  Sun items  as donation,  take care  of sister/bua/beti   in order to gain monetary benfits<br> jab beti ho toh Mercury ki items donate karni chaiye<br> "
+                },
+                "Rahu": {
+                    "effects": "chashma lagta hai at early age, eye sight issues<br> ghar mein toota hua sheesha hota hai<br> owner and lover of luxury cars<br>  very anger oriented person, can be hyper<br>  is chalaak if Rahu good – can give raajyog in its period ",
+                    "remedy": "wear a silver kada in left hand"
+                },
+                "Saturn": {
+                    "effects": "one of worst position,  life time financial ups and downs<br>  ghar ke aakhir mein ek dark corner hota hai<br>  best if keeps a dog at home<br>  aulaad ka fal manda hota hai, esp male child<br>  apne se teesre ghar ke log pareshaan rehte hain, ya ujda hua ghar hota hai<br>  tight finances all life<br>  avoid fighting with chacha<br> agar loan lenge, toh repay nai kar paenge<br>  will get financial gains in its period, can make a raja if shani is getting good drishti or if Rahu Ketu is good<br>  shani represents store room<br>  generally dont like dogs but shd keep dogs<br> paisa mod ke rakte hain<br> ",
+                    "remedy": "keep a imli plant in west direction<br> make son sleep in west direction if u hv a son"
+                },
+                "Sun": {
+                    "effects": "iski sister ki shaadi bahut ki ameer aur bade ghar hui hoti hai<br>  khud kamaakar khaega, dhan sampatti hoti<br> hardworking, efforts se career banata hai<br>  extra bold<br>  has govt connection<br> ",
+                    "remedy": "daily Sun ko jal dedo"
+                },
+                "Venus": {
+                    "effects": "satyavaan aurat, agar wife ko respect karega,  din dugni raat chaugni tarrakki karega<br>  saare decisions wife leti hai, daler n bold type ki<br> isni wife ki iske bhai se kam banegi<br>  ghar mein musical instruments pade hue hote hain<br>  truth speaker ( if Venus in women chart 3rd house) ",
+                    "remedy": "avoid musical instruments at home"
+                }
+            },
+            "5": {
+                "Jupiter": {
+                    "effects": "father/ grandfather would be at a very high rank, eg a trustee, landlord<br>  maa  ka fal acha hota hai<br>                       if Jupiter is bad here, this native loves nudity should keep body covered<br>  aulaad se dukhi hote hain<br>                          could have a bad character,  defemation if Jupiter is negative here<br>                mother of the native will be more prettier than the native ,  will be educated and Jupiter related work   nanke parivar mein women wil be beautiful<br>  will have a education institute near home ",
+                    "remedy": "avoid non veg and never expose"
+                },
+                "Ketu": {
+                    "effects": "aulaad  deri  se  hote  hai,  can  be  beaulaad<br> ghar mein tensions forever rehti hain, esp ghar aate hi<br> maasi ke bete ki death hoti hai,  nani  pariwaar  mein  mushkil se  aulaad hoti hai maa ko sugar ya eyes ki problem hoti hai ",
+                    "remedy": "apply kesar tilak "
+                },
+                "Mars": {
+                    "effects": "generally stomach issues hote hai<br>  maa, naani, saas ya koi janani hamesha bimaar rehti hai ya bedridden honge<br> would have  had a fire accident or fears fire badly<br> bahi se ya property related problem zaroor hogi, continuous mental stress esp at home<br> birth place mein progress impossible<br> theres a decorative elephant kept somewhere at home<br> ",
+                    "remedy": "keep chandi ka square piece with you"
+                },
+                "Mercury": {
+                    "effects": "tensions and stress at home,  has suicidal tendency once in life<br> mother ko maximum stress hota hai maasi ki family mein koi na koi government office mein hoga naanke parivaar mein someone might be epileptic mother may have a less life<br> makes friends very easily<br> generally helpful people ",
+                    "remedy": "no remedy"
+                },
+                "Moon": {
+                    "effects": "apna ghar zaroor banta hai<br>  best placement for mother and education<br><br> life mein hamesha kuch acha hota hai,  jitna dhan kharch kare utna dhan aaye – aamdani ka dariya<br> mama ya nanke bahut ameer hota hai<br> if does overseas business will benefit a lot   <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br> keep feast of food for good prosperity……… ",
+                    "remedy": "any cheating will give bad results "
+                },
+                "Rahu": {
+                    "effects": "dharmic Rahu<br>  ghar ki entrance mein toilet hota hai<br>  ghar ki chatt baar baar toot ti hai<br>  not too worried about money mental stress, as soon as enter home<br> fights n dirtiness at home unnecessary expenses<br> esp in its period  either too clean or clumpsy ",
+                    "remedy": "never keep cactus plant at home<br> water storages should be clean<br>"
+                },
+                "Saturn": {
+                    "effects": "native ke mummy ko knee or joint pain hoga  native looks older than age <br>  mother ko eye sight issues hote hain<br>  ghar mein aate hi tension khushi aate hi tensions hoti hai<br>  fights at home  naanke side/ ya apne ghar mein kissi ne suicide attempt kiya hota hai ya fits aate hain<br>  always keep good character for good results of shani <br> when they have happy time they get tensed ,",
+                    "remedy": "keep chandi ka burada at home"
+                },
+                "Sun": {
+                    "effects": "earns for family  and hardly thinks of self agar kissi se dhoka karega to kamaya hua sab kuch gavaa dega<br>                                      people wil use them ,that’s the purpose of their birth<br>    ",
+                    "remedy": "avoid any kind of greed"
+                },
+                "Venus": {
+                    "effects": "apne se badi umar ki aurat se relations hote hain<br> mother is prettier than natives wife<br>  har tarah ka nasha avoid karna chaiye<br> if bad habits and bad character, fal bahut bura milta hai<br> owner of luxury and comfortable life  luxury makaan milta hai<br>  acha khana pehenne ka shaukeen hota hai<br>  lover of arts and music<br>  like watching live sessions than movies  ",
+                    "remedy": "shaadi ke wakt ladki ka name zaroor change karien ( if any issues)"
+                }
+            },
+            "7": {
+                "Jupiter": {
+                    "effects": "sadhu swabhav,  smooth life<br>                   jitni simple desires hongi, who poore honge<br> weight issues hote hai,  jhooth bolke apni blessings khud satyanaash karte hain  a compulsive liar<br> ",
+                    "remedy": "mandir mein 6 din lagataar 600 gm chane ki daal chadhain "
+                },
+                "Ketu": {
+                    "effects": "spine mein 100% koi na koi problem hoti hai<br> apne aulaad ki legs mein, ya father ki legs mein problem hogi<br>  behen bhua ya beti – inme se kissi ek ki aulaad nai hoti<br> ",
+                    "remedy": "left hand mein gold ki ring in little finger "
+                },
+                "Mars": {
+                    "effects": "aulaad mannatein maang ke aur taras ke hoti hai<br>  wife ko health issues honge<br> mama  pareshaan hota hai<br> native is very hardworking, faces lots of sorrows  but doesn’t hurt anyone dukh<br> shatru hanta yog banta hai – dushman ka apnea ap naash hona<br> can clear sports tests  ",
+                    "remedy": "avoid birthday celebrations, even cake cutting nai karni "
+                },
+                "Mercury": {
+                    "effects": "gumnaam yogi ya dil ka raja<br>  vaak sidhi hoti hai<br> mama ko respiratory issues hote hain,  naani ke family se koi govt servant hota hai<br>  ",
+                    "remedy": "wife ke left hand mein silver ring pehnao also gv to spouse "
+                },
+                "Moon": {
+                    "effects": "rukavat se education hogi<br> ( skip ) nani bed ridden hoti hai, ya nanke parivaar mein kissi ladki ki pairon mein problem hoti hai<br>( could be polio ) maa ya beta mein se koi ek zyada bimaar rehta hai maa ko diabetes ya native ko joint problems – uric acid issues hote hain<br> this placement is bad for natives mother          ( mother will have a struggling life) ",
+                    "remedy": "kharghosh paalein "
+                },
+                "Rahu": {
+                    "effects": "ghar ke gutter mein blockage ( sink) aate rehte hain<br>  ghar ka electronics baar baar  khraab hota hai doesn’t lose a court case, wins against enemy<br> rajyog in its period<br>  chalaak insaan ",
+                    "remedy": "offer 1 blue flower to saraswati maa for 6 days continuous "
+                },
+                "Saturn": {
+                    "effects": "rog, rinn, ya shatru zaroor dega<br>  financial rise in its period  avoid wearing or using leather stuff<br>  ghar ke nazdeek kabaadi shop ya antique cheezon ki dukaan hoti hai<br>  chacha beaulaad ( no male child, if he has son , the son will not settled or death at early age) hota hai<br>  better to marry after 28 years of age ",
+                    "remedy": "donate shoes to a musafir ( random person) "
+                },
+                "Sun": {
+                    "effects": "daulat se befikar apni kismet se santusht, keeps changing job very often<br> has a good immunity, good recovery<br>  conception issues<br>  shatru hanta yog – dushman ka naash karta hai,  content people ,  win over enemies   ( Sun clears competive exams ) ",
+                    "remedy": "Moon ki cheezen daan karein "
+                },
+                "Venus": {
+                    "effects": "ajeeb o gareeb kaam kare and barkat mil jaaye<br> jo education lega, us ko chod doosri line mein ghus jaata hai<br> wife lazy hoti hai<br> generally only child or has one brother<br> possibly have relation with neech kind of women,  has marital issues<br>   shaadi ke baad rog, rinn, ya shatru badh jaate hain<br>  will not hv good feet , shoes get torned, Rahu+Venus - neech rista, fall in love with lower class people ",
+                    "remedy": "feed curd to cow "
+                }
+            },
+            "8": {
+                "Jupiter": {
+                    "effects": "deen dukhiyon ki seva karna pasand<br> musibat ke wakt divine help milti hai<br> koi baba ya kaali maa ki photo ghar mein rakhi hoti hai  school nearby aise insaan ke baare afwaah bahut failti hai<br> ",
+                    "remedy": "feed fakir "
+                },
+                "Ketu": {
+                    "effects": "lambi bimaari hoti hai<br>  ancestral property mein adchan aati hai<br>  mrityu tulya kasht deta hai dogs se darte hain,  inke subordinates wafadaar nai hote<br> leg ya cervical issues rehte hain highly intuitive – to the extent ki doosron ki death pehle se bhaanp lete hain bete ka sukh late milta hai ya nhi milta ",
+                    "remedy": "jup ki daan – very good result<br> "
+                },
+                "Mars": {
+                    "effects": "ghar mein kissi na kissi ki medicines chalti rehti hai<br>  property issue with brother<br>  blood related  problems rehti hain, chota bhai bahut pareshaan rehta hai<br> ghar mein tandoor rakhna mana hai ",
+                    "remedy": "laal chandan ka tika lagain "
+                },
+                "Mercury": {
+                    "effects": "generally  native or someone in family is affected by black magic,   behen bhua ya beti ko mentally koi problem hoti hai<br>   wehmi insaan hota hai<br>  business decisions wrong hote hain<br>   regular health issues<br> ",
+                    "remedy": "pierce nose of daughter with silver "
+                },
+                "Moon": {
+                    "effects": "jitna study utni problem maa ko hogi<br>  Venus ke kaam karna mana hai<br> native doesn’t get mothers support or love   loves 2 number ka kaam,  mood swings hote hain<br> taayi   ke saath jhagda nai karna  , emotionally very strong but small things hurt them  ",
+                    "remedy": "keep cremation ground ka water at home ( shiv k mandir , cresent of Moon with shiv ,  keep in cuborad in plain white bottle, shd nt tell that u hv this watr) "
+                },
+                "Rahu": {
+                    "effects": "ghar ki back side mein koi criminal ya paagal insaan rehta hai<br> gives accidents<br>  issues with police  rukavat karvaega<br> <br>sudden fights in house  udhar wala paisa doobta hai, ( no loan should be taken or given) ",
+                    "remedy": "bijli ke kaam avoid kane chaiye "
+                },
+                "Saturn": {
+                    "effects": "ghar ke aas paas nala ya cremation ground hota hai  good – longetivity<br>  accident zaroor hota hai<br>  har kaam dheere dheere hota hai<br> adchan aati rehti hai<br> band galli ka makaan hotahai<br> hands mein shivering hoti hai<br>  ",
+                    "remedy": "chandi ka chakor tukda pocket mein rakhein "
+                },
+                "Sun": {
+                    "effects": "ghar ka celing ek bar tot tha hai loves imitating others,   very dramatic person<br> inke saamne kissi ki death nai hoti, will do occult esp astrology   ",
+                    "remedy": "safed cow ki seva mana hai, do seva of black cow "
+                },
+                "Venus": {
+                    "effects": "jo kharaab cheez bolegi woh hoga, anger issues<br>  wife zubaan se kadvi and tez hoti hai, kaan se khoon nikaal deti hai<br> ",
+                    "remedy": "43 days balck cow ki seva karein "
+                }
+            },
+            "9": {
+                "Jupiter": {
+                    "effects": "dhani parivaar mein janam hota hai<br>  Sunehri khaandaan ka suchak hota hai – par khud   maya  ka  tyagi  sadhu<br> lucky for father,  loves to make a mandir,  does pooja path,    visits  pilgrimage<br> very good placement<br> kandani family ",
+                    "remedy": " visit  temple  daily ( regularly) "
+                },
+                "Ketu": {
+                    "effects": "jisko ye native aashirwad dega, woh tarr jaega<br>  father ke liye lucky hota hai<br> bhagya ka saath milta hai ",
+                    "remedy": "panditji ko ram ram ki chaddar donate karien "
+                },
+                "Mars": {
+                    "effects": "badon ka bahut saath milta hai, usse tarraki karta  hai<br>  (  will  progress  after  reciving ancestral  property/blessings) <br> buzurg bahut ameer hote hain,  agar bade bhai aur bhabhi ki seva kare toh bahut acha result milta hai<br> is native ke birth se pehle hi ghar mein khushiyaan aani shuru ho jaati hain<br> if Mars badh then badnaami ka karak banta hai<br> ",
+                    "remedy": "43 days temple mein 900 gms rice/gud donate karein "
+                },
+                "Mercury": {
+                    "effects": " if  alone  can  make  native  a  king<br> family mein koi na koi kisssi fakeer ke magar pada hua hota hai,    ya  kissi  lady  ko  mata  aati  hai<br> chacha ya taya haklaata hai<br> ",
+                    "remedy": " avoid  use  of  green colour "
+                },
+                "Moon": {
+                    "effects": "very good result<br> aisi education jo doosron ko help  karti  hai<br> ziddi  jaaydaad ka kaarak khandaani jaaydaad ka sukh milta hai, maalik bhi hota  hai<br> pooja path karne wala, doosron ko sukh dene wala hota hai<br> mother se bahut attachment hoti hai<br> ",
+                    "remedy": "mom ke pair roz chuein "
+                },
+                "Rahu": {
+                    "effects": "blind faith in anyone will be dangerous  many times this person doesn’t know what is boundary<br>  luck mein rukavat<br>  too many expenses<br>  mostly used by others, esp jiska bhala kare, dushman ban jaega <br>( they dont mind their own business) <br>aisa insaan agar kissi ke sar pe haath rakh de, to iski blessing us saamne waale ko zaroor lagti hai<br>  inke parivaar mein kissi na kissi ne dharam badla hua hota hai,  kissi babaji ke magar pade hote hain<br> ( follows god out of their religion )  ",
+                    "remedy": "chandi ki 90gm brick apne paas rakhein "
+                },
+                "Saturn": {
+                    "effects": "male child ghar ka sukh hota hai<br>  bhagya se multiple property milti hai<br> financial gains<br>  doosron ko loans deta hai<br> ghar ki chatt/balcony/staircase par kooda kabhi   nai  rakhna,  else  bad  results<br> if has too much hairy forehead – shows bad results of shani ( get it removed) ",
+                    "remedy": "don’t make more than 3 properties in own name in a row "
+                },
+                "Sun": {
+                    "effects": " lambi  ummar  aur  bhari  khaandaan  ka   maalik<br>(  wealthy) is native ke birth ke baad family mein khush haali aati hai,  does alot for family, doesn’t ask for return<br> ghar mein kissi na kissi ki pension chalti rehti hai<br> Moon ka daan nai lena chaiye – eg doodh, chandi, rice<br>  jiska saath dega, woh insaan tarr jaega ",
+                    "remedy": "eat in pital ke bartan "
+                },
+                "Venus": {
+                    "effects": " mangal badh ho jaata hai ghar mein kissi buzurg ki 2 shaadiyaan hui hoti   hain,  either    naana  ya  daada<br> grand parent rich hote ha ",
+                    "remedy": "cow ki photo nai rakhni, seva nai karni "
+                }
+            }
+        };
+
+
+
         $scope.getVarshphal = function (age) {
             console.log('Calculating Varshphal for Age: ' + age);
             for (const house in houses) {
@@ -1159,7 +1528,7 @@ console.log('Successfully Refreshed Access Token:', response.data);
                             console.log(planet + " is an enemy of " + housesTable[house].karak + " hence " + house + " is malefic");
                             // Add to the list of malefic houses
                             if (!maleficHouses.includes(house)) {
-                                maleficHouses.push(house);
+                                maleficHouses.push(house + "");
                             }
                         }
                     });
@@ -1292,11 +1661,23 @@ console.log('Successfully Refreshed Access Token:', response.data);
 
             }
         }
+
+        function getPredictions(){
+            for (const house in houses) {
+                if (houses[house].planets.length > 0){
+                    houses[house].planets.forEach(function (planet) {
+                        predictions.push("<br>" + planet + "in " + house + "<br>" );
+                        predictions.push(planetInHouses[house][planet].effects + "<br>");
+                        predictions.push(planetInHouses[house][planet].remedy);
+                    });
+                }
+            }
+        }
         $scope.toggleMessage = false;
         $scope.horoscope = {};
         $scope.currentAge = 0;
         $scope.getHouseStatus = function () {
-            
+
             $scope.checkName();
             maleficRule1(houses);
 
@@ -1327,11 +1708,13 @@ console.log('Successfully Refreshed Access Token:', response.data);
             $scope.varshphalAge = $scope.currentAge;
             //$scope.saveHoroscope();
             $scope.getVarshphal($scope.currentAge);
+
+            getPredictions();
         }
 
         $scope.saveHoroscope = function (chartType) {
             if ($scope.nativeName != undefined && $scope.selectedDay != undefined && $scope.selectedMonth != undefined && $scope.selectedYear != undefined) {
-			$scope.pullPushHoroscope(chartType);
+                $scope.pullPushHoroscope(chartType);
                 if (localStorage.getItem("horoscope") !== null) {
                     $scope.localStorageHoroscope = JSON.parse(localStorage.getItem("horoscope"));
                     if (chartType == 'Lagna') {
@@ -1406,25 +1789,25 @@ console.log('Successfully Refreshed Access Token:', response.data);
             }
         }
         $scope.getHoroscope = function () {
-		$scope.resetConfig();
+            $scope.resetConfig();
             console.log($scope.selectedHoroscope);
             houses = JSON.parse(JSON.stringify($scope.selectedHoroscope.horoscope));
             $scope.nativeName = $scope.selectedHoroscope.name;
             $scope.selectedDay = $scope.selectedHoroscope.day;
             $scope.selectedMonth = $scope.selectedHoroscope.month;
             $scope.selectedYear = $scope.selectedHoroscope.year;
-			//$scope.$apply();
+            //$scope.$apply();
             $scope.getHouseStatus();
-			
-			console.log($scope.nativeName , $scope.selectedHoroscope.name);
+
+            console.log($scope.nativeName, $scope.selectedHoroscope.name);
         }
 
         $scope.loadHoroscopes = function () {
-		$scope.getKundali();
+            $scope.getKundali();
             if (localStorage.getItem("horoscope") !== null) {
                 console.log('Local Storage found with name: horoscope');
-               // $scope.horoscopes = JSON.parse(localStorage.getItem("horoscope"));
-               // console.log(Object.keys($scope.horoscopes).length + ' Horoscopes loaded.');
+                // $scope.horoscopes = JSON.parse(localStorage.getItem("horoscope"));
+                // console.log(Object.keys($scope.horoscopes).length + ' Horoscopes loaded.');
             }
             else {
                 console.log('Local Storage Not found. Creating localStorage with name: horoscope');
@@ -1456,7 +1839,7 @@ console.log('Successfully Refreshed Access Token:', response.data);
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
             document.getElementById("NP").innerHTML = neutralPlanets.toString();
-            document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: ' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: ' + rinEffects.toString().replaceAll(',', '<br>');
+            document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: ' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: ' + rinEffects.toString().replaceAll(',', '<br>') + "<br>Predictions:" + predictions.toString().replaceAll(',', '<br>');
         }
 
         // const planetDropdown = document.getElementById('planetDropdown');
@@ -1546,127 +1929,128 @@ console.log('Successfully Refreshed Access Token:', response.data);
             // Pitru Rin
             if (houses[2].planets.includes("Mercury") || houses[2].planets.includes("Venus") || houses[2].planets.includes("Rahu")) {
                 rinEffects.push("Pitru Rin detected in 2nd House due to presence of Mercury/Venus/Rahu");
-             }
-             else if(houses[5].planets.includes("Mercury") || houses[5].planets.includes("Venus") || houses[5].planets.includes("Rahu")) {
+            }
+            else if (houses[5].planets.includes("Mercury") || houses[5].planets.includes("Venus") || houses[5].planets.includes("Rahu")) {
                 rinEffects.push("Pitru Rin detected in 5th House due to presence of Mercury/Venus/Rahu");
-             }
-             else if(houses[9].planets.includes("Mercury") || houses[9].planets.includes("Venus") || houses[9].planets.includes("Rahu")) {
+            }
+            else if (houses[9].planets.includes("Mercury") || houses[9].planets.includes("Venus") || houses[9].planets.includes("Rahu")) {
                 rinEffects.push("Pitru Rin detected in 9th House due to presence of Mercury/Venus/Rahu");
-             }
-             else if(houses[11].planets.includes("Mercury") || houses[11].planets.includes("Venus") || houses[11].planets.includes("Rahu")) {
+            }
+            else if (houses[11].planets.includes("Mercury") || houses[11].planets.includes("Venus") || houses[11].planets.includes("Rahu")) {
                 rinEffects.push("Pitru Rin detected in 11th House due to presence of Mercury/Venus/Rahu");
-             }
-             else if(houses[12].planets.includes("Mercury") || houses[12].planets.includes("Venus") || houses[12].planets.includes("Rahu")) {
+            }
+            else if (houses[12].planets.includes("Mercury") || houses[12].planets.includes("Venus") || houses[12].planets.includes("Rahu")) {
                 rinEffects.push("Pitru Rin detected in 12th House due to presence of Mercury/Venus/Rahu");
-             }
-            
+            }
 
-             // Matru Rin
-             if (houses[4].planets.includes("Ketu")) {
+
+            // Matru Rin
+            if (houses[4].planets.includes("Ketu")) {
                 rinEffects.push("Matru Rin detected in 4th House due to presence of Ketu");
-             }
+            }
 
-             // Sva Rin
-             if(houses[5].planets.includes("Venus") || houses[5].planets.includes("Saturn") || houses[5].planets.includes("Rahu") || houses[5].planets.includes("Ketu")) {
+            // Sva Rin
+            if (houses[5].planets.includes("Venus") || houses[5].planets.includes("Saturn") || houses[5].planets.includes("Rahu") || houses[5].planets.includes("Ketu")) {
                 rinEffects.push("Sva Rin detected in 5th House due to presence of Ketu/Venus/Rahu/Saturn");
-             }
+            }
 
-             // Stree Rin
-             if (houses[2].planets.includes("Sun") || houses[2].planets.includes("Moon") || houses[2].planets.includes("Rahu")) {
+            // Stree Rin
+            if (houses[2].planets.includes("Sun") || houses[2].planets.includes("Moon") || houses[2].planets.includes("Rahu")) {
                 rinEffects.push("Stree Rin detected in 2nd House due to presence of Sum/Moon/Rahu");
-             }
-             else if (houses[7].planets.includes("Sun") || houses[7].planets.includes("Moon") || houses[7].planets.includes("Rahu")) {
+            }
+            else if (houses[7].planets.includes("Sun") || houses[7].planets.includes("Moon") || houses[7].planets.includes("Rahu")) {
                 rinEffects.push("Stree Rin detected in 7th House due to presence of Sum/Moon/Rahu");
-             }
+            }
 
-             // Dargahi Rin or Nature's Rin
-             if (houses[6].planets.includes("Mars") || houses[6].planets.includes("Moon")) {
+            // Dargahi Rin or Nature's Rin
+            if (houses[6].planets.includes("Mars") || houses[6].planets.includes("Moon")) {
                 rinEffects.push("Dargahi Rin detected in 6th House due to presence of Mars/Moon");
-             }
+            }
         }
 
 
-        function getRemedies(){
-            
+        function getRemedies() {
+
         }
     });
 </script>
 
 <body>
-<div class="container">
-    <div ng-app="myApp" ng-controller="myCtrl">
-        <div class="select-container">
-            <label for="horoscopename">Enter Name of the Native:</label>
-            <input type="text" id="horoscopename" ng-model="nativeName" />
-            <div class="age-container">
-                <h2></h2>
-                <label for="day">Date of Birth details:</label>
-                <select id="day" ng-model="selectedDay" ng-change="checkName()" ng-options="d for d in days">
+    <div class="container">
+        <div ng-app="myApp" ng-controller="myCtrl">
+            <div class="select-container">
+                <label for="horoscopename">Enter Name of the Native:</label>
+                <input type="text" id="horoscopename" ng-model="nativeName" />
+                <div class="age-container">
+                    <h2></h2>
+                    <label for="day">Date of Birth details:</label>
+                    <select id="day" ng-model="selectedDay" ng-change="checkName()" ng-options="d for d in days">
+                    </select>
+
+                    <label for="month">Month:</label>
+                    <select id="month" ng-model="selectedMonth" ng-change="checkName()">
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+
+                    <label for="year">Year:</label>
+                    <select id="year" ng-model="selectedYear" ng-change="calculateAge()" ng-options="y for y in years">
+                    </select>
+                    <br> <br>
+                    <!-- <button ng-click="calculateAge()">Calculate Age</button> -->
+
+                    <div id="result"></div>
+                </div>
+                <label for="houseDropdown">Choose a house:</label>
+                <select id="houseDropdown" ng-model="selectedHouse" ng-change="checkName()"
+                    ng-options="x for x in houses">
                 </select>
 
-                <label for="month">Month:</label>
-                <select id="month" ng-model="selectedMonth" ng-change="checkName()">
-                    <option value="1">January</option>
-                    <option value="2">February</option>
-                    <option value="3">March</option>
-                    <option value="4">April</option>
-                    <option value="5">May</option>
-                    <option value="6">June</option>
-                    <option value="7">July</option>
-                    <option value="8">August</option>
-                    <option value="9">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
+                <p>Selected house: <span id="selectedHouse">{{selectedHouse}}</span></p>
+                <label for="planetDropdown">Choose a Planet:</label>
+                <select id="planetDropdown" ng-model="selectedPlanet" ng-options="x for x in planets">
                 </select>
 
-                <label for="year">Year:</label>
-                <select id="year" ng-model="selectedYear" ng-change="calculateAge()" ng-options="y for y in years">
-                </select>
-                <br> <br>
-                <!-- <button ng-click="calculateAge()">Calculate Age</button> -->
+                <p>Selected celestial body: <span id="selectedPlanet">{{selectedPlanet}}</span></p>
 
-                <div id="result"></div>
+                <div>{{selectedPlanet}} {{selectedHouse}}</div>
+                <span>
+                    <button ng-click="houseAndPlanetSelected()">Add</button>
+                    <button ng-click="removePlanetFromHouse()">Remove</button>
+
+                </span><br><br>
+                <div ng-init="loadHoroscopes()">
+                    <label for="Saved Horoscopes">Open a Horoscope:</label>
+                    <select id="horoscopesDropdown" ng-model="selectedHoroscope" ng-change="getHoroscope()"
+                        ng-options="x for (x,y) in horoscopes">
+                    </select>
+
+                </div>
+
+
             </div>
-            <label for="houseDropdown">Choose a house:</label>
-            <select id="houseDropdown" ng-model="selectedHouse" ng-change="checkName()" ng-options="x for x in houses">
-            </select>
 
-            <p>Selected house: <span id="selectedHouse">{{selectedHouse}}</span></p>
-            <label for="planetDropdown">Choose a Planet:</label>
-            <select id="planetDropdown" ng-model="selectedPlanet" ng-options="x for x in planets">
-            </select>
-
-            <p>Selected celestial body: <span id="selectedPlanet">{{selectedPlanet}}</span></p>
-
-            <div>{{selectedPlanet}} {{selectedHouse}}</div>
-            <span>
-                <button ng-click="houseAndPlanetSelected()">Add</button>
-                <button ng-click="removePlanetFromHouse()">Remove</button>
-
-            </span><br><br>
-            <div ng-init="loadHoroscopes()">
-                <label for="Saved Horoscopes">Open a Horoscope:</label>
-                <select id="horoscopesDropdown" ng-model="selectedHoroscope" ng-change="getHoroscope()"
-                    ng-options="x for (x,y) in horoscopes">
-                </select>
-
-            </div>
-			
-
-        </div>
-
-        <div id="horoscope-chart">
-            <span style="align-items: center;">{{nativeName}} Horoscope</span>
-            <!--img src="https://www.acharyainduprakash.com/blog/wp-content/uploads/2019/03/New-Kundli.png"
+            <div id="horoscope-chart">
+                <span style="align-items: center;">{{nativeName}} Horoscope</span>
+                <!--img src="https://www.acharyainduprakash.com/blog/wp-content/uploads/2019/03/New-Kundli.png"
                 alt="Indian Horoscope Chart"-->
-		<img src="https://rawcdn.githack.com/ShreeAura-Astrology/jwtPY/main/New-Kundli.png"
-                alt="Indian Horoscope Chart">
-            <span class="house-span" id="house-1">{{horoscope["1"].planets.toString()}}</span>
-			
-			<span class="hide">Colour, Looks, Nature, Caste, Physique, Forehead, Age, Diseases, Success, Reputation, 
-Wealth, Wisdom, Health
-<pre>
+                <img src="https://rawcdn.githack.com/ShreeAura-Astrology/jwtPY/main/New-Kundli.png"
+                    alt="Indian Horoscope Chart">
+                <span class="house-span" id="house-1">{{horoscope["1"].planets.toString()}}</span>
+
+                <span class="hide">Colour, Looks, Nature, Caste, Physique, Forehead, Age, Diseases, Success, Reputation,
+                    Wealth, Wisdom, Health
+                    <pre>
 Lord – Mangal 
 Karak Grah – Surya 
 Do Helps To – 5th House 
@@ -1678,10 +2062,11 @@ Points to learn:-
 child will survive. 
 2. If 7th House is vacant, marrying after 24 years of age will improve the luck. 
 3. If enemy of the 1st house is sitting in the 2nd house then it will make the person poor.</pre>
-			</span>
+                </span>
 
-            <span class="house-span" id="house-2">{{horoscope["2"].planets.toString()}}</span>
-			<span class="hide"><pre>Lord – Shukra 
+                <span class="house-span" id="house-2">{{horoscope["2"].planets.toString()}}</span>
+                <span class="hide">
+                    <pre>Lord – Shukra 
 Karak Grah – Guru 
 Do Helps To – 6th House 
 Family, Mother, Wealth, Food, Mouth, Water, Elder Uncle (Mother’s Elder Brother), Sister, 
@@ -1691,9 +2076,11 @@ Points to learn:-
 2. Show the results of your efforts 
 3. If 2nd & 8th both houses are vacant, the 2nd house is very fruitful. 
 4. If Rahu is there in the 2nd house, the person always rely on Guru. 
-5. If Chandra is sitting in the 4th house, every negativity of the 2nd house gets removed.</pre></span>
-            <span class="house-span" id="house-3">{{horoscope["3"].planets.toString()}}</span>
-			<span class="hide"><pre>Lord – Budh 
+5. If Chandra is sitting in the 4th house, every negativity of the 2nd house gets removed.</pre>
+                </span>
+                <span class="house-span" id="house-3">{{horoscope["3"].planets.toString()}}</span>
+                <span class="hide">
+                    <pre>Lord – Budh 
 Karak Grah – Mangal 
 Do Helps To – 7th House 
 Younger brother, Younger Sister, Power, Friends, Neighbour, Short Travels, Biceps, Lungs, 
@@ -1702,26 +2089,32 @@ Points to learn:-
 1. Decides quality of death. 
 2. It is the door of the death. 
 3. Presence of Rahu/Ketu in this house will always give difficult death to the person also 
-early death if 8th house is negative.</pre></span>
-            <span class="house-span" id="house-4">{{horoscope["4"].planets.toString()}}</span>
-			<span class="hide"><pre>Lord – Chandra 
+early death if 8th house is negative.</pre>
+                </span>
+                <span class="house-span" id="house-4">{{horoscope["4"].planets.toString()}}</span>
+                <span class="hide">
+                    <pre>Lord – Chandra 
 Karak Grah – Chandra 
 Do Helps To – 8th House 
 Happiness, Prosperity, Mother, Assets, Vehicles, People, Friends, Heart, In laws, etc. 
 Points to learn:- 
 1. Take care of miscarriages. 
-2. Mangal’s and Rahu’s presence in this house is always negative.</pre></span>
-            <span class="house-span" id="house-5">{{horoscope["5"].planets.toString()}}</span>
-			<span class="hide"><pre>Lord – Surya 
+2. Mangal’s and Rahu’s presence in this house is always negative.</pre>
+                </span>
+                <span class="house-span" id="house-5">{{horoscope["5"].planets.toString()}}</span>
+                <span class="hide">
+                    <pre>Lord – Surya 
 Karak Grah – Guru 
 Do Helps To – 9th House 
 Growth, Sudden Money, Hidden Wealth, Education, Lovers, Children, Stomach, Pregnancy, 
 Betting, Fathers lifeline, Husband of Elder Sister, Exams. 
 Points to learn:- 
 1. Guru & Surya should not be negative anyhow to get the positive results of the house. 
-2. After the birth of child the effects of 5th house gets transferred to the 9th house.</pre></span>
-            <span class="house-span" id="house-6">{{horoscope["6"].planets.toString()}}</span>
-			<span class="hide"><pre>Lord – Budh 
+2. After the birth of child the effects of 5th house gets transferred to the 9th house.</pre>
+                </span>
+                <span class="house-span" id="house-6">{{horoscope["6"].planets.toString()}}</span>
+                <span class="hide">
+                    <pre>Lord – Budh 
 Karak Grah – Ketu 
 Do Helps To – 10th House 
 Enemies, Injuries, Loan, Diseases, Court cases, Turbulences, Uncle (Mother’s Younger 
@@ -1729,9 +2122,11 @@ Brother), Stomach, Father’s Luck, Children’s Wealth
 Points to learn:- 
 1. Vacant 6th house is always good. 
 2. While doing the prediction of this house always concentrate on 6th and 8th house as they 
-are always related.</pre></span>
-            <span class="house-span" id="house-7">{{horoscope["7"].planets.toString()}}</span>
-			<span class="hide"><pre>Lord – Shukra 
+are always related.</pre>
+                </span>
+                <span class="house-span" id="house-7">{{horoscope["7"].planets.toString()}}</span>
+                <span class="hide">
+                    <pre>Lord – Shukra 
 Karak Grah – Shukra 
 Do Helps To – 11th House 
 Partnership, Life partner, Sperm count, Lust, Niece, Nephew, etc. 
@@ -1739,9 +2134,11 @@ Points to learn:-
 1. 7th house never watches any house. 
 2. 1st House always watches 7th house. 
 3. Combination of Shukra & budh in this house will strengthen the Shani and person 
-definitely becomes rich after marriage. </pre></span>
-            <span class="house-span" id="house-8">{{horoscope["8"].planets.toString()}}</span>
-			<span class="hide"><pre>Lord – Mangal 
+definitely becomes rich after marriage. </pre>
+                </span>
+                <span class="house-span" id="house-8">{{horoscope["8"].planets.toString()}}</span>
+                <span class="hide">
+                    <pre>Lord – Mangal 
 Karak Grah – Shani 
 Do Helps To – 12th House 
 Lifeline, Efforts, Testicles Problems, Sudden Money, Sea Traveling, Lottery, Sexual 
@@ -1751,16 +2148,19 @@ Points to learn:-
 house. 
 2. Presence of Rahu, Ketu or Shukra in the house will attract the person towards tantra
 mantra, jadu-tona or bhoot prakriya. </pre>
-</span>
-            <span class="house-span" id="house-9">{{horoscope["9"].planets.toString()}}</span>
-			<span class="hide"><pre>Lord – Guru 
+                </span>
+                <span class="house-span" id="house-9">{{horoscope["9"].planets.toString()}}</span>
+                <span class="hide">
+                    <pre>Lord – Guru 
 Karak Grah – Guru 
 Do Helps To – 1st House 
 Luck, Religion, Higher education, Samadhi, Donations, etc. 
 Points to learn:- 
-1. Entire luck is determined by this house.</pre></span>
-            <span class="house-span" id="house-10">{{horoscope["10"].planets.toString()}}</span>
-			<span class="hide"><pre>Lord – Shani 
+1. Entire luck is determined by this house.</pre>
+                </span>
+                <span class="house-span" id="house-10">{{horoscope["10"].planets.toString()}}</span>
+                <span class="hide">
+                    <pre>Lord – Shani 
 Karak Grah – Shani 
 Get Help From – 2nd House 
 Karma, Father, Business, Government Job, Knees, Mother-in-law, etc. 
@@ -1771,9 +2171,11 @@ life
 Government favours and benefits 
 3. Jupiter in the 10th house and Venus & Mars in the 4th house ensure multi marriages for 
 the native 
-4. Venus in the 10th house bring the native under the control & guidance of spouse</pre></span>
-            <span class="house-span" id="house-11">{{horoscope["11"].planets.toString()}}</span>
-			<span class="hide"><pre>Lord – Shani 
+4. Venus in the 10th house bring the native under the control & guidance of spouse</pre>
+                </span>
+                <span class="house-span" id="house-11">{{horoscope["11"].planets.toString()}}</span>
+                <span class="hide">
+                    <pre>Lord – Shani 
 Karak Grah – Guru 
 Do Helps To – 3rd House 
 Income through Business & Work, Contractor, Son-in-law, Daughter-in-law, Benefits, 
@@ -1785,9 +2187,11 @@ more powerful.
 3. If 1st and 3rd house is vacant than we will not get complete benefit of 11th house. 
 4. If planet in the 8th house is the enemy of the planet in the 11th house or vice versa then 
 don’t bring the things belongs to the planet of the 11th house. 
-5. Positive 9th house + Positive 11th house = Extremely Positive 2nd house.</pre></span>
-            <span class="house-span" id="house-12">{{horoscope["12"].planets.toString()}}</span>
-			<span class="hide"><pre>Lord – Guru 
+5. Positive 9th house + Positive 11th house = Extremely Positive 2nd house.</pre>
+                </span>
+                <span class="house-span" id="house-12">{{horoscope["12"].planets.toString()}}</span>
+                <span class="hide">
+                    <pre>Lord – Guru 
 Karak Grah – Rahu 
 Do Helps To – 4th House 
 Expenses, Donation, Losses, Moksh, Compromises, Aunt, Ankles & Knees, Sleep, Dreams 
@@ -1796,60 +2200,62 @@ Points to learn:-
 1. Also determines your level of sleep. 
 2. Planet sitting in this house will give the happiness and relaxation from the person 
 belonging to that planet. If Ketu is sitting in the house, the person will get happiness and 
-relaxation from Son as Ketu belongs to Son.</pre></span>
+relaxation from Son as Ketu belongs to Son.</pre>
+                </span>
 
-        </div>
-        <div id="varshphal-horoscope-chart" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
-            <span style="align-items: center;">{{nativeName}} Varshphal Horoscope</span><span> Age: {{ varshphalAge }}
-            </span>
-            <img src="https://www.acharyainduprakash.com/blog/wp-content/uploads/2019/03/New-Kundli.png"
-                alt="Indian Varshphal Horoscope Chart">
-            <span class="house-span" id="house-1">{{varshphalChart["1"].planets.toString()}}</span>
-            <span class="house-span" id="house-2">{{varshphalChart["2"].planets.toString()}}</span>
-            <span class="house-span" id="house-3">{{varshphalChart["3"].planets.toString()}}</span>
-            <span class="house-span" id="house-4">{{varshphalChart["4"].planets.toString()}}</span>
-            <span class="house-span" id="house-5">{{varshphalChart["5"].planets.toString()}}</span>
-            <span class="house-span" id="house-6">{{varshphalChart["6"].planets.toString()}}</span>
-            <span class="house-span" id="house-7">{{varshphalChart["7"].planets.toString()}}</span>
-            <span class="house-span" id="house-8">{{varshphalChart["8"].planets.toString()}}</span>
-            <span class="house-span" id="house-9">{{varshphalChart["9"].planets.toString()}}</span>
-            <span class="house-span" id="house-10">{{varshphalChart["10"].planets.toString()}}</span>
-            <span class="house-span" id="house-11">{{varshphalChart["11"].planets.toString()}}</span>
-            <span class="house-span" id="house-12">{{varshphalChart["12"].planets.toString()}}</span>
-        </div>
-        <div class="result-container">
-            <span class="lagnaCtrl">
-                <span><button ng-click="getHouseStatus()">Predict House Status</button></span>
-                <span><button ng-click="saveHoroscope('Lagna')">Save</button></span>
-                <span><button ng-click="deleteHoroscope()">Remove Horoscope</button></span>
-                <span><button ng-click="reset()">Reset</button></span>
+            </div>
+            <div id="varshphal-horoscope-chart" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
+                <span style="align-items: center;">{{nativeName}} Varshphal Horoscope</span><span> Age: {{ varshphalAge
+                    }}
+                </span>
+                <img src="https://www.acharyainduprakash.com/blog/wp-content/uploads/2019/03/New-Kundli.png"
+                    alt="Indian Varshphal Horoscope Chart">
+                <span class="house-span" id="house-1">{{varshphalChart["1"].planets.toString()}}</span>
+                <span class="house-span" id="house-2">{{varshphalChart["2"].planets.toString()}}</span>
+                <span class="house-span" id="house-3">{{varshphalChart["3"].planets.toString()}}</span>
+                <span class="house-span" id="house-4">{{varshphalChart["4"].planets.toString()}}</span>
+                <span class="house-span" id="house-5">{{varshphalChart["5"].planets.toString()}}</span>
+                <span class="house-span" id="house-6">{{varshphalChart["6"].planets.toString()}}</span>
+                <span class="house-span" id="house-7">{{varshphalChart["7"].planets.toString()}}</span>
+                <span class="house-span" id="house-8">{{varshphalChart["8"].planets.toString()}}</span>
+                <span class="house-span" id="house-9">{{varshphalChart["9"].planets.toString()}}</span>
+                <span class="house-span" id="house-10">{{varshphalChart["10"].planets.toString()}}</span>
+                <span class="house-span" id="house-11">{{varshphalChart["11"].planets.toString()}}</span>
+                <span class="house-span" id="house-12">{{varshphalChart["12"].planets.toString()}}</span>
+            </div>
+            <div class="result-container">
+                <span class="lagnaCtrl">
+                    <span><button ng-click="getHouseStatus()">Predict House Status</button></span>
+                    <span><button ng-click="saveHoroscope('Lagna')">Save</button></span>
+                    <span><button ng-click="deleteHoroscope()">Remove Horoscope</button></span>
+                    <span><button ng-click="reset()">Reset</button></span>
 
-            </span>
-            <span class="varshphalCtrl" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
-                <button ng-click="prevVarshphal()">
-                    < Previous Age</button>
-                        <button ng-click="saveHoroscope('Varshphal')">Save Varshaphal</button>
-                        <button ng-click="nextVarshphal()"> Next Age ></button>
-            </span>
-            <p> Melefic Houses : <span id="M"></span></p>
-            <p> Benefic Houses : <span id="B"></span></p>
-            <p> Neutral Benific Houses : <span id="NB"></span></p>
-            <p> Neutral Malefic Houses : <span id="NM"></span></p>
-            <p> Malefic Planets : <span id="MP"></span></p>
-            <p> Benefic Planets : <span id="BP"></span></p>
-            <p> Neutral Planets : <span id="NP"></span></p>
-            <p> Vakri drishti : <span id="VD"></span></p>
-        </div>
-        <div class="outer" ng-show="toggleMessage">
-            <div class="popup">
-                <h2>{{message}}</h2>
-                <br />
-                <button id="closebtn" ng-click="toggleMessage = !toggleMessage">Close</button>
+                </span>
+                <span class="varshphalCtrl" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
+                    <button ng-click="prevVarshphal()">
+                        < Previous Age</button>
+                            <button ng-click="saveHoroscope('Varshphal')">Save Varshaphal</button>
+                            <button ng-click="nextVarshphal()"> Next Age ></button>
+                </span>
+                <p> Melefic Houses : <span id="M"></span></p>
+                <p> Benefic Houses : <span id="B"></span></p>
+                <p> Neutral Benific Houses : <span id="NB"></span></p>
+                <p> Neutral Malefic Houses : <span id="NM"></span></p>
+                <p> Malefic Planets : <span id="MP"></span></p>
+                <p> Benefic Planets : <span id="BP"></span></p>
+                <p> Neutral Planets : <span id="NP"></span></p>
+                <p> Vakri drishti : <span id="VD"></span></p>
+            </div>
+            <div class="outer" ng-show="toggleMessage">
+                <div class="popup">
+                    <h2>{{message}}</h2>
+                    <br />
+                    <button id="closebtn" ng-click="toggleMessage = !toggleMessage">Close</button>
+                </div>
             </div>
         </div>
-		</div>
     </div>
-	</div>
+    </div>
 </body>
 
 </html>
