@@ -1789,6 +1789,22 @@
                 }
             }
         }
+        var uchGrahas = [];
+        var neechGrahas = [];
+        function uchNeechPlanets(){
+             for (const planet in planetsTable) {
+                 for(uchHouse in planet.uch){
+                      if(houses[uchHouse].planets.includes(planet)){
+                          uchGrahas.push(planet);
+                      }
+                 }
+                 for(neechHouse in planet.neech){
+                      if(houses[neechHouse].planets.includes(planet)){
+                          neechGrahas.push(planet);
+                      }
+                 }
+             }
+        }
         $scope.toggleMessage = false;
         $scope.horoscope = {};
         $scope.currentAge = 0;
@@ -1818,6 +1834,7 @@
             getDhrishti();
             getRinReport();
             getPredictions();
+            uchNeechPlanets();
             showResult();
             $scope.horoscope = houses;
 
@@ -1956,7 +1973,7 @@
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
             document.getElementById("NP").innerHTML = neutralPlanets.toString();
-            document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: ' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: ' + rinEffects.toString().replaceAll(',', '<br>') + "<br>Predictions:" + predictions.toString().replaceAll(',', '<br>');
+            document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: ' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: ' + rinEffects.toString().replaceAll(',', '<br>') + "<br>Predictions:" + predictions.toString().replaceAll(',', '<br>') + "<br>Uch Grahas:" + uchGrahas.toString().replaceAll(',', '<br>') + "<br>Neech Grahas:" + neechGrahas.toString().replaceAll(',', '<br>');
         }
 
         // const planetDropdown = document.getElementById('planetDropdown');
