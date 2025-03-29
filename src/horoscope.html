@@ -1794,20 +1794,20 @@
         function uchNeechPlanets() {
             for (const planet in planetsTable) {
                 console.log("Checking if " + planet + " is present in its uchHouse:" + planetsTable[planet]["uch"] + " neech " + planetsTable[planet]["neech"]);
-                for (uchHouse in planetsTable[planet]["uch"]) {
-                    console.log("Uch House:" + uchHouse );
-                    console.log("Checking uch condition for " + planet + " is present in its uchHouse:" + uchHouse + " Scanning: " + houses[uchHouse.toString()].planets);
-                    if (houses[uchHouse.toString()].planets.includes(planet)) {
+                planetsTable[planet]["uch"].forEach(function (uchHouse) {
+                    console.log("Uch House:" + uchHouse);
+                    console.log("Checking uch condition for " + planet + " is present in its uchHouse:" + uchHouse + " Scanning: " + houses[uchHouse].planets);
+                    if (houses[uchHouse].planets.includes(planet)) {
                         uchGrahas.push(planet);
                     }
-                }
-                for (neechHouse in planetsTable[planet]["neech"]) {
-                    console.log("neech House:" + neechHouse );
-                    console.log("Checking neech condition for " + planet + " is present in its neechHouse:" + neechHouse + " Scanning: " + houses[neechHouse.toString()].planets);
-                    if (houses[neechHouse.toString()].planets.includes(planet)) {
+                });
+                planetsTable[planet]["neech"].forEach(function (neechHouse) {
+                    console.log("neech House:" + neechHouse);
+                    console.log("Checking neech condition for " + planet + " is present in its neechHouse:" + neechHouse + " Scanning: " + houses[neechHouse].planets);
+                    if (houses[neechHouse].planets.includes(planet)) {
                         neechGrahas.push(planet);
                     }
-                }
+                });
             }
         }
         $scope.toggleMessage = false;
