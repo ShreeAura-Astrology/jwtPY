@@ -1793,14 +1793,15 @@
         var neechGrahas = [];
         function uchNeechPlanets(){
              for (const planet in planetsTable) {
+                  console.log("Checking if " + planet + " is present in its uchHouse:" + planet.uch + " neech " +  planet.neech );
                  for(uchHouse in planet.uch){
-                     console.log("Checking if " + planet + " is present in its uchHouse:" + uchHouse + " Scanning: " + houses[uchHouse].planets );
+                     console.log("Checking uch condition for " + planet + " is present in its uchHouse:" + uchHouse + " Scanning: " + houses[uchHouse].planets );
                       if(houses[uchHouse].planets.includes(planet)){
                           uchGrahas.push(planet);
                       }
                  }
                  for(neechHouse in planet.neech){
-                      console.log("Checking if " + planet + " is present in its uchHouse:" + uchHouse + " Scanning: " + houses[uchHouse].planets );
+                      console.log("Checking neech condition for " + planet + " is present in its uchHouse:" + uchHouse + " Scanning: " + houses[uchHouse].planets );
                       if(houses[neechHouse].planets.includes(planet)){
                           neechGrahas.push(planet);
                       }
