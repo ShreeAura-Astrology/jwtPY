@@ -2115,6 +2115,166 @@
         function getRemedies() {
 
         }
+
+        const planetRepresentations = {
+    "Jupiter": [
+        "Largest planet in Solar system", "Nor too slow nor too fast", "yellow", "Rays of Jupiter are soothing for humans and life on Earth", "Benefic Planet", "yellow part in an egg has life so it denotes birth", "Prana", "Life energy", "Oxygen", "Preacher", "Mentor", "Guide", "Teacher", "Presenter", "Guru",
+        "Education Department", "Education minister", "Judge", "Religious", "Spiritual person", "Development", "Books",
+        "Growth", "Respect", "Divinity", "Nose", "Fat", "Thigh", "Feet", "Puja room", "Vedas", "Temples", "Endowment Department", "self esteem", "patience", "Big parts or bulkiest part of body", "Liver",
+        "Thighs", "Experience and maturity", "Wisdom", "nose and breathing activity (Pranayama)", "Dada", "Bujurg", "Dharamsthan", "Ancestors", "Father"
+    ],
+    "Sun": [
+        "Dominating", "Ruler", "King", "Header", "Harsh", "Hope", "Energy",
+        "Raise", "Metabolism", "Immunity", "Ego", "Attention", "Ruler",
+        "Attitude", "Confidence", "Courage", "Power", "Right Eye",
+        "Government", "Ministers", "Politics", "Administration", "(A country or company is dependent on head or-leader)",
+        "Prestige", "Status", "Respect", "Right Windows of Home",
+        "Sandalwood", "teak", "wood", "Honesty", "Govt. Job", "Father’s Job",
+        "Self respect", "Sacrifice", "Anger", "Courage", "Bones",
+        "(Sun’gravitation keeps solar system in place and-bones",
+        "keep our organs and body in place)", "Heart", "Leader", "Head of Human",
+        "Energy", "Discipline", "activeness", "Atma", "Survival" , "Father"
+    ],
+    "Moon": [
+        "Revolves around Earth", "rotates on its axis", "revolves around sun with Earth", "Fastest planet", "Sukla Paksha (Amavasya to Poornima) Growing moon and Krishna Paksha(Poornima to Amavasya) waxing moon",
+        "Mother (eyes of mother always on child)", "Nurturing",
+        "caring", "emotions", "Human cells (grow like moon phases)",
+        "Mind (Man)", "Changes", "Travels", "Left eye", "Fluids in human body",
+        "Water in blood", "Psychology", "Mother feeds child by breast – Milk and Breast and dairy products is moon", "Food", "menstrual cycle", "beauty", "Natural talent", "imagination", "Loss", "Emotions", "Creative", "Mood Swings", "Mind", "Care", "Unconditional Love", "Happiness",
+        "Mental and Emotional Power", "Pleasant Night", "loneliness",
+        "Creation of life", "Change", "Travel", "Mental Stability", "Ups and Downs", "Liquid cash or money", "Shiksha", "Samudra Karobar etc", "Mother"
+    ],
+    "Mars": [
+        "Reddish Planet", "Separated from earth", "Body", "Husband",
+        "Younger Brother", "Technology", "Engineer", "Tools",
+        "Machinery", "Rivalry", "disputes", "Anger", "Power", "energy",
+        "Adamancy", "surgery", "accident", "police", "defense force",
+        "Sportsman", "Union Leader", "Surgeon", "Cultivation",
+        "Agriculture", "eyebrows", "blood", "Male energy", "Bedroom",
+        "Oven", "Fire", "Energy meter", "Electronic transformer", "Meter Board", "Motors", "Heater’s", "stone pillars", "Pillars and beams",
+        "columns", "bat", "wicket", "minerals", "Knife", "spears", "bullet",
+        "enemy", "hard substance", "scissors", "needle", "triangle shaped",
+        "Arrow", "thorn", "horn", "Bhumi Putra (Separated from earth- that is why brother)", "From earth mars appears red All red objects: Blood", "Weapons", "danger symbols", "Thorny plants",
+        "Mars andJupiter has in-between asteroid belt so they act as soldiers and mars is called chief of them", "mars is army",
+        "police", "defense", "Land business(Real estate)", "Pottery",
+        "Tennent", "Barber", "Carpenter", "Gym Trainer", "Physical education teacher", "dentist", "tongs(Chimta)", "Oven", "heater",
+        "electric equipment's", "Constable", "Yoga teacher", "teeth patterns", "Horns", "Sharp objects", "machines", "Bone marrow",
+        "blood", "Fuel tank", "Fuel station", "Tracking", "Hiking",
+        "Anger(Gussa)", "sahanshakti", "{Mahavat}etc", "Brother"
+    ],
+    "Mercury": [
+        "Prince", "Smallest planet", "Green appearance", "Most combust",
+        "Intellect(Budhi)", "Maternal uncle", "Father in law", "friends",
+        "boyfriends", "girlfriends", "support system", "education", "Clarity",
+        "business", "business partner", "Trade and commerce",
+        "philosophy", "diplomacy", "Astrology", "Teacher", "Lecturer",
+        "Professor", "Scientist", "Research engineer", "Book publisher",
+        "Book store", "accountant", "Auditor", "poet", "writer", "comedian",
+        "actor", "Sense of humor", "lawyer", "painter", "Information", "hand",
+        "shoulder", "ball", "Skin", "Forehead", "Tongue",
+        "Communication", "throat", "Visitor hall", "study room", "Balcony",
+        "Plastering of walls", "Parapet(Chajja)", "Green cuttings", "green",
+        "tree or plants", "Beauty walls", "crops", "Leaves", "soil", "Land",
+        "(cultivation and commercial)", "Registration", "Speech",
+        "Knowledge activity", "thoughts", "tricks", "Cunningness",
+        "Softthings", "Documents", "Youth and youngness(Less than age)", "friend", "communication", "(Hand, Throat )", "Gathering of people like school",
+        "park", "playground", "banquet hall etc", "Empty land",
+        "commercial land", "publisher", "book binding", "creepers(Bel)", "Business",
+        "area of interest(Hobby)", "Detective", "Tark Shakti", "Logic",
+        "Agent", "Broker", "collector", "Vakalat karna", "reporter",
+        "Sampadak", "Banking", "Clerk", "Shilpakala etc", "Behen", "Bua", "Beti", "Mausi"
+    ],
+    "Venus": [
+        "Brightest planet(Can be easily seen in sky)", "Not follow conventional system of rotation", "rotates differently",
+        "nonconventional planet(Shukracharya brings dead to life)",
+        "Least Retrograde(18 months)", "Female",
+        "Herself(Characteristics)", "wife", "luxuries", "pleasure", "Money",
+        "Wealth", "Finance", "banking", "sukh", "Vaibhav", "Wine shop",
+        "Cattle field", "Cloth merchant", "love", "poetry", "flower", "sex",
+        "marriage", "assets", "vehicles", "house", "semen", "sperm", "uterus",
+        "ovaries", "cheek", "heart", "right side of chin", "Kitchen", "music",
+        "scent", "sweet", "intoxicants", "dance", "acting", "fancy stores",
+        "dancing ball", "cinema hall", "Fine arts", "Cinema stars", "Face", "A person is dull or bright, attractive or unattractive(all depends on venus)",
+        "Uterus is venus", "Jewelry", "bright objects", "crystals", "cosmetics", "perfumes", "vehicles", "Ghar", "Horse riding",
+        "Aunt", "Ready made Clothes", "fashion", "cosmetics",
+        "photography etc", "Wife"
+    ],
+    "Saturn": [
+        "Karma Karak", "Profession", "Work", "Job", "Industry", "Slowness",
+        "Laziness", "Chin", "Legs", "Buttocks", "Anus", "Knees", "Foreleg",
+        "Digestive Bladder", "Storeroom", "Dump yard", "Dustbin",
+        "Grinding stone", "Dining", "hall", "Windy and gastric health disorders", "Woolen clothes", "iron", "wind", "storm", "oil mines",
+        "Low paid servant", "Labour", "dark place", "cold place", "cough", "Congestion", "Longevity", "karak of Old age", "legs is Saturn",
+        "Caves", "dark room", "Quarry(Khadan)", "Doormat", "Sleep",
+        "Poverty", "Poor people", "Makan", "Chusti", "Chalaki", "Chacha", "Lobh", "Lalach",
+        "Diseases related to body", "Dukh", "Takalif", "Daridratah",
+        "leather", "Karkhana", "Cement", "Lakadi", "Loha", "Chacha"
+    ],
+    "Rahu": [
+        "Dragon head(Rahu)", "Shadow planet", "Mouth", "Snake mouth",
+        "Wide opening", "Main door", "Plastic", "Rubber", "Intestine", "Pond",
+        "lake", "Ocean", "Kaal", "Maya", "desire", "diseases", "Attachment",
+        "Breathing by mouth is rahu", "Dada dadi", "Rahu is beginning",
+        "Main door", "Openings", "Sweeper",
+        "Brilliant", "Chalak", "know how to handle the situation", "Drugs",
+        "Alcohol", "illegal activities", "Crime", "Loss", "Affairs", "Confusion",
+        "illusions", "Mirgi ki bimari", "Migrane", "Headache",
+        "gandagi", "Nasha", "jail",
+        "Mental hospital", "Short cut", "Robbery", "Shadyantra", "Mansik Rog",
+        "Atmavishwas mein kami", "Charitraheen etc", "Dada Dadi", "Sasural"
+    ],
+    "Ketu": [
+        "Shadow planet", "Detachmet", "Snake tail", "nerves", "hairs",
+        "fingers", "male genital organ", "Creepers", "Creeping insects",
+        "anus", "Small intestine", "narrow", "Moksha", "water channels",
+        "(pipes)", "electric wires", "dispersal of waste", "Giver is Ketu so penis is ketu and rahu is Cervix", "Nana nani", "Maternity",
+        "ward", "Split", "break", "Law", "Coding", "Breathing through nose is ketu", "Ketu is backdoor or the road in backside of your house", "Jail(12th house)", "Deep research",
+        "occult", "tantra mantra", "Himsa", "Visphoth", "Achanak Ghatnaye",
+        "Aadhyatma", "Ketu is discrete like discrete body parts", "gyaan",
+        "secret enemy", "Gupth Bhay", "diseases which cannot be identified by any doctors", "Sour (Khatti Cheej) etc", "Nana Nani", "Putra (Male child)", "Jamai", "Mama"
+    ]
+};
+
+function searchRepresentations() {
+    const searchTerm = document.getElementById("search-input").value.toLowerCase();
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    let foundMatch = false;
+
+    for (const planet in planetRepresentations) {
+        const matchingItems = planetRepresentations[planet].filter(item =>
+            item.toLowerCase().includes(searchTerm)
+        );
+
+        if (matchingItems.length > 0) {
+            foundMatch = true;
+            const planetResultDiv = document.createElement("div");
+            planetResultDiv.classList.add("planet-results");
+
+            const planetNameHeading = document.createElement("h3");
+            planetNameHeading.classList.add("planet-name");
+            planetNameHeading.textContent = planet;
+            planetResultDiv.appendChild(planetNameHeading);
+
+            const itemsList = document.createElement("ul");
+            matchingItems.forEach(item => {
+                const listItem = document.createElement("li");
+                listItem.classList.add("represented-item");
+                listItem.textContent = item;
+                itemsList.appendChild(listItem);
+            });
+            planetResultDiv.appendChild(itemsList);
+            resultsDiv.appendChild(planetResultDiv);
+        }
+    }
+
+    if (!foundMatch && searchTerm.trim() !== "") {
+        resultsDiv.innerHTML = "<p>No matching items found.</p>";
+    } else if (searchTerm.trim() === "") {
+        resultsDiv.innerHTML = "<p>Please enter a search term.</p>";
+    }
+}
     });
 </script>
 
@@ -2179,7 +2339,15 @@
                     </select>
 
                 </div>
-
+                <div id="search-container">
+                    <input type="text" id="search-input" placeholder="Enter search term">
+                    <button onclick="searchRepresentations()">Search</button>
+                </div>
+                
+                <div id="results-container">
+                    <h2>Search Results</h2>
+                    <div id="results"></div>
+                </div>
 
             </div>
 
