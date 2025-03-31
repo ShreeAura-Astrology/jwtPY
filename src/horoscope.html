@@ -1779,6 +1779,7 @@
         }
 
         function getPredictions() {
+            predictions = [];
             for (const house in houses) {
                 if (houses[house].planets.length > 0) {
                     houses[house].planets.forEach(function (planet) {
@@ -1792,6 +1793,8 @@
         var uchGrahas = [];
         var neechGrahas = [];
         function uchNeechPlanets() {
+            uchGrahas = [];
+            neechGrahas = []
             for (const planet in planetsTable) {
                 console.log("Checking if " + planet + " is present in its uchHouse:" + planetsTable[planet]["uch"] + " neech " + planetsTable[planet]["neech"]);
                 planetsTable[planet]["uch"].forEach(function (uchHouse) {
