@@ -1643,7 +1643,7 @@
                             houses[house].status = "M";
                             console.log(planet + " is an enemy of " + housesTable[house].karak + " hence " + house + " is malefic");
                             // Add to the list of malefic houses
-                            if (!maleficHouses.includes(house)) {
+                            if (!maleficHouses.includes(house + "")) {
                                 maleficHouses.push(house + "");
                             }
                         }
@@ -1671,7 +1671,7 @@
                                     // Mark the house Sun as malefic
                                     houses[mhouse].status = "M";
                                     console.log('House ' + mhouse + ' is malefic as ' + planet + ' is sitting with its enemy ' + enemy);
-                                    if (!maleficHouses.includes(mhouse)) {
+                                    if (!maleficHouses.includes(mhouse + "")) {
                                         maleficHouses.push(mhouse + "");
                                     }
 
@@ -1699,13 +1699,13 @@
                 console.log(`Evaluating benific Rule1 House:${house} Checking if current house ${house} if malefic: ` + maleficHouses.includes(house + ""));
                 // Check if current house is not malefic
 
-                if (houses[house].planets.length > 0 && !maleficHouses.includes(house)) {
+                if (houses[house].planets.length > 0 && !maleficHouses.includes(house + "")) {
                     //Check if current house's karak planet is present in the current house 
                     if (houses[house].planets.includes(housesTable[house].karak)) {
                         houses[house].status = "B";
                         console.log(housesTable[house].karak + " is an karak of " + house + " hence " + house + " is benific");
-                        if (!beneficHouses.includes(house)) {
-                            beneficHouses.push(house);
+                        if (!beneficHouses.includes(house + "")) {
+                            beneficHouses.push(house + "");
                         }
                     }
                     // Check if any of friend of current house's Kara planet is sitting in current house
@@ -1748,7 +1748,7 @@
             for (const house in houses) {
                 console.log(`Evaluating benefic Rule3 House:${house}`);
                 // Checking if there are more than 1 planet in the curent house and the house is Neutral - neither benefic nor malefic
-                if (houses[house].planets.length > 1 && !maleficHouses.includes(house) && !beneficHouses.includes(house)) {
+                if (houses[house].planets.length > 1 && !maleficHouses.includes(house + "") && !beneficHouses.includes(house + "")) {
                     //iterate through each plant of current house to find of if the friendly planets are present together in the house
                     houses[house].planets.forEach(function (planet) {
                         // Current Planet in check :Sun
@@ -1760,10 +1760,10 @@
                                 // Find each Karak house of current planet and mark it as benific if it not already malefic
                                 planetsTable[planet].houses.forEach(function (bhouse) {
                                     // Mark the house Sun as benific if its not already malefic
-                                    if (!maleficHouses.includes(bhouse)) {
+                                    if (!maleficHouses.includes(bhouse + "")) {
                                         houses[bhouse].status = "B";
                                         console.log('House ' + bhouse + ' is benefic as Karaka planet ' + planet + ' of House ' + bhouse + ' is sitting with its friend ' + friend + ' in house ' + house);
-                                        if (!beneficHouses.includes(bhouse)) {
+                                        if (!beneficHouses.includes(bhouse  + "")) {
                                             beneficHouses.push(bhouse + "");
                                         }
                                     }
@@ -1794,7 +1794,7 @@
         var neechGrahas = [];
         function uchNeechPlanets() {
             uchGrahas = [];
-            neechGrahas = []
+            neechGrahas = [];
             for (const planet in planetsTable) {
                 console.log("Checking if " + planet + " is present in its uchHouse:" + planetsTable[planet]["uch"] + " neech " + planetsTable[planet]["neech"]);
                 planetsTable[planet]["uch"].forEach(function (uchHouse) {
