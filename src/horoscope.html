@@ -3246,7 +3246,8 @@
                for(const comb in twoPlanets){
                     var planetCombArr = comb.split("_");
                     for (const house in houses) {
-                        if(houses[house].planets.includes(planetCombArr[0]) && houses[house].planets.includes(planetCombArr[1]){
+                        console.log("Checking if " + planetCombArr[0] + " and " + planetCombArr[1] + " in " + houses[house].planets);
+                        if(houses[house].planets.includes(planetCombArr[0]) && houses[house].planets.includes(planetCombArr[1])){
                             twoPlanetPredictions.push( "<br>" + twoPlanets[comb].combination + "<br>" + twoPlanets[comb].predictions);
                         }
                     }
