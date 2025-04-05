@@ -1,0 +1,964 @@
+var twoPlanets = {
+    "Mars_Saturn": {
+        "combination": "Mars_Saturn",
+        "mars_karak": [
+            "Brother/Husband",
+            "Accident/Surgery",
+            "Problems",
+            "Stubbornness",
+            "Land/Property",
+            "Skills "
+        ],
+        "saturn_karak": [
+            "Elder brother",
+            "Profession/ Karma",
+            "Obstacles",
+            "Problems",
+            "Longevity",
+            "Delay "
+        ],
+        "predictions": [
+            "Family faced problem after/before birth of brother .",
+            "Problem in adjustment after/before marriage., Delay in marriage",
+            "Problems in family after/before birth of brother .",
+            "Profession should be inspired by mars, some technical skills, engineering, sports , army etc.",
+            "Problems in profession, work environment not good .",
+            "There will be stubborn and irritated people in workplace ."
+        ]
+    },
+    "Mars_Rahu": {
+        "combination": "Mars_Rahu",
+        "mars_karak": [
+            "Brother/Husband",
+            "Accident/Surgery",
+            "Problems",
+            "Stubbornness",
+            "Land/Property",
+            "Skills "
+        ],
+        "rahu_karak": [
+            "Paternal Grand parents",
+            "Illusions",
+            "Problems",
+            "New Beginning",
+            "Foreign Land",
+            "Acts like Venus after/beforewards "
+        ],
+        "predictions": [
+            "Problems in husband’s life after/before marriage .",
+            "Courage/Anger expanded yoga- Will not hesitate to do bad/risky things .",
+            "Ve+Ma+Ra , Combination in female chart can show running away from home, molestation, sexual abuse etc.",
+            "Criminals / gangsters/Jail can be seen through this .",
+            "Intercaste marriage or cultural change or foreign travel after/before marriage(Female chart)",
+            "If not one of the above things can show dispute and separation in marriage ."
+        ]
+    },
+    "Mars_Ketu": {
+        "combination": "Mars_Ketu",
+        "mars_karak": [
+            "Brother/Husband",
+            "Accident/Surgery",
+            "Problems",
+            "Stubbornness",
+            "Land/Property",
+            "Skills "
+        ],
+        "ketu_karak": [
+            "Maternal Grand parents",
+            "End",
+            "Tensions",
+            "Problems",
+            "Spirituality",
+            "Dejection "
+        ],
+        "predictions": [
+            "Problems in life after/before marriage(Female chart)-",
+            "-3 Possibilities- Separation, Miscarriage, Death in Family",
+            "Remedy is Suhag things, Mangal Sutra .",
+            "Husband/Brother lives in lifelong tension .",
+            "Conflicts arguments with husband .",
+            "Husband will become spiritual after/before the marriage .",
+            "If with Ju this combination may signify multiple surgeries/accidents ."
+        ]
+    },
+    "Mercury_Jupiter": {
+        "combination": "Mercury_Jupiter",
+        "mercury_karak": [
+            "Sister/Daughter",
+            "Education",
+            "Intelligence",
+            "Neighbours / Relatives",
+            "Friends",
+            "Business "
+        ],
+        "jupiter_karak": [
+            "Jeev / Native/ Self",
+            "Religious",
+            "Wisdom",
+            "Public activity",
+            "Spirituality "
+        ],
+        "predictions": [
+            "Sister/Daughter has deep wisdom may become religious, involve in public activity .",
+            "Male Child after/before Sister/Daughter .",
+            "Eduction is smooth and good .",
+            "Native is intelligent by birth .",
+            "Education in spiritual sciences, education(B.Ed Etc.)",
+            "Relatives/Neighbours are good and pious .",
+            "If Sun with this combination , he/she is meritious student ."
+        ]
+    },
+    "Mercury_Venus": {
+        "combination": "Mercury_Venus",
+        "mercury_karak": [
+            "Sister/Daughter",
+            "Education",
+            "Intelligence",
+            "Neighbours / Relatives",
+            "Friends",
+            "Business "
+        ],
+        "venus_karak": [
+            "Wife/ Daughter",
+            "Money",
+            "Finance",
+            "Beauty/ Organized",
+            "Luxury",
+            "Happiness",
+            "Fine Arts "
+        ],
+        "predictions": [
+            "Sister/Daughter is good looking , has fine arts quality, good finances and enjoys luxuries .",
+            "Wife is very intelligent .",
+            "Wife may be a businesswomen even before marriage .",
+            "Wife has lot of friends and is very talkative .",
+            "Education may be related to fine arts, humanities, Biology, Finance .",
+            "As a business, person may have a garment shop, wine shop, Finance company etc. "
+        ]
+    },
+    "Mercury_Saturn": {
+        "combination": "Mercury_Saturn",
+        "mercury_karak": [
+            "Sister/Daughter",
+            "Education",
+            "Intelligence",
+            "Neighbours / Relatives",
+            "Friends",
+            "Business "
+        ],
+        "saturn_karak": [
+            "Elder brother",
+            "Profession/ Karma",
+            "Obstacles",
+            "Problems",
+            "Longevity "
+        ],
+        "predictions": [
+            "Kumbkaran Yoga – Idle Yoga, Person likes to sit idle and do nothing .",
+            "Lack of interest/Troubles in education/studies .",
+            "Business in background of Profession(Saturn) so native may continue family business .",
+            "Sister/Daughter lives has obstacles and troubles .",
+            "Profession is inspired by mercury .",
+            "Elder brother is born intelligent ."
+        ]
+    },
+    "Mercury_Rahu": {
+        "combination": "Mercury_Rahu",
+        "mercury_karak": [
+            "Sister/Daughter",
+            "Education",
+            "Intelligence",
+            "Neighbours / Relatives",
+            "Friends",
+            "Business "
+        ],
+        "rahu_karak": [
+            "Paternal Grand parents",
+            "Illusions",
+            "Problems",
+            "New Beginning",
+            "Foreign Land",
+            "Acts like Venus after/beforewards "
+        ],
+        "predictions": [
+            "Problem in family/New beginning after/before birth of sister/daughter .",
+            "Education can happen in foreign land .",
+            "Such a person may have 2 master degrees, there may be a break in education in between but person starts studying it again .",
+            "Person will not use his degrees correctly, later on can earn money throughthem .",
+            "Eduaction in software engineering, AI , Tantra , Mystical Sciences .",
+            "As a business can do online business, Export-Import, etc.",
+            "Grandparents are already intelligent and may be in business ."
+        ]
+    },
+    "Mercury_Ketu": {
+        "combination": "Mercury_Ketu",
+        "mercury_karak": [
+            "Sister/Daughter",
+            "Education",
+            "Intelligence",
+            "Neighbours / Relatives",
+            "Friends",
+            "Business "
+        ],
+        "ketu_karak": [
+            "Maternal Grand parents",
+            "End",
+            "Tensions",
+            "Problems",
+            "Spirituality",
+            "Dejection "
+        ],
+        "predictions": [
+            "No child after/before daughter(Female progeny)",
+            "Sister may be youngest in family, no siblings after/before younger sister .",
+            "Break in education or incomplete education .",
+            "Eduaction in Law, Occult, Vastu, Astrology, low skilled work(Barbers, food stalls etc.)",
+            "- Kujavat Ketu(Ketu acts like Mars)",
+            "Sister/Daughter has lifelong tensions/worries .",
+            "Nana-Nani are very intelligent , may have a business .",
+            "Person may go into reaseach ."
+        ]
+    },
+    "Jupiter_Venus": {
+        "combination": "Jupiter_Venus",
+        "jupiter_karak": [
+            "Jeev / Native/ Self",
+            "Religious",
+            "Wisdom",
+            "Public activity",
+            "Spirituality "
+        ],
+        "venus_karak": [
+            "Wife/ Daughter",
+            "Money",
+            "Finance",
+            "Beauty/ Organized",
+            "Luxury",
+            "Happiness",
+            "Fine Arts "
+        ],
+        "predictions": [
+            "Native is good looking and attractive .",
+            "Wife is good looking and pious and good .",
+            "Wife belongs to a prestigious and good family .",
+            "This combination gives good wealth and ensures finances .",
+            "Native is money minded, has desire for luxuries .",
+            "Native has some fine arts quality(music , dance, acting etc.)",
+            "Wife is religious/in public activity before marriage ."
+        ]
+    },
+    "Jupiter_Saturn": {
+        "combination": "Jupiter_Saturn",
+        "jupiter_karak": [
+            "Jeev / Native/ Self",
+            "Religious",
+            "Wisdom",
+            "Public activity",
+            "Spirituality "
+        ],
+        "saturn_karak": [
+            "Elder brother",
+            "Profession/ Karma",
+            "Obstacles",
+            "Problems",
+            "Longevity "
+        ],
+        "predictions": [
+            "Native’s family encountered problems after/before birth of native .",
+            "Native is lazy , does procrastination .",
+            "Profession is inspired by Jupiter",
+            "Native may have taken tuition classes , teaching profession in early years.(Not by choice) e.g. Son of a priest has do work of priest .",
+            "Native can suffer from frequent depression and life feels burdensome .",
+            "Native is pious and good ."
+        ]
+    },
+    "Jupiter_Rahu": {
+        "combination": "Jupiter_Rahu",
+        "jupiter_karak": [
+            "Jeev / Native/ Self",
+            "Religious",
+            "Wisdom",
+            "Public activity",
+            "Spirituality "
+        ],
+        "rahu_karak": [
+            "Paternal Grand parents",
+            "Illusions",
+            "Problems",
+            "New Beginning",
+            "Foreign Land",
+            "Acts like Venus after/beforewards",
+            "Tantra/Mystical sciences "
+        ],
+        "predictions": [
+            "Native’s family encountered problems after/before birth of native .",
+            "Native is a day dreamer and lives in illusions, Unlimited desires .",
+            "Father started a new venture/new beginning after/before birth of native it had problems initially , later did good .",
+            "Native has health issues(can be severe) in the 1st year of birth .",
+            "Native may develop interest in tantra , mantra ,mystical sciences. He is susceptible to paranormal energies .",
+            "Native and grandfather may look alike, Grandparents are religious .",
+            "A type of Raj yoga(Does well in materialistic world) "
+        ]
+    },
+    "Jupiter_Ketu": {
+        "combination": "Jupiter_Ketu",
+        "jupiter_karak": [
+            "Jeev / Native/ Self",
+            "Religious",
+            "Wisdom",
+            "Public activity",
+            "Spirituality "
+        ],
+        "ketu_karak": [
+            "Maternal Grand parents",
+            "End",
+            "Tensions",
+            "Problems",
+            "Spirituality",
+            "Dejection "
+        ],
+        "predictions": [
+            "Native’s family encountered problems after/before birth of native .",
+            "Native has lifelong tensions",
+            "Native is spiritual , will seek moksha , will not be reborn .",
+            "Native tries to go towards spirituality leaving materialistic world .",
+            "Ketu here can show miscarriage/mishappening after/before birth of native .",
+            "As discussed earlier Kujavat ketu(Ketu acts like Mars) it may give blockage, surgery, nervous disorder to native .",
+            "This is a combination for Nobel prize ."
+        ]
+    },
+    "Venus_Saturn": {
+        "combination": "Venus_Saturn",
+        "venus_karak": [
+            "Wife/ Daughter",
+            "Money",
+            "Finance",
+            "Beauty/ Organized",
+            "Luxury",
+            "Happiness",
+            "Fine Arts "
+        ],
+        "saturn_karak": [
+            "Elder brother",
+            "Profession/ Karma",
+            "Obstacles",
+            "Problems",
+            "Longevity "
+        ],
+        "predictions": [
+            "Progress/Prosperity In Career/Profession after/before marriage(Sure shot) .",
+            "Profession is inspired by Venus, Work environment is good(Ve in history of Sa)",
+            "Wife will face obstacles/problems in adjustment after/before marriage .",
+            "Wife may be professionally active; May also be from same profession/company .",
+            "Profession may be related to finance, banking, medicine, fine arts but not by choice .",
+            "Native will do well professionally ."
+        ]
+    },
+    "Venus_Rahu": {
+        "combination": "Venus_Rahu",
+        "venus_karak": [
+            "Wife/ Daughter",
+            "Money",
+            "Finance",
+            "Beauty/ Organized",
+            "Luxury",
+            "Happiness",
+            "Fine Arts "
+        ],
+        "rahu_karak": [
+            "Paternal Grand parents",
+            "Illusions",
+            "Problems",
+            "New Beginning",
+            "Foreign Land",
+            "Acts like Venus after/beforewards",
+            "Tantra/Mystical sciences "
+        ],
+        "predictions": [
+            "Very Beautiful wife(Venus expanded), Female herself is beautiful .",
+            "In male chart, this combination shows very strong desire for a good-looking wife .",
+            "Flirt Yoga(In Male Chart)",
+            "Grandparents are already rich, have luxurious lifestyle and comforts, may have fine arts qualities .",
+            "Problems in wife’s life after/before marriage",
+            "- Intercaste marriage, Foreign tour after/before marriage, Marriage in different culture, wife may be software engineer .",
+            "Specualtion Yoga(Can do good in Share Market) "
+        ]
+    },
+    "Venus_Ketu": {
+        "combination": "Venus_Ketu",
+        "venus_karak": [
+            "Wife/ Daughter",
+            "Money",
+            "Finance",
+            "Beauty/ Organized",
+            "Luxury",
+            "Happiness",
+            "Fine Arts "
+        ],
+        "ketu_karak": [
+            "Maternal Grand parents",
+            "End",
+            "Tensions",
+            "Problems",
+            "Spirituality",
+            "Dejection "
+        ],
+        "predictions": [
+            "Wife in lifelong tension .",
+            "Problems after/before marriage(Male chart)",
+            "- 3 possibilities- Separation, Miscarriage, Death in Family(Aspects and conjunctions change a lot of things)",
+            "Nani- Nana are already rich and have all luxuries and comforts .",
+            "Diffierence of opinion with wife.(Wife may be argumentative)",
+            "Native may have 3 bank accounts .",
+            "Wife may be youngest in her family, no siblings born after/before her ."
+        ]
+    },
+    "Saturn_Rahu": {
+        "combination": "Saturn_Rahu",
+        "saturn_karak": [
+            "Elder brother",
+            "Profession/ Karma",
+            "Obstacles",
+            "Problems",
+            "Longevity "
+        ],
+        "rahu_karak": [
+            "Paternal Grand parents",
+            "Illusions",
+            "Problems",
+            "New Beginning",
+            "Foreign Land",
+            "Acts like Venus after/beforewards",
+            "Tantra/Mystical sciences "
+        ],
+        "predictions": [
+            "Person has desire to go to foreign country and settle there .",
+            "Native cannot do great in profession at his/her birthplace, need to travel and go far away from there.(Cultural change should be there) .",
+            "Native has interest in mantra , tantra , mystical sciences, his karma is bound to it .",
+            "This combination is called Pitra Karma Dosh(Remedy- Care for elders)",
+            "Will do profession related to Rahu(IT Sector, online business, digital marketing, foreign country , MNC) .",
+            "Native can have property in 2-3 different cities .",
+            "Native is extremely talented and intelligent but seeks easy money ."
+        ]
+    },
+    "Saturn_Ketu": {
+        "combination": "Saturn_Ketu",
+        "saturn_karak": [
+            "Elder brother",
+            "Profession/ Karma",
+            "Obstacles",
+            "Problems",
+            "Longevity "
+        ],
+        "ketu_karak": [
+            "Maternal Grand parents",
+            "End",
+            "Tensions",
+            "Problems",
+            "Spirituality",
+            "Dejection "
+        ],
+        "predictions": [
+            "Hurdles/Problems/Obstacles in professional life .",
+            "Native does not like to work under anybody, can fight and leave job(Does not like orders)",
+            "Native will desire to do something of his own.(Own Business)",
+            "Unsuccessful professional life, three or more changes in job, career .",
+            "Can do well professionally as an astrologer, occultist, tarot reader, Yoga instructor, spiritual field, Law, Army, Surgery, Low skilled work etc.",
+            "Person may like meditation and it may be a remedy for his/her restlessness .",
+            "Native born to end his karma(Karmic cycle) may desire moksha ."
+        ]
+    },
+    "Sun_Moon": {
+        "combination": "Sun_Moon",
+        "sun_karak": [
+            "Father",
+            "Son",
+            "Government",
+            "Name/Fame",
+            "Dominance,Ego",
+            "Deity",
+            "Attitude,Authority"
+        ],
+        "moon_karak": [
+            "Mother/Daughter",
+            "Mind",
+            "Changes",
+            "Travels "
+        ],
+        "predictions": [
+            "Father’s life encountered changes after/before the birth of native, changes may include job change, city change, house change, travel etc.(As moon’s degree is ahead of Sun), Or father may be in transferrable or travelling job .",
+            "Mother belonged to a family with name , fame and status, she is dominating and will rule the house.(Sun is in history of Moon)",
+            "Mother is pious, and native’s mind has pious thoughts .",
+            "Native is very intelligent and will get out of any problem using his/her intelligence. (Sun gives luminosity to mind) "
+        ]
+    },
+    "Sun_Mars": {
+        "combination": "Sun_Mars",
+        "sun_karak": [
+            "Father",
+            "Son",
+            "Government",
+            "Name/Fame",
+            "Dominance , Ego",
+            "Deity",
+            "Attitude,Authority "
+        ],
+        "mars_karak": [
+            "Brother/Husband",
+            "Accident/Surgery",
+            "Problems",
+            "Stubbornness",
+            "Land/Property",
+            "Skills "
+        ],
+        "predictions": [
+            "Father may have purchased a land/property after/before birth of native .",
+            "Father will encounter an accident/surgery in his lifetime .",
+            "Father’s life encountered obstructions/problems after/before birth of native .",
+            "Father and brother look alike; Habits may be similar .",
+            "Father is stubborn .",
+            "Husband is dominating, egoistic and comes from a status family .",
+            "Brother is born dominating and egoistic ."
+        ]
+    },
+    "Sun_Mercury": {
+        "combination": "Sun_Mercury",
+        "sun_karak": [
+            "Father",
+            "Son",
+            "Government",
+            "Name/Fame",
+            "Dominance , Ego",
+            "Deity",
+            "Attitude,Authority"
+        ],
+        "mercury_karak": [
+            "Sister/Daughter",
+            "Education",
+            "Intelligence",
+            "Neighbours / Relatives",
+            "Friends",
+            "Business "
+        ],
+        "predictions": [
+            "Father is very intelligent .",
+            "Father may have started a business after/before birth of native .",
+            "Father is business minded .",
+            "Sister/ Daughter is dominating by birth (Can be a tool to find which daughter is Ve/Me/Mo)",
+            "Neighbours/ Relatives may be powerful/in politics/in govt. job ."
+        ]
+    },
+    "Sun_Jupiter": {
+        "combination": "Sun_Jupiter",
+        "sun_karak": [
+            "Father",
+            "Son",
+            "Government",
+            "Name/Fame",
+            "Dominance , Ego",
+            "Deity",
+            "Attitude,Authority"
+        ],
+        "jupiter_karak": [
+            "Jeev / Native/ Self",
+            "Religious",
+            "Wisdom",
+            "Public activity",
+            "Spirituality "
+        ],
+        "predictions": [
+            "Father and Native look alike, or habits are similar .",
+            "Father became religious after/before birth of native .",
+            "Father may have joined social work, institution after/before birth of native .",
+            "Father has great wisdom .",
+            "Native has ego, dominance from birth .",
+            "Native belongs to a family that has name, fame and status ."
+        ]
+    },
+    "Sun_Venus": {
+        "combination": "Sun_Venus",
+        "sun_karak": [
+            "Father",
+            "Son",
+            "Government",
+            "Name/Fame",
+            "Dominance , Ego",
+            "Deity",
+            "Attitude,Authority"
+        ],
+        "venus_karak": [
+            "Wife/ Daughter",
+            "Money",
+            "Finance",
+            "Beauty/ Organized",
+            "Luxury",
+            "Happiness",
+            "Fine Arts "
+        ],
+        "predictions": [
+            "Bhagyashali Santan- Father got prosperity(Finances) after/before native’s birth .",
+            "Father/Son will be good looking and organized .",
+            "Father has any fine art quality(Music, dance, acting etc.)",
+            "Wife belongs to status family, wife will rule the house has ego, attitude and dominance even before marriage .",
+            "Wife may belong to same cast/ Same city ."
+        ]
+    },
+    "Sun_Saturn": {
+        "combination": "Sun_Saturn",
+        "sun_karak": [
+            "Father",
+            "Son",
+            "Government",
+            "Name/Fame",
+            "Dominance , Ego",
+            "Deity",
+            "Attitude,Authority"
+        ],
+        "saturn_karak": [
+            "Elder brother",
+            "Profession/ Karma",
+            "Obstacles",
+            "Problems",
+            "Longevity "
+        ],
+        "predictions": [
+            "Father faced obstacles , problems after/before birth of native .",
+            "Profession of native may be inspired by father .",
+            "Native may continue father’s business/profession or may do something of his/her father’s will .",
+            "Elder brother has ego, dominance from his birth .",
+            "Father and elder brother may look alike, or habits may be similar ."
+        ]
+    },
+    "Sun_Rahu": {
+        "combination": "Sun_Rahu",
+        "sun_karak": [
+            "Father",
+            "Son",
+            "Government",
+            "Name/Fame",
+            "Dominance , Ego",
+            "Deity",
+            "Attitude,Authority"
+        ],
+        "rahu_karak": [
+            "Paternal Grand parents",
+            "Illusions",
+            "Problems",
+            "New Beginning",
+            "Foreign Land",
+            "Acts like Venus after/beforewards"
+        ],
+        "predictions": [
+            "Father faced obstacles , problems after/before birth of native .",
+            "Father is a daydreamer, lives in illusion",
+            "Father may start something new; the venture will have problems in beginning but later does good .",
+            "Father and grandfather look alike.(If Ju also there , three of them)",
+            "Native may have issues/conflicts with father",
+            "Native will have trouble in having a male progeny, if it did happen the health of the child must be taken care of .",
+            "Dadi- Dadi has name , fame and status ."
+        ]
+    },
+    "Sun_Ketu": {
+        "combination": "Sun_Ketu",
+        "sun_karak": [
+            "Father",
+            "Son",
+            "Government",
+            "Name/Fame",
+            "Dominance , Ego",
+            "Deity",
+            "Attitude,Authority"
+        ],
+        "ketu_karak": [
+            "Maternal Grand parents",
+            "End",
+            "Tensions",
+            "Problems",
+            "Spirituality "
+        ],
+        "predictions": [
+            "Father faced obstacles , problems after/before birth of native .",
+            "Father may be the youngest child , no further siblings after/before birth of father .",
+            "Father has lifelong tension, worry .",
+            "Father may be spiritual and like a yogi .",
+            "If Son is born as the first child, problem in getting second child .",
+            "Nana- Nani has name, fame and status already ."
+        ]
+    },
+    "Moon_Mars": {
+        "combination": "Moon_Mars",
+        "moon_karak": [
+            "Mother/Daughter",
+            "Mind",
+            "Changes",
+            "Travels/ Distant Place",
+            "Nurture/ Care",
+            "Food "
+        ],
+        "mars_karak": [
+            "Brother/Husband",
+            "Accident/Surgery",
+            "Problems",
+            "Stubbornness, Roughness",
+            "Land/Property",
+            "Skills , Courage",
+            "Anger , Power "
+        ],
+        "predictions": [
+            "Mother will face accident/ surgery in her lifetime .",
+            "Mother will be dominating, rough, harsh, uses foul language, courageous .",
+            "Husband may come from a distant place .",
+            "Brother/Husband will be caring and nurturing .",
+            "If this combination is there in male chart , the person has tendency to see women with wrong intentions.(don’t take anything too seriously aspects, conjunctions change a lot of things) ."
+        ]
+    },
+    "Moon_Mercury": {
+        "combination": "Moon_Mercury",
+        "moon_karak": [
+            "Mother/Daughter",
+            "Mind",
+            "Changes",
+            "Travels/ Distant Place",
+            "Nurture/ Care",
+            "Food "
+        ],
+        "mercury_karak": [
+            "Sister/Daughter",
+            "Education",
+            "Intelligence",
+            "Neighbours / Relatives",
+            "Friends",
+            "Business "
+        ],
+        "predictions": [
+            "Mother is very intelligent .",
+            "Mother may become businesswomen after/before birth of native .",
+            "Sister/Daughter will have good thoughts and well educated",
+            "Native has elephant memory.(Cannot forget anything).",
+            "- If moon is afflicted will forget things .",
+            "Native faces changes in education beyond his control.(Moon is behind)",
+            "Native is born to be cheated, will not get money back if given to friend, relatives, gets cheated in relationship, business partnership(Kapat Yog) "
+        ]
+    },
+    "Moon_Jupiter": {
+        "combination": "Moon_Jupiter",
+        "moon_karak": [
+            "Mother/Daughter",
+            "Mind",
+            "Changes",
+            "Travels/ Distant Place",
+            "Nurture/ Care",
+            "Food "
+        ],
+        "jupiter_karak": [
+            "Jeev / Native/ Self",
+            "Religious",
+            "Wisdom",
+            "Public activity",
+            "Spirituality "
+        ],
+        "predictions": [
+            "Mother is very intelligent and has wisdom .",
+            "Mother and native look alike, habits may be similar .",
+            "Mother may be a social worker, joined a social group after/before birth of native .",
+            "Mother is religious and pious .",
+            "Native has flickering mind, changes in life beyond control, travels .",
+            "Native is a good person, caring and nurturing has good thoughts .",
+            "Native is fond of dairy products and sweets .",
+            "Native’s family may have encountered a change before his/her birth ."
+        ]
+    },
+    "Moon_Venus": {
+        "combination": "Moon_Venus",
+        "moon_karak": [
+            "Mother/Daughter",
+            "Mind",
+            "Changes",
+            "Travels/ Distant Place",
+            "Nurture/ Care",
+            "Food "
+        ],
+        "venus_karak": [
+            "Wife/ Daughter",
+            "Money",
+            "Finance",
+            "Beauty/ Organized",
+            "Luxury, Comforts",
+            "Happiness",
+            "Fine Arts "
+        ],
+        "predictions": [
+            "Mother is good looking, organized, money minded, may have fine arts qualities",
+            "Mother will get finances, luxuries, comforts after/before birth of native .",
+            "Wife may have encountered changes in her life before marriage .",
+            "Wife may have an elder sister, or she may come from a place near water .",
+            "Mother may have a younger sister",
+            "Wife will overpower mother(Ve degree is ahead of Mo)",
+            "Wife, Mother or females in house suffers from ill health ."
+        ]
+    },
+    "Moon_Saturn": {
+        "combination": "Moon_Saturn",
+        "moon_karak": [
+            "Mother/Daughter",
+            "Mind",
+            "Changes",
+            "Travels/ Distant Place",
+            "Nurture/ Care",
+            "Food "
+        ],
+        "saturn_karak": [
+            "Elder brother",
+            "Profession/ Karma",
+            "Obstacles",
+            "Problems",
+            "Longevity "
+        ],
+        "predictions": [
+            "Mother faced problems, obstacles after/before birth of native .",
+            "Mother may be professionally active .",
+            "Profession may be inspired by moon(Food, travels, economics , psychology etc.)",
+            "Mother is hardworking .",
+            "Mind feels like it is stuck, and person feels that he/she is not able to move forward in life.(depression)",
+            "Frequent cold and cough, asthma etc. "
+        ]
+    },
+    "Moon_Rahu": {
+        "combination": "Moon_Rahu",
+        "moon_karak": [
+            "Mother/Daughter",
+            "Mind",
+            "Changes",
+            "Travels/ Distant Place",
+            "Nurture/ Care",
+            "Food "
+        ],
+        "rahu_karak": [
+            "Paternal Grand parents",
+            "Illusions",
+            "Problems",
+            "New Beginning",
+            "Foreign Land",
+            "Acts like Venus after/beforewards"
+        ],
+        "predictions": [
+            "Mother faced problems, obstacles after/before birth of native, she overcomes later .",
+            "Mind lives in daydreaming, always in illusions.(Can be said for mother also) .",
+            "Mind is very intuitive .",
+            "Native does over expenses; money does not stay .",
+            "Paternal grandparents migrated from distant place .",
+            "Mother is homemaker, may be less educated but will always care for family ."
+        ]
+    },
+    "Moon_Ketu": {
+        "combination": "Moon_Ketu",
+        "moon_karak": [
+            "Mother/Daughter",
+            "Mind",
+            "Changes",
+            "Travels/ Distant Place",
+            "Nurture/ Care",
+            "Food "
+        ],
+        "ketu_karak": [
+            "Maternal Grand parents",
+            "End",
+            "Tensions",
+            "Problems",
+            "Spirituality",
+            "Dejection "
+        ],
+        "predictions": [
+            "Mother faced problems, obstacles after/before birth of native .",
+            "Mother/ Daughter in lifelong tensions.(Mind is also in tension)",
+            "Mind has spiritual thoughts; mother may become spiritual",
+            "Research mind or sometimes mental retardation .",
+            "No progeny after/before female progeny .",
+            "Mother may be the last child, no further siblings .",
+            "Nana- Nani may have migrated from distant land ."
+        ]
+    },
+    "Mars_Mercury": {
+        "combination": "Mars_Mercury",
+        "mars_karak": [
+            "Brother/Husband",
+            "Accident/Surgery",
+            "Problems",
+            "Stubbornness",
+            "Land/Property",
+            "Skills "
+        ],
+        "mercury_karak": [
+            "Sister/Daughter",
+            "Education",
+            "Intelligence",
+            "Neighbours / Relatives",
+            "Friends",
+            "Business",
+            "Commercial "
+        ],
+        "predictions": [
+            "Native’s brother is intelligent and well educated .",
+            "Native can have land/property at commercial place .",
+            "Sister/ Daughter may be born by surgery, may have a birth mark,may have died due to accident in past life .",
+            "Problems before birth of sister/daughter .",
+            "Good calculation power and mathematics .",
+            "Neighbors and relatives are stubborn and quarrelsome ."
+        ]
+    },
+    "Mars_Jupiter": {
+        "combination": "Mars_Jupiter",
+        "mars_karak": [
+            "Brother/Husband",
+            "Accident/Surgery",
+            "Problems",
+            "Stubbornness",
+            "Land/Property",
+            "Skills "
+        ],
+        "jupiter_karak": [
+            "Jeev / Native/ Self",
+            "Religious",
+            "Wisdom",
+            "Public activity",
+            "Spirituality "
+        ],
+        "predictions": [
+            "Native’s land/property may be near school, public place, place of social gathering, temple etc.",
+            "Native may have died due to surgery in past life, may have a birthmark .",
+            "Native may be born by surgery .",
+            "Native and brother look alike, good compatibility , habits may be similar .",
+            "Husband will become spiritual and get involved in public activity after/before marriage .",
+            "Husband will have wisdom and is pious and good ."
+        ]
+    },
+    "Mars_Venus": {
+        "combination": "Mars_Venus",
+        "mars_karak": [
+            "Brother/Husband",
+            "Accident/Surgery",
+            "Problems",
+            "Stubbornness",
+            "Land/Property",
+            "Skills "
+        ],
+        "venus_karak": [
+            "Wife/ Daughter",
+            "Money",
+            "Finance",
+            "Beauty/ Organized",
+            "Luxury, Comforts",
+            "Happiness",
+            "Fine Arts "
+        ],
+        "predictions": [
+            "Brother/ Husband is good looking and organized .",
+            "Native is also attractive and good looking .",
+            "Husband and wife may be together in past life also .",
+            "Land/property may be near chemist shop/ garment store .",
+            "Native’s wife had problems before marriage .",
+            "Brother may have qualities of fine arts(sports, music, acting etc.)",
+            "Bhatti Yog- Always ready to do good for others.- As a reward will get a good and beautiful property ."
+        ]
+    }
+}
