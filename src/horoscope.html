@@ -1982,6 +1982,9 @@
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
             document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString();
+            if(isMangalBadh){
+                document.getElementById("NP").innerHTML +=  mangalBadhRemedies;
+            }
             document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: ' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: ' + rinEffects.toString().replaceAll(',', '<br>') + "<br>Uch Grahas:" + uchGrahas.toString().replaceAll(',', '<br>') + "<br>Neech Grahas:" + neechGrahas.toString().replaceAll(',', '<br>') + "<br>Predictions:" + predictions.toString().replaceAll(',', '<br>') + twoPlanetPredictions.toString().replaceAll(',', '<br>');
         }
 
@@ -3335,6 +3338,44 @@
             isMangalBadh = checkMarsBadh(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
         }
+
+        var mangalBadhRemedies = `Remedy for Mangal Baddh
+ 1.Teen dhatu (1) 1 gram sona, 2 gram chandi aur 4 gram
+ tamba ka chhalla ya kada pehne (bina jod wala).
+ 2. Desi khand mitti ke bartan mein bharkar virane mein
+ dabaye.
+ 3. Stri 34 gram ka bina jod wala chandi ka kada pehne.
+ Purush 52 gram ka bina jod wala chandi ka kada pehne.
+ 4.Mangal Budh = Shani ke saanp ka vish, ya Mangal Budh
+ Shani ki yuti ho to Mrig chhala (hiran ki khaal) ko apne
+ paas rakhe (Mrig chhala par saanp nahi chadhta).
+ 5. Ketu ke bure prabhav ko door karne se labh hoga.
+ 6. Chandra jis bhav mein ho uska upay labhdayak hoga.
+ (Chandra aayu ka swami hai aur Mangal Baddh sabke liye
+ maut ka phanda hai. Jahan Chandra hoga wahan Mangal
+ Baddh nahi hoga. Jahan Mangal Baddh hoga wahan
+ Chandra nahi hoga.)
+ 7.Dharm Sthan Mein Batase Chadhana Mangal-Budh
+Shani Ke Anisht Prabhav Ko Door Karta Hai
+ Advance lalkitab
+Team Mahesh Mankar
+ 8.Pratidin Surya Ko Meetha Pani Dena Shubhfal Dayak
+ Hoga.
+ 9. Mangal Baddh Ke Samay Mandir Mein Jane Se Mangal
+ Baddh Ka Prabhav Nasht Ho Jayega.
+ 10. Pakshiyon Ko Rozana Kuch Meetha Daalain.
+ 11. Mehmanon Ko Meetha Avashya Dein.
+ 12. Rewdiya Jal Pravah Karein.
+ 13. Tandoor Lagi Roti Gareeb Ko Ya Kutte Ko Dein.
+ 14. Har Roz Subah Pani Se Daant Saaf Karein.
+ 15.Bhai Se Jhagda Na Karein.
+ 16. Hanuman Chalisa Ka Paath Karein.
+ 17. Chandi Ki Dibbi Mein Chawal Ya Jal Daal Kar Ghar
+ Mein Rakhein.
+ 18. Tambe ko dibbi mein saboot moong bhar kar apne ghar
+ mein rakhe.`;
+
+
     });
 </script>
 
