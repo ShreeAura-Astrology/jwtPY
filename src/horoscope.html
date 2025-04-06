@@ -3331,7 +3331,7 @@
             for (const house in houses) {
                 for (planet in planetSnapShot)
                     if (houses[house].planets.includes(planet)) {
-                        planetSnapShot.planet = parseInt(house);
+                        planetSnapShot[planet] = parseInt(house);
                     }
             }
             console.log("Planet SnapShot: " , planetSnapShot);
