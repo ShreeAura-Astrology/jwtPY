@@ -1546,7 +1546,9 @@
                 blindPlanets.push("Rathand Kundali present: Native will have unstable profression and disturbed mental peace with lack of domestic happiness");
             }
         }
-
+        var drishtiRelation = { "friendly" : [],
+            "enmical" : []
+         };
         function getDhrishti() {
             for (const house in houses) {
                 if (housesTable[house].drishti.length > 0 && houses[house].planets.length > 0) {
@@ -1556,14 +1558,27 @@
                         houses[house].planets.forEach(function (planetofcurrenthouse) {
                             if (houses[drishtitoHouse].planets.length > 0) {
                                 //drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% drishti on planet: ' + houses[drishtitoHouse].planets);
+                                var dhristiPair = {
+                                    "from": "",
+                                    "to" : "",
+                                    "type" : ""
+                                }
                                 houses[drishtitoHouse].planets.forEach(function (planetOfToDrishtiHouse) {
                                     if (planetsTable[planetofcurrenthouse].friends.includes(planetOfToDrishtiHouse)) {
                                         balaOfPlanets[planetOfToDrishtiHouse] += 100;
                                         drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% friendly drishti on planet: ' + planetOfToDrishtiHouse);
+                                        dhristiPair.from = planetofcurrenthouse;
+                                        dhristiPair.to   = planetOfToDrishtiHouse;
+                                        dhristiPair.type = "friendly";
+                                        drishtiRelation.friendly.push(dhristiPair); 
                                     }
                                     else if (planetsTable[planetofcurrenthouse].enemies.includes(planetOfToDrishtiHouse)) {
                                         balaOfPlanets[planetOfToDrishtiHouse] -= 100;
                                         drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% enimical drishti on planet: ' + planetOfToDrishtiHouse);
+                                        dhristiPair.from = planetofcurrenthouse;
+                                        dhristiPair.to   = planetOfToDrishtiHouse;
+                                        dhristiPair.type = "enmical";
+                                        drishtiRelation.enmical.push(dhristiPair); 
                                     }
                                 });
                             }
@@ -1575,6 +1590,7 @@
             for (planet in balaOfPlanets) {
                 bala.push(planet + " : " + balaOfPlanets[planet]);
             }
+            console.log("Dhristi Relationship: ",drishtiRelation);
         }
 
         function checkRealityOfNeutralHousesAndRakeshEffect(houses) {
@@ -1811,6 +1827,7 @@
                 });
             }
         }
+
         $scope.toggleMessage = false;
         $scope.horoscope = {};
         $scope.currentAge = 0;
@@ -1981,9 +1998,12 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString();
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() +  "<br> Mangal Dosh:" + isMangalDosh.toString()
             if(isMangalBadh){
                 document.getElementById("NP").innerHTML +=  mangalBadhRemedies;
+            }
+            if(isMangalDosh){
+                document.getElementById("NP").innerHTML +=  mangalDoshRemedies;
             }
             document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: ' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: ' + rinEffects.toString().replaceAll(',', '<br>') + "<br>Uch Grahas:" + uchGrahas.toString().replaceAll(',', '<br>') + "<br>Neech Grahas:" + neechGrahas.toString().replaceAll(',', '<br>') + "<br>Predictions:" + predictions.toString().replaceAll(',', '<br>') + twoPlanetPredictions.toString().replaceAll(',', '<br>');
         }
@@ -3316,6 +3336,24 @@
             return false; // Mars Baddh is not present based on the conditions checked
         }
         var isMangalBadh = false;
+        var isMangalDosh = false;
+        function checkMangalDosh(horoscope){
+            // Check if the horoscope object is valid and contains necessary data
+            if (!horoscope || typeof horoscope !== 'object') {
+                console.error("Invalid horoscope input.");
+                return false;
+            }
+
+            const { Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu } = horoscope;
+
+            // Helper function to check if planets are in specific houses
+            const isInHouse = (planet, houses) => houses.includes(horoscope[planet]);
+
+            if(isInHouse('Mars', [1,4,7,8,12])){
+                return true;
+            }
+            return false;
+        }
         function getPlanetHouses(houses) {
             var planetSnapShot = {
                 Sun: 1,
@@ -3336,9 +3374,27 @@
             }
             console.log("Planet SnapShot: " , planetSnapShot);
             isMangalBadh = checkMarsBadh(planetSnapShot);
+            isMangalDosh = checkMangalDosh(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
+            console.log("Mangal Dosh Result: " + isMangalDosh);
         }
-
+        var mangalDoshRemedies = `<br>Remedy for Mangal Dosh<br>
+        1 House - Silver Chain or Offer Milk + Honey to Shivji on Tuesdays
+        4 House - Offer Sweet Milk to Banyan tree for 43 Days or Wear Silver square in a silver chain.
+                  To avoid havoc from fire, place empty bags of sugar on the roof of your house, shop or factory.
+                  Always keep a square piece of silver with you.
+                  Keep away from black, one-eyed or disabled person.
+        7 House - Place solid piece of silver in the house for prosperity.
+                  Always offer sweets to daughter, sister, sister-in-law and widows.
+                  Repeatedly build a small wall and destroy it.
+        8 House - Obtain blessings of widows and wear a silver chain.
+                  Offer sweet loaves of bread prepared on Tandoor to dogs.
+                  Take your meals in the kitchen.
+                  Build a small dark room at the end of your house and do not allow sun light to enter it.
+                  Offer rice, jaggery and gram pulse at religious places of worship.
+        12 House - Take honey the first thing in the morning.
+                   Eating sweets and offering sweets to another person will increase the wealth of the native.
+        `;
         var mangalBadhRemedies = `<br>Remedy for Mangal Baddh<br>
  <br>1.Teen dhatu (1) 1 gram sona, 2 gram chandi aur 4 gram
  tamba ka chhalla ya kada pehne (bina jod wala).
