@@ -1517,15 +1517,19 @@
             if (houses["8"].planets.length > 0 && houses["2"].planets.length > 0) {
                 console.log(houses["8"].planets + ' is/are having vakri drishti on ' + houses["2"].planets);
                 vakri.push(houses["8"].planets + ' is/are having vakri drishti on ' + houses["2"].planets);
+                drishtiRelation.enmical.push({"from" :  houses["8"].planets, "to" : houses["2"].planets , "type" : "vakri"});
             }
             if (houses["9"].planets.includes("Mercury") && houses["3"].planets.length > 0) {
                 vakri.push('Mercury of 9th House is vakri drishti on ' + houses["3"].planets);
+                drishtiRelation.enmical.push({"from" :  "Mercury", "to" : houses["3"].planets , "type" : "vakri"});
             }
             if (houses["12"].planets.includes("Mercury") && houses["6"].planets.length > 0) {
-                vakri.push('Mercury of 12th house is having vakri drishti on ' + houses["6"].planets);
+                vakri.push('Mercury of 12th house is having vakri drishti on ' + houses["6"].planets);;
+                drishtiRelation.enmical.push({"from" :  "Mercury", "to" : houses["6"].planets , "type" : "vakri"});
             }
             if (houses["6"].planets.includes("Saturn") && houses["2"].planets.length > 0) {
-                vakri.push('Saturn of 6th House is having vakri drishti on ' + houses["6"].planets);
+                vakri.push('Saturn of 6th House is having vakri drishti on ' + houses["2"].planets);
+                drishtiRelation.enmical.push({"from" :  "Saturn", "to" : houses["2"].planets , "type" : "vakri"});
             }
         }
 
@@ -1558,12 +1562,13 @@
                         houses[house].planets.forEach(function (planetofcurrenthouse) {
                             if (houses[drishtitoHouse].planets.length > 0) {
                                 //drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% drishti on planet: ' + houses[drishtitoHouse].planets);
-                                var dhristiPair = {
+                                
+                                houses[drishtitoHouse].planets.forEach(function (planetOfToDrishtiHouse) {
+                                    var dhristiPair = {
                                     "from": "",
                                     "to" : "",
                                     "type" : ""
-                                }
-                                houses[drishtitoHouse].planets.forEach(function (planetOfToDrishtiHouse) {
+                                };
                                     if (planetsTable[planetofcurrenthouse].friends.includes(planetOfToDrishtiHouse)) {
                                         balaOfPlanets[planetOfToDrishtiHouse] += 100;
                                         drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% friendly drishti on planet: ' + planetOfToDrishtiHouse);
@@ -2116,7 +2121,7 @@
             }
 
             // Sva Rin
-            if (houses[5].planets.includes("Venus") || houses[5].planets.includes("Saturn") || houses[5].planets.includes("Rahu") || houses[5].planets.includes("Ketu")) {
+            if (houses[5].planets.includes("Venus") || houses[5].planets.includes("Saturn") ||  houses[5].planets.includes("Rahu") || houses[5].planets.includes("Ketu")) {
                 rinEffects.push("Sva Rin detected in 5th House due to presence of Ketu/Venus/Rahu/Saturn");
             }
 
@@ -2129,9 +2134,32 @@
             }
 
             // Dargahi Rin or Nature's Rin
-            if (houses[6].planets.includes("Mars") || houses[6].planets.includes("Moon")) {
+            if (houses[6].planets.includes("Mars") && houses[6].planets.includes("Moon")) {
                 rinEffects.push("Dargahi Rin detected in 6th House due to presence of Mars/Moon");
             }
+
+            //Daughter's Debt
+            if (houses[3].planets.includes("Moon") || houses[6].planets.includes("Moon")) {
+                rinEffects.push("Daughter's Rin detected in 3rd or 6th House due to presence of Moon");
+            }
+
+            //Brother's Debt/ Relative's Debt
+            if (houses[1].planets.includes("Mercury") || houses[1].planets.includes("Ketu") || houses[8].planets.includes("Mercury") || houses[8].planets.includes("Ketu")) {
+                rinEffects.push("Brother's Debt/ Relative's Debt Rin detected in 1st or 8th House due to presence of Mercury/Ketu");
+            }
+
+            //Oppressor's Debt/ Atyachar Rin
+            if (houses[10].planets.includes("Sun") || houses[10].planets.includes("Moon") || houses[10].planets.includes("Mars")) {
+                rinEffects.push("Oppressor's Debt/ Atyachar Rin detected in 10th House due to presence of Sun/Moon/Mars");
+            }
+            else if (houses[11].planets.includes("Sun") || houses[11].planets.includes("Moon") || houses[11].planets.includes("Mars")) {
+                rinEffects.push("Oppressor's Debt/ Atyachar Rin detected in 11th House due to presence of Sun/Moon/Mars");
+            }
+            // Unborn
+            if (houses[12].planets.includes("Sun") && houses[12].planets.includes("Venus") && houses[12].planets.includes("Mars")) {
+                rinEffects.push("Unborn Rin detected in 12th House due to presence of Sun/Venus/Mars");
+            }
+            
         }
 
 
