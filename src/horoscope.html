@@ -243,7 +243,10 @@
         position: relative;
         left: 8%;
     }
-
+    .varshphalMonthCtrl{
+        position: relative;
+        left :8%;
+    }
     .popup {
         background-color: #fafafa;
         width: 366px;
@@ -1472,8 +1475,7 @@
             $scope.varshphalChart = varshphalHouses;
             $scope.currentVarshMonth = $scope.selectedMonth;
         }
-        $scope.resetVarshphal = function()
-        {
+        $scope.resetVarshphal = function () {
             $scope.varshphalChart = varshphalHouses;
             $scope.currentVarshMonth = $scope.selectedMonth;
         }
@@ -3520,11 +3522,10 @@ Team Mahesh Mankar
             }
             var currentMonth = parseInt($scope.currentVarshMonth);
             var nextMonth = currentMonth - index;
-            if(nextMonth > 12)
-            {
+            if (nextMonth > 12) {
                 nextMonth = nextMonth - 12;
             }
-            else if(nextMonth == 0){
+            else if (nextMonth == 0) {
                 nextMonth = 12;
             }
             $scope.currentVarshMonth = nextMonth + "";
@@ -3805,13 +3806,14 @@ relaxation from Son as Ketu belongs to Son.</pre>
                 </span>
                 <span class="varshphalCtrl" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
                     <button ng-click="prevVarshphal()">< Previous Age</button>
-                            <button ng-click="saveHoroscope('Varshphal')">Save Varshaphal</button>
-                            <button ng-click="nextVarshphal()">Next Age ></button>
-                            <button ng-click="rotateVarshphal('left')"> Next Month ></button>
-                            <button ng-click="resetVarshphal()">Reset Varshaphal</button>
-                            <button ng-click="rotateVarshphal('right')">< Previous Month</button>
-                            
+                    <button ng-click="saveHoroscope('Varshphal')">Save Varshaphal</button>
+                    <button ng-click="nextVarshphal()">Next Age ></button>
                 </span>
+                <div class="varshphalMonthCtrl" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
+                    <button ng-click="rotateVarshphal('right')">< Previous Month</button>
+                    <button ng-click="resetVarshphal()">Reset Varshaphal</button>
+                    <button ng-click="rotateVarshphal('left')"> Next Month ></button>
+                </div>
                 <p> Melefic Houses : <span id="M"></span></p>
                 <p> Benefic Houses : <span id="B"></span></p>
                 <p> Neutral Benific Houses : <span id="NB"></span></p>
