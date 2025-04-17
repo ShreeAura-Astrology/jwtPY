@@ -3531,7 +3531,7 @@ Team Mahesh Mankar
             var rotatedHouse = $scope.cyclicRotateArray(houseIndex, index);
             var rotatedVarshphal = JSON.parse(JSON.stringify($scope.varshphalChart));
             houseIndex.forEach(function (hnumber, currIndex) {
-                rotatedVarshphal[rotatedHouse[currIndex]] = rotateChart[houseIndex[currIndex]];
+                rotatedVarshphal[rotatedHouse[currIndex]] = varshphalChart[houseIndex[currIndex]];
             });
             houseIndex = rotatedHouse;
             $scope.varshphalChart = rotatedVarshphal;
