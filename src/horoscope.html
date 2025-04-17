@@ -3530,7 +3530,7 @@ Team Mahesh Mankar
                 nextMonth = 12;
             }
             $scope.currentVarshMonth = nextMonth + "";
-            var rotatedHouse = cyclicRotateArray(houseIndex, -1);
+            var rotatedHouse = $scope.cyclicRotateArray(houseIndex, -1);
             var rotatedVarshphal = JSON.parse(JSON.stringify($scope.varshphalChart));
             houseIndex.forEach(function (hnumber, currIndex) {
                 rotatedVarshphal[rotatedHouse[currIndex]] = rotateChart[houseIndex[currIndex]];
