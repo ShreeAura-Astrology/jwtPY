@@ -482,8 +482,8 @@
                     };
                 }
                 else {
-                    $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {};
-                    $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
+                    $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge + "_" + $scope.monthName[$scope.currentVarshMonth]] = {};
+                    $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge + "_" + $scope.monthName[$scope.currentVarshMonth]] = {
                         "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge + "_" + $scope.monthName[$scope.currentVarshMonth],
                         "horoscope": $scope.varshphalChart,
                         "date": (new Date()).toDateString(),
