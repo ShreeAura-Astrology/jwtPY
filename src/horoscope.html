@@ -483,7 +483,7 @@
                 else {
                     $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {};
                     $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
-                        "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge,
+                        "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge + "_" + $scope.monthName[$scope.currentVarshMonth],
                         "horoscope": $scope.varshphalChart,
                         "date": (new Date()).toDateString(),
                         "day": $scope.selectedDay,
@@ -1471,7 +1471,11 @@
             }
             $scope.varshphalChart = varshphalHouses;
         }
-
+        $scope.resetVarshphal = function()
+        {
+            $scope.varshphalChart = varshphalHouses;
+            $scope.currentVarshMonth = $scope.selectedMonth;
+        }
         $scope.nextVarshphal = function () {
             $scope.varshphalAge = $scope.varshphalAge + 1;
             $scope.getVarshphal($scope.varshphalAge);
@@ -1517,19 +1521,19 @@
             if (houses["8"].planets.length > 0 && houses["2"].planets.length > 0) {
                 console.log(houses["8"].planets + ' is/are having vakri drishti on ' + houses["2"].planets);
                 vakri.push(houses["8"].planets + ' is/are having vakri drishti on ' + houses["2"].planets);
-                drishtiRelation.enmical.push({"from" :  houses["8"].planets, "to" : houses["2"].planets , "type" : "vakri"});
+                drishtiRelation.enmical.push({ "from": houses["8"].planets, "to": houses["2"].planets, "type": "vakri" });
             }
             if (houses["9"].planets.includes("Mercury") && houses["3"].planets.length > 0) {
                 vakri.push('Mercury of 9th House is vakri drishti on ' + houses["3"].planets);
-                drishtiRelation.enmical.push({"from" :  "Mercury", "to" : houses["3"].planets , "type" : "vakri"});
+                drishtiRelation.enmical.push({ "from": "Mercury", "to": houses["3"].planets, "type": "vakri" });
             }
             if (houses["12"].planets.includes("Mercury") && houses["6"].planets.length > 0) {
                 vakri.push('Mercury of 12th house is having vakri drishti on ' + houses["6"].planets);;
-                drishtiRelation.enmical.push({"from" :  "Mercury", "to" : houses["6"].planets , "type" : "vakri"});
+                drishtiRelation.enmical.push({ "from": "Mercury", "to": houses["6"].planets, "type": "vakri" });
             }
             if (houses["6"].planets.includes("Saturn") && houses["2"].planets.length > 0) {
                 vakri.push('Saturn of 6th House is having vakri drishti on ' + houses["2"].planets);
-                drishtiRelation.enmical.push({"from" :  "Saturn", "to" : houses["2"].planets , "type" : "vakri"});
+                drishtiRelation.enmical.push({ "from": "Saturn", "to": houses["2"].planets, "type": "vakri" });
             }
         }
 
@@ -1550,9 +1554,10 @@
                 blindPlanets.push("Rathand Kundali present: Native will have unstable profression and disturbed mental peace with lack of domestic happiness");
             }
         }
-        var drishtiRelation = { "friendly" : [],
-            "enmical" : []
-         };
+        var drishtiRelation = {
+            "friendly": [],
+            "enmical": []
+        };
         function getDhrishti() {
             for (const house in houses) {
                 if (housesTable[house].drishti.length > 0 && houses[house].planets.length > 0) {
@@ -1562,28 +1567,28 @@
                         houses[house].planets.forEach(function (planetofcurrenthouse) {
                             if (houses[drishtitoHouse].planets.length > 0) {
                                 //drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% drishti on planet: ' + houses[drishtitoHouse].planets);
-                                
+
                                 houses[drishtitoHouse].planets.forEach(function (planetOfToDrishtiHouse) {
                                     var dhristiPair = {
-                                    "from": "",
-                                    "to" : "",
-                                    "type" : ""
-                                };
+                                        "from": "",
+                                        "to": "",
+                                        "type": ""
+                                    };
                                     if (planetsTable[planetofcurrenthouse].friends.includes(planetOfToDrishtiHouse)) {
                                         balaOfPlanets[planetOfToDrishtiHouse] += 100;
                                         drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% friendly drishti on planet: ' + planetOfToDrishtiHouse);
                                         dhristiPair.from = planetofcurrenthouse;
-                                        dhristiPair.to   = planetOfToDrishtiHouse;
+                                        dhristiPair.to = planetOfToDrishtiHouse;
                                         dhristiPair.type = "friendly";
-                                        drishtiRelation.friendly.push(dhristiPair); 
+                                        drishtiRelation.friendly.push(dhristiPair);
                                     }
                                     else if (planetsTable[planetofcurrenthouse].enemies.includes(planetOfToDrishtiHouse)) {
                                         balaOfPlanets[planetOfToDrishtiHouse] -= 100;
                                         drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% enimical drishti on planet: ' + planetOfToDrishtiHouse);
                                         dhristiPair.from = planetofcurrenthouse;
-                                        dhristiPair.to   = planetOfToDrishtiHouse;
+                                        dhristiPair.to = planetOfToDrishtiHouse;
                                         dhristiPair.type = "enmical";
-                                        drishtiRelation.enmical.push(dhristiPair); 
+                                        drishtiRelation.enmical.push(dhristiPair);
                                     }
                                 });
                             }
@@ -1595,7 +1600,7 @@
             for (planet in balaOfPlanets) {
                 bala.push(planet + " : " + balaOfPlanets[planet]);
             }
-            console.log("Dhristi Relationship: ",drishtiRelation);
+            console.log("Dhristi Relationship: ", drishtiRelation);
         }
 
         function checkRealityOfNeutralHousesAndRakeshEffect(houses) {
@@ -1899,7 +1904,7 @@
                     }
                     else {
                         $scope.localStorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
-                            "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge,
+                            "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge + '_' + $scope.monthName[$scope.currentVarshMonth],
                             "horoscope": $scope.varshphalChart,
                             "date": (new Date()).toDateString(),
                             "day": $scope.selectedDay,
@@ -1932,7 +1937,7 @@
                     }
                     else {
                         $scope.localStorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
-                            "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge,
+                            "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge + '_' + $scope.monthName[$scope.currentVarshMonth],
                             "horoscope": $scope.varshphalChart,
                             "date": (new Date()).toDateString(),
                             "day": $scope.selectedDay,
@@ -2003,12 +2008,12 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() +  "<br> Mangal Dosh:" + isMangalDosh.toString()
-            if(isMangalBadh){
-                document.getElementById("NP").innerHTML +=  mangalBadhRemedies;
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString()
+            if (isMangalBadh) {
+                document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
-            if(isMangalDosh){
-                document.getElementById("NP").innerHTML +=  mangalDoshRemedies;
+            if (isMangalDosh) {
+                document.getElementById("NP").innerHTML += mangalDoshRemedies;
             }
             document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: ' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: ' + rinEffects.toString().replaceAll(',', '<br>') + "<br>Uch Grahas:" + uchGrahas.toString().replaceAll(',', '<br>') + "<br>Neech Grahas:" + neechGrahas.toString().replaceAll(',', '<br>') + "<br>Predictions:" + predictions.toString().replaceAll(',', '<br>') + twoPlanetPredictions.toString().replaceAll(',', '<br>');
         }
@@ -2121,7 +2126,7 @@
             }
 
             // Sva Rin
-            if (houses[5].planets.includes("Venus") || houses[5].planets.includes("Saturn") ||  houses[5].planets.includes("Rahu") || houses[5].planets.includes("Ketu")) {
+            if (houses[5].planets.includes("Venus") || houses[5].planets.includes("Saturn") || houses[5].planets.includes("Rahu") || houses[5].planets.includes("Ketu")) {
                 rinEffects.push("Sva Rin detected in 5th House due to presence of Ketu/Venus/Rahu/Saturn");
             }
 
@@ -2159,7 +2164,7 @@
             if (houses[12].planets.includes("Sun") && houses[12].planets.includes("Venus") && houses[12].planets.includes("Mars")) {
                 rinEffects.push("Unborn Rin detected in 12th House due to presence of Sun/Venus/Mars");
             }
-            
+
         }
 
 
@@ -3324,7 +3329,7 @@
             if (areTogether('Sun', 'Mercury')) {
                 return false; // Sun + Mercury together (Mars nek hota hai) [1]
             }
-            if (areTogether('Mars', 'Mercury') && isInHouse('Mars',8)) {
+            if (areTogether('Mars', 'Mercury') && isInHouse('Mars', 8)) {
                 return false; // Mars + Mercury in the 8th house together [1]
             }
             if (isInHouse('Sun', [3]) && isInHouse('Mercury', [3])) {
@@ -3333,7 +3338,7 @@
             if (isInHouse('Moon', [3])) {
                 return false; // Moon in the 3rd house [1]
             }
-            if (isInHouse('Moon', [1 ,2, 3,4,8,9])) {
+            if (isInHouse('Moon', [1, 2, 3, 4, 8, 9])) {
                 return false; // Moon in the 1st, 2nd, 3rd, 4th, 8th, or 9th house [1]
             }
             // Note: The condition about Sun or Moon assisting Mars is too vague to implement directly [1].
@@ -3344,18 +3349,18 @@
                 (Mercury === 6 && Ketu === 6) || // Mercury + Ketu in the 6th House [2]
                 areTogether('Mars', 'Mercury') || // Mars + Mercury together anywhere [2]
                 areTogether('Mars', 'Ketu') || // Mars + Ketu together anywhere [2]
-                isInHouse('Ketu', [1,8]) || // Ketu in the 1st or 8th house [2]
+                isInHouse('Ketu', [1, 8]) || // Ketu in the 1st or 8th house [2]
                 isInHouse('Mars', [3]) || // Mars in the 3rd house [2]
-                isInHouse('Venus',[9]) || // Venus in the 9th house [2]
-                isInHouse('Sun',[6,7,10,12]) || // Sun in the 6th, 7th, 10th, 12th house [3]
-                isInHouse('Mars',[6]) || // Mars in the 6th house [3]
+                isInHouse('Venus', [9]) || // Venus in the 9th house [2]
+                isInHouse('Sun', [6, 7, 10, 12]) || // Sun in the 6th, 7th, 10th, 12th house [3]
+                isInHouse('Mars', [6]) || // Mars in the 6th house [3]
                 isInHouse('Mercury', [1, 3, 8]) || // Mercury in the 1st, 3rd or 8th house [3]
-                isInHouse('Rahu', [5,9]) || // Rahu in the 5th or 9th house [3]
-                isInHouse('Moon',[12]) || // Moon in the 12th house [3]
+                isInHouse('Rahu', [5, 9]) || // Rahu in the 5th or 9th house [3]
+                isInHouse('Moon', [12]) || // Moon in the 12th house [3]
                 isInHouse('Ketu', [3]) || // Ketu in the 3rd house [3]
                 areTogether('Mercury', 'Venus') || // Mercury + Venus together [3]
-                isInHouse('Sun',[8]) || // Sun in the 8th house [3]
-                isInHouse('Jupiter',[7]) // Jupiter in the 7th house [3]
+                isInHouse('Sun', [8]) || // Sun in the 8th house [3]
+                isInHouse('Jupiter', [7]) // Jupiter in the 7th house [3]
                 // Note: The condition about Sun and Moon not assisting Mars is too vague to implement directly [3].
             ) {
                 return true; // Mars Baddh is present
@@ -3365,7 +3370,7 @@
         }
         var isMangalBadh = false;
         var isMangalDosh = false;
-        function checkMangalDosh(horoscope){
+        function checkMangalDosh(horoscope) {
             // Check if the horoscope object is valid and contains necessary data
             if (!horoscope || typeof horoscope !== 'object') {
                 console.error("Invalid horoscope input.");
@@ -3377,7 +3382,7 @@
             // Helper function to check if planets are in specific houses
             const isInHouse = (planet, houses) => houses.includes(horoscope[planet]);
 
-            if(isInHouse('Mars', [1,4,7,8,12])){
+            if (isInHouse('Mars', [1, 4, 7, 8, 12])) {
                 return true;
             }
             return false;
@@ -3400,7 +3405,7 @@
                         planetSnapShot[planet] = parseInt(house);
                     }
             }
-            console.log("Planet SnapShot: " , planetSnapShot);
+            console.log("Planet SnapShot: ", planetSnapShot);
             isMangalBadh = checkMarsBadh(planetSnapShot);
             isMangalDosh = checkMangalDosh(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
@@ -3459,7 +3464,80 @@ Team Mahesh Mankar
  <br>18. Tambe ko dibbi mein saboot moong bhar kar apne ghar
  mein rakhe.`;
 
+        $scope.cyclicRotateArray = function (arr, k) {
+            // Input validation: Check if arr is actually an array and has elements
+            if (!Array.isArray(arr) || arr.length === 0) {
+                console.warn("Input is not a valid non-empty array.");
+                return []; // Return empty array for invalid input
+            }
 
+            const n = arr.length;
+
+            // Normalize k: Handle rotations larger than the array length and zero rotation
+            // 1. k % n: finds the remainder, effective shift within one full cycle.
+            // 2. + n: ensures the result is non-negative if k % n was negative.
+            // 3. % n: brings it back into the [0, n-1] range if adding n made it >= n.
+            const effectiveK = ((k % n) + n) % n;
+
+            // If the effective rotation is 0, no shift is needed. Return a copy.
+            if (effectiveK === 0) {
+                return [...arr]; // Return a shallow copy
+            }
+
+            // Perform the rotation using array slicing and concatenation:
+            // slice(-effectiveK) extracts the last 'effectiveK' elements (the part that wraps around).
+            // slice(0, n - effectiveK) extracts the first 'n - effectiveK' elements (the part that shifts).
+            const rotatedPart = arr.slice(-effectiveK);
+            const remainingPart = arr.slice(0, n - effectiveK);
+
+            // Concatenate the wrapped part at the beginning and the shifted part after it.
+            return rotatedPart.concat(remainingPart);
+        }
+        var houseIndex = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        $scope.monthName = {
+            "1": "January", // Key: 1 (Month Number), Value: "January" (Month Name)
+            "2": "February", // Key: 2, Value: "February"
+            "3": "March", // Key: 3, Value: "March"
+            "4": "April", // Key: 4, Value: "April"
+            "5": "May", // Key: 5, Value: "May"
+            "6": "June", // Key: 6, Value: "June"
+            "7": "July", // Key: 7, Value: "July"
+            "8": "August", // Key: 8, Value: "August"
+            "9": "September", // Key: 9, Value: "September"
+            "10": "October", // Key: 10, Value: "October"
+            "11": "November", // Key: 11, Value: "November"
+            "12": "December" // Key: 12, Value: "December"
+        };
+        $scope.currentVarshMonth = $scope.selectedMonth;
+        $scope.rotateVarshphal = function (direction) {
+            var index;
+            if (direction == "left") {
+                index = -1;
+            }
+            else {
+                index = 1;
+            }
+            var currentMonth = parseInt($scope.currentVarshMonth);
+            var nextMonth = currentMonth + index;
+            if(nextMonth > 12)
+            {
+                nextMonth = nextMonth - 12;
+            }
+            else if(nextMonth == 12){
+                nextMonth = 1;
+            }
+            else if(nextMonth == 0){
+                nextMonth = 12;
+            }
+            $scope.currentVarshMonth = nextMonth + "";
+            var rotatedHouse = cyclicRotateArray(houseIndex, -1);
+            var rotatedVarshphal = JSON.parse(JSON.stringify($scope.varshphalChart));
+            houseIndex.forEach(function (hnumber, currIndex) {
+                rotatedVarshphal[rotatedHouse[currIndex]] = rotateChart[houseIndex[currIndex]];
+            });
+            houseIndex = rotatedHouse;
+            $scope.varshphalChart = rotatedVarshphal;
+        }
     });
 </script>
 
@@ -3702,7 +3780,7 @@ relaxation from Son as Ketu belongs to Son.</pre>
             </div>
             <div id="varshphal-horoscope-chart" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
                 <span style="align-items: center;">{{nativeName}} Varshphal Horoscope</span><span> Age: {{ varshphalAge
-                    }}
+                    }} - {{monthName[currentVarshMonth]}}
                 </span>
                 <img src="https://raw.githubusercontent.com/ShreeAura-Astrology/jwtPY/main/New-Kundli.png"
                     alt="Indian Varshphal Horoscope Chart">
@@ -3728,10 +3806,13 @@ relaxation from Son as Ketu belongs to Son.</pre>
 
                 </span>
                 <span class="varshphalCtrl" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
-                    <button ng-click="prevVarshphal()">
-                        < Previous Age</button>
+                    <button ng-click="prevVarshphal()">< Previous Age</button>
                             <button ng-click="saveHoroscope('Varshphal')">Save Varshaphal</button>
-                            <button ng-click="nextVarshphal()"> Next Age ></button>
+                            <button ng-click="nextVarshphal()">Next Age ></button>
+                            <button ng-click="rotateVarshphal('left')"> Next Month ></button>
+                            <button ng-click="resetVarshphal()">Reset Varshaphal</button>
+                            <button ng-click="rotateVarshphal('right')">< Previous Month</button>
+                            
                 </span>
                 <p> Melefic Houses : <span id="M"></span></p>
                 <p> Benefic Houses : <span id="B"></span></p>
