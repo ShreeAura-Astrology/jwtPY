@@ -3256,7 +3256,7 @@
 
             houseElements.forEach(houseElement => {
                 console.log('Adding mouseover on ' +  houseElement.textContent);
-                houseElement.addEventListener('mouseover', (event) => {
+                houseElement.addEventListener('onclick', (event) => {
                     const houseName = houseElement.textContent;
                     const details = houseDetails[houseName];
 
