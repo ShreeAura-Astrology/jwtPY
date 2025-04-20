@@ -4278,43 +4278,43 @@
             // Helper function to check if two planets are together (in the same house)
             const areTogether = (planet1, planet2) => horoscope[planet1] === horoscope[planet2];
 
-            // Check for Automatic Cancellation (Mars Baddh Ka Parihaar) [1]
-            if (areTogether('Sun', 'Mercury')) {
-                return false; // Sun + Mercury together (Mars nek hota hai) [1]
-            }
-            if (areTogether('Mars', 'Mercury') && isInHouse('Mars', 8)) {
-                return false; // Mars + Mercury in the 8th house together [1]
-            }
-            if (isInHouse('Sun',) && isInHouse('Mercury',)) {
-                return false; // Sun Mercury in the 3rd house [1]
-            }
-            if (isInHouse('Moon',)) {
-                return false; // Moon in the 3rd house [1]
-            }
-            if (isInHouse('Moon', [1, 2, 3, 4, 8, 9])) {
-                return false; // Moon in the 1st, 2nd, 3rd, 4th, 8th, or 9th house [1]
-            }
-            // Note: The condition about Sun or Moon assisting Mars is too vague to implement directly [1].
-
-            // Check for Mars Baddh conditions [2, 3]
-            if (
-                areTogether('Sun', 'Saturn') || // Sun + Saturn together anywhere [2]
-                (Mercury === 6 && Ketu === 6) || // Mercury + Ketu in the 6th House [2]
-                areTogether('Mars', 'Mercury') || // Mars + Mercury together anywhere [2]
-                areTogether('Mars', 'Ketu') || // Mars + Ketu together anywhere [2]
-                isInHouse('Ketu', [1, 8]) || // Ketu in the 1st or 8th house [2]
-                isInHouse('Mars',) || // Mars in the 3rd house [2]
-                isInHouse('Venus',) || // Venus in the 9th house [2]
-                isInHouse('Sun', [6, 7, 10, 12]) || // Sun in the 6th, 7th, 10th, 12th house [3]
-                isInHouse('Mars',) || // Mars in the 6th house [3]
-                isInHouse('Mercury', [1, 3, 8]) || // Mercury in the 1st, 3rd or 8th house [3]
-                isInHouse('Rahu', [5, 9]) || // Rahu in the 5th or 9th house [3]
-                isInHouse('Moon',) || // Moon in the 12th house [3]
-                isInHouse('Ketu',) || // Ketu in the 3rd house [3]
-                areTogether('Mercury', 'Venus') || // Mercury + Venus together [3]
-                isInHouse('Sun',) || // Sun in the 8th house [3]
-                isInHouse('Jupiter',) // Jupiter in the 7th house [3]
-                // Note: The condition about Sun and Moon not assisting Mars is too vague to implement directly [3].
+             // Check for Automatic Cancellation (Mars Baddh Ka Parihaar) [1]
+             if (areTogether('Sun', 'Mercury')) {
+                 return false; // Sun + Mercury together (Mars nek hota hai) [1]
+             }
+             if (areTogether('Mars', 'Mercury') && isInHouse('Mars', 8)) {
+                 return false; // Mars + Mercury in the 8th house together [1]
+             }
+             if (isInHouse('Sun', [3]) && isInHouse('Mercury', [3])) {
+                 return false; // Sun Mercury in the 3rd house [1]
+             }
+             if (isInHouse('Moon', [3])) {
+                 return false; // Moon in the 3rd house [1]
+             }
+             if (isInHouse('Moon', [1, 2, 3, 4, 8, 9])) {
+                 return false; // Moon in the 1st, 2nd, 3rd, 4th, 8th, or 9th house [1]
+             }
+             // Note: The condition about Sun or Moon assisting Mars is too vague to implement directly [1].
+ 
+             // Check for Mars Baddh conditions [2, 3]
+             if (
+                 areTogether('Sun', 'Saturn') || // Sun + Saturn together anywhere [2]
+                 (Mercury === 6 && Ketu === 6) || // Mercury + Ketu in the 6th House [2]
+                 areTogether('Mars', 'Mercury') || // Mars + Mercury together anywhere [2]
+                 areTogether('Mars', 'Ketu') || // Mars + Ketu together anywhere [2]
+                 isInHouse('Ketu', [1, 8]) || // Ketu in the 1st or 8th house [2]
+                 isInHouse('Mars', [3]) || // Mars in the 3rd house [2]
+                 isInHouse('Venus', [9]) || // Venus in the 9th house [2]
+                 isInHouse('Sun', [6, 7, 10, 12]) || // Sun in the 6th, 7th, 10th, 12th house [3]
+                 isInHouse('Mars', [6]) || // Mars in the 6th house [3]
+                 isInHouse('Mercury', [1, 3, 8]) || // Mercury in the 1st, 3rd or 8th house [3]
+                 isInHouse('Rahu', [5, 9]) || // Rahu in the 5th or 9th house [3]
+                 isInHouse('Moon', [12]) || // Moon in the 12th house [3]
+                 isInHouse('Ketu', [3]) || // Ketu in the 3rd house [3]
+                 areTogether('Mercury', 'Venus') || // Mercury + Venus together [3]
+                 isInHouse('Sun', [8]) || // Sun in the 8th house [3]
+                 isInHouse('Jupiter', [7]) // Jupiter in the 7th house [3]
+                 // Note: The condition about Sun and Moon not assisting Mars is too vague to implement directly [3].
             ) {
                 return true; // Mars Baddh is present
             }
