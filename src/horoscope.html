@@ -3185,10 +3185,10 @@
                 if (houseDetails[item]) {
                     let attributesHTML = `<h2>${item} Attributes</h2><ul>`;
                     for (const key in houseDetails[item]) {
-                        attributesHTML += `<li><strong>${key}:</strong> ${houseDetails[item][key].replaceAll(',',"<br>")}</li>`;
+                        attributesHTML += `<li><strong>${key}:</strong> ${houseDetails[item][key]}</li>`;
                     }
                     attributesHTML += `</ul>`;
-                    infoDiv.innerHTML = attributesHTML;
+                    infoDiv.innerHTML = attributesHTML.replaceAll(',',"<br>");
                 } else {
                     infoDiv.innerHTML = `Attributes for ${item} not found.`;
                 }
@@ -3198,10 +3198,10 @@
                 if (planetData[item]) {
                     let attributesHTML = `<h2>${item} Attributes</h2><ul>`;
                     for (const key in planetData[item]) {
-                        attributesHTML += `<li><strong>${key}:</strong> ${planetData[item][key].replaceAll(',',"<br>")}</li>`;
+                        attributesHTML += `<li><strong>${key}:</strong> ${planetData[item][key]}</li>`;
                     }
                     attributesHTML += `</ul>`;
-                    infoDiv.innerHTML = attributesHTML;
+                    infoDiv.innerHTML = attributesHTML.replaceAll(',',"<br>");
                 } else {
                     infoDiv.innerHTML = `Attributes for ${item} not found.`;
                 }
