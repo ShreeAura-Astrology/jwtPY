@@ -3252,9 +3252,10 @@
             detailsContainer.style.padding = '10px';
             detailsContainer.style.zIndex = '10'; // Ensure it's on top
             detailsContainer.style.display = 'none'; // Hidden by default
-            document.body.appendChild(detailsContainer);
+            document.getElementById('house-info').appendChild(detailsContainer);
 
             houseElements.forEach(houseElement => {
+                console.log('Adding mouseover on ' +  houseElement.textContent);
                 houseElement.addEventListener('mouseover', (event) => {
                     const houseName = houseElement.textContent;
                     const details = houseDetails[houseName];
@@ -4576,6 +4577,7 @@ Team Mahesh Mankar
                         <li><span class="house-name">11</span></li>
                         <li><span class="house-name">12</span></li>
                     </ul>
+                    <div id="house-info"></div>
                 </div>
                 <div>
                 <div class="planet" data-planet="sun">Sun</div>
