@@ -3185,7 +3185,7 @@
                 if (houseDetails[item]) {
                     let attributesHTML = `<h2>${item} Attributes</h2><ul>`;
                     for (const key in houseDetails[item]) {
-                        attributesHTML += `<li><strong>${key}:</strong> ${houseDetails[item][key]}</li>`;
+                        attributesHTML += `<li><strong>${key}:</strong> ${houseDetails[item][key].replaceAll(',',"<br>")}</li>`;
                     }
                     attributesHTML += `</ul>`;
                     infoDiv.innerHTML = attributesHTML;
@@ -3198,7 +3198,7 @@
                 if (planetData[item]) {
                     let attributesHTML = `<h2>${item} Attributes</h2><ul>`;
                     for (const key in planetData[item]) {
-                        attributesHTML += `<li><strong>${key}:</strong> ${planetData[item][key]}</li>`;
+                        attributesHTML += `<li><strong>${key}:</strong> ${planetData[item][key].replaceAll(',',"<br>")}</li>`;
                     }
                     attributesHTML += `</ul>`;
                     infoDiv.innerHTML = attributesHTML;
