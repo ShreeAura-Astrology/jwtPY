@@ -2020,23 +2020,8 @@
                 document.getElementById("NP").innerHTML += mangalDoshRemedies;
             }
             document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: ' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: ' + rinEffects.toString().replaceAll(',', '<br>') + "<br>Uch Grahas:" + uchGrahas.toString().replaceAll(',', '<br>') + "<br>Neech Grahas:" + neechGrahas.toString().replaceAll(',', '<br>') + "<br>Predictions:" + predictions.toString().replaceAll(',', '<br>') + twoPlanetPredictions.toString().replaceAll(',', '<br>');
-            document.addEventListener('DOMContentLoaded', showHouseDetailsOnHover);
-            document.addEventListener('DOMContentLoaded', showPlanetAttributesOnHover);
         }
 
-        // const planetDropdown = document.getElementById('planetDropdown');
-        // const selectedPlanet = document.getElementById('selectedPlanet');
-
-        // planetDropdown.addEventListener('change', (event) => {
-        //     selectedPlanet.textContent = event.target.value;
-        // });
-
-        // const houseDropdown = document.getElementById('houseDropdown');
-        // const selectedHouse = document.getElementById('selectedHouse');
-
-        // houseDropdown.addEventListener('change', (event) => {
-        //     selectedHouse.textContent = event.target.value;
-        // });
         $scope.planets = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Rahu", "Ketu"];
         $scope.houses = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 
@@ -2338,8 +2323,7 @@
             }
         }
 
-        function showPlanetAttributesOnHover() {
-            const planets = document.querySelectorAll('.planet'); // Assuming you have HTML elements with the class 'planet'
+        $scope.showAttributes = function (item, type) {
 
             const planetData = {
                 jupiter: {
@@ -2718,49 +2702,6 @@
                     ]
                 }
             };
-
-            planets.forEach(planetElement => {
-                planetElement.addEventListener('mouseover', function () {
-                    const planetName = this.dataset.planet; // Assuming your HTML elements have a 'data-planet' attribute
-
-                    if (planetData[planetName]) {
-                        const data = planetData[planetName];
-                        let attributesText = `<h3>${data.name}</h3><p>${data.description}</p><ul>`;
-                        if (data.attributes) {
-                            data.attributes.forEach(attr => {
-                                attributesText += `<li>${attr}</li>`;
-                            });
-                        }
-                        if (data.negativeIndications) {
-                            attributesText += "<h4>Negative Indications:</h4><ul>";
-                            data.negativeIndications.forEach(neg => {
-                                attributesText += `<li>${neg}</li>`;
-                            });
-                            attributesText += "</ul>";
-                        }
-                        if (data.generalRemedies) {
-                            attributesText += "<h4>General Remedies:</h4><ul>";
-                            data.generalRemedies.forEach(remedy => {
-                                attributesText += `<li>${remedy}</li>`;
-                            });
-                            attributesText += "</ul>";
-                        }
-                        attributesText += "</ul>";
-
-                        // You would then display this 'attributesText' in a designated area on your webpage
-                        console.log(attributesText); // For demonstration purposes, logging to console
-                        document.getElementById('planet-info').innerHTML = attributesText;
-                    }
-                });
-
-                planetElement.addEventListener('mouseout', function () {
-                    // Optionally clear the displayed information when the mouse moves out
-                    document.getElementById('planet-info').innerHTML = '';
-                });
-            });
-        }
-
-        $scope.showAttributes = function (planet) {
             const houseDetails =
             {
                 "1": {
@@ -3238,542 +3179,34 @@
                     ]
                 }
             };
-            const infoDiv = document.getElementById('house-info');
-            if (houseDetails[planet]) {
-                let attributesHTML = `<h2>${planet} Attributes</h2><ul>`;
-                for (const key in houseDetails[planet]) {
-                    attributesHTML += `<li><strong>${key}:</strong> ${houseDetails[planet][key]}</li>`;
+
+            if (type == 'house') {
+                const infoDiv = document.getElementById('house-info');
+                if (houseDetails[item]) {
+                    let attributesHTML = `<h2>${item} Attributes</h2><ul>`;
+                    for (const key in houseDetails[item]) {
+                        attributesHTML += `<li><strong>${key}:</strong> ${houseDetails[item][key]}</li>`;
+                    }
+                    attributesHTML += `</ul>`;
+                    infoDiv.innerHTML = attributesHTML;
+                } else {
+                    infoDiv.innerHTML = `Attributes for ${item} not found.`;
                 }
-                attributesHTML += `</ul>`;
-                infoDiv.innerHTML = attributesHTML;
-            } else {
-                infoDiv.innerHTML = `Attributes for ${planet} not found.`;
             }
-        }
-
-        function showHouseDetailsOnHover() {
-            // Data structure to hold house details extracted from the sources.
-            const houseDetails =
-            {
-                "1": {
-                    "Malik": "Mangal (Mesh Rashi)",
-                    "Rashi": "Mesha",
-                    "Rashi Lord": "Mars",
-                    "Karak": "Surya Dev",
-                    "Direction": "East",
-                    "Denotes": [
-                        "Self",
-                        "Body type",
-                        "Behaviour",
-                        "Pride(Maan Prathishta)",
-                        "Immunity",
-                        "You as a person",
-                        "Head",
-                        "Soul",
-                        "Colour",
-                        "Caste",
-                        "Strength",
-                        "Success",
-                        "Wealth owned by you",
-                        "Health",
-                        "Raj Simhasan",
-                        "Baitak Room (Drawing Room)",
-                        "Face",
-                        "Forehead"
-                    ],
-                    "Rules": [
-                        "If 1st house is vacant then Jatak will get auspicious results after 24 years of his age (Bagya Uday) [1]",
-                        "If enemy of first house is placed in 2nd house then jatak will be facing Financial issues (Nirdhanta) But apni avadhi poori hone par shatruta chod dega [1]",
-                        "If two and more planets placed in 1st house then they will act as female planet whereas if two or more planets placed in 7th house then they will act as Male planet [1]",
-                        "King :- 1st House planet [2]",
-                        "Suppose if multiple planet in 7th house and single planet in 1st house then the King will work properly as he has multiple advisors [2]",
-                        "Eight House mein baita hua planet Raja ka Najariya hoga [3]",
-                        "11th house Raja ka foot maana gaya hai hence planet in 11th house order given by King will be implemented [3]",
-                        "If no planet in 11th house King planning sab kuch hoga but implement nahi kar payega [4]",
-                        "Agar pehla ghar khali hoga toh 7th house soya maana jayega [5]"
-                    ]
-                },
-                "2": {
-                    "Malik": "Shukra(Vrishabh Rashi)",
-                    "Rashi": "Vrishabh",
-                    "Rashi Lord": "Venus/Shukra",
-                    "Karak": "Guru Graha",
-                    "Direction": "North West",
-                    "Denotes": [
-                        "Speech",
-                        "Family(kutumb)",
-                        "Bank balance",
-                        "Family Support",
-                        "Wealth",
-                        "Food",
-                        "Mouth",
-                        "Charity",
-                        "Tongue",
-                        "Neck",
-                        "Schooling",
-                        "Dharma sthan",
-                        "Accumulated wealth",
-                        "Domestic animals",
-                        "Planets jiski shaka ko tod kar lagate hai like money plant",
-                        "Neck and Eyebrow ke beech wali jagah jahan tilak lagate hai",
-                        "Cow ko bandne ki jagah",
-                        "Sasural"
-                    ],
-                    "Rules": [
-                        "Guru in 2nd house gives good result, were as rest of the all planets in 2nd house also will give good results but condition is 8th house should be vacant [6]",
-                        "Second House planet will give good results second half of his life (condition is 8th house should be vacant) [7]",
-                        "If 10th house is vacant then this house will consider as Soya hua ghar ( ie 2nd House will be considered as Soya hua ghar) [7]",
-                        "Even though Shukra is enemy of Jupiter, Shukra in 2nd house will not give bad results cause land owner (Zameen) is Shukra [7]",
-                        "When we check the results of 2nd house need to check 8th, 9th and 10th house [7]",
-                        "*****9th mein agar koi planet hai toh wahan se kismat ke badal uthenge 10th house se hote huye 2nd house se aake takrayenge agar 4th house mein koi planet nahi hai toh all the Rain water will go to Patal which is 6th house***** [8]",
-                        "Agar 2nd house acha hua toh 10th house bahut acha result dega [9]",
-                        "Agar 2nd and 8th house mein baite huae planet Neutral hai toh pehle acha phal ayega phir kharab result aayega [9]",
-                        "If planet in 2nd house is enemy of planet placed in 10th house then decision lene mein dikkat aayegi act like andhi kundli at this situation need to check moon [9]",
-                        "2nd house 10th house se jagtha hai. 10th house khali ho toh 2nd soya hoga [9]",
-                        "Agar 4th house and 2nd house khali ho toh last time tak unnati hoti hai [10]",
-                        "Agar 2nd house khali ho toh 8th house and 12th house ke planet aapas mein shatru ho tab mandir nahi jaana chaiye [11]"
-                    ]
-                },
-                "3": {
-                    "Malik": "Budh(Mithun Rashi)",
-                    "Rashi": "Mithun",
-                    "Rashi Lord": "Budh/Mercury",
-                    "Karak": "Mangal Graha",
-                    "Direction": "South",
-                    "Denotes": [
-                        "Hard-work",
-                        "Risk",
-                        "Losses",
-                        "Short travel",
-                        "Ear",
-                        "Age",
-                        "Naukar Chakar(servents)",
-                        "Younger brother",
-                        "Sister",
-                        "Friends",
-                        "Neighbours",
-                        "Shoulders",
-                        "Biceps",
-                        "Power",
-                        "Courage",
-                        "Foreign settlement",
-                        "Mothers age",
-                        "Secret enemies",
-                        "Communication",
-                        "Eye lashes",
-                        "Blood ki Matra",
-                        "Rakth dosh",
-                        "Auazar",
-                        "Hatyar",
-                        "Dhan ke bahar jaane ka rasta (losses)",
-                        "Sala and behnoi",
-                        "Paude and vraksh (if positive plants and trees will give good result else vice versa)",
-                        "Haato ki Kalai"
-                    ],
-                    "Rules": [
-                        "Third house mein jo negative (Manda)planet baitega woh jatak ka bura nahi karega but Khandaan aur Bhaiyo, mitro par bura asar daalega cause 3rd watch (Dristi)11th and 9th {neech ka planet (ketu) in 3rd house apna jeher bahar phenkega) [12, 13]",
-                        "11th house is an entry door of Health and wealth while 3rd house is the exit door of health and wealth [13]",
-                        "3rd House represents the reason of death [13]",
-                        "3rd House planet will get help from 12th house planet ,what ever the relationship between planet but planet will help each other (support from 12th) but rule is ki planet in 3rd house akela hona chaiye [13, 14]",
-                        "3rd house ke planet ko 7th house and 9th house se help milegi agar wahan uss planet ke mitra baite hai toh (get help from) [14]",
-                        "Agar 3rd house mein koi malefic planet ho toh 11th house ka results doubtful hoga (means positive bhi de sakta hai ya negative bhi cause 3rd watches 11th) woh bhi starting ke age mein up to 25 years tak [14]",
-                        "3rd house ka planet 12th ki help karega but 3rd mein single planet hona chaiye [14]",
-                        "3rd ka result(positive or negative) Mangal ka position bhi maine raktha hai agar Mangal acha hai toh acha results milega [15]",
-                        "Budh 12th and shani 3rd house toh ussko amrith kumbh kaha gaya hai (he will get growth) [15]",
-                        "Shukra and Rahu in 12th house 21- 25 years mein shaadi ki toh woh widow( bewa )ho jayega ya ho jayegi but if shani is situated in 3rd house then this is situation will not occur [15]",
-                        "8th house Bimari ka bahana ,11th house bimari aane ka rasta aur 3rd house bahar jane ka rasta agar kisi ke 3no ghar kharab hai toh anth uska dardnak hoga and vice versa [16]",
-                        "Agar 3rd house and 5th house khali ho toh 9th house soya mana jayega [17]",
-                        "If 3rd house is negtive upto the age of 35 Mercury Guru and Chandra will negative result [18]"
-                    ]
-                },
-                "4": {
-                    "Malik": "Chandra(Kark Rashi)",
-                    "Rashi": "Kark",
-                    "Rashi Lord": "Chandra/Moon",
-                    "Karak": "Chandra Graha",
-                    "Direction": "North East",
-                    "Denotes": [
-                        "Mother",
-                        "Luxury",
-                        "Leisure",
-                        "Property",
-                        "Home",
-                        "Land or Farms",
-                        "Hidden treasure",
-                        "Vehicles",
-                        "Chest",
-                        "Lungs",
-                        "Heart",
-                        "Brest",
-                        "Happiness",
-                        "Assets",
-                        "Father in law",
-                        "Prosperity",
-                        "Peace of mind",
-                        "Pani rakhne ka sthan jaise well tank",
-                        "Nana ka ghar",
-                        "Water creature",
-                        "Domestic Milking animals",
-                        "Juicy fruit trees plants"
-                    ],
-                    "Rules": [
-                        "Koi bhi planet 4th mein baitega woh Chandra ke jaise Tasir rakhega ( caring) [19]",
-                        "4th house ke planet raat ko Jagthe hai ya phir musibath mein [19]",
-                        "Yahan baita planet old age mein achi results deta hai [19]",
-                        "4th house ka planet shani jis ghar mein baita hai waisa phal dega (also need to check Chandra position) [19]",
-                        "Chandra aur shani ki yuti se neech ketu ka nirman hota hai ketu ke results kharab milenge [19]",
-                        "Agar 4th house and 2nd house khali ho toh last time tak unnati hoti hai [10]",
-                        "Agar Chandra kahin bhi baita ho woh Acha results dega but condition yeh hai ki 4th house khali hona chaiye [10]",
-                        "Agar 4th house mein paapi planet (Shani Rahu Ketu)bait jaye toh budh aur Shani ache ho jayenge (but 3rd 6th and 8th house mein apas mein shatru graha ho toh results acha nahi milega aur mauth ka bahana 4th house ka planet banega), example if Ketu is placed in 3rd house and mars is placed in 8th house and sun is placed in 4th house hence jatak will have issues related to sun like Heart attack, bone related issues, eye related issues etc ho sakte hai) [10, 20]",
-                        "Guru Surya chandra kahin pe bhi ikkata baite ho unka prabhav issi ghar pe padta hai [20]",
-                        "4th house mein Shani paniwala snake kaha gaya hai , Mangal jala hua hoga matlab neech ka hoga but Rahu Ketu Yahan chup rahenge (Shani tab tak kharab results nahi dega jab tak usko cheda na jaye like Makan ka repair tod phod alteration etc) [20]",
-                        "Jab bhi khana no 4 ka planet Varshfal mein first house mein aayega uss Samay rahu jahan bhi baita ho uss ghar ke negative results dega (suppose Rahu in 11th house then brothers income mein kharabi lagega) [21]",
-                        "Suppose 4th house mein koi bhi planet baita ho aur Chandra Kendra ke ghar jo 1-4-7-10 mein nahi hai toh 4th house acha results dega 8th mein bhi baita ho toh acha results dega [21]",
-                        "4th house ka planet and 9th house ka planet aapas mein shatru hai toh ghar waale hi usko dhutkarenge [21]",
-                        "Agar 10th house khali hai toh 4th house soya hua kehlayega [9]",
-                        "Mangal+Shukra 4th House [22]"
-                    ]
-                },
-                "5": {
-                    "Malik": "Surya(Simha Rashi)",
-                    "Rashi": "Simha",
-                    "Rashi Lord": "Surya/Sun",
-                    "Karak": "Guru Graha",
-                    "Direction": "East Wall",
-                    "Denotes": [
-                        "Growth",
-                        "Knowledge",
-                        "Education",
-                        "Auspicious deeds",
-                        "Kids",
-                        "Pregnancy",
-                        "Trading",
-                        "Sudden money",
-                        "Hidden wealth",
-                        "Love Affairs",
-                        "Stomach",
-                        "Naval",
-                        "Betting",
-                        "Place of home from where air and light enters into home"
-                    ],
-                    "Rules": [
-                        "Surya jaisa hoga waisa phal milega ( Koi bhi ghar mein ) [23]",
-                        "Agar ache graha yaha baite ho toh mama ka support rahega iske vipreet ho toh Aag se daar hamesha bana rahega [24]",
-                        "Santan ke paida hone ke baad 5th house ka result 9th mein aa jata hai [17]",
-                        "Agar 3rd house and 5th house khali ho toh 9th house soya mana jayega [17]",
-                        "Surya+Guru 5th House [22]"
-                    ]
-                },
-                "6": {
-                    "Malik": "Budh(Kanya Rashi)",
-                    "Rashi": "Kanya",
-                    "Rashi Lord": "Mercury /Budh",
-                    "Karak": "Ketu Graha",
-                    "Direction": "North",
-                    "Denotes": [
-                        "Loan",
-                        "Cuts",
-                        "Injuries",
-                        "Turbulence",
-                        "Enemies",
-                        "Diseases",
-                        "Court Cases",
-                        "Tensions",
-                        "Maan Hani",
-                        "Anxiety",
-                        "Competition",
-                        "Services",
-                        "Labour work",
-                        "Sadness",
-                        "Separation",
-                        "Mourning",
-                        "Job",
-                        "Insult",
-                        "Badnami",
-                        "Tehkahna(Secret room basement )",
-                        "Business (customers money)",
-                        "Kutta aur bakri ladka ya ladki ka sasural",
-                        "Vegitables waale paude",
-                        "Dhalti jawani"
-                    ],
-                    "Rules": [
-                        "Budh in 6th house gives good result [25]",
-                        "6th house mein akela ketu baita hai toh ketu ke related cheejon ka result kharab milega [25]",
-                        "6th house mein Chandra ho toh yahan free mein paani ka piyau , Borewell etc nahi karna chaiye [25]",
-                        "6th house ko activate karne ke liye mama ke ghar ki sewa karni chaiye [26]",
-                        "Budh+Ketu 6th House [22]"
-                    ]
-                },
-                "7": {
-                    "Malik": "Shukra (Tula Rashi)",
-                    "Rashi": "Tula",
-                    "Rashi Lord": "Shukra/Venus",
-                    "Karak": "Shukra/Budh Graha",
-                    "Direction": "South West",
-                    "Denotes": [
-                        "Wife",
-                        "Life partner",
-                        "Business partner",
-                        "Partnership",
-                        "Dailywork",
-                        "Liquid Cash",
-                        "Income",
-                        "Sexual desires",
-                        "Marriage",
-                        "Travels",
-                        "Visible enemies",
-                        "Lust",
-                        "Internal private organs",
-                        "Bina sing wale pashu",
-                        "Skin (Janma stan)"
-                    ],
-                    "Rules": [
-                        "Agar pehla ghar khali hoga toh 7th house soya maana jayega [5]",
-                        "Varshfal mein jab 8th house ka planet 8th mein aayega ya lagna mein aayega toh iss ghar ka result shubh ashubh dene mein saksham hoga [5]",
-                        "Business of agriculture can be seen from 7th house [5]",
-                        "If two and more planets placed in 1st house then they will act as female planet whereas if two or more planets placed in 7th house then they will act as Male planet [1]",
-                        "Salahakar/Advisor:- Planet placed in 7th house ( if no planet in 7th house then king will work according to his own will) [2]",
-                        "Multiple planets in 1st House and Single planet in 7th House in this situation, Planets in 7th house will give negative results ( planets Kharab ho jata hai) [2]",
-                        "Suppose if multiple planet in 7th house and single planet in 1st house then the King will work properly as he has multiple advisors [2]",
-                        "3rd house ke planet ko 7th house and 9th house se help milegi agar wahan uss planet ke mitra baite hai toh (get help from) [14]",
-                        "Shukra+Budh 7th House [22]"
-                    ]
-                },
-                "8": {
-                    "Malik": "Mangal( Vrishchik Rashi)",
-                    "Rashi": "Vrishchik",
-                    "Rashi Lord": "Mangal/Mars",
-                    "Karak": "Shani/Mangal Graha",
-                    "Direction": "South Wall",
-                    "Denotes": [
-                        "Death",
-                        "Grave Yard",
-                        "Black magic",
-                        "Jadu tona",
-                        "Sudden gains",
-                        "Accidents",
-                        "Changes",
-                        "Burden",
-                        "Hidden Benefits",
-                        "Research",
-                        "Lottery",
-                        "External private parts",
-                        "Surgery",
-                        "Testicles",
-                        "Sea Travelling",
-                        "In laws family",
-                        "Sexual Disorders (jehrile jeev jantu Bicchu aadi)",
-                        "Trees jisme na phal lagte hai na phool",
-                        "Peeth"
-                    ],
-                    "Rules": [
-                        "8th house Bimari ka bahana ,11th house bimari aane ka rasta aur 3rd house bahar jane ka rasta agar kisi ke 3no ghar kharab hai toh anth uska dardnak hoga and vice versa [16]",
-                        "Dawai rakhne ki jagah, south wall, Bhatti, makan ki chatt [16]",
-                        "Surya chandra Guru yadi akele iss ghar mein hai toh unki shakti yahan kaid ho jayegi parantu varshfal mein agar yeh graha akele ya ikkata yahan aayenge toh mrityu ka ghar nahi rahega (2/12 par nahi jayega Dristi) [16]",
-                        "Rahu Ketu ka bal 8th house mein badh jata hai [16]",
-                        "Budh Shukra yahan ache result nahi denge [27]",
-                        "Shani in 8th house jatak ke purvajo ki mrityu aur khud jatak par chot karta hai(rahu ketu shani bhi yahan acha phal nahi dete) [27]",
-                        "Budh aur Mangal yuti yahan acha result dete hai but 2nd mein shani nahi hona chaiye [27]",
-                        "Eight house ka planet varshfal mein 11th ya 8th mein aaye toh usko vastu khareedna ashubh hoga [27]",
-                        "Eight House mein baita hua planet Raja ka Najariya hoga [3]",
-                        "When we check the results of 2nd house need to check 8th, 9th and 10th house [7]",
-                        "Varshfal mein jab 8th house ka planet 8th mein aayega ya lagna mein aayega toh iss ghar ka result shubh ashubh dene mein saksham hoga [5]",
-                        "Agar 2nd and 8th house mein baite huae planet Neutral hai toh pehle acha phal ayega phir kharab result aayega [9]",
-                        "Ashub Graha ( Rahu, Ketu, Shani) varshfal mein 8th house mein aayega toh ashub result zaroor dega [28]",
-                        "Agar 2nd house khali ho toh 8th house and 12th house ke planet aapas mein shatru ho tab mandir nahi jaana chaiye [11]",
-                        "Mangal+Shani 8th House [22]"
-                    ]
-                },
-                "9": {
-                    "Malik": "Guru( Dhanu Rashi)",
-                    "Rashi": "Dhanu",
-                    "Rashi Lord": "Guru/Jupiter",
-                    "Karak": "Guru /Jupiter Graha",
-                    "Direction": "Brahma Sthan",
-                    "Denotes": [
-                        "Long distance travel",
-                        "Foreign Settlement",
-                        "Religion",
-                        "Luck",
-                        "Higher education",
-                        "Samhadi",
-                        "Affairs with anti religion",
-                        "Yatra(pilgrimage)",
-                        "Younger brother in law and sister in law",
-                        "Thighs",
-                        "Donations (animals and birds Hans, Bulbul, Neel Gayi)",
-                        "Roots of every tree",
-                        "Naak ke Natun"
-                    ],
-                    "Rules": [
-                        "Iss ghar mein 3 house aur 5 house ke graho ka asar bhi aake mil jaata hai [17]",
-                        "Santan ke paida hone ke baad 5th house ka result 9th mein aa jata hai [17]",
-                        "Shani ko chod ke jo planet yahan baitega woh apna shubh phal jatak ke janam se leke 60 years tak dega(First half of life) [17]",
-                        "Agar 3rd house and 5th house khali ho toh 9th house soya mana jayega [17]",
-                        "9th house soya ho toh uss planet ka tilak lagana chaiye [17]",
-                        "3rd house ke planet ko 7th house and 9th house se help milegi agar wahan uss planet ke mitra baite hai toh (get help from) [14]",
-                        "When we check the results of 2nd house need to check 8th, 9th and 10th house [7]",
-                        "4th house ka planet and 9th house ka planet aapas mein shatru hai toh ghar waale hi usko dhutkarenge [21]",
-                        "If in 9th house Ketu if we keep dog in our ancestor’s house planet will ketu will give good results [28]"
-                    ]
-                },
-                "10": {
-                    "Malik": "Shani( Makar Rashi)",
-                    "Rashi": "Makar",
-                    "Rashi Lord": "Shani/Saturn",
-                    "Karak": "Shani Graha",
-                    "Direction": "West",
-                    "Denotes": [
-                        "Karma",
-                        "Office",
-                        "Father",
-                        "Mother in law",
-                        "Knee",
-                        "Work",
-                        "Profession",
-                        "Business",
-                        "Rule",
-                        "Pride",
-                        "Power",
-                        "Energy",
-                        "Rajyog",
-                        "Destiny",
-                        "Society position (Makan kaisa hoga )",
-                        "Makan ki lakadi, loha, malba, pathar",
-                        "Animals mein crocodile and snake",
-                        "Trees mein kikar aur babul jisme kante ho"
-                    ],
-                    "Rules": [
-                        "Agar 2nd house acha hua toh 10th house bahut acha result dega [9]",
-                        "Agar 2nd and 8th house mein baite huae planet Neutral hai toh pehle acha phal ayega phir kharab result aayega [9]",
-                        "If planet in 2nd house is enemy of planet placed in 10th house then decision lene mein dikkat aayegi act like andhi kundli at this situation need to check moon [9]",
-                        "Agar 10th house khali hai toh 4th house soya hua kehlayega [9]",
-                        "2nd house 10th house se jagtha hai. 10th house khali ho toh 2nd soya hoga [9]",
-                        "10th house mein rahu ketu budh shakki honge agar shani acha hoga toh acha result denge [29]",
-                        "When we check the results of 2nd house need to check 8th, 9th and 10th house [7]",
-                        "Budh+Shani 10th House [30]"
-                    ]
-                },
-                "11": {
-                    "Malik": "Shani( Kumbh Rashi)",
-                    "Rashi": "Kumbh",
-                    "Rashi Lord": "Shani/Saturn",
-                    "Karak": "Guru/Jupiter Graha",
-                    "Direction": "West Wall",
-                    "Denotes": [
-                        "Income from work",
-                        "Wish",
-                        "Success",
-                        "Court",
-                        "Elder brother sister",
-                        "Son in-law",
-                        "Daughter in-law",
-                        "Benefits",
-                        "Calves",
-                        "Court( Judgement)",
-                        "Achievements",
-                        "Gains",
-                        "Exterior of our house",
-                        "2 muh ka sarp",
-                        "Peepal bargad, (Chaya waale vriksh usme kante na ho)"
-                    ],
-                    "Rules": [
-                        "11th house mein saare planet Shani jaise hi behave karenge [18]",
-                        "If 3rd house is negtive upto the age of 35 Mercury Guru and Chandra will negative result [18]",
-                        "If in this house 8th planet and 11th planet apas mein shatru ho uss samay agar jatak 11th house mein baite planet ki karak vastu ghar mein lata hai tab unki sehat pe bura asar dega ( Agar aap 11th house mein baite graha ki vastu laate bhi hai tab humko uss planet mitra graho ki karak vastu bhi jaroor laye) [18, 31]",
-                        "11th house mein ketu ho toh Chandra kharab ho jayega and Vice versa [31]",
-                        "11th house mein rahu ho toh Guru kharab ho jayega and Vice Versa [31]",
-                        "11th house is an entry door of Health and wealth while 3rd house is the exit door of health and wealth [13]",
-                        "Agar 3rd house mein koi malefic planet ho toh 11th house ka results doubtful hoga (means positive bhi de sakta hai ya negative bhi cause 3rd watches 11th) woh bhi starting ke age mein up to 25 years tak [14]",
-                        "8th house Bimari ka bahana ,11th house bimari aane ka rasta aur 3rd house bahar jane ka rasta agar kisi ke 3no ghar kharab hai toh anth uska dardnak hoga and vice versa [16]",
-                        "11th house Raja ka foot maana gaya hai hence planet in 11th house order given by King will be implemented [3]",
-                        "If no planet in 11th house King planning sab kuch hoga but implement nahi kar payega [4]",
-                        "Eight house ka planet varshfal mein 11th ya 8th mein aaye toh usko vastu khareedna ashubh hoga [27]",
-                        "11th house ka planet varshfal mein agar 1st house mein aayega tab uska result zaroor dega [28]",
-                        "Guru+Shani  11th House [30]"
-                    ]
-                },
-                "12": {
-                    "Malik": "Guru ( Meen Rashi)",
-                    "Rashi": "Meen",
-                    "Rashi Lord": "Guru/Jupiter",
-                    "Karak": "Rahu Graha",
-                    "Direction": "South East",
-                    "Denotes": [
-                        "Expenses",
-                        "Jail Yatra",
-                        "Losses",
-                        "Feet",
-                        "Moksha",
-                        "Sleep",
-                        "Chacha Bua Tau",
-                        "Compromises",
-                        "Dreams",
-                        "Foreign Settlement",
-                        "Hospitalisation",
-                        "Secret Affairs",
-                        "Sexual Desires",
-                        "Left eye",
-                        "Ghar ko chath",
-                        "Billi (cat) chamkadad (Bat) Machali"
-                    ],
-                    "Rules": [
-                        "12th house mein jo bhi planet ho uske sambandit relation hoga woh aapke liye lucky hoga [32]",
-                        "Agar 2nd house khali ho toh 8th house and 12th house ke planet aapas mein shatru ho tab mandir nahi jaana chaiye [11]",
-                        "Agar Guru 9th and 12th house mein nahi ho toh 12th mein guru hi mana jayega [11]",
-                        "Suppose if Guru is placed in 9th house then 12th house Rahu ka mana jayega [11]",
-                        "3rd House planet will get help from 12th house planet ,what ever the relationship between planet but planet will help each other (support from 12th) but rule is ki planet in 3rd house akela hona chaiye [13, 14]",
-                        "3rd house ka planet 12th ki help karega but 3rd mein single planet hona chaiye [14]",
-                        "Budh 12th and shani 3rd house toh ussko amrith kumbh kaha gaya hai (he will get growth) [15]",
-                        "Shukra and Rahu in 12th house 21- 25 years mein shaadi ki toh woh widow( bewa )ho jayega ya ho jayegi but if shani is situated in 3rd house then this is situation will not occur [15]",
-                        "Guru+Rahu  12th House [30]"
-                    ]
-                }
-            };
-
-            // Get all elements that represent a house (you'll need to define these in your HTML).
-            const houseElements = document.querySelectorAll('.house-name'); // Example: elements with class 'house-name'
-
-            // Create a container to display the details.
-            const detailsContainer = document.createElement('div');
-            detailsContainer.id = 'house-details';
-            detailsContainer.style.position = 'absolute';
-            detailsContainer.style.backgroundColor = 'lightyellow';
-            detailsContainer.style.border = '1px solid black';
-            detailsContainer.style.padding = '10px';
-            detailsContainer.style.zIndex = '10'; // Ensure it's on top
-            detailsContainer.style.display = 'none'; // Hidden by default
-            document.getElementById('house-info').appendChild(detailsContainer);
-
-            houseElements.forEach(houseElement => {
-                console.log('Adding mouseover on ' + houseElement.textContent);
-                houseElement.addEventListener('onclick', (event) => {
-                    const houseName = houseElement.textContent;
-                    const details = houseDetails[houseName];
-
-                    if (details) {
-                        detailsContainer.innerHTML = `
-                    <strong>${houseName}</strong><br>
-                    Owner: ${details.owner}<br>
-                    Rashi: ${details.rashi}<br>
-                    Lord of Rashi: ${details.lordOfRashi}<br>
-                    Karak: ${details.karak}<br>
-                    Direction: ${details.direction}<br>
-                    Denotes: ${details.denotes}<br>
-                    Lalkitab Rules: ${details.Rules}
-                    `;
-
-                        // Position the details container near the mouse cursor.
-                        detailsContainer.style.left = (event.clientX + 10) + 'px';
-                        detailsContainer.style.top = (event.clientY + 10) + 'px';
-                        detailsContainer.style.display = 'block';
+            else {
+                const infoDiv = document.getElementById('planet-info');
+                if (planetData[item]) {
+                    let attributesHTML = `<h2>${item} Attributes</h2><ul>`;
+                    for (const key in planetData[item]) {
+                        attributesHTML += `<li><strong>${key}:</strong> ${planetData[item][key]}</li>`;
                     }
-                });
+                    attributesHTML += `</ul>`;
+                    infoDiv.innerHTML = attributesHTML;
+                } else {
+                    infoDiv.innerHTML = `Attributes for ${item} not found.`;
+                }
+            }
 
-                houseElement.addEventListener('mouseout', () => {
-                    detailsContainer.style.display = 'none';
-                });
-            });
         }
 
         var twoPlanets = {
@@ -5058,35 +4491,33 @@ Team Mahesh Mankar
                     <h1>Click on a House to See its Attributes</h1>
 
                     <div id="house-buttons">
-                        <button class="house-button" ng-click="showAttributes('1')">House 1</button>
-                        <button class="house-button" ng-click="showAttributes('2')">House 2</button>
-                        <button class="house-button" ng-click="showAttributes('3')">House 3</button>
-                        <button class="house-button" ng-click="showAttributes('4')">House 4</button>
-                        <button class="house-button" ng-click="showAttributes('5')">House 5</button>
-                        <button class="house-button" ng-click="showAttributes('6')">House 6</button>
-                        <button class="house-button" ng-click="showAttributes('7')">House 7</button>
-                        <button class="house-button" ng-click="showAttributes('8')">House 8</button>
-                        <button class="house-button" ng-click="showAttributes('9')">House 9</button>
-                        <button class="house-button" ng-click="showAttributes('10')">House 10</button>
-                        <button class="house-button" ng-click="showAttributes('11')">House 11</button>
-                        <button class="house-button" ng-click="showAttributes('12')">House 12</button>
+                        <br><button class="house-button" ng-click="showAttributes('1')">House 1</button>
+                        <br><button class="house-button" ng-click="showAttributes('2')">House 2</button>
+                        <br><button class="house-button" ng-click="showAttributes('3')">House 3</button>
+                        <br><button class="house-button" ng-click="showAttributes('4')">House 4</button>
+                        <br><button class="house-button" ng-click="showAttributes('5')">House 5</button>
+                        <br><button class="house-button" ng-click="showAttributes('6')">House 6</button>
+                        <br><button class="house-button" ng-click="showAttributes('7')">House 7</button>
+                        <br><button class="house-button" ng-click="showAttributes('8')">House 8</button>
+                        <br><button class="house-button" ng-click="showAttributes('9')">House 9</button>
+                        <br><button class="house-button" ng-click="showAttributes('10')">House 10</button>
+                        <br><button class="house-button" ng-click="showAttributes('11')">House 11</button>
+                        <br><button class="house-button" ng-click="showAttributes('12')">House 12</button>
                     </div>
 
                     <div id="planet-info">Click on a planet to see its attributes here.</div>
+                    <div id="planet-buttons">
+                        <br><button class="planet-button" ng-click="showAttributes('jupiter)">Jupiter</button>
+                        <br><button class="planet-button" ng-click="showAttributes('sun)">Sun</button>
+                        <br><button class="planet-button" ng-click="showAttributes('mars)">Mars</button>
+                        <br><button class="planet-button" ng-click="showAttributes('moon)">Moon</button>
+                        <br><button class="planet-button" ng-click="showAttributes('mercury)">Mercury</button>
+                        <br><button class="planet-button" ng-click="showAttributes('venus)">Venus</button>
+                        <br><button class="planet-button" ng-click="showAttributes('ketu)">Ketu</button>
+                        <br><button class="planet-button" ng-click="showAttributes('rahu)">Rahu</button>
+                        <br><button class="planet-button" ng-click="showAttributes('saturn)">Saturn</button>
+                    </div>
                 </div>
-
-                <div>
-                    <div class="planet" data-planet="sun">Sun</div>
-                    <div class="planet" data-planet="jupiter">Jupiter</div>
-                    <div class="planet" data-planet="venus">Venus</div>
-                    <div class="planet" data-planet="mars">Mars</div>
-                    <div class="planet" data-planet="mercury">Mercury</div>
-                    <div class="planet" data-planet="saturn">Saturn</div>
-                    <div class="planet" data-planet="ketu">Ketu</div>
-                    <div class="planet" data-planet="rahu">Rahu</div>
-                    <div class="planet" data-planet="moon">Moon</div>
-                </div>
-                <div id="planet-info"></div>
             </div>
 
             <div id="horoscope-chart">
