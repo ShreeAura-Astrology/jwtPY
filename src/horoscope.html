@@ -2012,7 +2012,7 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString()
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali; 
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -3188,7 +3188,7 @@
                         attributesHTML += `<li><strong>${key}:</strong> ${houseDetails[item][key]}</li>`;
                     }
                     attributesHTML += `</ul>`;
-                    infoDiv.innerHTML = attributesHTML.replaceAll(',',"<br>");
+                    infoDiv.innerHTML = attributesHTML.replaceAll(',', "<br>");
                 } else {
                     infoDiv.innerHTML = `Attributes for ${item} not found.`;
                 }
@@ -3201,7 +3201,7 @@
                         attributesHTML += `<li><strong>${key}:</strong> ${planetData[item][key]}</li>`;
                     }
                     attributesHTML += `</ul>`;
-                    infoDiv.innerHTML = attributesHTML.replaceAll(',',"<br>");
+                    infoDiv.innerHTML = attributesHTML.replaceAll(',', "<br>");
                 } else {
                     infoDiv.innerHTML = `Attributes for ${item} not found.`;
                 }
@@ -4286,9 +4286,66 @@
             console.log("Planet SnapShot: ", planetSnapShot);
             isMangalBadh = checkMarsBadh(planetSnapShot);
             isMangalDosh = checkMangalDosh(planetSnapShot);
+            budhNali     = calculateBudhKaBhed(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
+        budhNali = "";
+        function calculateBudhKaBhed(planetPositions) {
+
+            const planetPowers = {
+                Jupiter: 6,
+                Sun: 9,
+                Moon: 8,
+                Venus: 7,
+                Mars: 5,
+                Mercury: 4,
+                Saturn: 3,
+                Rahu: 2,
+                Ketu: 1,
+            };
+
+            // Ensure all necessary planet positions are provided
+            const requiredPlanets = Object.keys(planetPowers);
+            const providedPlanets = Object.keys(planetPositions);
+            if (requiredPlanets.length !== providedPlanets.length || !requiredPlanets.every(planet => providedPlanets.includes(planet))) {
+                console.log("Error: Please provide the house position for all nine planets (Jupiter, Sun, Moon, Venus, Mars, Mercury, Saturn, Rahu, Ketu).");
+            }
+
+            // Calculate the multiplied total for each planet [2]
+            let multipliedTotals = {};
+            for (const planet in planetPowers) {
+                if (planetPositions.hasOwnProperty(planet)) {
+                    multipliedTotals[planet] = planetPowers[planet] * planetPositions[planet];
+                }
+            }
+
+            // Calculate the sum of all multiplied totals [2]
+            let sumOfTotals = Object.values(multipliedTotals).reduce((sum, value) => sum + value, 0);
+
+            // Divide the sum by 9 and find the remainder [2]
+            const remainder = sumOfTotals % 9;
+
+            // Determine which planet corresponds to the remainder [2]
+            let actingPlanet;
+            for (const planet in planetPowers) {
+                if (planetPowers[planet] === remainder) { 
+                    actingPlanet = planet;
+                    break;
+                }
+                else if(remainder === 0){ // Remainder 0 corresponds to Mercury
+                    actingPlanet = "Mercury";
+                    break;
+                }
+            }
+
+            // Information from the source [2]
+            let result = `Budh Nali result is ${remainder}. Therefore, **Mercury (Budh) in the chart will act like ${actingPlanet}**.`;
+
+            return result;
+        }
+
+
         var mangalDoshRemedies = `<br>Remedy for Mangal Dosh<br>
         1 House - Silver Chain or Offer Milk + Honey to Shivji on Tuesdays
         <br>4 House - Offer Sweet Milk to Banyan tree for 43 Days or Wear Silver square in a silver chain.
@@ -4491,31 +4548,34 @@ Team Mahesh Mankar
                     <h1>Click on a House to See its Attributes</h1>
 
                     <div id="house-buttons">
-                        <br><br><button  class="house-button" ng-click="showAttributes('1','house')">House 1</button>
-                        <br><br><button  class="house-button" ng-click="showAttributes('2','house')">House 2</button>
-                        <br><br><button  class="house-button" ng-click="showAttributes('3','house')">House 3</button>
-                        <br><br><button  class="house-button" ng-click="showAttributes('4','house')">House 4</button>
-                        <br><br><button  class="house-button" ng-click="showAttributes('5','house')">House 5</button>
-                        <br><br><button  class="house-button" ng-click="showAttributes('6','house')">House 6</button>
-                        <br><br><button  class="house-button" ng-click="showAttributes('7','house')">House 7</button>
-                        <br><br><button  class="house-button" ng-click="showAttributes('8','house')">House 8</button>
-                        <br><br><button  class="house-button" ng-click="showAttributes('9','house')">House 9</button>
-                        <br><br><button  class="house-button" ng-click="showAttributes('10','house')">House 10</button>
-                        <br><br><button  class="house-button" ng-click="showAttributes('11','house')">House 11</button>
-                        <br><br><button  class="house-button" ng-click="showAttributes('12','house')">House 12</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('1','house')">House 1</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('2','house')">House 2</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('3','house')">House 3</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('4','house')">House 4</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('5','house')">House 5</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('6','house')">House 6</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('7','house')">House 7</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('8','house')">House 8</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('9','house')">House 9</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('10','house')">House 10</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('11','house')">House 11</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('12','house')">House 12</button>
                     </div>
 
                     <div id="planet-info">Click on a planet to see its attributes here.</div>
                     <div id="planet-buttons">
-                        <br><br><button  class="planet-button" ng-click="showAttributes('jupiter','planet')">Jupiter</button>
-                        <br><br><button  class="planet-button" ng-click="showAttributes('sun','planet')">Sun</button>
-                        <br><br><button  class="planet-button" ng-click="showAttributes('mars','planet')">Mars</button>
-                        <br><br><button  class="planet-button" ng-click="showAttributes('moon','planet')">Moon</button>
-                        <br><br><button  class="planet-button" ng-click="showAttributes('mercury','planet')">Mercury</button>
-                        <br><br><button  class="planet-button" ng-click="showAttributes('venus','planet')">Venus</button>
-                        <br><br><button  class="planet-button" ng-click="showAttributes('ketu','planet')">Ketu</button>
-                        <br><br><button  class="planet-button" ng-click="showAttributes('rahu','planet')">Rahu</button>
-                        <br><br><button  class="planet-button" ng-click="showAttributes('saturn','planet')">Saturn</button>
+                        <br><br><button class="planet-button"
+                            ng-click="showAttributes('jupiter','planet')">Jupiter</button>
+                        <br><br><button class="planet-button" ng-click="showAttributes('sun','planet')">Sun</button>
+                        <br><br><button class="planet-button" ng-click="showAttributes('mars','planet')">Mars</button>
+                        <br><br><button class="planet-button" ng-click="showAttributes('moon','planet')">Moon</button>
+                        <br><br><button class="planet-button"
+                            ng-click="showAttributes('mercury','planet')">Mercury</button>
+                        <br><br><button class="planet-button" ng-click="showAttributes('venus','planet')">Venus</button>
+                        <br><br><button class="planet-button" ng-click="showAttributes('ketu','planet')">Ketu</button>
+                        <br><br><button class="planet-button" ng-click="showAttributes('rahu','planet')">Rahu</button>
+                        <br><br><button class="planet-button"
+                            ng-click="showAttributes('saturn','planet')">Saturn</button>
                     </div>
                 </div>
             </div>
