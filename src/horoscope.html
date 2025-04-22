@@ -2012,7 +2012,7 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali; 
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome;
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -4286,11 +4286,12 @@
             console.log("Planet SnapShot: ", planetSnapShot);
             isMangalBadh = checkMarsBadh(planetSnapShot);
             isMangalDosh = checkMangalDosh(planetSnapShot);
-            budhNali     = calculateBudhKaBhed(planetSnapShot);
+            budhNali = calculateBudhKaBhed(planetSnapShot);
+            houseOutCome = suggestHouseOutcome(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
-        budhNali = "";
+        var budhNali = "";
         function calculateBudhKaBhed(planetPositions) {
 
             const planetPowers = {
@@ -4329,11 +4330,11 @@
             // Determine which planet corresponds to the remainder [2]
             let actingPlanet;
             for (const planet in planetPowers) {
-                if (planetPowers[planet] === remainder) { 
+                if (planetPowers[planet] === remainder) {
                     actingPlanet = planet;
                     break;
                 }
-                else if(remainder === 0){ // Remainder 0 corresponds to Mercury
+                else if (remainder === 0) { // Remainder 0 corresponds to Mercury
                     actingPlanet = "Mercury";
                     break;
                 }
@@ -4345,6 +4346,59 @@
             return result;
         }
 
+        function suggestHouseOutcome(planetPositions) {
+            // Information drawn from "Lalkitab Advance Makan Kab Banwaye.pdf"
+
+            if (!planetPositions.hasOwnProperty('Saturn')) {
+                return "Information about Saturn's placement is needed to suggest the outcome of building a house based on the provided source.";
+            }
+
+            const saturnHouse = planetPositions.Saturn;
+            let suggestion = "";
+
+            switch (saturnHouse) {
+                case 1:
+                    suggestion = "**If Saturn is in the 1st house and you build a house, it may lead to poverty. However, if the 7th or 10th house is empty, building a house might be okay** [1].";
+                    break;
+                case 2:
+                    suggestion = "**If Saturn is in the 2nd house, it can be auspicious for you, and building a house in this situation is considered auspicious** [2]. The 2nd house is considered a religious place [2].";
+                    break;
+                case 3:
+                    suggestion = "**If Saturn is in the 3rd house and you want to build a house, it is necessary to keep three dogs at home. Otherwise, you may face financial problems** [2]. If you already have a plot, keeping one dog and a puppy on the plot will help in the construction of the house [2]. The 3rd house is associated with Mercury, and Mars is its significator [2].";
+                    break;
+                case 4:
+                    suggestion = "**If Saturn is in the 4th house and you build a house, it can negatively impact your maternal and in-law families, potentially leading to problems or downfall. Therefore, it is advisable to avoid building a house if Saturn is in the 4th house** [3]. The 4th house is associated with the Moon, and Saturn does not have a good relationship with the Moon [3].";
+                    break;
+                case 5:
+                    suggestion = "**If Saturn is in the 5th house, it can create issues with the construction of the house and may also affect your children negatively** [3]. If Saturn is in the 5th house, it implies that the child may face hardships [4]. If you want to build a house, it is advised to do so only after the age of 48. Before starting construction, bring a buffalo into the house, worship it, feed it well, give it some offering, and then send it away. Only then, and only if very necessary, should you begin building the house [4]. The 5th house is associated with the Sun and is also the house of children [3].";
+                    break;
+                case 6:
+                    suggestion = "**The period of Saturn is from 36 to 39 years. Therefore, if Saturn is in the 6th house, you should build a house only when you are 36 or 39 years old. Building a house before this age may harm your daughter's relatives** [4].";
+                    break;
+                case 7:
+                    suggestion = "**Saturn is exalted in the 7th house. In this situation, a person may get to build more houses, which are very beneficial for them. If houses start selling, preserve the door frame of the old house. Then, the same number of houses will be built again** [5].";
+                    break;
+                case 8:
+                    suggestion = "**When a person starts building a house while Saturn is in the 8th house, the fear of death may increase. Here, the influence of Saturn depends on the positions of Rahu and Ketu. Therefore, a person with Saturn in the 8th house should not build a house** [5].";
+                    break;
+                case 9:
+                    suggestion = "**If Saturn is in the 9th house and a person's wife or mother is pregnant, and the person starts building a house with their own earnings, it will have a negative impact on the father. Once the person builds three houses, the father's death is certain** [6].";
+                    break;
+                case 10:
+                    suggestion = "**When Saturn is in the 10th house, a person receives a lot of wealth. However, if the person buys a ready-made house or builds one, they may become poor. If Saturn is weakening for any reason, there might be issues with the house, and it could remain incomplete. Therefore, it is better not to build a house to avoid financial loss** [6, 7].";
+                    break;
+                case 11:
+                    suggestion = "**If Saturn is in the 11th house, a person should build a house only after the age of 55. They should avoid living in a south-facing house. Living in a south-facing house may lead to chronic diseases and the risk of death** [7].";
+                    break;
+                case 12:
+                    suggestion = "**If Saturn is in the 12th house, the person's house gets built automatically. One should not try to stop the construction; it should be allowed to proceed as it is happening** [7].";
+                    break;
+                default:
+                    suggestion = "Based on the provided source, there is no specific guidance for building a house when Saturn is in the given house.";
+            }
+
+            return suggestion;
+        }
 
         var mangalDoshRemedies = `<br>Remedy for Mangal Dosh<br>
         1 House - Silver Chain or Offer Milk + Honey to Shivji on Tuesdays
@@ -4545,7 +4599,7 @@ Team Mahesh Mankar
                 <div>
                     <p>Here are the houses:</p>
                     <div id="house-info"></div>
-                    <h1>Click on a House to See its Attributes</h1>
+                    <p>House</p>
 
                     <div id="house-buttons">
                         <br><br><button class="house-button" ng-click="showAttributes('1','house')">House 1</button>
