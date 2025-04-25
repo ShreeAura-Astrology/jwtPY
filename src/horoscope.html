@@ -1597,6 +1597,10 @@
                                         drishtiRelation.enmical.push(dhristiPair);
                                         sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
                                     }
+                                    else{
+                                        drishti.push(planetofcurrenthouse + ' is having normal drishti on planet: ' + planetOfToDrishtiHouse);
+                                        sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
+                                    }
                                 });
                             }
                         })
