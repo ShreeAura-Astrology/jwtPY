@@ -2012,7 +2012,7 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome;
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -4288,6 +4288,7 @@
             isMangalDosh = checkMangalDosh(planetSnapShot);
             budhNali = calculateBudhKaBhed(planetSnapShot);
             houseOutCome = suggestHouseOutcome(planetSnapShot);
+            sleepingHouses = findSoyaHuaGhar(houses);
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
@@ -4522,6 +4523,118 @@ Team Mahesh Mankar
             });
             houseIndex = rotatedHouse;
             $scope.varshphalChart = rotatedVarshphal;
+        }
+        var sleepingHouses = [];
+        /**
+ * Determines which houses are "Soya Hua" (Sleeping Houses) according to the specific
+ * rules listed for each house in sources [2] and [3].
+ *
+ * @param {Object<string, string[]>} planets - An object where keys are house numbers
+ *                                             (as strings '1' to '12') and values are
+ *                                             arrays of planet names (strings, e.g., 'Sun',
+ *                                             'Mercury', 'Saturn', 'Jupiter', 'Moon',
+ *                                             'Mars', 'Venus', 'Rahu', 'Ketu') present
+ *                                             in that house. Houses with no planets should
+ *                                             have an empty array value, e.g., { '1': [], ... }.
+ *                                             House keys must be strings '1' through '12'.
+ * @returns {number[]} An array of house numbers (integers 1 to 12) that are "Soya Hua".
+ */
+        function findSoyaHuaGhar(planets) {
+            const soyaHuaHouses = [];
+
+            // Helper function to check if a house is empty (no planets in it)
+            // Handles cases where the house key might be missing or value is undefined/null
+            const isHouseEmpty = (houseNum) => {
+                const housePlanets = planets[String(houseNum)].planets;
+                return housePlanets === undefined || housePlanets === null || housePlanets.length === 0;
+            };
+
+            // Helper function to check if a specific planet is in a house
+            const isPlanetInHouse = (planet, houseNum) => {
+                const housePlanets = planets[String(houseNum)].planets;
+                return housePlanets !== undefined && housePlanets !== null && housePlanets.includes(planet);
+            };
+
+            // Helper function to check if a specific planet is NOT in a house
+            const isPlanetNotInHouse = (planet, houseNum) => {
+                return !isPlanetInHouse(planet, houseNum);
+            };
+
+            // Check the specific conditions for each house (Sources [2] and [3])
+
+            // **1st House**
+            // Condition: No planet in the 1st House [2]
+            if (isHouseEmpty(1)) {
+                soyaHuaHouses.push(1);
+            }
+
+            // **2nd House**
+            // Condition: No planet in the 2nd House AND no planet in the 8th House AND no Saturn in the 6th House [2]
+            if (isHouseEmpty(2) && isHouseEmpty(8) && isPlanetNotInHouse('Saturn', 6)) {
+                soyaHuaHouses.push(2);
+            }
+
+            // **3rd House**
+            // Condition: No Planet in the 3rd House AND no Mercury in the 9th House [2]
+            if (isHouseEmpty(3) && isPlanetNotInHouse('Mercury', 9)) {
+                soyaHuaHouses.push(3);
+            }
+
+            // **4th House**
+            // Condition: No Planet in the 4th House [2]
+            if (isHouseEmpty(4)) {
+                soyaHuaHouses.push(4);
+            }
+
+            // **5th House**
+            // Condition: No Planet in the 5th House [2]
+            if (isHouseEmpty(5)) {
+                soyaHuaHouses.push(5);
+            }
+
+            // **6th House**
+            // Condition: No Planet in the 6th House AND no planet in the 2nd House AND no Mercury in the 12th House [2]
+            if (isHouseEmpty(6) && isHouseEmpty(2) && isPlanetNotInHouse('Mercury', 12)) {
+                soyaHuaHouses.push(6);
+            }
+
+            // **7th House**
+            // Condition: No Planet in the 7th House AND no Planet in the 1st House [2]
+            if (isHouseEmpty(7) && isHouseEmpty(1)) {
+                soyaHuaHouses.push(7);
+            }
+
+            // **8th House**
+            // Condition: No planet in the 8th House [2]
+            if (isHouseEmpty(8)) {
+                soyaHuaHouses.push(8);
+            }
+
+            // **9th House**
+            // Condition: No planet in the 9th House AND No planet in the 3rd House AND no Planet in the 5th House [3]
+            if (isHouseEmpty(9) && isHouseEmpty(3) && isHouseEmpty(5)) {
+                soyaHuaHouses.push(9);
+            }
+
+            // **10th House**
+            // Condition: No planet in the 10th House AND no planet in the 4th House [3]
+            if (isHouseEmpty(10) && isHouseEmpty(4)) {
+                soyaHuaHouses.push(10);
+            }
+
+            // **11th House**
+            // Condition: No planet in the 11th House AND no planet in the 3rd House [3]
+            if (isHouseEmpty(11) && isHouseEmpty(3)) {
+                soyaHuaHouses.push(11);
+            }
+
+            // **12th House**
+            // Condition: No planet in the 12th House AND no planet in the 6th House AND no planet in the 8th House [3]
+            if (isHouseEmpty(12) && isHouseEmpty(6) && isHouseEmpty(8)) {
+                soyaHuaHouses.push(12);
+            }
+
+            return soyaHuaHouses;
         }
     });
 </script>
