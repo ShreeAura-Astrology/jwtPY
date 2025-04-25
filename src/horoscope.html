@@ -1562,6 +1562,7 @@
             "friendly": [],
             "enmical": []
         };
+        var sleepingPlanets = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Rahu', 'Ketu'];
         function getDhrishti() {
             for (const house in houses) {
                 if (housesTable[house].drishti.length > 0 && houses[house].planets.length > 0) {
@@ -1585,6 +1586,7 @@
                                         dhristiPair.to = planetOfToDrishtiHouse;
                                         dhristiPair.type = "friendly";
                                         drishtiRelation.friendly.push(dhristiPair);
+                                        sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
                                     }
                                     else if (planetsTable[planetofcurrenthouse].enemies.includes(planetOfToDrishtiHouse)) {
                                         balaOfPlanets[planetOfToDrishtiHouse] -= 100;
@@ -1593,6 +1595,7 @@
                                         dhristiPair.to = planetOfToDrishtiHouse;
                                         dhristiPair.type = "enmical";
                                         drishtiRelation.enmical.push(dhristiPair);
+                                        sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
                                     }
                                 });
                             }
@@ -2012,7 +2015,7 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>');
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets: " + awakeInPakkaGhar.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -4289,6 +4292,7 @@
             budhNali = calculateBudhKaBhed(planetSnapShot);
             houseOutCome = suggestHouseOutcome(planetSnapShot);
             sleepingHouses = findSoyaHuaGhar(houses);
+            sleepingPlanets = detectSleepingPlanetsInfo(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
@@ -4541,7 +4545,20 @@ Team Mahesh Mankar
  */
         function findSoyaHuaGhar(planets) {
             const soyaHuaHouses = [];
-
+            const houseRemedyPlanet = {
+                1: 'Mars',
+                2: 'Moon',
+                3: 'Mercury',
+                4: 'Moon',
+                5: 'Sun',
+                6: 'Rahu',
+                7: 'Venus',
+                8: 'Moon',
+                9: 'Jupiter',
+                10: 'Saturn',
+                11: 'Jupiter',
+                12: 'Ketu',
+            };
             // Helper function to check if a house is empty (no planets in it)
             // Handles cases where the house key might be missing or value is undefined/null
             const isHouseEmpty = (houseNum) => {
@@ -4565,76 +4582,122 @@ Team Mahesh Mankar
             // **1st House**
             // Condition: No planet in the 1st House [2]
             if (isHouseEmpty(1)) {
-                soyaHuaHouses.push(1);
+                soyaHuaHouses.push("1 - Remedy for " + houseRemedyPlanet[1]);
             }
 
             // **2nd House**
             // Condition: No planet in the 2nd House AND no planet in the 8th House AND no Saturn in the 6th House [2]
             if (isHouseEmpty(2) && isHouseEmpty(8) && isPlanetNotInHouse('Saturn', 6)) {
-                soyaHuaHouses.push(2);
+                soyaHuaHouses.push("2  - Remedy for " + houseRemedyPlanet[2]);
             }
 
             // **3rd House**
             // Condition: No Planet in the 3rd House AND no Mercury in the 9th House [2]
             if (isHouseEmpty(3) && isPlanetNotInHouse('Mercury', 9)) {
-                soyaHuaHouses.push(3);
+                soyaHuaHouses.push("3  - Remedy for " + houseRemedyPlanet[3]);
             }
 
             // **4th House**
             // Condition: No Planet in the 4th House [2]
             if (isHouseEmpty(4)) {
-                soyaHuaHouses.push(4);
+                soyaHuaHouses.push("4   - Remedy for " + houseRemedyPlanet[4]);
             }
 
             // **5th House**
             // Condition: No Planet in the 5th House [2]
             if (isHouseEmpty(5)) {
-                soyaHuaHouses.push(5);
+                soyaHuaHouses.push("5   - Remedy for " + houseRemedyPlanet[5]);
             }
 
             // **6th House**
             // Condition: No Planet in the 6th House AND no planet in the 2nd House AND no Mercury in the 12th House [2]
             if (isHouseEmpty(6) && isHouseEmpty(2) && isPlanetNotInHouse('Mercury', 12)) {
-                soyaHuaHouses.push(6);
+                soyaHuaHouses.push("6   - Remedy for " + houseRemedyPlanet[6]);
             }
 
             // **7th House**
             // Condition: No Planet in the 7th House AND no Planet in the 1st House [2]
             if (isHouseEmpty(7) && isHouseEmpty(1)) {
-                soyaHuaHouses.push(7);
+                soyaHuaHouses.push("7   - Remedy for " + houseRemedyPlanet[7]);
             }
 
             // **8th House**
             // Condition: No planet in the 8th House [2]
             if (isHouseEmpty(8)) {
-                soyaHuaHouses.push(8);
+                soyaHuaHouses.push("8  - Remedy for " + houseRemedyPlanet[8]);
             }
 
             // **9th House**
             // Condition: No planet in the 9th House AND No planet in the 3rd House AND no Planet in the 5th House [3]
             if (isHouseEmpty(9) && isHouseEmpty(3) && isHouseEmpty(5)) {
-                soyaHuaHouses.push(9);
+                soyaHuaHouses.push("9   - Remedy for " + houseRemedyPlanet[9]);
             }
 
             // **10th House**
             // Condition: No planet in the 10th House AND no planet in the 4th House [3]
             if (isHouseEmpty(10) && isHouseEmpty(4)) {
-                soyaHuaHouses.push(10);
+                soyaHuaHouses.push("10 -   - Remedy for " + houseRemedyPlanet[10]);
             }
 
             // **11th House**
             // Condition: No planet in the 11th House AND no planet in the 3rd House [3]
             if (isHouseEmpty(11) && isHouseEmpty(3)) {
-                soyaHuaHouses.push(11);
+                soyaHuaHouses.push("11   - Remedy for " + houseRemedyPlanet[11]);
             }
 
             // **12th House**
             // Condition: No planet in the 12th House AND no planet in the 6th House AND no planet in the 8th House [3]
             if (isHouseEmpty(12) && isHouseEmpty(6) && isHouseEmpty(8)) {
-                soyaHuaHouses.push(12);
+                soyaHuaHouses.push("12  - Remedy for " + houseRemedyPlanet[12]);
             }
 
             return soyaHuaHouses;
+        }
+
+
+        var awakeInPakkaGhar = [];
+        function detectSleepingPlanetsInfo(horoscope) {
+
+            const potentiallySleepingPendingAspectCheck = [];
+            // List of planets as typically used in Lal Kitab
+            const planets = sleepingPlanets;
+
+            // Define pakka ghars based on provided source [3]
+            const pakkaGhars = {
+                Sun: [1],
+                Mars: [3, 8],
+                Jupiter: [2, 5, 9, 12],
+                Moon: [4],
+                Mercury: [6, 7],
+                Venus: [7],
+                Saturn: [8, 10, 11],
+                Ketu: [6],
+                Rahu: [12]
+                // Rahu and Ketu pakka ghars are NOT listed in the provided source [3].
+                // Therefore, based *only* on this source, Rahu and Ketu cannot be identified
+                // as awake *due to being in their pakka ghar* by this function.
+                // Their potential sleeping status would depend solely on the (missing) aspect check.
+            };
+
+            for (const planet of planets) {
+                const currentHouse = horoscope[planet];
+
+                // Validate planet position input
+                if (currentHouse === undefined || typeof currentHouse !== 'number' || currentHouse < 1 || currentHouse > 12) {
+                    console.warn(`Warning: Position for ${planet} is missing, invalid, or outside 1-12 house range (${currentHouse}). Skipping this planet.`);
+                    continue; // Skip this planet if data is bad
+                }
+
+                // Check if the planet is in its pakka ghar based on source [3]
+                if (pakkaGhars[planet] && pakkaGhars[planet].includes(currentHouse)) {
+                    // A planet in its pakka ghar is always considered awake [3].
+                    awakeInPakkaGhar.push(planet);
+                    sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planet);
+
+                }
+            }
+
+            return sleepingPlanets;
         }
     });
 </script>
