@@ -2019,7 +2019,8 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets: " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') +  "<br><br> Masnui Planets: " + masnuiResult.toString().replaceAll(',', '<br>');
+        var takkarRelation = [];
+        document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets: " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: " + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka : Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega " + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar : " + takkarRelation.toString().replaceAll(',', '<br>') ;
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -4298,6 +4299,8 @@
             sleepingHouses = findSoyaHuaGhar(houses);
             sleepingPlanets = detectSleepingPlanetsInfo(planetSnapShot);
             analyzeMasnuiGrahaForChart(planetSnapShot);
+            dhokaRelation = getNthAspect(10,'dhokha');
+            takkarRelation = getNthAspect(8,'takkar');
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
@@ -4723,24 +4726,57 @@ Team Mahesh Mankar
                 "Ketu (Neech)": ["Moon", "Saturn"]
             };
 
-            for(const masnuiGraha in masnuiMapping){
+            for (const masnuiGraha in masnuiMapping) {
                 var isMasnui = false;
                 var houseNumPrev = 0;
                 var hNext = 0;
-                masnuiMapping[masnuiGraha].forEach(function(mplanet){
+                masnuiMapping[masnuiGraha].forEach(function (mplanet) {
                     hNext = birthChart[mplanet];
-                    if(houseNumPrev == hNext){
-                        isMasnui = true;  
+                    if (houseNumPrev == hNext) {
+                        isMasnui = true;
                     }
-                    else{
+                    else {
                         isMasnui = false;
                     }
                     houseNumPrev = birthChart[mplanet];
                 });
-                if(isMasnui){
-                    masnuiResult.push(masnuiMapping[masnuiGraha] + " are forming artificial " + masnuiGraha  + " in House " + hNext);
+                if (isMasnui) {
+                    masnuiResult.push(masnuiMapping[masnuiGraha] + " are forming artificial " + masnuiGraha + " in House " + hNext);
                 }
             }
+        }
+        var dhokaRelation = [];
+        var takkarRelation = [];
+        function getNthAspect(nth,relation) {
+            var aspects = [];
+            let conditionMet = false;
+            // Iterate through each house in the Lagna Kundli
+            for (let i = 1; i <= 12; i++) {
+                const currentHouse =i;
+                const planetInCurrentHouse = houses[currentHouse].planets;
+
+                if (planetInCurrentHouse.length > 0) {
+                    // Calculate the 10th house from the current house
+                    // House numbers are 1-12. (i + nth) gives the nth house (1-indexed).
+                    // Use modulo 12 and adjust for house 12.
+                    let nthHouseIndex = (i + nth);
+                    if (nthHouseIndex > 12) {
+                        nthHouseIndex -= 12;
+                    }
+                    const nthHouse = nthHouseIndex;
+                    const planetInNthHouse = lagnaKundli[nthHouse].planets;
+
+                    // The condition is if there are planets in both houses [5].
+                    // Source example: "1st house Planet 10th house mein baite planet ko dhoka dega" [3]
+                    // And "2nd house ke planet ko dhoka 5th house mein baite planet dega AND 2nd house ka planet 11th house mein baite planet ko dhoka dega" [5].
+                    // This implies the relative placement is the key (10th from each other).
+                    // We just need to find *any* pair of houses X and X+9 (mod 12) that *both* contain planets.
+                    if (planetInNthHouse.length > 0) {
+                        aspects.push('Planets in' + currentHouse + ' having ' + relation + ' with ' + planetInNthHouse + " in house " + currentHouse);
+                    }
+                }
+            }
+            return aspects;
         }
 
     });
