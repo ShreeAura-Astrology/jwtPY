@@ -4759,7 +4759,7 @@ Team Mahesh Mankar
                     // Calculate the 10th house from the current house
                     // House numbers are 1-12. (i + nth) gives the nth house (1-indexed).
                     // Use modulo 12 and adjust for house 12.
-                    let nthHouseIndex = (i + nth);
+                    let nthHouseIndex = (i + nth - 1);
                     if (nthHouseIndex > 12) {
                         nthHouseIndex -= 12;
                     }
