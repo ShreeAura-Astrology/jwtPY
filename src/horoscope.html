@@ -4772,7 +4772,7 @@ Team Mahesh Mankar
                     // This implies the relative placement is the key (10th from each other).
                     // We just need to find *any* pair of houses X and X+9 (mod 12) that *both* contain planets.
                     if (planetInNthHouse.length > 0) {
-                        aspects.push('Planets in' + currentHouse + ' having ' + relation + ' with ' + planetInNthHouse + " in house " + currentHouse);
+                        aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse);
                     }
                 }
             }
