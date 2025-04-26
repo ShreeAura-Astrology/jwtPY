@@ -1597,7 +1597,7 @@
                                         drishtiRelation.enmical.push(dhristiPair);
                                         sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
                                     }
-                                    else{
+                                    else {
                                         drishti.push(planetofcurrenthouse + ' is having normal drishti on planet: ' + planetOfToDrishtiHouse);
                                         sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
                                     }
@@ -2019,7 +2019,7 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets: " + awakeInPakkaGhar.toString().replaceAll(',', '<br>');
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets: " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') +  "<br><br> Masnui Planets: " + masnuiResult.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -4297,6 +4297,7 @@
             houseOutCome = suggestHouseOutcome(planetSnapShot);
             sleepingHouses = findSoyaHuaGhar(houses);
             sleepingPlanets = detectSleepingPlanetsInfo(planetSnapShot);
+            analyzeMasnuiGrahaForChart(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
@@ -4703,6 +4704,45 @@ Team Mahesh Mankar
 
             return sleepingPlanets;
         }
+        var masnuiResult = [];
+        function analyzeMasnuiGrahaForChart(birthChart) {
+            // Masnui Graha mapping 
+            const masnuiMapping = {
+                "Jupiter": ["Sun", "Venus"],
+                "Sun": ["Mercury", "Venus"],
+                "Moon": ["Sun", "Jupiter"],
+                "Venus": ["Rahu", "Ketu"],
+                "Mars": ["Sun", "Mercury"],
+                "Mars (Badh)": ["Sun", "Saturn"],
+                "Mercury": ["Jupiter", "Rahu"],
+                "Saturn (Ketu Swabhav)": ["Venus", "Jupiter"],
+                "Saturn (Rahu Swabhav)": ["Mars", "Mercury"],
+                "Rahu (Ucch)": ["Saturn", "Mars"],
+                "Rahu (Neech)": ["Sun", "Saturn"],
+                "Ketu (Ucch)": ["Venus", "Saturn"],
+                "Ketu (Neech)": ["Moon", "Saturn"]
+            };
+
+            for(const masnuiGraha in masnuiMapping){
+                var isMasnui = false;
+                var houseNumPrev = 0;
+                var hNext = 0;
+                masnuiMapping[masnuiGraha].forEach(function(mplanet){
+                    hNext = birthChart[mplanet];
+                    if(houseNumPrev == hNext){
+                        isMasnui = true;  
+                    }
+                    else{
+                        isMasnui = false;
+                    }
+                    houseNumPrev = birthChart[mplanet];
+                });
+                if(isMasnui){
+                    masnuiResult.push(masnuiMapping[masnuiGraha] + " are forming artificial " + masnuiGraha  + " in House " + hNext);
+                }
+            }
+        }
+
     });
 </script>
 
