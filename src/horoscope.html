@@ -1466,7 +1466,7 @@
         };
 
 
-
+        $scope.dhokhaplanetbyAge = "";
         $scope.getVarshphal = function (age) {
             console.log('Calculating Varshphal for Age: ' + age);
             for (const house in houses) {
@@ -1475,6 +1475,7 @@
             }
             $scope.varshphalChart = varshphalHouses;
             $scope.currentVarshMonth = $scope.selectedMonth;
+            $scope.dhokhaplanetbyAge = $scope.calculateDhokha(planetPositionsSnapshot);
         }
         $scope.resetVarshphal = function () {
             $scope.varshphalChart = varshphalHouses;
@@ -2019,7 +2020,7 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets: " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: " + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega " + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) : " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) : " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : " + seventhaspect.toString().replaceAll(',', '<br>'); 
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets: " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: " + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka By Age: " +  ageDhokaPlanet + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega " + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) : " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) : " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : " + seventhaspect.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -4300,8 +4301,9 @@
             analyzeMasnuiGrahaForChart(planetSnapShot);
             dhokaRelation = getNthAspect(10, 'dhokha (10th)');
             takkarRelation = getNthAspect(8, 'takkar (8th)');
-            helpRelation = getNthAspect(5,'friendly help (5th)');
-            seventhaspect = getNthAspect(7,'seventh');
+            helpRelation = getNthAspect(5, 'friendly help (5th)');
+            seventhaspect = getNthAspect(7, 'seventh');
+            $scope.dhokhaplanetbyAge = $scope.calculateDhokha(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
@@ -4782,6 +4784,76 @@ Team Mahesh Mankar
             return aspects;
         }
 
+        function calculateDhokeGrahaByAge(age, sunHouse, isFirstHouseVacant = false) {
+            // --- Input Validation ---
+            if (typeof age !== 'number' || !Number.isInteger(age) || age <= 0) {
+                console.error("Invalid input: age must be a positive integer.");
+                return null;
+            }
+            if (typeof sunHouse !== 'number' || !Number.isInteger(sunHouse) || sunHouse < 1 || sunHouse > 12) {
+                console.error("Invalid input: sunHouse must be an integer between 1 and 12.");
+                return null;
+            }
+            if (typeof isFirstHouseVacant !== 'boolean') {
+                console.error("Invalid input: isFirstHouseVacant must be a boolean.");
+                return null;
+            }
+            // --- End Validation ---
+
+            // Base sequence of planets according to the source [1]
+            // H8, H9, H12 are part of this specific sequence structure [1, 3]
+            const planetsSequence = ["Sun", "Mooon", "Ketu", "Mars", "Mercury", "Saturn", "Rahu", "H8", "H9", "Jupiter", "Venus", "H12"];
+            const sequenceLength = planetsSequence.length; // Which is 12
+
+            // Determine the 0-based index for the house number corresponding to the age
+            // Ages 1-12 map to houses 1-12, Ages 13-24 map to houses 1-12 again, etc. [3]
+            // (age - 1) gives 0 for age 1, 11 for age 12, 12 for age 13, etc.
+            // (age - 1) % 12 gives the 0-based index relative to the 1-12 house cycle.
+            const ageHouseIndex = age > 12 ? age % 12 : age;
+
+            // Determine the effective starting house number (1-12) for the planet sequence rotation.
+            // By default, the sequence starts from the house where the Sun is placed [2].
+            // However, there are special conditions if the 1st house is vacant [4].
+            let effectiveStartHouse = sunHouse;
+
+            if (isFirstHouseVacant) {
+                // If 1st house is vacant AND Sun is in 9th, sequence starts effectively from house 6 [4]
+                if (sunHouse === 9) {
+                    effectiveStartHouse = 6;
+                }
+                // If 1st house is vacant AND Sun is in 7th, sequence starts effectively from house 5 [4]
+                else if (sunHouse === 7) {
+                    effectiveStartHouse = 5;
+                }
+                // If 1st is vacant but Sun is in any other house, the sources don't specify a change
+                // from the general rule, so we assume it starts from the actual sunHouse [2].
+            }
+
+            // Determine the 0-based index in the base sequence where the effective start house corresponds to the first element (Su)
+            // The element at index `i` in `planetsSequence` is placed in the house `(effectiveStartHouse - 1 + i) % 12 + 1`.
+            // We need to find which index `resultIndex` in `planetsSequence` falls into the house corresponding to the age (which is house `ageHouseIndex + 1`).
+            // So, we solve for `resultIndex`: (effectiveStartHouse - 1 + resultIndex) % 12 = ageHouseIndex
+            // Rearranging: resultIndex = (ageHouseIndex - (effectiveStartHouse - 1) + 12) % 12
+            // resultIndex = (ageHouseIndex - effectiveStartHouse + 1 + 12) % 12
+            const effectiveStartIndex = effectiveStartHouse;
+            const resultIndex = (ageHouseIndex - effectiveStartIndex + sequenceLength) % sequenceLength; // Add sequenceLength before modulo to handle negative results
+
+            // The Dhoke ke Graha is the planet at the calculated index in the base sequence
+            const dhokeGraha = planetsSequence[resultIndex];
+
+            return dhokeGraha;
+        }
+        var ageDhokaPlanet = "";
+        var planetPositionsSnapshot;
+        $scope.calculateDhokha = function(snapshot){
+            planetPositionsSnapshot = snapshot;
+            var isFirstHouseVacant = false;
+            if(houses["1"].planets.length == 0){
+                isFirstHouseVacant = true;
+            }
+            ageDhokaPlanet = calculateDhokeGrahaByAge($scope.varshphalAge, snapshot["Sun"], isFirstHouseVacant);
+            return ageDhokaPlanet;
+        }
     });
 </script>
 
@@ -5103,6 +5175,7 @@ relaxation from Son as Ketu belongs to Son.</pre>
                 <p> Malefic Planets : <span id="MP"></span></p>
                 <p> Benefic Planets : <span id="BP"></span></p>
                 <p> Neutral Planets : <span id="NP"></span></p>
+                <p> Dhoka Planet By Age:<span id="DH">{{dhokhaplanetbyAge}}</span>
                 <p> Vakri drishti : <span id="VD"></span></p>
             </div>
             <div class="outer" ng-show="toggleMessage">
