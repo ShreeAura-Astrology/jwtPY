@@ -2019,7 +2019,7 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets: " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: " + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka : Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega " + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar : " + takkarRelation.toString().replaceAll(',', '<br>');
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets: " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: " + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega " + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) : " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) : " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : " + seventhaspect.toString().replaceAll(',', '<br>'); 
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -4298,8 +4298,10 @@
             sleepingHouses = findSoyaHuaGhar(houses);
             sleepingPlanets = detectSleepingPlanetsInfo(planetSnapShot);
             analyzeMasnuiGrahaForChart(planetSnapShot);
-            dhokaRelation = getNthAspect(10, 'dhokha');
-            takkarRelation = getNthAspect(8, 'takkar');
+            dhokaRelation = getNthAspect(10, 'dhokha (10th)');
+            takkarRelation = getNthAspect(8, 'takkar (8th)');
+            helpRelation = getNthAspect(5,'friendly help (5th)');
+            seventhaspect = getNthAspect(7,'seventh');
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
@@ -4746,6 +4748,8 @@ Team Mahesh Mankar
         }
         var dhokaRelation = [];
         var takkarRelation = [];
+        var helpRelation = [];
+        var seventhaspect = [];
         function getNthAspect(nth, relation) {
             var aspects = [];
             let conditionMet = false;
