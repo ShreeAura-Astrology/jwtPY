@@ -3202,7 +3202,7 @@
             if (type == 'house') {
                 const infoDiv = document.getElementById('house-info');
                 if (houseDetails[item]) {
-                    let attributesHTML = `<h2>${item} Attributes</h2><ul>`;
+                    let attributesHTML = `<span id="closer" ng-click="closeDesc()" class="house-button">Close</span><h2>${item} Attributes</h2><ul>`;
                     for (const key in houseDetails[item]) {
                         attributesHTML += `<li><strong>${key}:</strong> ${houseDetails[item][key]}</li>`;
                     }
@@ -3215,7 +3215,7 @@
             else {
                 const infoDiv = document.getElementById('planet-info');
                 if (planetData[item]) {
-                    let attributesHTML = `<h2>${item} Attributes</h2><ul>`;
+                    let attributesHTML = ` <span id="closer" ng-click="closeDesc()" class="house-button">Close</span><h2>${item} Attributes</h2><ul>`;
                     for (const key in planetData[item]) {
                         attributesHTML += `<li><strong>${key}:</strong> ${planetData[item][key]}</li>`;
                     }
@@ -5054,7 +5054,11 @@ Team Mahesh Mankar
 
         }
 
+        $scope.closeDesc =  function(){
+            document.getElementById('planet-info').innerHTML = '';
+            document.getElementById('house-info').innerHTML = '';
 
+        }
     });
 </script>
 
@@ -5147,7 +5151,7 @@ Team Mahesh Mankar
                         <br><br><button class="house-button" ng-click="showAttributes('11','house')">House 11</button>
                         <br><br><button class="house-button" ng-click="showAttributes('12','house')">House 12</button>
                     </div>
-
+                    <span id="closer" ng-click="closeDesc()" class="house-button">Close</span>
                     <div id="planet-info"></div>
                     <div id="planet-buttons">
                         <br><br><button class="planet-button"
