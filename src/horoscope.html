@@ -281,6 +281,17 @@
         z-index: 999;
     }
 
+    #planet-info{
+        position: absolute;
+        margin-top: 265px;
+        margin-left: 65px;
+        background: #494646;
+        padding: 33px;
+        color: #FFC107;
+        font-size: 20px;
+        border-radius: 15px;
+        z-index: 999;
+    }
 
     #house-1:hover+.hide {
         display: block;
@@ -5137,7 +5148,7 @@ Team Mahesh Mankar
                         <br><br><button class="house-button" ng-click="showAttributes('12','house')">House 12</button>
                     </div>
 
-                    <div id="planet-info">Click on a planet to see its attributes here.</div>
+                    <div id="planet-info"></div>
                     <div id="planet-buttons">
                         <br><br><button class="planet-button"
                             ng-click="showAttributes('jupiter','planet')">Jupiter</button>
