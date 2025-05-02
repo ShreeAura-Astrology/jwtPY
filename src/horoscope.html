@@ -5144,7 +5144,7 @@ Team Mahesh Mankar
                             ng-options="x for x in houses">
                         </select>
                         <label for="Planets">Choose Planet:</label>
-                        <select id="planetsDropdown" ng-model="selectedPlanetInfo" ng-change="showAttributes(selectedPlanetInfo,'planet)"
+                        <select id="planetsDropdown" ng-model="selectedPlanetInfo" ng-change="showAttributes(selectedPlanetInfo.toLowerCase(),'planet')"
                             ng-options="x for x in planets">
                         </select>
                         <br><br><button class="house-button" ng-click="showAttributes('1','house')">House 1</button>
