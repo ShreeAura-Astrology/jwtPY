@@ -5032,8 +5032,8 @@ Team Mahesh Mankar
                         planetaryAspects.push(planet + "  (None based on provided rules)");
                     } else {
                         allAspects[planet].forEach(aspect => {
-                            console.log(`  - ${aspect.aspectNumber}th aspect to House ${aspect.targetHouse} (Contains: ${aspect.aspectedPlanet || 'Empty'})`);
-                            planetaryAspects.push(`  - ${aspect.aspectNumber}th aspect to House ${aspect.targetHouse} (Contains: ${aspect.aspectedPlanet || 'Empty'})`)
+                            console.log(`${planet}  - ${aspect.aspectNumber}th aspect to House ${aspect.targetHouse} (Contains: ${aspect.aspectedPlanet || 'Empty'})`);
+                            planetaryAspects.push(`${planet}  - ${aspect.aspectNumber}th aspect to House ${aspect.targetHouse} (Contains: ${aspect.aspectedPlanet || 'Empty'})`)
                         });
                     }
                 }
