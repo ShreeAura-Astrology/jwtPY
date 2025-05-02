@@ -281,10 +281,11 @@
         z-index: 999;
     }
 
-    #house-info, #planet-info{
-        position: absolute;
-        margin-top: 265px;
-        margin-left: 65px;
+    #house-info,
+    #planet-info {
+        position: relative;
+        /* margin-top: -280px; */
+        margin-left: 249px;
         background: #494646;
         padding: 33px;
         color: #FFC107;
@@ -2031,7 +2032,7 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:<br>" + isMangalBadh.toString() + "<br> Mangal Dosh:<br>" + isMangalDosh.toString() + "<br> BudhNali: <br>" + budhNali + "<br> House Building:<br> " + houseOutCome + "<br><br>Sleeping Houses:<br>" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:<br>" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets:<br> " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: <br>" + masnuiResult.toString().replaceAll(',', '<br>')  + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega <br>" + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) :<br> " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) :<br> " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : <br>" + seventhaspect.toString().replaceAll(',', '<br>') + "<br><br> All Planetary Aspects : <br>" +  planetaryAspects.toString().replaceAll(',', '<br>');
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:<br>" + isMangalBadh.toString() + "<br> Mangal Dosh:<br>" + isMangalDosh.toString() + "<br> BudhNali: <br>" + budhNali + "<br> House Building:<br> " + houseOutCome + "<br><br>Sleeping Houses:<br>" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:<br>" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets:<br> " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: <br>" + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega <br>" + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) :<br> " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) :<br> " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : <br>" + seventhaspect.toString().replaceAll(',', '<br>') + "<br><br> All Planetary Aspects : <br>" + planetaryAspects.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -5054,7 +5055,7 @@ Team Mahesh Mankar
 
         }
 
-        $scope.closeDesc =  function(){
+        $scope.closeDesc = function () {
             document.getElementById('planet-info').innerHTML = '';
             document.getElementById('house-info').innerHTML = '';
 
@@ -5140,11 +5141,12 @@ Team Mahesh Mankar
 
                     <div id="house-buttons">
                         <label for="House">Choose House:</label>
-                        <select id="housesDropdown" ng-model="selectedHouseInfo" ng-change="showAttributes(selectedHouseInfo,'house')"
-                            ng-options="x for x in houses">
+                        <select id="housesDropdown" ng-model="selectedHouseInfo"
+                            ng-change="showAttributes(selectedHouseInfo,'house')" ng-options="x for x in houses">
                         </select>
                         <label for="Planets">Choose Planet:</label>
-                        <select id="planetsDropdown" ng-model="selectedPlanetInfo" ng-change="showAttributes(selectedPlanetInfo.toLowerCase(),'planet')"
+                        <select id="planetsDropdown" ng-model="selectedPlanetInfo"
+                            ng-change="showAttributes(selectedPlanetInfo.toLowerCase(),'planet')"
                             ng-options="x for x in planets">
                         </select>
                         <br><br><button class="house-button" ng-click="showAttributes('1','house')">House 1</button>
@@ -5160,7 +5162,7 @@ Team Mahesh Mankar
                         <br><br><button class="house-button" ng-click="showAttributes('11','house')">House 11</button>
                         <br><br><button class="house-button" ng-click="showAttributes('12','house')">House 12</button>
                     </div>
-                    
+
                     <div id="planet-info"></div>
                     <div id="planet-buttons">
                         <br><br><button class="planet-button"
