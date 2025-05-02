@@ -5139,6 +5139,14 @@ Team Mahesh Mankar
                     <p>House</p>
 
                     <div id="house-buttons">
+                        <label for="House">Choose House:</label>
+                        <select id="housesDropdown" ng-model="selectedHouseInfo" ng-change="showAttributes(x,'house')"
+                            ng-options="x for (x,y) in houses">
+                        </select>
+                        <label for="Planets">Choose Planet:</label>
+                        <select id="planetsDropdown" ng-model="selectedPlanetInfo" ng-change="showAttributes(x,'planet)"
+                            ng-options="x for (x,y) in planets">
+                        </select>
                         <br><br><button class="house-button" ng-click="showAttributes('1','house')">House 1</button>
                         <br><br><button class="house-button" ng-click="showAttributes('2','house')">House 2</button>
                         <br><br><button class="house-button" ng-click="showAttributes('3','house')">House 3</button>
