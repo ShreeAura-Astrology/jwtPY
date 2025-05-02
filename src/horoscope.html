@@ -2020,7 +2020,7 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets: " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: " + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka By Age: " +  ageDhokaPlanet + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega " + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) : " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) : " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : " + seventhaspect.toString().replaceAll(',', '<br>');
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:" + isMangalBadh.toString() + "<br> Mangal Dosh:" + isMangalDosh.toString() + "<br> BudhNali: " + budhNali + "<br> House Building: " + houseOutCome + "<br><br>Sleeping Houses:" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets: " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: " + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka By Age: " + ageDhokaPlanet + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega " + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) : " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) : " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : " + seventhaspect.toString().replaceAll(',', '<br>') + "<br><br> All Planetary Aspects : " +  planetaryAspects.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -4304,6 +4304,7 @@
             helpRelation = getNthAspect(5, 'friendly help (5th)');
             seventhaspect = getNthAspect(7, 'seventh');
             $scope.dhokhaplanetbyAge = $scope.calculateDhokha(planetSnapShot);
+            calculateAllPlanetAspects(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
@@ -4784,7 +4785,7 @@ Team Mahesh Mankar
             return aspects;
         }
 
-        function calculateDhokeGrahaByAge(age, sunHouse, isFirstHouseVacant,housesInfo) {
+        function calculateDhokeGrahaByAge(age, sunHouse, isFirstHouseVacant, housesInfo) {
             // --- Input Validation ---
             if (typeof age !== 'number' || !Number.isInteger(age) || age <= 0) {
                 console.error("Invalid input: age must be a positive integer.");
@@ -4847,15 +4848,202 @@ Team Mahesh Mankar
         }
         var ageDhokaPlanet = "";
         var planetPositionsSnapshot;
-        $scope.calculateDhokha = function(snapshot){
+        $scope.calculateDhokha = function (snapshot) {
             planetPositionsSnapshot = snapshot;
             var isFirstHouseVacant = false;
-            if(houses["1"].planets.length == 0){
+            if (houses["1"].planets.length == 0) {
                 isFirstHouseVacant = true;
             }
-            ageDhokaPlanet = calculateDhokeGrahaByAge($scope.varshphalAge, snapshot["Sun"], isFirstHouseVacant,houses);
+            ageDhokaPlanet = calculateDhokeGrahaByAge($scope.varshphalAge, snapshot["Sun"], isFirstHouseVacant, houses);
             return ageDhokaPlanet;
         }
+
+
+        function findPlanetAtNthAspect(horoscope, planetName, n) {
+            // --- Input Validation ---
+            if (
+                typeof horoscope !== 'object' ||
+                horoscope === null ||
+                typeof planetName !== 'string' ||
+                !horoscope.hasOwnProperty(planetName) ||
+                typeof n !== 'number' ||
+                !Number.isInteger(n) ||
+                n <= 0
+            ) {
+                console.error(
+                    'Invalid input: Please provide a valid horoscope object, planet name (present in horoscope), and a positive integer for n.'
+                );
+                return null; // Return null for invalid input
+            }
+
+            // --- Calculation ---
+            const planetHouse = horoscope[planetName];
+
+            // Validate house number
+            if (
+                !Number.isInteger(planetHouse) ||
+                planetHouse < 1 ||
+                planetHouse > 12
+            ) {
+                console.error(
+                    `Invalid house number (${planetHouse}) for planet ${planetName}. House must be between 1 and 12.`
+                );
+                return null;
+            }
+
+            // Calculate the target house number.
+            // (planetHouse + n - 1) gives the target position if houses were infinite.
+            // We use modulo 12 to wrap around.
+            // Since modulo 12 gives results 0-11, and we need 1-12:
+            // 1. Subtract 1 from planetHouse to work with 0-11 index.
+            // 2. Add (n - 1) because aspect counting is inclusive.
+            // 3. Take modulo 12.
+            // 4. Add 1 to shift back to 1-12 range.
+            // Example: House 1, 7th aspect: (1 - 1 + 7 - 1) % 12 + 1 = 6 % 12 + 1 = 7
+            // Example: House 8, 10th aspect: (8 - 1 + 10 - 1) % 12 + 1 = 16 % 12 + 1 = 4 + 1 = 5
+            // Example: House 6, 7th aspect: (6 - 1 + 7 - 1) % 12 + 1 = 11 % 12 + 1 = 11 + 1 = 12
+            const targetHouse = ((planetHouse - 1 + (n - 1)) % 12) + 1;
+
+            // --- Find Planet in Target House ---
+            // Iterate through the horoscope to find which planet occupies the target house.
+            for (const [otherPlanet, house] of Object.entries(horoscope)) {
+                if (house === targetHouse) {
+                    // Ensure we don't return the original planet if n is a multiple of 12 (aspecting itself)
+                    // Although astrologically aspects usually aren't 12, 24 etc.
+                    if (otherPlanet === planetName && n % 12 === 0) {
+                        continue; // Skip if it's the same planet due to full cycle aspect
+                    }
+                    if (house === targetHouse) {
+                        return otherPlanet; // Found the planet in the target house
+                    }
+                }
+            }
+
+            // --- No Planet Found ---
+            return null; // No planet found in the target house
+        }
+        var planetaryAspects = [];
+        function calculateAllPlanetAspects(horoscope) {
+            // Aspect rules provided by the user
+            const aspectRules = {
+                Sun: [7],
+                Mars: [4, 7, 8],
+                Jupiter: [5, 7, 9],
+                Moon: [7],
+                Mercury: [7],
+                Venus: [7],
+                Saturn: [3, 7, 10],
+                Ketu: [7],
+                Rahu: [7]
+            };
+            // --- Input Validation ---
+            if (
+                typeof horoscope !== 'object' ||
+                horoscope === null ||
+                Object.keys(horoscope).length === 0
+            ) {
+                console.error('Invalid input: Horoscope object is required.');
+                return null;
+            }
+            if (
+                typeof aspectRules !== 'object' ||
+                aspectRules === null ||
+                Object.keys(aspectRules).length === 0
+            ) {
+                console.error('Invalid input: Aspect rules object is required.');
+                return null;
+            }
+
+            const allAspectResults = {};
+            // Pre-calculate a map from house number to planet name for faster lookups
+            const houseToPlanetMap = {};
+            for (const [planet, house] of Object.entries(horoscope)) {
+                // Basic validation for house numbers within the loop
+                if (Number.isInteger(house) && house >= 1 && house <= 12) {
+                    // Handle multiple planets in the same house if necessary (though less common)
+                    // For simplicity, this example assumes one planet per house or overwrites.
+                    // A more robust solution might store an array of planets per house.
+                    houseToPlanetMap[house] = planet;
+                } else {
+                    console.warn(`Planet ${planet} has invalid house ${house} in horoscope. Skipping.`);
+                }
+            }
+
+
+            // Iterate through each planet in the horoscope (the aspecting planet)
+            for (const aspectingPlanet in horoscope) {
+                if (!horoscope.hasOwnProperty(aspectingPlanet)) {
+                    continue; // Skip inherited properties
+                }
+
+                // Check if this planet has defined aspect rules
+                if (aspectRules.hasOwnProperty(aspectingPlanet)) {
+                    const aspectNumbers = aspectRules[aspectingPlanet];
+
+                    // Validate the aspect numbers array
+                    if (!Array.isArray(aspectNumbers)) {
+                        console.warn(`Aspect rules for ${aspectingPlanet} is not an array. Skipping.`);
+                        continue;
+                    }
+
+                    allAspectResults[aspectingPlanet] = []; // Initialize array for this planet's aspects
+
+                    const planetHouse = horoscope[aspectingPlanet];
+                    // Validate house number before proceeding
+                    if (!Number.isInteger(planetHouse) || planetHouse < 1 || planetHouse > 12) {
+                        console.warn(`Invalid house number (${planetHouse}) for aspecting planet ${aspectingPlanet}. Skipping aspects.`);
+                        continue; // Skip aspects for this planet if its house is invalid
+                    }
+
+
+                    // Iterate through each aspect number defined for this planet
+                    for (const n of aspectNumbers) {
+                        if (typeof n !== 'number' || !Number.isInteger(n) || n <= 0) {
+                            console.warn(`Invalid aspect number ${n} for ${aspectingPlanet}. Skipping this aspect.`);
+                            continue;
+                        }
+
+                        // Calculate the target house
+                        const targetHouse = ((planetHouse - 1 + (n - 1)) % 12) + 1;
+
+                        // Find which planet (if any) is in the target house using the map
+                        const aspectedPlanet = houseToPlanetMap[targetHouse] || null;
+
+                        // Store the result for this specific aspect
+                        allAspectResults[aspectingPlanet].push({
+                            aspectNumber: n,
+                            targetHouse: targetHouse,
+                            aspectedPlanet: aspectedPlanet,
+                        });
+                    }
+                }
+                // else {
+                // Optional: Handle planets in the horoscope but not in aspectRules
+                // console.log(`No aspect rules defined for ${aspectingPlanet}.`);
+                // }
+            }
+
+            console.log("\n--- Calculated Aspects Results ---");
+            // Pretty print the results
+            if (allAspects) {
+                for (const planet in allAspects) {
+                    console.log(`\n${planet} (in House ${exampleHoroscope[planet]}) aspects:`);
+                    if (allAspects[planet].length === 0) {
+                        planetaryAspects.push(planet + "  (None based on provided rules)");
+                    } else {
+                        allAspects[planet].forEach(aspect => {
+                            console.log(`  - ${aspect.aspectNumber}th aspect to House ${aspect.targetHouse} (Contains: ${aspect.aspectedPlanet || 'Empty'})`);
+                            planetaryAspects.push(`  - ${aspect.aspectNumber}th aspect to House ${aspect.targetHouse} (Contains: ${aspect.aspectedPlanet || 'Empty'})`)
+                        });
+                    }
+                }
+            } else {
+                console.log("Calculation failed due to invalid input.");
+            }
+
+        }
+
+
     });
 </script>
 
