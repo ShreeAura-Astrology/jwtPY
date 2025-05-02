@@ -5027,7 +5027,7 @@ Team Mahesh Mankar
             // Pretty print the results
             if (allAspects) {
                 for (const planet in allAspects) {
-                    console.log(`\n${planet} (in House ${exampleHoroscope[planet]}) aspects:`);
+                    console.log(`\n${planet} (in House ${horoscope[planet]}) aspects:`);
                     if (allAspects[planet].length === 0) {
                         planetaryAspects.push(planet + "  (None based on provided rules)");
                     } else {
