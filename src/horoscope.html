@@ -281,7 +281,7 @@
         z-index: 999;
     }
 
-    #planet-info{
+    #house-info, #planet-info{
         position: absolute;
         margin-top: 265px;
         margin-left: 65px;
@@ -5132,6 +5132,7 @@ Team Mahesh Mankar
                     <h2>Search Results</h2>
                     <div id="results"></div>
                 </div>
+                <span id="closer" ng-click="closeDesc()" class="house-button">Close</span>
                 <div>
                     <p>Here are the houses:</p>
                     <div id="house-info"></div>
@@ -5151,7 +5152,7 @@ Team Mahesh Mankar
                         <br><br><button class="house-button" ng-click="showAttributes('11','house')">House 11</button>
                         <br><br><button class="house-button" ng-click="showAttributes('12','house')">House 12</button>
                     </div>
-                    <span id="closer" ng-click="closeDesc()" class="house-button">Close</span>
+                    
                     <div id="planet-info"></div>
                     <div id="planet-buttons">
                         <br><br><button class="planet-button"
