@@ -5145,12 +5145,8 @@ Team Mahesh Mankar
                         <select id="housesDropdown" ng-model="selectedHouseInfo"
                             ng-change="showAttributes(selectedHouseInfo,'house')" ng-options="x for x in houses">
                         </select>
-                        <label for="Planets">Choose Planet:</label>
-                        <select id="planetsDropdown" ng-model="selectedPlanetInfo"
-                            ng-change="showAttributes(selectedPlanetInfo.toLowerCase(),'planet')"
-                            ng-options="x for x in planets">
-                        </select>
-                        <br><br><button class="house-button" ng-click="showAttributes('1','house')">House 1</button>
+                       
+                        <!-- <br><br><button class="house-button" ng-click="showAttributes('1','house')">House 1</button>
                         <br><br><button class="house-button" ng-click="showAttributes('2','house')">House 2</button>
                         <br><br><button class="house-button" ng-click="showAttributes('3','house')">House 3</button>
                         <br><br><button class="house-button" ng-click="showAttributes('4','house')">House 4</button>
@@ -5161,12 +5157,17 @@ Team Mahesh Mankar
                         <br><br><button class="house-button" ng-click="showAttributes('9','house')">House 9</button>
                         <br><br><button class="house-button" ng-click="showAttributes('10','house')">House 10</button>
                         <br><br><button class="house-button" ng-click="showAttributes('11','house')">House 11</button>
-                        <br><br><button class="house-button" ng-click="showAttributes('12','house')">House 12</button>
+                        <br><br><button class="house-button" ng-click="showAttributes('12','house')">House 12</button> -->
                     </div>
 
                     <div id="planet-info"></div>
                     <div id="planet-buttons">
-                        <br><br><button class="planet-button"
+                        <label for="Planets">Choose Planet:</label>
+                        <select id="planetsDropdown" ng-model="selectedPlanetInfo"
+                            ng-change="showAttributes(selectedPlanetInfo.toLowerCase(),'planet')"
+                            ng-options="x for x in planets">
+                        </select>
+                        <!-- <br><br><button class="planet-button"
                             ng-click="showAttributes('jupiter','planet')">Jupiter</button>
                         <br><br><button class="planet-button" ng-click="showAttributes('sun','planet')">Sun</button>
                         <br><br><button class="planet-button" ng-click="showAttributes('mars','planet')">Mars</button>
@@ -5177,7 +5178,7 @@ Team Mahesh Mankar
                         <br><br><button class="planet-button" ng-click="showAttributes('ketu','planet')">Ketu</button>
                         <br><br><button class="planet-button" ng-click="showAttributes('rahu','planet')">Rahu</button>
                         <br><br><button class="planet-button"
-                            ng-click="showAttributes('saturn','planet')">Saturn</button>
+                            ng-click="showAttributes('saturn','planet')">Saturn</button> -->
                     </div>
                 </div>
             </div>
