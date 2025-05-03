@@ -358,7 +358,7 @@
     }
 </style>
 <script>
-    var app = angular.module('myApp', []);
+    var app = angular.module('myApp', ['ngSanitize']);
     var newRefreshToken = "";
     app.controller('myCtrl', function ($scope, $http) {
 
@@ -5410,8 +5410,8 @@ Team Mahesh Mankar
             saalaChakkar.push('Age: ' + age);
             saalaChakkar.push('cycleNumber: ' + cycleNumber);
             saalaChakkar.push('cycleAge: ' + cycleAge);
-            saalaChakkar.push('mainDasha: ' + mainDashaInfo);
-            saalaChakkar.push('antardasha: ' + antardashaInfo);
+            saalaChakkar.push('mainDasha: ' + mainDashaInfo.rulingPlanet);
+            saalaChakkar.push('antardasha: ' + antardashaInfo.rulingPlanet);
             saalaChakkar.push('notes: ' + antardashaInfo.notes);
             
             console.log({
@@ -5878,7 +5878,7 @@ relaxation from Son as Ketu belongs to Son.</pre>
                 <p> Benefic Planets : <span id="BP"></span></p>
                 <p> Neutral Planets : <span id="NP"></span></p>
                 <p> Dhoka Planet By Age:<span id="DH">{{dhokhaplanetbyAge}}</span>
-                <p> 35 Saala Chkkar <span id="CH">{{saalaChakkar}}</span>    
+                <p> 35 Saala Chkkar <span id="CH" ng-bind-html="saalaChakkar"></span>    
                 <p> Vakri drishti : <span id="VD"></span></p>
             </div>
             <div class="outer" ng-show="toggleMessage">
