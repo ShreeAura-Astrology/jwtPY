@@ -1601,7 +1601,7 @@
                 'Jupiter': [9, 12],
                 'Saturn': [10, 11]
             };
-            var mutualEnemies = planetsTable[planetA].concat(planetsTable[planetB])
+            var mutualEnemies = planetsTable[planetA].enemies.concat(planetsTable[planetB].enemies)
             mutualEnemies.enemies.forEach(function(ememyOfPlanets){
                 planetToRuledHouses[planetA].forEach(function(houseRuled){
                     if(houses[houseRuled].planets.includes(ememyOfPlanets)){
