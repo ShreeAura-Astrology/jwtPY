@@ -1489,7 +1489,7 @@
             $scope.currentVarshMonth = $scope.selectedMonth;
             $scope.dhokhaplanetbyAge = $scope.calculateDhokha(planetPositionsSnapshot);
             $scope.saalaChakkar = $scope.getLalKitab35YearCycleStatusWithAntardasha(age);
-            $scope.saalaChakkar = $scope.saalaChakkar.replaceAll(',','<br>');
+            $scope.saalaChakkar = $scope.saalaChakkar.toString().replaceAll(',','<br>');
         }
         $scope.resetVarshphal = function () {
             $scope.varshphalChart = varshphalHouses;
