@@ -1576,6 +1576,50 @@
             "enmical": []
         };
         var sleepingPlanets = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Rahu', 'Ketu'];
+        function isBilMukabilRelation(planetA,planetB) {
+            var isBilMukabil = [];
+            const houseToRulingPlanet = {
+                1: 'Mars',
+                2: 'Venus',
+                3: 'Mercury',
+                4: 'Moon',
+                5: 'Sun',
+                6: 'Mercury',
+                7: 'Venus',
+                8: 'Mars',
+                9: 'Jupiter',
+                10: 'Saturn',
+                11: 'Saturn',
+                12: 'Jupiter'
+            };
+            const planetToRuledHouses = {
+                'Mars': [1,8],
+                'Venus': [2,7],
+                'Mercury': [3,6],
+                'Moon': [4],
+                'Sun': [5],
+                'Jupiter': [9, 12],
+                'Saturn': [10, 11]
+            };
+            var mutualEnemies = planetsTable[planetA].concat(planetsTable[planetB])
+            mutualEnemies.enemies.forEach(function(ememyOfPlanets){
+                planetToRuledHouses[planetA].forEach(function(houseRuled){
+                    if(houses[houseRuled].planets.includes(ememyOfPlanets)){
+                        isBilMukabil.push('Mutual enemity due to presence of' + ememyOfPlanets + ' in house ' + houseRuled  + "( Ruler " + planetA + " )");
+                    }
+                });
+                planetToRuledHouses[planetB].forEach(function(houseRuled){
+                    if(houses[houseRuled].planets.includes(ememyOfPlanets)){
+                        isBilMukabil.push('Mutual enemity due to presence of' + ememyOfPlanets + ' in house ' + houseRuled  + "( Ruler " + planetB + " )");
+                    }
+                });
+                return isBilMukabil;
+            })
+           
+
+        }
+
+
         function getDhrishti() {
             for (const house in houses) {
                 if (housesTable[house].drishti.length > 0 && houses[house].planets.length > 0) {
@@ -1600,6 +1644,7 @@
                                         dhristiPair.type = "friendly";
                                         drishtiRelation.friendly.push(dhristiPair);
                                         sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
+                                        drishti.push(isBilMukabilRelation(planetofcurrenthouse,planetOfToDrishtiHouse));
                                     }
                                     else if (planetsTable[planetofcurrenthouse].enemies.includes(planetOfToDrishtiHouse)) {
                                         balaOfPlanets[planetOfToDrishtiHouse] -= 100;
@@ -4790,11 +4835,11 @@ Team Mahesh Mankar
                     // This implies the relative placement is the key (10th from each other).
                     // We just need to find *any* pair of houses X and X+9 (mod 12) that *both* contain planets.
                     if (planetInNthHouse.length > 0) {
-                        
-                        if(relation == 'takkar (8th)'){
+
+                        if (relation == 'takkar (8th)') {
                             aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse + ' Final Impact on ' + planetInNthHouse.map(planetInNthHouse => getKurbaniKeBakre(planetInNthHouse.toLowerCase())));
                         }
-                        else{
+                        else {
                             aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse);
                         }
                     }
