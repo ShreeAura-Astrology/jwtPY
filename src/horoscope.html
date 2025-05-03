@@ -4790,7 +4790,13 @@ Team Mahesh Mankar
                     // This implies the relative placement is the key (10th from each other).
                     // We just need to find *any* pair of houses X and X+9 (mod 12) that *both* contain planets.
                     if (planetInNthHouse.length > 0) {
-                        aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse);
+                        
+                        if(relation == 'takkar'){
+                            aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse + ' Final Impact on ' + getKurbaniKeBakre(planetInNthHouse.toLowerCase()));
+                        }
+                        else{
+                            aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse);
+                        }
                     }
                 }
             }
@@ -5058,8 +5064,70 @@ Team Mahesh Mankar
         $scope.closeDesc = function () {
             document.getElementById('planet-info').innerHTML = '';
             document.getElementById('house-info').innerHTML = '';
-            document.getElementById('planet-info').display='none';
-            document.getElementById('house-info').display='none';
+            document.getElementById('planet-info').display = 'none';
+            document.getElementById('house-info').display = 'none';
+        }
+
+
+        function getKurbaniKeBakre(planetName) {
+            const normalizedPlanet = planetName.trim().toLowerCase();
+
+            switch (normalizedPlanet) {
+                case 'saturn': // Shani
+                    // When Saturn faces trouble (e.g., conflict with Sun), it involves Rahu and Ketu [1].
+                    // Rahu and Ketu are called Saturn's agents [2].
+                    // Rahu and Ketu combined form artificial Venus [2].
+                    // They pass the trouble onto Venus [1].
+                    // Neither Sun nor Saturn are harmed in their conflict because they are father and son [1].
+                    // In this scenario, Venus becomes the sacrifice goat [1].
+                    return "Venus (via Rahu and Ketu)"; // Based on sources [1, 2]
+                case 'mercury': // Budh
+                    // Mercury is described as clever, changing, and slippery, like quicksilver [3].
+                    // Mercury and Venus are considered friends [3].
+                    // However, when Mercury faces trouble, it puts its problems onto Venus and saves itself [3].
+                    // It does not maintain friendship well in this situation [3].
+                    return "Venus"; // Based on source [3]
+                case 'mars': // Mangal
+                    // If Mars is inauspicious, its bad effect falls on Ketu [3].
+                    // Mars has made Ketu its sacrifice goat [3].
+                    // If considering artificial planets, Mangalbad (formed by Sun and Saturn) puts its bad effect on its son, Ketu [4].
+                    // Jupiter and Mars are lords of justice [5].
+                    // When they are in trouble themselves, they sacrifice Ketu [5].
+                    return "Ketu"; // Based on sources [3-5]
+                case 'venus': // Shukra
+                    // Venus has chosen Moon as its sacrifice [4].
+                    // Venus is described as having a mischievous nature ("aurat shaitaan swabhav") [4].
+                    // It puts its own problems or ill effects ("bala ya musibat") onto Moon, which represents the native's mother [4].
+                    return "Moon"; // Based on source [4]
+                case 'jupiter': // Brihaspati / Guru
+                    // Ketu is called the follower ("chela") of Jupiter [6].
+                    // Therefore, Ketu has to be the sacrifice goat for Jupiter [6].
+                    // When Jupiter is badly affected, it puts its trouble onto Ketu [6].
+                    // For example, if Jupiter is in house 5 and Ketu is elsewhere, and an inauspicious dasha of Jupiter comes,
+                    // the result of Ketu's house (house 6) becomes inauspicious [6].
+                    // Jupiter and Mars are lords of justice [5].
+                    // When they are in trouble themselves, they sacrifice Ketu [5].
+                    return "Ketu"; // Based on sources [5, 6]
+                case 'sun': // Surya
+                    // Sun also puts its bad effect on Ketu when it is in trouble [7].
+                    return "Ketu"; // Based on source [7]
+                case 'moon': // Chandra
+                    // Moon's friend planets are Jupiter, Mars, and Sun [8].
+                    // Moon saves itself from bad situations by putting some effect ("thoda-thoda asar") on Jupiter, Mars, and Sun [8].
+                    // The sources do not identify a single "bakra" for Moon; it distributes the effect [8].
+                    return "Spreads effect among friends (Jupiter, Mars, Sun). No single bakra identified."; // Based on source [8]
+                case 'rahu':
+                case 'ketu':
+                    // Rahu and Ketu are planets that bear their own troubles [8].
+                    // They do not transfer their problems onto others [8].
+                    // When Rahu or Ketu are in trouble, things related to these planets (like business or relatives) can be affected [8].
+                    // For example, if Rahu is bad, the native's brother-in-law or sister's husband can be affected [8].
+                    // If Ketu is bad, the son can be affected, or there might be problems in the feet [8].
+                    return "Bears its own trouble. Does not designate a bakra."; // Based on source [8]
+                default:
+                    // Handles cases for planet names not explicitly covered in the source excerpts
+                    return "Information about a 'Kurbani ka bakra' for this planet is not provided in the given sources.";
+            }
         }
     });
 </script>
@@ -5145,7 +5213,7 @@ Team Mahesh Mankar
                         <select id="housesDropdown" ng-model="selectedHouseInfo"
                             ng-change="showAttributes(selectedHouseInfo,'house')" ng-options="x for x in houses">
                         </select>
-                       
+
                         <!-- <br><br><button class="house-button" ng-click="showAttributes('1','house')">House 1</button>
                         <br><br><button class="house-button" ng-click="showAttributes('2','house')">House 2</button>
                         <br><br><button class="house-button" ng-click="showAttributes('3','house')">House 3</button>
