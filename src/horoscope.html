@@ -1603,9 +1603,9 @@
             };
             var mEnemies = planetsTable[planetA].enemies.concat(planetsTable[planetB].enemies);
             const mutualEnemies = new Set(mEnemies);
-            console.log('mutualEnemies' + mutualEnemies.toString() + 'for planets' + planetA + planetB);
+            console.log('mutualEnemies' + mutualEnemies + 'for planets' + planetA + planetB);
             mutualEnemies.forEach(function (ememyOfPlanets) {
-                console.log('Checking bilmukabil for planetA: ' + planetA);
+                console.log('Checking bilmukabil for planetA: ' + planetA + ' enemy: ' + ememyOfPlanets);
                 if (planetToRuledHouses.hasOwnProperty(planetA)) {
                     planetToRuledHouses[planetA].forEach(function (houseRuled) {
                         console.log('Looking for ememies for PlanetA in House ' + houseRuled);
@@ -1624,9 +1624,9 @@
                         }
                     });
                 }
-                return isBilMukabil;
+               
             })
-
+            return isBilMukabil;
 
         }
 
