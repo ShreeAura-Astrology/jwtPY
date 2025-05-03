@@ -1532,6 +1532,7 @@
                 "Jupiter": 0,
                 "Mars": 0
             };
+
         }
 
         function isVakri() {
@@ -1576,6 +1577,53 @@
             "enmical": []
         };
         var sleepingPlanets = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Rahu', 'Ketu'];
+        var sathiRelation = [];
+        function isSathiRelation(horoscope) {
+            const planetToRuledHouses = {
+                'Mars': [1, 8],
+                'Venus': [2, 7],
+                'Mercury': [3, 6],
+                'Moon': [4],
+                'Sun': [5],
+                'Jupiter': [9, 12],
+                'Saturn': [10, 11]
+            };
+            const houseToRulingPlanet = {
+                1: 'Mars',
+                2: 'Venus',
+                3: 'Mercury',
+                4: 'Moon',
+                5: 'Sun',
+                6: 'Mercury',
+                7: 'Venus',
+                8: 'Mars',
+                9: 'Jupiter',
+                10: 'Saturn',
+                11: 'Saturn',
+                12: 'Jupiter'
+            };
+
+            for (const lordOfHouses in planetInHouses) {
+                //Each house of Mars
+                planetInHouses[lordOfHouses].forEach(function (lordsHouse) {
+                    //enemies of Mars
+                    planetsTable[lordOfHouses].enemies.forEach(function (enemyOfLord) {
+                        //current lords house has its enemy
+                        if (houses[lordsHouses].planets.includes(enemyOfLord)) {
+                            //Check for the enemies houses if it has presence of its enemy
+                            planetInHouses[enemyOfLord].forEach(function (houseOfEnemy) {
+                                //Check if house of enemy contains Mars
+                                if (houses[houseOfEnemy].planets.includes(lordOfHouses)) {
+                                    sathiRelation.push(lordOfHouses + ' and ' + enemyOfLord + ' are Sathi Grah');
+                                }
+                            })
+                        }
+                    })
+                })
+            }
+
+        }
+
         function isBilMukabilRelation(planetA, planetB) {
             var isBilMukabil = [];
             const houseToRulingPlanet = {
@@ -1624,7 +1672,7 @@
                         }
                     });
                 }
-               
+
             })
             return isBilMukabil;
 
@@ -1655,7 +1703,7 @@
                                         dhristiPair.type = "friendly";
                                         drishtiRelation.friendly.push(dhristiPair);
                                         sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
-                                        drishti.push(" -- " +isBilMukabilRelation(planetofcurrenthouse, planetOfToDrishtiHouse));
+                                        drishti.push(" -- " + isBilMukabilRelation(planetofcurrenthouse, planetOfToDrishtiHouse));
                                     }
                                     else if (planetsTable[planetofcurrenthouse].enemies.includes(planetOfToDrishtiHouse)) {
                                         balaOfPlanets[planetOfToDrishtiHouse] -= 100;
@@ -2088,7 +2136,7 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:<br>" + isMangalBadh.toString() + "<br> Mangal Dosh:<br>" + isMangalDosh.toString() + "<br> BudhNali: <br>" + budhNali + "<br> House Building:<br> " + houseOutCome + "<br><br>Sleeping Houses:<br>" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:<br>" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets:<br> " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: <br>" + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega <br>" + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) :<br> " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) :<br> " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : <br>" + seventhaspect.toString().replaceAll(',', '<br>') + "<br><br> All Planetary Aspects : <br>" + planetaryAspects.toString().replaceAll(',', '<br>') + "<br><br>Dharmi Teva : <br>" + dharmiTeva.toString().replaceAll(',', '<br>');
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:<br>" + isMangalBadh.toString() + "<br> Mangal Dosh:<br>" + isMangalDosh.toString() + "<br> BudhNali: <br>" + budhNali + "<br> House Building:<br> " + houseOutCome + "<br><br>Sleeping Houses:<br>" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:<br>" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets:<br> " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: <br>" + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega <br>" + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) :<br> " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) :<br> " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : <br>" + seventhaspect.toString().replaceAll(',', '<br>') + "<br><br> All Planetary Aspects : <br>" + planetaryAspects.toString().replaceAll(',', '<br>') + "<br><br>Dharmi Teva : <br>" + dharmiTeva.toString().replaceAll(',', '<br>') + "<br><br>Sathi Grahas : <br>" + sathiRelation.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -4374,27 +4422,28 @@
             $scope.dhokhaplanetbyAge = $scope.calculateDhokha(planetSnapShot);
             calculateAllPlanetAspects(planetSnapShot);
             isDharmi(planetSnapShot);
+            isSathiRelation(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
         var dharmiTeva = [];
-        function isDharmi(horoscope){
+        function isDharmi(horoscope) {
             const areTogether = (planet1, planet2) => horoscope[planet1] === horoscope[planet2];
-             if(areTogether('Saturn', 'Jupiter')){
-                dharmiTeva.push('Dharmi Teva due to present of Saturn and Jupiter together in House'+ horoscope["Saturn"]);
-             }
-            
-             if(areTogether('Moon', 'Rahu')){
-                dharmiTeva.push('Dharmi Teva due to present of Moon and Rahu together in House'+ horoscope["Moon"]);
-             }
+            if (areTogether('Saturn', 'Jupiter')) {
+                dharmiTeva.push('Dharmi Teva due to present of Saturn and Jupiter together in House' + horoscope["Saturn"]);
+            }
 
-             if(areTogether('Moon', 'Ketu')){
-                dharmiTeva.push('Dharmi Teva due to present of Moon and Ketu together in House'+ horoscope["Moon"]);
-             }
+            if (areTogether('Moon', 'Rahu')) {
+                dharmiTeva.push('Dharmi Teva due to present of Moon and Rahu together in House' + horoscope["Moon"]);
+            }
 
-             if(horoscope["Ketu"] == 4 || horoscope["Rahu"] == 4){
+            if (areTogether('Moon', 'Ketu')) {
+                dharmiTeva.push('Dharmi Teva due to present of Moon and Ketu together in House' + horoscope["Moon"]);
+            }
+
+            if (horoscope["Ketu"] == 4 || horoscope["Rahu"] == 4) {
                 dharmiTeva.push('Dharmi Teva due to present of Rahu or Ketu together in House 4');
-             }
+            }
 
         }
 
