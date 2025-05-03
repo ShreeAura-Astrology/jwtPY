@@ -1609,7 +1609,7 @@
                 if (planetToRuledHouses.hasOwnProperty(planetA)) {
                     planetToRuledHouses[planetA].forEach(function (houseRuled) {
                         console.log('Looking for ememies for PlanetA in House ' + houseRuled);
-                        if (houses[houseRuled].planets.includes(ememyOfPlanets)) {
+                        if (houses[houseRuled + ""].planets.includes(ememyOfPlanets)) {
                             isBilMukabil.push('Mutual enemity due to presence of' + ememyOfPlanets + ' in house ' + houseRuled + "( Ruler " + planetA + " )");
                         }
                     });
@@ -1619,7 +1619,7 @@
                 if (planetToRuledHouses.hasOwnProperty(planetB)) {
                     planetToRuledHouses[planetB].forEach(function (houseRuled) {
                         console.log('Looking for ememies for PlanetB in House ' + houseRuled);
-                        if (houses[houseRuled].planets.includes(ememyOfPlanets)) {
+                        if (houses[houseRuled + ""].planets.includes(ememyOfPlanets)) {
                             isBilMukabil.push('Mutual enemity due to presence of' + ememyOfPlanets + ' in house ' + houseRuled + "( Ruler " + planetB + " )");
                         }
                     });
