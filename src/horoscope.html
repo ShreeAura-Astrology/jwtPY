@@ -1576,7 +1576,7 @@
             "enmical": []
         };
         var sleepingPlanets = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Rahu', 'Ketu'];
-        function isBilMukabilRelation(planetA,planetB) {
+        function isBilMukabilRelation(planetA, planetB) {
             var isBilMukabil = [];
             const houseToRulingPlanet = {
                 1: 'Mars',
@@ -1593,29 +1593,37 @@
                 12: 'Jupiter'
             };
             const planetToRuledHouses = {
-                'Mars': [1,8],
-                'Venus': [2,7],
-                'Mercury': [3,6],
+                'Mars': [1, 8],
+                'Venus': [2, 7],
+                'Mercury': [3, 6],
                 'Moon': [4],
                 'Sun': [5],
                 'Jupiter': [9, 12],
                 'Saturn': [10, 11]
             };
             var mutualEnemies = planetsTable[planetA].enemies.concat(planetsTable[planetB].enemies);
-            mutualEnemies.forEach(function(ememyOfPlanets){
-                planetToRuledHouses[planetA].forEach(function(houseRuled){
-                    if(houses[houseRuled].planets.includes(ememyOfPlanets)){
-                        isBilMukabil.push('Mutual enemity due to presence of' + ememyOfPlanets + ' in house ' + houseRuled  + "( Ruler " + planetA + " )");
-                    }
-                });
-                planetToRuledHouses[planetB].forEach(function(houseRuled){
-                    if(houses[houseRuled].planets.includes(ememyOfPlanets)){
-                        isBilMukabil.push('Mutual enemity due to presence of' + ememyOfPlanets + ' in house ' + houseRuled  + "( Ruler " + planetB + " )");
-                    }
-                });
+            console.log('mutualEnemies' + mutualEnemies.toString() + 'for planets' + planetA + planetB);
+            mutualEnemies.forEach(function (ememyOfPlanets) {
+                console.log('Checking bilmukabil for planetA' + planetA);
+                if (planetToRuledHouses.hasOwnProperty(planetA)) {
+                    planetToRuledHouses[planetA].forEach(function (houseRuled) {
+                        if (houses[houseRuled].planets.includes(ememyOfPlanets)) {
+                            isBilMukabil.push('Mutual enemity due to presence of' + ememyOfPlanets + ' in house ' + houseRuled + "( Ruler " + planetA + " )");
+                        }
+                    });
+                }
+                console.log('Checking bilmukabil for planetB' + planetB);
+
+                if (planetToRuledHouses.hasOwnProperty(planetB)) {
+                    planetToRuledHouses[planetB].forEach(function (houseRuled) {
+                        if (houses[houseRuled].planets.includes(ememyOfPlanets)) {
+                            isBilMukabil.push('Mutual enemity due to presence of' + ememyOfPlanets + ' in house ' + houseRuled + "( Ruler " + planetB + " )");
+                        }
+                    });
+                }
                 return isBilMukabil;
             })
-           
+
 
         }
 
@@ -1644,7 +1652,7 @@
                                         dhristiPair.type = "friendly";
                                         drishtiRelation.friendly.push(dhristiPair);
                                         sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
-                                        drishti.push(isBilMukabilRelation(planetofcurrenthouse,planetOfToDrishtiHouse));
+                                        drishti.push(isBilMukabilRelation(planetofcurrenthouse, planetOfToDrishtiHouse));
                                     }
                                     else if (planetsTable[planetofcurrenthouse].enemies.includes(planetOfToDrishtiHouse)) {
                                         balaOfPlanets[planetOfToDrishtiHouse] -= 100;
