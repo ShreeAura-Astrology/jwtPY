@@ -1488,6 +1488,7 @@
             $scope.varshphalChart = varshphalHouses;
             $scope.currentVarshMonth = $scope.selectedMonth;
             $scope.dhokhaplanetbyAge = $scope.calculateDhokha(planetPositionsSnapshot);
+            $scope.saalaChakkar = $scope.getLalKitab35YearCycleStatusWithAntardasha(age);
         }
         $scope.resetVarshphal = function () {
             $scope.varshphalChart = varshphalHouses;
@@ -5260,6 +5261,289 @@ Team Mahesh Mankar
                     return "Information about a 'Kurbani ka bakra' for this planet is not provided in the given sources.";
             }
         }
+
+
+        // Data structure for Age Wise 35 Year Cycle (Main periods) from Sources [2, 3]
+        const mainCyclePeriods = [
+            { startAge: 1, endAge: 6, rulingPlanet: "Saturn", duration: 6 },
+            { startAge: 7, endAge: 12, rulingPlanet: "Rahu", duration: 6 },
+            { startAge: 13, endAge: 15, rulingPlanet: "Ketu", duration: 3 },
+            { startAge: 16, endAge: 21, rulingPlanet: "Jupiter", duration: 6 },
+            { startAge: 22, endAge: 23, rulingPlanet: "Sun", duration: 2 },
+            { startAge: 24, endAge: 24, rulingPlanet: "Moon", duration: 1 },
+            { startAge: 25, endAge: 27, rulingPlanet: "Venus", duration: 3 },
+            { startAge: 28, endAge: 33, rulingPlanet: "Mars", duration: 6 },
+            { startAge: 34, endAge: 35, rulingPlanet: "Mercury", duration: 2 }
+        ];
+
+        // Data structure for Antardasha (Dohra) periods from Source [7]
+        // Durations are in years (fractional for months: 8m = 8/12, 4m = 4/12)
+        const antardashaMapping = {
+            "Saturn": [{ planet: "Rahu", duration: 2 }, { planet: "Mercury", duration: 2 }, { planet: "Saturn", duration: 2 }], // Sum 6
+            "Rahu": [{ planet: "Mars", duration: 2 }, { planet: "Ketu", duration: 2 }, { planet: "Rahu", duration: 2 }], // Sum 6
+            "Ketu": [{ planet: "Saturn", duration: 1 }, { planet: "Rahu", duration: 1 }, { planet: "Ketu", duration: 1 }], // Sum 3
+            "Jupiter": [{ planet: "Ketu", duration: 1 }, { planet: "Jupiter", duration: 2 }, { planet: "Sun", duration: 2 }], // Sum 5 (Note: Source [2, 3] says Jupiter is 6 years, but source [7] dohras sum to 5)
+            "Sun": [{ planet: "Sun", duration: 8 / 12 }, { planet: "Moon", duration: 8 / 12 }, { planet: "Mars", duration: 8 / 12 }], // Sum 2 (approx)
+            "Moon": [{ planet: "Jupiter", duration: 4 / 12 }, { planet: "Sun", duration: 4 / 12 }, { planet: "Moon", duration: 4 / 12 }], // Sum 1 (approx)
+            "Venus": [{ planet: "Mars", duration: 1 }, { planet: "Venus", duration: 1 }, { planet: "Mercury", duration: 1 }], // Sum 3
+            "Mars": [{ planet: "Mars", duration: 2 }, { planet: "Saturn", duration: 2 }, { planet: "Venus", duration: 2 }], // Sum 6
+            "Mercury": [{ planet: "Moon", duration: 8 / 12 }, { planet: "Mars", duration: 8 / 12 }, { planet: "Jupiter", duration: 8 / 12 }] // Sum 2 (approx)
+        };
+
+        var saalaChakkar = [];
+        /**
+         * Calculates the current status (Main Dasha and Antardasha/Dohra) within the Lal Kitab 35-year cycle based on age.
+         * This function uses the fixed age-wise mapping from sources [2, 3] and applies the Antardasha (Dohra) logic
+         * from source [7] sequentially within those age ranges.
+         * NOTE: This function follows the Age Wise table [2, 3] and does NOT incorporate the birth time planet
+         * logic for determining the dasha start as mentioned in sources [1, 4, 6].
+         *
+         * @param {number} age - The age of the person (a positive integer). The calculation is for the start of this age year.
+         * @returns {{age: number, cycleNumber: number, cycleAge: number, mainDasha: {rulingPlanet: string|null, duration: number|null, ageRangeInCycle: string|null, startCycleAge: number|null}, antardasha: {completedYearsInMainPeriod: number|null, rulingPlanet: string|null, duration: number|null, dohraNumber: number|null}, notes?: string[]}|string} - An object detailing the cycle status, or an error message string if the age is invalid or status cannot be determined from sources.
+         */
+       $scope.getLalKitab35YearCycleStatusWithAntardasha = function (age) {
+            // Validate input: age must be a positive integer.
+            if (typeof age !== 'number' || !Number.isInteger(age) || age <= 0) {
+                return "Invalid age provided. Age must be a positive integer.";
+            }
+
+            // Determine the current 35-year cycle number [1].
+            // Ages 1-35 are Cycle 1, 36-70 are Cycle 2, etc.
+            const cycleNumber = Math.ceil(age / 35);
+
+            // Calculate the effective age within the 1-35 year cycle structure [1].
+            // This is the age within the current 35-year block (e.g., age 36 maps to cycleAge 1, age 37 to cycleAge 2, age 70 to cycleAge 35).
+            const cycleAge = (age - 1) % 35 + 1;
+
+            let mainDashaInfo = {
+                rulingPlanet: null,
+                mainDashaDuration: null,
+                ageRangeInCycle: null,
+                startCycleAge: null // Needed to calculate progress within the main dasha
+            };
+
+            // Determine the ruling planet (Main Dasha) based on the cycleAge using the Age Wise table [2, 3].
+            const currentPeriod = mainCyclePeriods.find(period => cycleAge >= period.startAge && cycleAge <= period.endAge);
+
+            if (currentPeriod) {
+                mainDashaInfo.rulingPlanet = currentPeriod.rulingPlanet;
+                mainDashaInfo.mainDashaDuration = currentPeriod.duration;
+                mainDashaInfo.ageRangeInCycle = `${currentPeriod.startAge}-${currentPeriod.endAge}`;
+                mainDashaInfo.startCycleAge = currentPeriod.startAge;
+            } else {
+                // This case should logically not be reached with a positive integer age due to the modulo operation covering 1-35.
+                return "Error: Could not determine main dasha status for this age within the 35-year cycle logic derived from sources [2, 3].";
+            }
+
+            // --- Antardasha (Darmyaani Grah) Calculation --- [3, 7]
+
+            let antardashaInfo = {
+                completedYearsInMainPeriod: null, // Number of full years completed since the start of the main Dasha period
+                rulingPlanet: null,
+                duration: null, // Duration of the specific Antardasha segment from the table [7]
+                dohraNumber: null, // 1, 2, or 3 (Pehla, Dusra, Teesra dohra) [7]
+                notes: []
+            };
+
+            // Calculate the number of *full* years completed within the current main Dasha period.
+            // Age 16 (cycleAge 16) is the start of the 1st year of Jupiter period -> 16 - 16 = 0 completed years.
+            // Age 17 (cycleAge 17) is the start of the 2nd year of Jupiter period -> 17 - 16 = 1 completed year.
+            const completedYearsInMainPeriod = cycleAge - mainDashaInfo.startCycleAge;
+            antardashaInfo.completedYearsInMainPeriod = completedYearsInMainPeriod;
+
+
+            const dohraSequence = antardashaMapping[mainDashaInfo.rulingPlanet];
+
+            if (dohraSequence && dohraSequence.length > 0) {
+                let cumulativeDuration = 0;
+                let totalDohraDuration = dohraSequence.reduce((sum, dohra) => sum + dohra.duration, 0);
+                let antardashaFound = false;
+
+                // Determine which Antardasha segment the current completed year falls into.
+                // Segments are [start, end). The last segment is [start, end] if completedYears equals total duration.
+                for (let i = 0; i < dohraSequence.length; i++) {
+                    const dohra = dohraSequence[i];
+                    const segmentStart = cumulativeDuration;
+                    const segmentEnd = cumulativeDuration + dohra.duration;
+
+                    // Check if completedYearsInMainPeriod falls into the segment [segmentStart, segmentEnd)
+                    if (completedYearsInMainPeriod >= segmentStart && completedYearsInMainPeriod < segmentEnd) {
+                        antardashaInfo.rulingPlanet = dohra.planet;
+                        antardashaInfo.duration = dohra.duration;
+                        antardashaInfo.dohraNumber = i + 1;
+                        antardashaFound = true;
+                        break; // Found the current Antardasha
+                    }
+                    cumulativeDuration = segmentEnd;
+                }
+
+                // Special handling for the boundary case where completedYearsInMainPeriod equals
+                // the total listed duration, assigning it to the last dohra.
+                if (!antardashaFound && completedYearsInMainPeriod === totalDohraDuration) {
+                    const lastDohra = dohraSequence[dohraSequence.length - 1];
+                    antardashaInfo.rulingPlanet = lastDohra.planet;
+                    antardashaInfo.duration = lastDohra.duration;
+                    antardashaInfo.dohraNumber = dohraSequence.length;
+                    antardashaFound = true;
+                    antardashaInfo.notes.push("Age falls exactly at the end boundary of the total defined Antardasha durations for this planet in Source [7]. Assigned to the last defined dohra.");
+                }
+
+
+                // Note discrepancy for Jupiter if applicable, based on source data [2, 3, 7]
+                if (mainDashaInfo.rulingPlanet === "Jupiter" && mainDashaInfo.mainDashaDuration === 6 && totalDohraDuration === 5) {
+                    antardashaInfo.notes.push(`Note: Source [7] lists Antardasha durations for Jupiter summing to ${totalDohraDuration} years, while Source [2, 3] states the Jupiter main period is ${mainDashaInfo.mainDashaDuration} years. Status for completed years >= ${totalDohraDuration} within the Jupiter period is not explicitly defined by the dohra durations in Source [7], except for the boundary case handled.`);
+                }
+
+
+                // If Antardasha was still not found (should not happen if completedYears <= totalDohraDuration,
+                // unless there's a floating point issue or data inconsistency beyond the Jupiter note)
+                if (!antardashaFound) {
+                    antardashaInfo.notes.push("Antardasha could not be determined based on completed years within the main period and the durations listed in Source [7]. This might indicate an issue with the input age or the Antardasha mapping logic based on the sources.");
+                }
+
+
+            } else {
+                antardashaInfo.notes.push(`Antardasha sequence data not found for ruling planet: ${mainDashaInfo.rulingPlanet} in Source [7].`);
+            }
+
+            saalaChakkar.push('Age: ' + age);
+            saalaChakkar.push('cycleNumber: ' + cycleNumber);
+            saalaChakkar.push('cycleAge: ' + cycleAge);
+            saalaChakkar.push('mainDasha: ' + mainDasha);
+            saalaChakkar.push('antardasha: ' + antardasha);
+            saalaChakkar.push('notes: ' + antardashaInfo.notes);
+            
+            console.log({
+                age: age,
+                cycleNumber: cycleNumber, // The current 35-year cycle number (e.g., 1st, 2nd) [1]
+                cycleAge: cycleAge,       // The equivalent age within the 1-35 year structure [1]
+                mainDasha: mainDashaInfo, // Information about the main ruling period (Age Wise) [2, 3]
+                antardasha: antardashaInfo, // Information about the sub-period (Darmyaani grah / Dohra) [3, 7]
+                notes: antardashaInfo.notes // Any specific notes about determination, like discrepancies [7]
+            });
+            // Combine results
+            return saalaChakkar;
+        }
+
+        /**
+         * Determines the starting planet for the Lal Kitab 35-year dasha cycle
+         * based on the birth time and Lalkitab Planet Hora timings from the sources.
+         *
+         * @param {number} birthHour - The hour of birth (0-23).
+         * @param {number} birthMinute - The minute of birth (0-59).
+         * @param {number} [sunriseHour] - Optional: The hour of sunrise (0-23) for the birth date and location.
+         * @param {number} [sunriseMinute] - Optional: The minute of sunrise (0-59) for the birth date and location.
+         * @param {number} [sunsetHour] - Optional: The hour of sunset (0-23) for the birth date and location.
+         * @param {number} [sunsetMinute] - Optional: The minute of sunset (0-59) for the birth date and location.
+         * @returns {string} The name of the starting planet, or a string indicating ambiguity/missing data.
+         */
+        function getLalKitabHoraPlanet(birthHour, birthMinute, sunriseHour, sunriseMinute, sunsetHour, sunsetMinute) {
+            'use strict';
+
+            // Convert birth time to total minutes from midnight
+            const totalMinutes = birthHour * 60 + birthMinute;
+            const endOfDay = 24 * 60; // 1440 minutes
+
+            // Define fixed boundary times in minutes from midnight based on Source [5]
+            const boundary4am = 4 * 60;     // 240
+            const boundary8am = 8 * 60;     // 480
+            const boundary10am = 10 * 60;   // 600
+            const boundary11am = 11 * 60;   // 660
+            const boundary1pm = 13 * 60;    // 780
+            const boundary3pm = 15 * 60;    // 900
+            const boundary5pm = 17 * 60;    // 1020
+
+            // Check if optional Sunrise/Sunset data is provided
+            const hasSunriseSunset = sunriseHour !== undefined && sunriseMinute !== undefined &&
+                sunsetHour !== undefined && sunsetMinute !== undefined;
+
+            let totalSunriseMinutes = -1;
+            let totalSunsetMinutes = -1;
+            if (hasSunriseSunset) {
+                totalSunriseMinutes = sunriseHour * 60 + sunriseMinute;
+                totalSunsetMinutes = sunsetHour * 60 + sunsetMinute;
+            }
+
+            // Helper function to check if a time falls within a potentially wrapped interval [start, end)
+            // Used for intervals that cross midnight, like 5 PM to 4 AM.
+            function isInInterval(time, start, end) {
+                if (start <= end) {
+                    // Simple interval [start, end)
+                    return time >= start && time < end;
+                } else {
+                    // Wrapped interval [start, end) is [start, endOfDay) U [0, end)
+                    return time >= start || time < end;
+                }
+            }
+
+            // 1. Check fixed daytime hours (8 am to 5 pm) - These generally do not depend on Sunrise/Sunset relative timings based on the source [5].
+            if (totalMinutes >= boundary8am && totalMinutes < boundary10am) {
+                return 'Sun'; // 8:00 am to 10:00 am [5]
+            } else if (totalMinutes >= boundary10am && totalMinutes < boundary11am) {
+                return 'Moon'; // 10:00 am to 11:00 am [5]
+            } else if (totalMinutes >= boundary11am && totalMinutes < boundary1pm) {
+                return 'Mercury'; // 11:00 am to 1:00 pm [5]
+            } else if (totalMinutes >= boundary1pm && totalMinutes < boundary3pm) {
+                return 'Mars'; // 1:00 pm to 3:00 pm [5]
+            } else if (totalMinutes >= boundary3pm && totalMinutes < boundary5pm) {
+                return 'Venus'; // 3:00 pm to 5:00 pm [5]
+            }
+
+            // 2. Check times dependent on Sunrise/Sunset (4 am to 8 am, and 5 pm to 4 am next day)
+            if (hasSunriseSunset) {
+                // Jupiter/Ketu window: 4 am to 8 am [5]
+                if (totalMinutes >= boundary4am && totalMinutes < boundary8am) {
+                    // Ketu: 4:00 am to Sunrise [5]
+                    if (totalMinutes >= boundary4am && totalMinutes < totalSunriseMinutes) {
+                        return 'Ketu';
+                    }
+                    // Jupiter: Sunrise to 8:00 am [5]
+                    if (totalMinutes >= totalSunriseMinutes && totalMinutes < boundary8am) {
+                        return 'Jupiter';
+                    }
+                    // Edge case within 4am-8am not covered by standard Ketu/Jupiter split based on provided SS
+                    return 'Time within 4am-8am window, but Hora unclear based on provided Sunrise time';
+                }
+
+                // Night window: 5 pm to 4 am (next day) [5], potentially involving Rahu and Saturn
+                // This range wraps around midnight. The interval is [boundary5pm, endOfDay) U [0, boundary4am)
+                const nightIntervalStarts = boundary5pm; // 1020
+                const nightIntervalEnds = boundary4am;   // 240 (interpreted as 4am *next* day)
+
+                if (isInInterval(totalMinutes, nightIntervalStarts, nightIntervalEnds)) {
+                    // Within the general night period (5 pm to 4 am next day)
+                    const rahuStartTime = totalSunsetMinutes + 120; // Rahu starts 2 hours after sunset [5]
+                    const rahuDuration = 120; // **ASSUMPTION**: Rahu Hora lasts 2 hours. Source [5] only says "Rahu 2hrs after sunset".
+                    const rahuEndTime = rahuStartTime + rahuDuration;
+
+                    // Check if time is within the Rahu window (handling wrap-around for Rahu window itself)
+                    if (isInInterval(totalMinutes, rahuStartTime % endOfDay, rahuEndTime % endOfDay)) {
+                        return 'Rahu (based on assuming 2-hour duration starting 2 hrs after sunset)'; // Note assumption
+                    }
+
+                    // If not Rahu and within the night interval, it's Saturn [5] ("Saari raat")
+                    return 'Saturn';
+                }
+
+            } else {
+                // Sunrise/Sunset not provided. Handle times outside fixed 8 am - 5 pm ranges with ambiguity.
+                if (totalMinutes >= boundary4am && totalMinutes < boundary8am) {
+                    return 'Ketu/Jupiter (Needs Sunrise)'; // 4:00 am to 8:00 am [5]
+                } else if (totalMinutes >= boundary5pm || totalMinutes < boundary4am) {
+                    // This covers 5:00 pm onwards, wrapping around midnight until 4:00 am
+                    // Saturn is "Saari raat", Rahu is "2 hrs after sunset". [5]
+                    return 'Saturn/Rahu (Needs Sunset/Sunrise)'; // Night hours [5]
+                }
+            }
+
+            // If none of the above ranges match, there might be a gap in the defined ranges or an input issue.
+            // Based on the provided boundaries (4, 8, 10, 11, 13, 15, 17), all 24 hours *should* be covered
+            // either by fixed ranges, SS-dependent ranges, or the night range. This return
+            // should theoretically not be reached with valid inputs and exhaustive ranges.
+            return 'Could not determine Hora planet based on defined time ranges.';
+        }
+        // console.log(`Birth Time: 14:30, Planet: ${getLalKitabHoraPlanet(14, 30)}`); // Expected: Mars [5]
+
     });
 </script>
 
@@ -5593,6 +5877,7 @@ relaxation from Son as Ketu belongs to Son.</pre>
                 <p> Benefic Planets : <span id="BP"></span></p>
                 <p> Neutral Planets : <span id="NP"></span></p>
                 <p> Dhoka Planet By Age:<span id="DH">{{dhokhaplanetbyAge}}</span>
+                <p> 35 Saala Chkkar <span id="CH">{{saalaChakkar.replaceAll(',','<br>')}}</span>    
                 <p> Vakri drishti : <span id="VD"></span></p>
             </div>
             <div class="outer" ng-show="toggleMessage">
