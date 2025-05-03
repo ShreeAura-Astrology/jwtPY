@@ -2088,7 +2088,7 @@
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             document.getElementById("MP").innerHTML = maleficPlanets.toString();
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
-            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:<br>" + isMangalBadh.toString() + "<br> Mangal Dosh:<br>" + isMangalDosh.toString() + "<br> BudhNali: <br>" + budhNali + "<br> House Building:<br> " + houseOutCome + "<br><br>Sleeping Houses:<br>" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:<br>" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets:<br> " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: <br>" + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega <br>" + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) :<br> " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) :<br> " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : <br>" + seventhaspect.toString().replaceAll(',', '<br>') + "<br><br> All Planetary Aspects : <br>" + planetaryAspects.toString().replaceAll(',', '<br>');
+            document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:<br>" + isMangalBadh.toString() + "<br> Mangal Dosh:<br>" + isMangalDosh.toString() + "<br> BudhNali: <br>" + budhNali + "<br> House Building:<br> " + houseOutCome + "<br><br>Sleeping Houses:<br>" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:<br>" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets:<br> " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: <br>" + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega <br>" + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) :<br> " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) :<br> " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : <br>" + seventhaspect.toString().replaceAll(',', '<br>') + "<br><br> All Planetary Aspects : <br>" + planetaryAspects.toString().replaceAll(',', '<br>') + "<br><br>Dharmi Teva : <br>" + dharmiTeva.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
                 document.getElementById("NP").innerHTML += mangalBadhRemedies;
             }
@@ -4373,9 +4373,31 @@
             seventhaspect = getNthAspect(7, 'seventh');
             $scope.dhokhaplanetbyAge = $scope.calculateDhokha(planetSnapShot);
             calculateAllPlanetAspects(planetSnapShot);
+            isDharmi(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
+        var dharmiTeva = [];
+        function isDharmi(horoscope){
+            const areTogether = (planet1, planet2) => horoscope[planet1] === horoscope[planet2];
+             if(areTogether('Saturn', 'Jupiter')){
+                dharmiTeva.push('Dharmi Teva due to present of Saturn and Jupiter together in House'+ horoscope["Saturn"]);
+             }
+            
+             if(areTogether('Moon', 'Rahu')){
+                dharmiTeva.push('Dharmi Teva due to present of Moon and Rahu together in House'+ horoscope["Moon"]);
+             }
+
+             if(areTogether('Moon', 'Ketu')){
+                dharmiTeva.push('Dharmi Teva due to present of Moon and Ketu together in House'+ horoscope["Moon"]);
+             }
+
+             if(horoscope["Ketu"] == 4 || horoscope["Rahu"] == 4){
+                dharmiTeva.push('Dharmi Teva due to present of Rahu or Ketu together in House 4');
+             }
+
+        }
+
         var budhNali = "";
         function calculateBudhKaBhed(planetPositions) {
 
