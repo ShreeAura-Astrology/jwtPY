@@ -1603,15 +1603,15 @@
                 12: 'Jupiter'
             };
 
-            for (const lordOfHouses in planetInHouses) {
+            for (const lordOfHouses in planetToRuledHouses) {
                 //Each house of Mars
-                planetInHouses[lordOfHouses].forEach(function (lordsHouse) {
+                planetToRuledHouses[lordOfHouses].forEach(function (lordsHouse) {
                     //enemies of Mars
                     planetsTable[lordOfHouses].enemies.forEach(function (enemyOfLord) {
                         //current lords house has its enemy
                         if (houses[lordsHouses].planets.includes(enemyOfLord)) {
                             //Check for the enemies houses if it has presence of its enemy
-                            planetInHouses[enemyOfLord].forEach(function (houseOfEnemy) {
+                            planetToRuledHouses[enemyOfLord].forEach(function (houseOfEnemy) {
                                 //Check if house of enemy contains Mars
                                 if (houses[houseOfEnemy].planets.includes(lordOfHouses)) {
                                     sathiRelation.push(lordOfHouses + ' and ' + enemyOfLord + ' are Sathi Grah');
