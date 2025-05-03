@@ -1610,7 +1610,7 @@
                     planetToRuledHouses[planetA].forEach(function (houseRuled) {
                         console.log('Looking for ememies for PlanetA in House ' + houseRuled);
                         if (houses[houseRuled + ""].planets.includes(ememyOfPlanets)) {
-                            isBilMukabil.push('Mutual enemity due to presence of' + ememyOfPlanets + ' in house ' + houseRuled + "( Ruler " + planetA + " )");
+                            isBilMukabil.push('Mutual enemity due to presence of ' + ememyOfPlanets + ' in house ' + houseRuled + "( Ruler " + planetA + " )");
                         }
                     });
                 }
@@ -1620,7 +1620,7 @@
                     planetToRuledHouses[planetB].forEach(function (houseRuled) {
                         console.log('Looking for ememies for PlanetB in House ' + houseRuled);
                         if (houses[houseRuled + ""].planets.includes(ememyOfPlanets)) {
-                            isBilMukabil.push('Mutual enemity due to presence of' + ememyOfPlanets + ' in house ' + houseRuled + "( Ruler " + planetB + " )");
+                            isBilMukabil.push('Mutual enemity due to presence of ' + ememyOfPlanets + ' in house ' + houseRuled + "( Ruler " + planetB + " )");
                         }
                     });
                 }
@@ -1655,7 +1655,7 @@
                                         dhristiPair.type = "friendly";
                                         drishtiRelation.friendly.push(dhristiPair);
                                         sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
-                                        drishti.push(isBilMukabilRelation(planetofcurrenthouse, planetOfToDrishtiHouse));
+                                        drishti.push(" -- " +isBilMukabilRelation(planetofcurrenthouse, planetOfToDrishtiHouse));
                                     }
                                     else if (planetsTable[planetofcurrenthouse].enemies.includes(planetOfToDrishtiHouse)) {
                                         balaOfPlanets[planetOfToDrishtiHouse] -= 100;
