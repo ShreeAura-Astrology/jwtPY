@@ -52,7 +52,7 @@ def main(context):
         # Use res object to respond with text(), json(), or binary()
         # Don't forget to return a response!
         # Read the private key
-        with open('/usr/local/server/src/function/src/bnn.html', 'r') as html_file:
+        with open('/usr/local/server/src/function/src/BNN.html', 'r') as html_file:
             html = html_file.read()
         return context.res.text(html, 200, {
             "content-type": "text/html"
