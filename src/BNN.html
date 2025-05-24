@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="BNN_Comb.js"></script>
+  <title>BNN Trine Visualizer</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+    h1 { text-align: center; }
+    .planet-input { margin: 10px 0; display: flex; align-items: center; gap: 10px; }
+    label { width: 110px; }
+    select, input { padding: 5px; }
+    #results { margin-top: 20px; padding: 10px; background: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .chart { margin-top: 30px; display: flex; gap: 40px; flex-wrap: wrap; }
+    .trine-chart { border: 1px solid #ccc; padding: 10px; border-radius: 10px; width: 260px; background: #fff; }
+    .trine-chart h3 { margin-bottom: 10px; }
+    .trine-chart ul { list-style: none; padding: 0; }
+    .trine-chart li { margin: 5px 0; }
+    .conj-result { margin-top: 10px; padding: 8px; border-left: 4px solid #0077cc; background:#f0f8ff; }
+  </style>
+</head>
+<body>
+  <h1>BNN Trine & Aspect Visualizer</h1>
+  <div id="inputForm"></div>
+  <button onclick="analyzeHoroscope()">Analyze</button>
+<!-- Jupiter Rotation Age Selector -->
+  <div class="planet-input">
+  <label>Sign of Jupiter</label>
+  
+    <label>Current Age</label>
+    <select id="age-select">
+     
+    </select>
+    <button onclick="calculateJupiterProgression()">Get Jupiter's House</button>
+  </div>
+  <!-- Conjunction checker -->
+  <div class="planet-input" style="margin-top:20px">
+    <label>Check Conjunction</label>
+    <select id="conj-p1">
+      <option value="">--Select Planet 1--</option>
+    </select>
+    <select id="conj-p2">
+      <option value="">--Select Planet 2--</option>
+    </select>
+    <button onclick="checkConjunction()">Check</button>
+  </div>
+
+  <div id="results"></div>
+
+<script>
+  /* ---------- CONFIG ---------- */
+  const signs = [
+    "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+    "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+  ];
+
+  const planets = [
+    "Sun", "Moon", "Mars", "Mercury", "Venus", "Jupiter", "Saturn", "Rahu", "Ketu"
+  ];
+
+document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map(i => `<option value="${i + 1}">${i + 1} years</option>`).join('')}`;
+  /* ---------- LOAD COMBINATION DATA ---------- 
+  let combinationData = [];
+  fetch('BNN_Comb.json')
+    .then(res => res.json())
+    .then(data => combinationData = data)
+    .catch(() => alert('Failed to load combination data. Predictions may be unavailable.'));
+*/
+  /* ---------- BUILD INPUT FORM ---------- */
+  const formDiv = document.getElementById("inputForm");
+  planets.forEach(planet => {
+    const div = document.createElement("div");
+    div.className = "planet-input";
+    div.innerHTML = `
+      <label>${planet}</label>
+      <select id="${planet}-sign">
+        ${signs.map((s, i) => `<option value="${i + 1}">${s} - ${i + 1}</option>`).join('')}
+      </select>
+      <input id="${planet}-deg" type="number" min="0" max="29.99" step="0.01" placeholder="Degree (0-29.99)" />
+	  <select id="${planet}-house">
+        ${[...Array(12).keys()].map(i => `<option value="${i + 1}">${i + 1} House</option>`).join('')}
+      </select>
+    `;
+    formDiv.appendChild(div);
+  });
+
+  /* Populate conjunction dropdowns */
+  const conjP1Sel = document.getElementById('conj-p1');
+  const conjP2Sel = document.getElementById('conj-p2');
+  planets.forEach(p => {
+    const opt1 = new Option(p, p);
+    const opt2 = new Option(p, p);
+    conjP1Sel.add(opt1);
+    conjP2Sel.add(opt2);
+  });
+
+  /* ---------- ANALYZE HOROSCOPE ---------- */
+  function analyzeHoroscope() {
+    const horoscope = {};
+    planets.forEach(p => {
+      const sign = parseInt(document.getElementById(`${p}-sign`).value);
+      const degree = parseFloat(document.getElementById(`${p}-deg`).value);
+      if (!isNaN(degree)) {
+        horoscope[p] = { sign, degree };
+      }
+    });
+
+    const result = getTrineGroupsWithBNNAspects(horoscope);
+    renderResults(result);
+  }
+
+  /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
+  function getTrineGroupsWithBNNAspects(horoscope) {
+    const trineMap = {
+      '1': [1, 5, 9],
+      '2': [2, 6, 10],
+      '3': [3, 7, 11],
+      '4': [4, 8, 12]
+    };
+
+    const signToTrineKey = {};
+    Object.entries(trineMap).forEach(([k, arr]) => arr.forEach(s => signToTrineKey[s] = k));
+
+    const trineGroups = { '1': [], '2': [], '3': [], '4': [] };
+
+    const allPlanets = [];
+
+    for (const [planet, { sign, degree }] of Object.entries(horoscope)) {
+      const key = signToTrineKey[sign];
+      const absDegree = (sign - 1) * 30 + degree;
+      const data = { planet, sign, degree, absDegree };
+      allPlanets.push(data);
+      trineGroups[key].push(data);
+    }
+
+    for (const k in trineGroups) {
+      trineGroups[k].sort((a, b) => a.absDegree - b.absDegree);
+    }
+
+    const result = {};
+    for (const k in trineGroups) {
+      const group = [...trineGroups[k]];
+      const conjunctions = [];
+      const aspects = [];
+      const predictions = [];
+
+      // Include planets in 2nd, 12th, and 7th from each trine member
+      const signsInGroup = new Set(trineMap[k]);
+      group.forEach(({ sign, absDegree }) => {
+        const second = (sign % 12) + 1;
+        const twelfth = ((sign + 10 - 1) % 12) + 1;
+        const seventh = ((sign + 6 - 1) % 12) + 1;
+
+        const nearbySigns = [second, twelfth, seventh];
+
+        allPlanets.forEach(p => {
+          if (nearbySigns.includes(p.sign) && !signsInGroup.has(p.sign)) {
+            group.push(p);
+          }
+        });
+      });
+
+      // Deduplicate and sort again
+      const uniqueMap = {};
+      group.forEach(p => uniqueMap[p.planet] = p);
+      const uniqueGroup = Object.values(uniqueMap).sort((a, b) => a.absDegree - b.absDegree);
+
+      for (let i = 0; i < uniqueGroup.length; i++) {
+        for (let j = i + 1; j < uniqueGroup.length; j++) {
+          const p1 = uniqueGroup[i].planet;
+          const p2 = uniqueGroup[j].planet;
+          if (uniqueGroup[i].sign === uniqueGroup[j].sign && Math.abs(uniqueGroup[i].degree - uniqueGroup[j].degree) <= 3) {
+            conjunctions.push({ pair: [p1, p2], sign: uniqueGroup[i].sign, degrees: [uniqueGroup[i].degree, uniqueGroup[j].degree] });
+          }
+          aspects.push({ from: p1, to: p2, note: `${p1} influences ${p2}` });
+
+          const combo = findCombination(p1, p2);
+          //if (combo) predictions.push(...combo.predictions);
+		  if (combo) combo.predictions.forEach(pr => predictions.push(`${p1} & ${p2}: ${pr}`));
+
+        }
+      }
+
+      result[k] = {
+        trineSigns: trineMap[k],
+        planets: uniqueGroup,
+        conjunctions,
+        aspects,
+        predictions: [...new Set(predictions)]
+      };
+    }
+
+    return result;
+  }
+
+  /* Utility to find combination irrespective of order */
+  function findCombination(p1, p2) {
+    return combinationData.find(c =>
+      (c.planets[0] === p1 && c.planets[1] === p2) ||
+      (c.planets[0] === p2 && c.planets[1] === p1)
+    );
+  }
+
+  /* ---------- RENDER RESULTS ---------- */
+  function renderResults(data) {
+    const div = document.getElementById("results");
+    div.innerHTML = `<h2>Results</h2>`;
+    const chart = document.createElement("div");
+    chart.className = "chart";
+
+    for (const k in data) {
+      const g = data[k];
+      const container = document.createElement("div");
+      container.className = "trine-chart";
+      container.innerHTML = `
+        <h3>Trine: ${g.trineSigns.join("-")}</h3>
+        <strong>Planets:</strong>
+        <ul>${g.planets.map(p => `<li>${p.planet}: Sign ${p.sign}, ${p.degree.toFixed(2)}°</li>`).join('')}</ul>
+        ${g.conjunctions.length ? `<strong>Conjunctions:</strong><ul>${g.conjunctions.map(c => `<li>${c.pair.join(' & ')} in Sign ${c.sign}</li>`).join('')}</ul>` : ''}
+        ${g.aspects.length ? `<strong>Aspects:</strong><ul>${g.aspects.map(a => `<li>${a.note}</li>`).join('')}</ul>` : ''}
+        ${g.predictions.length ? `<strong>Predictions:</strong><ul>${g.predictions.map(p => `<li>${p}</li>`).join('')}</ul>` : ''}
+      `;
+      chart.appendChild(container);
+    }
+    div.appendChild(chart);
+  }
+
+  /* ---------- CONJUNCTION CHECKER ---------- */
+ function checkConjunction() {
+      const p1 = document.getElementById("conj-p1").value;
+      const p2 = document.getElementById("conj-p2").value;
+      if (!p1 || !p2 || p1 === p2) {
+        alert("Please select two different planets.");
+        return;
+      }
+
+      const d1 = parseFloat(document.getElementById(`${p1}-deg`).value);
+      const d2 = parseFloat(document.getElementById(`${p2}-deg`).value);
+      const s1 = parseInt(document.getElementById(`${p1}-sign`).value);
+      const s2 = parseInt(document.getElementById(`${p2}-sign`).value);
+
+      if (isNaN(d1) || isNaN(d2)) {
+        alert("Please enter valid degrees for both planets.");
+        return;
+      }
+
+      const resultDiv = document.getElementById("results");
+      // Find predictions for this pair
+    const combo = findCombination(p1, p2);
+    let predHTML = '';
+    if (combo && combo.predictions && combo.predictions.length) {
+      predHTML = '<strong>Predictions:</strong><ul>' + combo.predictions.map(pr => `<li>${pr}</li>`).join('') + '</ul>';
+	  areConjunct = true;
+    } else {
+      predHTML = '<p><em>No specific predictions found for this combination.</em></p>';
+	  areConjunct = false;
+    }
+
+    const html = `
+      <div class="conj-result">
+        <p><strong>${p1} &amp; ${p2}</strong> ${areConjunct ? 'are' : 'are not'} in conjunction.</p>
+        ${predHTML}
+      </div>`;
+
+    document.getElementById('results').insertAdjacentHTML('afterbegin', html);
+    }
+	
+	function calculateJupiterProgression() {
+    const jupiterSign = parseInt(document.getElementById('Jupiter-sign').value);
+	const jupiterHouse = parseInt(document.getElementById('Jupiter-house').value); 
+    const age = parseInt(document.getElementById('age-select').value);
+
+    if (isNaN(jupiterSign)) {
+      alert('Please select Jupiter sign');
+      return;
+    }
+	console.log();
+    const totalMonths = age * 12;
+    //const progressedSign  = (jupiterSign  + age) < 13 ? jupiterSign  + age - 1 : ((jupiterSign  - 1 + age) % 12) + 1;
+    //const progressedHouse = (jupiterHouse + age) < 13 ? jupiterHouse + age - 1 : ((jupiterHouse - 1 + age) % 12) + 1;
+	const progressedSign  = ((jupiterSign  - 1 + age) % 12) == 0 ? jupiterSign : ((jupiterSign  - 1 + age) % 12);
+    const progressedHouse = ((jupiterHouse - 1 + age) % 12) ;
+	
+    const result = `Age ${age} Jupiter is currently in House ${jupiterHouse} -> ${progressedHouse} Sign ${jupiterSign} -> ${progressedSign} (Sign: ${signs[progressedSign - 1]})`;
+
+    const div = document.getElementById("results");
+    div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
+  }
+  
+</script>
+</body>
+</html>
