@@ -4343,7 +4343,7 @@
             if (areTogether('Sun', 'Mercury')) {
                 return false; // Sun + Mercury together (Mars nek hota hai) [1]
             }
-            if (areTogether('Mars', 'Mercury') && isInHouse('Mars', 8)) {
+            if (areTogether('Mars', 'Mercury') && isInHouse('Mars', [8])) {
                 return false; // Mars + Mercury in the 8th house together [1]
             }
             if (isInHouse('Sun', [3]) && isInHouse('Mercury', [3])) {
