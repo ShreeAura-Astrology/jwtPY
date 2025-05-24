@@ -46,6 +46,28 @@ def main(context):
         return context.res.text(html, 200, {
             "content-type": "text/html"
         })
+    
+     # The req object contains html the request data
+    if context.req.path == "/bnn":
+        # Use res object to respond with text(), json(), or binary()
+        # Don't forget to return a response!
+        # Read the private key
+        with open('/usr/local/server/src/function/src/bnn.html', 'r') as html_file:
+            html = html_file.read()
+        return context.res.text(html, 200, {
+            "content-type": "text/html"
+        })
+    
+     # The req object contains html the request data
+    if context.req.path == "/BNN_Comb.js":
+        # Use res object to respond with text(), json(), or binary()
+        # Don't forget to return a response!
+        # Read the private key
+        with open('/usr/local/server/src/function/src/BNN_Comb.js', 'r') as js_file:
+            js = js_file.read()
+        return context.res.text(js, 200, {
+            "content-type": "text/javascript"
+        })
     # Example usage
     private_key_path = '/usr/local/server/src/function/src/private.key'  
     iat = time.time()
