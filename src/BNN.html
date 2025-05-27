@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="/BNN_Comb.js"></script>
+    <script src="BNN_Comb.js"></script>
   <title>BNN Trine Visualizer</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
@@ -21,8 +21,10 @@
   </style>
 </head>
 <body>
-  <h1>BNN Trine & Aspect Visualizer</h1>
+  <h1>BNN Trine & Aspect Visualizer</h1><br><br><br>
   <div id="inputForm"></div>
+  <!-- Diamond Chart -->
+<div id="diamond-chart" style="margin-top: -424px;position: absolute;margin-left: 800px;"></div>
   <button onclick="analyzeHoroscope()">Analyze</button>
 <!-- Jupiter Rotation Age Selector -->
   <div class="planet-input">
@@ -101,13 +103,16 @@ document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map
     planets.forEach(p => {
       const sign = parseInt(document.getElementById(`${p}-sign`).value);
       const degree = parseFloat(document.getElementById(`${p}-deg`).value);
+	  const house = parseInt(document.getElementById(`${p}-house`).value);
       if (!isNaN(degree)) {
-        horoscope[p] = { sign, degree };
+        horoscope[p] = { sign, degree, house };
       }
     });
 
     const result = getTrineGroupsWithBNNAspects(horoscope);
-    renderResults(result);
+	const parivartans = detectParivartan(horoscope);
+    renderResults(result,parivartans);
+	renderDiamondChart(horoscope);
   }
 
   /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -203,7 +208,7 @@ document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map
   }
 
   /* ---------- RENDER RESULTS ---------- */
-  function renderResults(data) {
+  function renderResults(data,parivartans) {
     const div = document.getElementById("results");
     div.innerHTML = `<h2>Results</h2>`;
     const chart = document.createElement("div");
@@ -224,6 +229,11 @@ document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map
       chart.appendChild(container);
     }
     div.appendChild(chart);
+	if (parivartans.length) {
+      const pDiv = document.createElement('div');
+      pDiv.innerHTML = `<h3>Parivartan Yogas Detected:</h3><ul>${parivartans.map(p => `<li><strong>${p}</strong></li>`).join('')}</ul>`;
+      div.appendChild(pDiv);
+    }
   }
 
   /* ---------- CONJUNCTION CHECKER ---------- */
@@ -287,7 +297,111 @@ document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map
     const div = document.getElementById("results");
     div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
   }
+   function detectParivartan(horoscope) {
+    // Basic sign lordship map (assuming traditional rulerships)
+    const signLords = {
+      1: "Mars", 2: "Venus", 3: "Mercury", 4: "Moon", 5: "Sun", 6: "Mercury",
+      7: "Venus", 8: "Mars", 9: "Jupiter", 10: "Saturn", 11: "Saturn", 12: "Jupiter"
+    };
+
+    const placements = {};
+    for (const [planet, { sign }] of Object.entries(horoscope)) {
+      if (!placements[sign]) placements[sign] = [];
+      placements[sign].push(planet);
+    }
+
+    const parivartans = [];
+    for (const [planet, { sign }] of Object.entries(horoscope)) {
+      const lordOfThisSign = signLords[sign];
+      const signOfThisPlanet = sign;
+      const signOfLord = Object.entries(horoscope).find(([p, v]) => p === lordOfThisSign)?.[1]?.sign;
+      const lordOfThatSign = signLords[signOfLord];
+
+      if (planet === lordOfThatSign && planet !== lordOfThisSign) {
+        const pair = [planet, lordOfThisSign].sort().join(" & ");
+        if (!parivartans.find(p => p === pair)) {
+          parivartans.push(pair);
+        }
+      }
+    }
+
+    return parivartans;
+  }
   
+  
+function renderDiamondChart(horoscope) {
+  const housePlanets = Array.from({ length: 12 }, () => []);
+  const fixedHouse   = {};//Array.from({ length: 12 }, () => []);
+
+  const ascendant = parseInt(document.getElementById('Ascendant-sign')?.value || '1');
+  var idx = 1;
+  for (const [planet, { sign, degree, house }] of Object.entries(horoscope)) {
+	 console.log('Redering Diamond Chart');
+	 console.log(sign , degree,  house);
+    housePlanets[sign - 1].push(`${planet} (${degree.toFixed(1)}°)`);
+	
+	if(fixedHouse.hasOwnProperty(house)){
+	   fixedHouse[house].push(`${planet} (${degree.toFixed(1)}°) ${sign}`);
+	}
+	else{
+	   fixedHouse[house] = [];
+	   fixedHouse[house].push(`${planet} (${degree.toFixed(1)}°) ${sign}`);
+	}
+	idx++;
+  }
+
+  const layout = Array.from({ length: 12 }, (_, i) => ((ascendant + i - 1) % 12) + 1);
+  const container = document.getElementById('diamond-chart');
+  container.innerHTML = '<h2>Diamond Horoscope Chart</h2><img src="https://raw.githubusercontent.com/ShreeAura-Astrology/jwtPY/main/New-Kundli.png" width="700px" height="100%"/>';
+
+  const diamond = document.createElement('div');
+  diamond.style.position = 'relative';
+  diamond.style.width = '694px';
+  diamond.style.height = '482px';
+  diamond.style.marginTop = '-498px';
+ // diamond.style.background-image  = 'url(https://raw.githubusercontent.com/ShreeAura-Astrology/jwtPY/main/New-Kundli.png)';
+ // diamond.style.background-repeat = 'no-repeat';
+  
+  const boxPositions = [
+    { top: '23%', left: '45%' }, // 1
+    { top: '10%', left: '19%' }, // 2
+    { top: '18%', left: '3%' }, // 3
+    { top: '41%', left: '18%' }, // 4
+    { top: '69%', left: '1%' }, // 5
+    { top: '90%', left: '16%' }, // 6
+    { top: '70%', left: '45%' }, // 7
+    { top: '90%', left: '70%' }, // 8
+    { top: '70%', left: '88%' }, // 9 (center)
+    { top: '40%', left: '70%' }, // 10
+    { top: '14%', left: '87%' }, // 11
+    { top: '3%', left: '70%' }  // 12
+  ];
+
+console.log(layout);
+  layout.forEach((sign, i) => {
+    const box = document.createElement('div');
+    const planets = housePlanets[sign - 1].join('<br>');
+	const allP = fixedHouse.hasOwnProperty(sign) ? fixedHouse[sign].join('<br>') : `${sign}<br>`;
+    box.innerHTML = `<strong>${allP}</strong>`;
+	//box.innerHTML = `<strong>${allP}</strong><strong><br>${signs[sign - 1]}</strong><br>${planets}`;
+
+    box.style.position = 'absolute';
+    //box.style.width = '80px';
+    //box.style.height = '60px';
+    box.style.border = '1px solid #999';
+    box.style.fontSize = '11px';
+    box.style.background = (sign === ascendant) ? '#ffffcc' : '#fff';
+    box.style.textAlign = 'center';
+    box.style.padding = '4px';
+    box.style.boxSizing = 'border-box';
+    box.style.top = boxPositions[i].top;
+    box.style.left = boxPositions[i].left;
+    diamond.appendChild(box);
+  });
+
+  container.appendChild(diamond);
+}
+
 </script>
 </body>
 </html>
