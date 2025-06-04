@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="BNN_Comb.js"></script>
+	<script src="transit.js"></script>
+	
   <title>BNN Trine Visualizer</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
@@ -12,8 +14,14 @@
     label { width: 110px; }
     select, input { padding: 5px; }
     #results { margin-top: 20px; padding: 10px; background: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .chart { margin-top: 30px; display: flex; gap: 40px; flex-wrap: wrap; }
-    .trine-chart { border: 1px solid #ccc; padding: 10px; border-radius: 10px; width: 260px; background: #fff; }
+    .chart { margin-top: 30px; display: flex; gap: 40px; flex-wrap: wrap; justify-content: space-around; }
+    .trine-chart { 
+	width: 20%;
+        flex-grow: 0;
+	border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    background: #fff; }
     .trine-chart h3 { margin-bottom: 10px; }
     .trine-chart ul { list-style: none; padding: 0; }
     .trine-chart li { margin: 5px 0; }
@@ -28,13 +36,15 @@
   <button onclick="analyzeHoroscope()">Analyze</button>
 <!-- Jupiter Rotation Age Selector -->
   <div class="planet-input">
-  <label>Sign of Jupiter</label>
+  <label>Jupiter Minor Progression</label>
   
     <label>Current Age</label>
     <select id="age-select">
      
     </select>
-    <button onclick="calculateJupiterProgression()">Get Jupiter's House</button>
+    <button onclick="calculateJupiterProgression()">Get Jupiters House</button>
+	<button onclick="getJupiterMajorProgression()">Jupiters Major Progression</button>
+	
   </div>
   <!-- Conjunction checker -->
   <div class="planet-input" style="margin-top:20px">
@@ -47,7 +57,15 @@
     </select>
     <button onclick="checkConjunction()">Check</button>
   </div>
-
+  <div class="planet-input" style="margin-top:20px">
+  <label>Jupiter Transit Sign</label>
+  <select id="transit-jupiter-sign">
+  </select>
+  <label>Saturn Transit Sign</label>
+  <select id="transit-saturn-sign">
+  </select>
+  <button onclick="analyzeTransits()">Analyze Transit Effects</button>
+</div>
   <div id="results"></div>
 
 <script>
@@ -62,6 +80,11 @@
   ];
 
 document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map(i => `<option value="${i + 1}">${i + 1} years</option>`).join('')}`;
+
+document.getElementById('transit-jupiter-sign').innerHTML =  `${signs.map((s, i) => `<option value="${i + 1}">${s}</option>`).join('')}`;
+
+document.getElementById('transit-saturn-sign').innerHTML =  `${signs.map((s, i) => `<option value="${i + 1}">${s}</option>`).join('')}`;
+
   /* ---------- LOAD COMBINATION DATA ---------- 
   let combinationData = [];
   fetch('BNN_Comb.json')
@@ -96,7 +119,7 @@ document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map
     conjP1Sel.add(opt1);
     conjP2Sel.add(opt2);
   });
-
+	var nativeHoroscope = {};
   /* ---------- ANALYZE HOROSCOPE ---------- */
   function analyzeHoroscope() {
     const horoscope = {};
@@ -108,11 +131,13 @@ document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map
         horoscope[p] = { sign, degree, house };
       }
     });
-
+	nativeHoroscope = horoscope;
     const result = getTrineGroupsWithBNNAspects(horoscope);
 	const parivartans = detectParivartan(horoscope);
     renderResults(result,parivartans);
 	renderDiamondChart(horoscope);
+	getMarriageOutcomeForFemale(horoscope);
+	getMarriageOutcomeForMale(horoscope);
   }
 
   /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -151,14 +176,14 @@ document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map
       const predictions = [];
 
       // Include planets in 2nd, 12th, and 7th from each trine member
-      const signsInGroup = new Set(trineMap[k]);
+      /* */
+	  const signsInGroup = new Set(trineMap[k]);
       group.forEach(({ sign, absDegree }) => {
         const second = (sign % 12) + 1;
         const twelfth = ((sign + 10 - 1) % 12) + 1;
         const seventh = ((sign + 6 - 1) % 12) + 1;
 
         const nearbySigns = [second, twelfth, seventh];
-
         allPlanets.forEach(p => {
           if (nearbySigns.includes(p.sign) && !signsInGroup.has(p.sign)) {
             group.push(p);
@@ -170,7 +195,7 @@ document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map
       const uniqueMap = {};
       group.forEach(p => uniqueMap[p.planet] = p);
       const uniqueGroup = Object.values(uniqueMap).sort((a, b) => a.absDegree - b.absDegree);
-
+	/* Old Logic
       for (let i = 0; i < uniqueGroup.length; i++) {
         for (let j = i + 1; j < uniqueGroup.length; j++) {
           const p1 = uniqueGroup[i].planet;
@@ -186,6 +211,30 @@ document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map
 
         }
       }
+	  */
+	  for (let i = 0; i < uniqueGroup.length; i++) {
+		  for (let j = i + 1; j < uniqueGroup.length; j++) {
+			const g1 = uniqueGroup[i];
+			const g2 = uniqueGroup[j];
+			const p1 = g1.planet;
+			const p2 = g2.planet;
+
+			if (g1.sign === g2.sign) {
+			  conjunctions.push({ pair: [p1, p2], sign: g1.sign, degrees: [g1.degree, g2.degree] });
+			}
+			console.log("Checking if ",g1.degree, "<" ,g2.degree);
+			if (g1.degree < g2.degree) {
+			  aspects.push({ from: p1, to: p2, note: `${p1} influences ${p2}` });
+			  const combo = findCombination(p1, p2);
+			  if (combo) {
+				const key = `${p1} & ${p2}`;
+				combo.predictions.forEach(pr => predictions.push(`${p1} & ${p2}: ${pr}`));
+				//if (!predictions[key]) predictions[key] = [];
+				//combo.predictions.forEach(pr => predictions[key].push(pr));
+			  }
+			}
+		  }
+		}
 
       result[k] = {
         trineSigns: trineMap[k],
@@ -234,6 +283,11 @@ document.getElementById('age-select').innerHTML =  `${[...Array(100).keys()].map
       pDiv.innerHTML = `<h3>Parivartan Yogas Detected:</h3><ul>${parivartans.map(p => `<li><strong>${p}</strong></li>`).join('')}</ul>`;
       div.appendChild(pDiv);
     }
+	else{
+		const pDiv = document.createElement('div');
+      pDiv.innerHTML = `<h3>No Parivartan Yogas Detected:</h3>`;
+      div.appendChild(pDiv);
+	}
   }
 
   /* ---------- CONJUNCTION CHECKER ---------- */
@@ -401,7 +455,498 @@ console.log(layout);
 
   container.appendChild(diamond);
 }
+function getJupiterMajorProgression(){
+	const jupiterSign = parseInt(document.getElementById('Jupiter-sign').value);
+	const jupiterHouse = parseInt(document.getElementById('Jupiter-house').value); 
+    const age = parseInt(document.getElementById('age-select').value);
+	var outputResult = performJupiterProgression(nativeHoroscope,age)
+	const result = `Age ${outputResult.age} Jupiter progressed to focusHouse from current sign ${outputResult.focusHouse} -> ${outputResult.progressedHouse} <br>Planets ${outputResult.keyPlanets.join(' , ')}`;
 
+    const div = document.getElementById("results");
+    div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
+}
+function performJupiterProgression(horoscope, age) {
+  const jupiterSign = horoscope['Jupiter']?.sign;
+  if (!jupiterSign || !age) return null;
+
+  const houseFocus = Math.floor(age / 12) + 1;
+  const houseFromJupiter = ((jupiterSign - 1 + (houseFocus - 1)) % 12) + 1;
+
+  const signLords = {
+    1: 'Mars', 2: 'Venus', 3: 'Mercury', 4: 'Moon', 5: 'Sun', 6: 'Mercury',
+    7: 'Venus', 8: 'Mars', 9: 'Jupiter', 10: 'Saturn', 11: 'Saturn', 12: 'Jupiter'
+  };
+
+  const planetsInHouse = Object.entries(horoscope)
+    .filter(([_, val]) => val.sign === houseFromJupiter)
+    .map(([p]) => p);
+
+  const conjunctions = planetsInHouse.slice();
+
+  const trineSigns = [1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12];
+  const trines = trineSigns.filter(s => (Math.abs(s - houseFromJupiter) % 4 === 0))
+    .map(s => Object.entries(horoscope).filter(([_, val]) => val.sign === s).map(([p]) => p)).flat();
+
+  const seventhHouse = ((houseFromJupiter + 6 - 1) % 12) + 1;
+  const seventh = Object.entries(horoscope)
+    .filter(([_, val]) => val.sign === seventhHouse)
+    .map(([p]) => p);
+	console.log('houseFocus:' + houseFocus + ' houseFromJupiter:' + houseFromJupiter + ' Dispositor Sign:' + (jupiterSign + houseFromJupiter ));
+  var signOfJupiterProgression = (jupiterSign - 1 + houseFocus) % 12;
+  const jupiterDispositor = signLords[signOfJupiterProgression];
+  const dispositorsHouse = horoscope[jupiterDispositor]?.sign;
+  const conjunctionWithDispositor = Object.entries(horoscope)
+    .filter(([p, val]) => val.sign === dispositorsHouse && p !== jupiterDispositor)
+    .map(([p]) => p);
+
+  const seventhFromDispositor = ((dispositorsHouse + 6 - 1) % 12) + 1;
+  const seventhFromDisp = Object.entries(horoscope)
+    .filter(([_, val]) => val.sign === seventhFromDispositor)
+    .map(([p]) => p);
+
+  const resultSet = new Set([
+    ...planetsInHouse,
+    ...conjunctions,
+    ...trines,
+    ...seventh,
+    ...conjunctionWithDispositor,
+    ...seventhFromDisp
+  ]);
+  console.log(`jupiterDispositor:` + jupiterDispositor);
+  console.log('planetsInHouse',planetsInHouse,
+    '\nconjunctions',conjunctions,
+    '\ntrines',trines,
+    '\nseventh',seventh,
+    '\nconjunctionWithDispositor',conjunctionWithDispositor,
+    '\nseventhFromDisp',seventhFromDisp);
+  return {
+    age,
+    focusHouse: houseFocus,
+    progressedHouse: houseFromJupiter,
+    keyPlanets: Array.from(resultSet)
+  };
+}
+
+function analyzeTransits() {
+  const jSign = parseInt(document.getElementById('transit-jupiter-sign').value);
+  const sSign = parseInt(document.getElementById('transit-saturn-sign').value);
+
+  const horoscope = {};
+  planets.forEach(p => {
+    const sign = parseInt(document.getElementById(`${p}-sign`).value);
+    const degree = parseFloat(document.getElementById(`${p}-deg`).value);
+    if (!isNaN(sign) && !isNaN(degree)) {
+      horoscope[p] = { sign, degree };
+    }
+  });
+
+  const transits = [];
+  const planetInTransitAspects = { "Jupiter" : [], "Saturn" : []};
+  for (const [planet, { sign }] of Object.entries(horoscope)) {
+    const aspects = [sign];
+
+    if ((Math.abs(jSign - sign) % 12) === 6 || (Math.abs(jSign - sign) % 12) === 8 || (Math.abs(jSign - sign) % 12) === 2 || (Math.abs(jSign - sign) % 12) === 10)
+      aspects.push(jSign);
+
+    const jImpact = (sign === jSign) ? 'Strong (100%) - Same Sign' :
+                    ((Math.abs(jSign - sign) % 12) === 7) ? 'Very High (80%) - 7th Aspect' :
+                    ([1, 5, 9].includes(((sign - jSign + 12) % 12) + 1)) ? 'Moderate (50%) - Trine' :
+                    ([3, 11].includes(((sign - jSign + 12) % 12) + 1)) ? 'Mild (25%) -  3, 11 houses' : null;
+
+    const sImpact = (sign === sSign) ? 'Strong (100%) - Same Sign' :
+                    ([3, 7, 10].includes(((sign - sSign + 12) % 12) + 1)) ? 'Very High (80%) 3rd,7th,10th Aspect' :
+                    ([1, 5, 9].includes(((sign - sSign + 12) % 12) + 1)) ? 'Moderate (50%) -  trinal rashis' :
+                    ([3, 11].includes(((sign - sSign + 12) % 12) + 1)) ? 'Mild (25%) -  3, 11 houses from transiting planets houses from transiting planets' : null;
+
+    if (jImpact || sImpact) {
+      const jText = jImpact ? `Jupiter → ${jImpact}` : '';
+      const sText = sImpact ? `Saturn → ${sImpact}` : '';
+      let detail = '';
+      if (jImpact && jImpact.includes('Strong')) detail += 'Great opportunity for growth and dharma alignment. ';
+      else if (jImpact && jImpact.includes('Very High')) detail += 'Influence on career, wisdom or expansion. ';
+      else if (jImpact && jImpact.includes('Moderate')) detail += 'Spiritual or educational gains likely. ';
+      if (sImpact && sImpact.includes('Strong')) detail += 'Strong karmic testing. Consolidation and discipline phase. ';
+      else if (sImpact && sImpact.includes('Very High')) detail += 'Challenges to responsibility, long-term rewards. ';
+      else if (sImpact && sImpact.includes('Moderate')) detail += 'Time to reflect and realign responsibilities. ';
+      transits.push(`<strong>${planet}</strong>: ${jText}, ${sText}<br><em>${detail}</em>`);
+	  if(jImpact)
+		  planetInTransitAspects["Jupiter"].push(planet);
+	  else
+		  planetInTransitAspects["Saturn"].push(planet);
+    }
+  }
+  var JupiterTransits = transit.TransitOutcomesBNN.JupiterTransits;
+  var SaturnTransits  = transit.TransitOutcomesBNN.SaturnTransits;
+  const div = document.getElementById("results");
+  const jOverPlanets = Object.entries(horoscope)
+    .filter(([p, _]) => _.sign == jSign || planetInTransitAspects["Jupiter"].includes(p))
+    .map(([p, v]) => {
+      let msg = `Jupiter transiting over ${p} in Sign ${jSign}`;
+      let effect = '';
+      if (JupiterTransits && JupiterTransits[p]) {
+        effect = JupiterTransits[p].map(e => `- ${e}`).join('<br>');
+      } else {
+        effect = 'General spiritual expansion.';
+      }
+      //}
+      return `<li>${msg}<br><em>${effect}</em></li>`;
+    }).join('');
+  const sOverPlanets = Object.entries(horoscope)
+    .filter(([p, _]) => _.sign == sSign || planetInTransitAspects["Saturn"].includes(p))
+    .map(([p, v]) => {
+      let msg = `Saturn transiting over ${p} in Sign ${sSign}`;
+      let effect = '';
+      if (SaturnTransits && SaturnTransits[p]) {
+        effect = SaturnTransits[p].map(e => `- ${e}`).join('<br>');
+      } else {
+        effect = 'General karma maturation and slow progress.';
+      }
+      //}
+      return `<li>${msg}<br><em>${effect}</em></li>`;
+    }).join('');
+  const html = `<h3>Transit Effects on Natal Planets</h3><ul>${transits.map(t => `<li>${t}</li>`).join('')}</ul><br><h4>Direct Transits:</h4><ul>${jOverPlanets}${sOverPlanets}</ul>`;
+  div.insertAdjacentHTML('beforeend', html);
+}
+
+function getMarriageOutcomeForFemale(horoscope) {
+  const venusSign = horoscope['Venus']?.sign;
+  const marsSign = horoscope['Mars']?.sign;
+  const jupiterSign = horoscope['Jupiter']?.sign;
+
+  if (!venusSign || !marsSign || !jupiterSign) return 'Insufficient data to analyze marriage outcome.';
+
+  const distance = (marsSign - venusSign + 12) % 12;
+  let outcome = '';
+
+  if ([1, 2, 3, 5, 7, 9, 11].includes(distance)) {
+    outcome += '✅ Marriage is promised based on Mars-Venus positioning.<br>';
+  } else if ([4, 6, 8, 10].includes(distance)) {
+    outcome += '⚠️ Marriage obstacles indicated due to Mars in bad houses from Venus.<br>';
+  }
+
+  const getSignLord = sign => {
+    const lords = {
+      1: 'Mars', 2: 'Venus', 3: 'Mercury', 4: 'Moon', 5: 'Sun', 6: 'Mercury',
+      7: 'Venus', 8: 'Mars', 9: 'Jupiter', 10: 'Saturn', 11: 'Saturn', 12: 'Jupiter'
+    };
+    return lords[sign];
+  };
+
+  const jupiterLord = getSignLord(jupiterSign);
+  const jupiterLordSign = horoscope[jupiterLord]?.sign;
+  const seventhFromJupiter = ((jupiterSign + 6 - 1) % 12) + 1;
+  const seventhFromJLord = ((jupiterLordSign + 6 - 1) % 12) + 1;
+
+  if ([1, 2, 3, 5, 7, 9, 11].includes((seventhFromJLord - jupiterLordSign + 12) % 12)) {
+    outcome += '✅ Jupiters 7th lord is well placed — favorable for marriage.<br>';
+  } else {
+    outcome += '⚠️ Jupiters 7th lord is not ideally placed — possible delay or disruption.<br>';
+  }
+
+  if (((marsSign - jupiterSign + 12) % 12) === 4) {
+    outcome += '✅ Jupiter aspects Mars — early marriage indicated.<br>';
+  }
+
+    // Detect possible outcomes for unmarried, separation, divorce
+  const venusDegree = horoscope['Venus']?.degree || 0;
+  const marsDegree = horoscope['Mars']?.degree || 0;
+  const jupiterDegree = horoscope['Jupiter']?.degree || 0;
+
+  if (((venusSign === marsSign) && Math.abs(venusDegree - marsDegree) <= 1) &&
+      ((venusSign === jupiterSign) && Math.abs(venusDegree - jupiterDegree) <= 1)) {
+    outcome += '⚠️ Strong Venus conjunctions with Mars and Jupiter — high chance of separation/divorce.<br>';
+  }
+
+  if (marsSign === jupiterSign && Math.abs(marsDegree - jupiterDegree) < 2) {
+    outcome += '⚠️ Jupiter-Mars conjunction in same sign — may indicate emotional burnout or detachment, possible divorce.<br>';
+  }
+
+  const malefics = ['Saturn', 'Rahu', 'Ketu'];
+  const maleficInfluence = malefics.filter(m => horoscope[m]?.sign === venusSign).length;
+
+  if (maleficInfluence >= 2) {
+    outcome += '⚠️ Venus heavily afflicted by malefics — high chance of remaining unmarried or relationship instability.<br>';
+  }
+
+  // Additional BNN-based conditions
+  const ketuSign = horoscope['Ketu']?.sign;
+  const rahuSign = horoscope['Rahu']?.sign;
+  const saturnSign = horoscope['Saturn']?.sign;
+
+  // Venus in 4/6/8/10 from Jupiter
+  const venusFromJupiter = (venusSign - jupiterSign + 12) % 12;
+  if ([3, 5, 7, 9].includes(venusFromJupiter)) {
+    outcome += '⚠️ Venus in 4/6/8/10 from Jupiter — delays or disruption in marriage.<br>';
+  }
+
+  // Ketu in 1/5/9/2 from Venus
+  const ketuFromVenus = (ketuSign - venusSign + 12) % 12;
+  if ([0, 4, 8, 1].includes(ketuFromVenus)) {
+    outcome += '⚠️ Ketu in 1st/5th/9th/2nd from Venus — spiritual detachment or denial in relationships.<br>';
+  }
+
+  // 7th lord from Jupiter in 4/6/8/10 from Jupiters lord
+  const jupiter7thLord = getSignLord(seventhFromJupiter);
+  const jupiter7thLordSign = horoscope[jupiter7thLord]?.sign;
+  const posFromJLord = (jupiter7thLordSign - jupiterLordSign + 12) % 12;
+  if ([3, 5, 7, 9].includes(posFromJLord)) {
+    outcome += '⚠️ Jupiters 7th lord ' + jupiter7thLord + ' in 4/6/8/10 from Jupiters lord '+ jupiterLord +' — obstruction in marital harmony.<br>';
+  }
+
+  // Ketu in 1/5/9/2 from Jupiters 7th lord
+  const ketuFromJup7th = (ketuSign - jupiter7thLordSign + 12) % 12;
+  if ([0, 4, 8, 1].includes(ketuFromJup7th)) {
+    outcome += '⚠️ Ketu afflicting Jupiters 7th lord — difficulty in commitment or detachment from spouse.<br>';
+  }
+
+  // Sequence: Jupiter + Ketu + Venus or Venus + Ketu + Jupiter
+  const seq = [jupiterSign, ketuSign, venusSign];
+  const seqAlt = [venusSign, ketuSign, jupiterSign];
+  const ordered = (a, b, c) => ((a + 1) % 12 === b % 12 && (b + 1) % 12 === c % 12);
+  if (ordered(...seq) || ordered(...seqAlt)) {
+    outcome += '⚠️ Jupiter, Ketu, and Venus in successive signs — high chance of divorce or no progeny.<br>';
+  }
+
+  // Sequence: Jupiters lord + Ketu + Jupiters 7th lord or reverse
+  const seq2 = [jupiterLordSign, ketuSign, jupiter7thLordSign];
+  const seq2Alt = [jupiter7thLordSign, ketuSign, jupiterLordSign];
+  if (ordered(...seq2) || ordered(...seq2Alt)) {
+    outcome += '⚠️ Jupiters lord, Ketu, and 7th lord in sequence — breakup or denial of marriage/progeny.<br>';
+  }
+
+  // Venus hemmed between Rahu and Ketu
+  if ((rahuSign < venusSign && venusSign < ketuSign) || (ketuSign < venusSign && venusSign < rahuSign)) {
+    outcome += '⚠️ Venus hemmed between Rahu and Ketu — marriage not promised unless Jupiter aspects Venus.<br>';
+  }
+
+  // Saturn aspects Venus (7th from Saturn)
+  const saturnAspects = ((saturnSign + 6) % 12) + 1;
+  if (saturnAspects === venusSign) {
+    outcome += '⚠️ Saturn aspects Venus — marriage may be delayed significantly.<br>';
+  }
+
+  // --- Spouse Health / Widowhood Checks ---
+  // Mars for female, check 1/2/5/9 from Rahu
+  const marsFromRahu = (marsSign - rahuSign + 12) % 12;
+  if ([0, 1, 4, 8].includes(marsFromRahu)) {
+    outcome += '⚠️ Mars (females spouse indicator) is in 1st/2nd/5th/9th from Rahu — possible threat to spouses health or early death.<br>';
+  }
+
+  // Mars hemmed between Rahu and Saturn (direction-wise)
+  if ((rahuSign < marsSign && marsSign < saturnSign) || (saturnSign < marsSign && marsSign < rahuSign)) {
+    outcome += '⚠️ Mars hemmed between Rahu and Saturn — can indicate widowhood or loss of spouse. As the combination denotes accidents or accidental death or major health problems like heart at ache or cancer or unnatural death to her husband<br>';
+  }
+
+  const div = document.getElementById("results");
+  div.insertAdjacentHTML('afterbegin', `<p>Female Marriage :<br><strong>${outcome}</strong></p>`);
+  return outcome || '⚠️ No strong marriage indicators found based on Mars and Jupiter analysis.';
+
+}
+
+function getMarriageOutcomeForMale(horoscope) {
+  const venusSign = horoscope['Venus']?.sign;
+  const jupiterSign = horoscope['Jupiter']?.sign;
+  const marsSign = horoscope['Mars']?.sign;
+
+  if (!venusSign || !jupiterSign || !marsSign) return 'Insufficient data to analyze marriage outcome.';
+
+  let outcome = '';
+
+  const getSignLord = sign => {
+    const lords = {
+      1: 'Mars', 2: 'Venus', 3: 'Mercury', 4: 'Moon', 5: 'Sun', 6: 'Mercury',
+      7: 'Venus', 8: 'Mars', 9: 'Jupiter', 10: 'Saturn', 11: 'Saturn', 12: 'Jupiter'
+    };
+    return lords[sign];
+  };
+
+  const distance = (venusSign - jupiterSign + 12) % 12;
+  if ([1, 2, 3, 5, 7, 9, 11].includes(distance)) {
+    outcome += '✅ Marriage is promised based on Venus-Jupiter positioning.<br>';
+  } else if ([4, 6, 8, 10].includes(distance)) {
+    outcome += '⚠️ Marriage obstacles indicated due to Venus in bad houses from Jupiter.<br>';
+  }
+
+  const venusDegree = horoscope['Venus']?.degree || 0;
+  const jupiterDegree = horoscope['Jupiter']?.degree || 0;
+  const marsDegree = horoscope['Mars']?.degree || 0;
+  const ketuSign = horoscope['Ketu']?.sign;
+  const rahuSign = horoscope['Rahu']?.sign;
+  const saturnSign = horoscope['Saturn']?.sign;
+
+  const jupiterLord = getSignLord(jupiterSign);
+  const jupiterLordSign = horoscope[jupiterLord]?.sign;
+  const seventhFromJupiter = ((jupiterSign + 6 - 1) % 12) + 1;
+  const seventhFromJLord = ((jupiterLordSign + 6 - 1) % 12) + 1;
+
+  const jupiter7thLord = getSignLord(seventhFromJupiter);
+  const jupiter7thLordSign = horoscope[jupiter7thLord]?.sign;
+
+  // Jupiters 7th lord placement
+  const posFromJLord = (jupiter7thLordSign - jupiterLordSign + 12) % 12;
+  if ([1, 2, 3, 5, 7, 9, 11].includes(posFromJLord)) {
+    outcome += '✅ Jupiters 7th lord is well placed — favorable for marriage.<br>';
+  } else {
+    outcome += '⚠️ Jupiters 7th lord is not ideally placed — possible delay or disruption.<br>';
+  }
+
+  // Venus-Mars conjunction tight
+  if ((venusSign === marsSign) && Math.abs(venusDegree - marsDegree) <= 1) {
+    outcome += '⚠️ Venus conjunct Mars — possible friction, passionate but unstable marriage.<br>';
+  }
+
+  // Venus heavily afflicted by malefics
+  const malefics = ['Saturn', 'Rahu', 'Ketu'];
+  const maleficInfluence = malefics.filter(m => horoscope[m]?.sign === venusSign).length;
+  if (maleficInfluence >= 2) {
+    outcome += '⚠️ Venus heavily afflicted — risk of separation or not getting married.<br>';
+  }
+
+  // Venus in 4/6/8/10 from Jupiter
+  const venusFromJupiter = (venusSign - jupiterSign + 12) % 12;
+  if ([3, 5, 7, 9].includes(venusFromJupiter)) {
+    outcome += '⚠️ Venus in 4/6/8/10 from Jupiter — delays or disruption in marriage.<br>';
+  }
+
+  // Ketu in 1/5/9/2 from Venus
+  const ketuFromVenus = (ketuSign - venusSign + 12) % 12;
+  if ([0, 4, 8, 1].includes(ketuFromVenus)) {
+    outcome += '⚠️ Ketu in 1st/5th/9th/2nd from Venus — detachment or loss in relationship matters.<br>';
+  }
+
+  // Jupiters 7th lord in 4/6/8/10 from Jupiters lord
+  if ([3, 5, 7, 9].includes(posFromJLord)) {
+    outcome += '⚠️ Jupiters 7th lord ' + jupiter7thLord + ' in 4/6/8/10 from its lord ' + jupiterLord + ' — challenge to long-term marriage.<br>';
+  }
+
+  // Ketu in 1/5/9/2 from Jupiters 7th lord
+  const ketuFromJup7th = (ketuSign - jupiter7thLordSign + 12) % 12;
+  if ([0, 4, 8, 1].includes(ketuFromJup7th)) {
+    outcome += '⚠️ Ketu afflicting Jupiters 7th lord — instability or emotional detachment.<br>';
+  }
+
+  // Sequences Venus + Ketu + Jupiter or reverse
+  const seq = [venusSign, ketuSign, jupiterSign];
+  const seqAlt = [jupiterSign, ketuSign, venusSign];
+  const ordered = (a, b, c) => ((a + 1) % 12 === b % 12 && (b + 1) % 12 === c % 12);
+  if (ordered(...seq) || ordered(...seqAlt)) {
+    outcome += '⚠️ Venus, Ketu, and Jupiter in successive signs — risk of no marriage or divorce.<br>';
+  }
+
+  // Jupiters lord + Ketu + 7th lord or reverse
+  const seq2 = [jupiterLordSign, ketuSign, jupiter7thLordSign];
+  const seq2Alt = [jupiter7thLordSign, ketuSign, jupiterLordSign];
+  if (ordered(...seq2) || ordered(...seq2Alt)) {
+    outcome += '⚠️ Jupiters lord, Ketu and 7th lord in sequence — major relationship challenges.<br>';
+  }
+
+  // Venus hemmed between Rahu and Mars/Saturn (direction-wise)
+  const venusHemmed = (
+    (rahuSign < venusSign && venusSign < marsSign) || (marsSign < venusSign && venusSign < rahuSign) ||
+    (rahuSign < venusSign && venusSign < saturnSign) || (saturnSign < venusSign && venusSign < rahuSign) ||
+    (marsSign < venusSign && venusSign < saturnSign) || (saturnSign < venusSign && venusSign < marsSign)
+  );
+  if (venusHemmed) {
+    outcome += '⚠️ Venus hemmed between malefics —  the combination denotes accidents or accidental and Saturn(Direction Wise), the combination denotes accidents or accidental death or major health problems like heart at ache or cancer or unnatural death death or major health problems like heart at ache or cancer or unnatural death to wife.<br>';
+  }
+	
+  // Venus hemmed between Rahu and Mars/Saturn (direction-wise)
+  const venusHemmedMalefic = (
+    (rahuSign < venusSign && venusSign < ketuSign) || (ketuSign < venusSign && venusSign < rahuSign)
+  );
+  const jupiterAspectOnVenus = [4, 6, 8].includes((venusSign - jupiterSign + 12) % 12);
+
+  if (venusHemmedMalefic) {
+    if (jupiterAspectOnVenus) {
+      outcome += '⚠️ Venus hemmed between Rahu and Ketu — but Jupiters aspect nullifies this dosha, early marriage possible.<br>';
+    } else {
+      outcome += '❌ Venus hemmed between Rahu and Ketu — marriage not promised unless Jupiter aspects Venus.<br>';
+    }
+  }
+
+  // Venus in 1st/2nd/5th/9th from Rahu (threat to spouse)
+  const venusFromRahu = (venusSign - rahuSign + 12) % 12;
+  if ([0, 1, 4, 8].includes(venusFromRahu)) {
+    outcome += '⚠️ Venus in 1/2/5/9 from Rahu — risk to spouse health or longevity.<br>';
+  }
+
+  // Venus hemmed between Rahu and Mars, or Rahu and Saturn, or Mars and Saturn (direction-wise)
+  const venusHemmedAccident = (
+    (rahuSign < venusSign && venusSign < marsSign) || (marsSign < venusSign && venusSign < rahuSign) ||
+    (rahuSign < venusSign && venusSign < saturnSign) || (saturnSign < venusSign && venusSign < rahuSign) ||
+    (marsSign < venusSign && venusSign < saturnSign) || (saturnSign < venusSign && venusSign < marsSign)
+  );
+  if (venusHemmedAccident) {
+    outcome += '❗ Venus hemmed between malefics (Rahu, Mars, Saturn) — potential for accidents, major illness, or unnatural death of spouse.<br>';
+  }
+
+  // Jupiter aspects Venus (5th, 7th, 9th aspects)
+  const diffJV = (venusSign - jupiterSign + 12) % 12;
+  if ([4, 6, 8].includes(diffJV)) {
+    outcome += '✅ Jupiter aspects Venus — early or blessed marriage indicated.<br>';
+  }
+
+  // Saturn aspects Venus (3rd, 7th, 10th aspects)
+  const diffSV = (venusSign - saturnSign + 12) % 12;
+  if ([2, 6, 9].includes(diffSV)) {
+    outcome += '⚠️ Saturn aspects Venus — marriage likely delayed and requires patience.<br>';
+  }
+  const div = document.getElementById("results");
+  div.insertAdjacentHTML('afterbegin', `<p>Male Marriage :<br><strong>${outcome}</strong></p>`);
+  
+  return outcome || '⚠️ No strong marriage indicators found based on Venus and Jupiter analysis.';
+}
+
+// Save horoscope to local storage with a name
+function saveHoroscopeWithName(name, horoscope) {
+  const all = JSON.parse(localStorage.getItem('bnnHoroscopes') || '{}');
+  all[name] = horoscope;
+  localStorage.setItem('bnnHoroscopes', JSON.stringify(all));
+  updateHoroscopeDropdown();
+}
+
+// Load horoscope from local storage by name
+function loadHoroscopeByName(name) {
+  const all = JSON.parse(localStorage.getItem('bnnHoroscopes') || '{}');
+  const horoscope = all[name];
+  if (horoscope) {
+    Object.entries(horoscope).forEach(([planet, data, house]) => {
+      const signEl = document.getElementById(`${planet}-sign`);
+      const degEl = document.getElementById(`${planet}-deg`);
+	  const houseE1 = document.getElementById(`${planet}-house`);
+      if (signEl && degEl) {
+        signEl.value = data.sign;
+        degEl.value = data.degree;
+		houseE1.value = data.house;
+      }
+    });
+  }
+}
+
+// Update the dropdown options with saved horoscopes
+function updateHoroscopeDropdown() {
+  const all = JSON.parse(localStorage.getItem('bnnHoroscopes') || '{}');
+  const dropdown = document.getElementById('horoscope-select');
+  dropdown.innerHTML = '<option value="">-- Select Saved Horoscope --</option>';
+  Object.keys(all).forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    dropdown.appendChild(opt);
+  });
+}
+
+// Attach save and load UI components
+window.addEventListener('DOMContentLoaded', () => {
+  const container = document.createElement('div');
+  container.innerHTML = `
+    <input type="text" id="horoscope-name" placeholder="Enter name to save horoscope" />
+    <button onclick="const name = document.getElementById('horoscope-name').value.trim(); if(name){ saveHoroscopeWithName(name, nativeHoroscope); }">Save Horoscope</button>
+    <select id="horoscope-select" onchange="if(this.value) loadHoroscopeByName(this.value)"></select>
+  `;
+  document.body.insertBefore(container, document.getElementById('inputForm'));
+  updateHoroscopeDropdown();
+});
 </script>
 </body>
 </html>

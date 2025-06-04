@@ -4933,6 +4933,9 @@ Team Mahesh Mankar
                         if (relation == 'takkar (8th)') {
                             aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse + ' Final Impact on ' + planetInNthHouse.map(planetInNthHouse => getKurbaniKeBakre(planetInNthHouse.toLowerCase())));
                         }
+                        else if(relation == 'dhokha (10th)'){
+                            aspects.push(planetInNthHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInCurrentHouse );
+                        }
                         else {
                             aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse);
                         }
