@@ -12,7 +12,11 @@ var transit = {
         "Events related to Name",
         "Events related to Fame",
         "Events related to promotion",
-        "Issues related to government may be solved with help of somebody in authority"
+        "Issues related to government may be solved with help of somebody in authority",
+		"Respect",
+        "Promotion",
+        "Cooperation from Higher Authorities",
+        "Male Progeny Prospects"
       ],
       "Moon": [
         "Blames",
@@ -23,7 +27,17 @@ var transit = {
         "Native may turn devotional",
         "Causes change in life",
         "Birth of female child",
-        "Interaction with opposite sex"
+        "Interaction with opposite sex",
+		"Change of residence",
+        "Mother turns devotional",
+        "Birth of Female Child",
+        "Changes",
+        "travelling",
+        "Foreign travel",
+        "Contact with Females",
+        "Blames",
+        "ill health",
+        "Cold related Problems"
       ],
       "Mercury": [
         "For students, new knowledge",
@@ -32,7 +46,14 @@ var transit = {
         "Cooperation from knowledgeable persons",
         "Gains from land deals",
         "Professionals may have successful trainings or meetings",
-        "Native may have friendship/relationship"
+        "Native may have friendship/relationship",
+		 "Profits in Business",
+        "Educational Successes",
+        "New Knowledge",
+        "Landed Gains",
+        "Professional Training",
+        "Official Meetings",
+        "Learning Occult Sciences"
       ],
       "Venus": [
         "Affluence",
@@ -49,7 +70,14 @@ var transit = {
         "House purchase (Ghar is Venus)",
         "A person may work hard to get money",
         "Start working in bank",
-        "Does entertainment"
+        "Does entertainment",
+		 "Marriage Prospects for Male Native",
+        "Affluence",
+        "Assets",
+        "Celebrations",
+        "Construction of House",
+        "purchase of luxury goods",
+        "Female progeny"
       ],
       "Mars": [
         "Haste",
@@ -63,20 +91,35 @@ var transit = {
         "One of the brothers will be benefitted and gets recognition, name, fame",
         "Husband will be benefitted and gets recognition, name, fame",
         "Marriage in female chart",
-        "If married, promotion of husband"
+        "If married, promotion of husband",
+		"Adamancy",
+        "Impulsiveness",
+        "Blood Pressure",
+        "Anger",
+        "Disputes",
+        "Construction or Technical Activities",
+        "Marriage Prospects for Female Natives and if married her Husband gets Promotion"
       ],
       "Jupiter": [
         "Very good time for native to concentrate on self development",
         "Name/Fame is activated",
         "Fortune is activated",
         "Decision to make addition in family (family planning)",
-        "If childbirth during this phase it is result of good past karma"
+        "If childbirth during this phase it is result of good past karma",
+		"Name and Fame",
+        "Very Good Time",
+        "Respect",
+        "Male Progeny"
       ],
       "Saturn": [
         "Employment/Promotion for native",
         "Smooth period in career",
         "Could be change in job/profession",
-        "If natal Mars is linked to natal Saturn, then obstructions in getting job or promotion"
+        "If natal Mars is linked to natal Saturn, then obstructions in getting job or promotion",
+		 "Employment",
+        "Promotion",
+        "Transfer",
+        "smooth going period"
       ],
       "Rahu": [
         "Native will be under illusions",
@@ -90,7 +133,13 @@ var transit = {
         "Problems may be related to unknown medicine reaction",
         "Good effects of Jupiter may be obstructed",
         "Jeev is caught in maya (Circumstances due to lust, excessive desire which may later on cause problems)",
-        "New beginning"
+        "New beginning",
+		 "Operation",
+        "Surgery",
+        "Ill Health",
+        "News of Death",
+        "Fear",
+        "Abortion"
       ],
       "Ketu": [
         "Gives divine knowledge",
@@ -104,7 +153,11 @@ var transit = {
         "Opposite energies",
         "Ill health",
         "Contemplation",
-        "Nervous debility"
+        "Nervous debility",
+		 "Ill health",
+        "Divya Gnana",
+        "Meeting Sadh Gurus",
+        "Going on Pilgrimage"
       ]
     },
     "SaturnTransits": {
@@ -115,7 +168,12 @@ var transit = {
         "Makes Sun a commoner, subject to law of karma",
         "Ill health to native",
         "Health issues/professional hazards to Father due to new people",
-        "Govt. Job"
+        "Govt. Job",
+		 "Financial Stress",
+        "Disputes with Son or Father or Superior officers",
+        "Professional Harassment",
+        "trouble by government",
+        "Ill Health to Father"
       ],
       "Moon": [
         "Called Sade Sati",
@@ -129,7 +187,18 @@ var transit = {
         "Expenses",
         "Cold-cough related problems",
         "If moon is weak, a wicked women may cause issues",
-        "Health issues to mother"
+        "Health issues to mother",
+		 "Transfer",
+        "Change of Job or Profession or Business",
+        "Loss in Business",
+        "Unnecessary Blames",
+        "Expenditure",
+        "Cheating",
+        "Cold related problems",
+        "travelling",
+        "adultery",
+        "sudden changes in life",
+        "Mother will undergo ill health"
       ],
       "Mercury": [
         "For students, good educational success",
@@ -141,7 +210,13 @@ var transit = {
         "Start of business",
         "Gain of land for siblings",
         "Good for siblings",
-        "May get commercial land"
+        "May get commercial land",
+		 "Educational Success for Students",
+        "New Knowledge and Professional Training",
+        "Profits in Business and Commercial activities",
+        "landed benefits",
+        "purchase of lands",
+        "Help or support from friends"
       ],
       "Venus": [
         "Marriage Aspects",
@@ -155,7 +230,15 @@ var transit = {
         "Prosperities",
         "Affluence in life",
         "Bound to give money or House, luxuries, job, prosperity",
-        "Cannot give if free will is wasted in entertainment"
+        "Cannot give if free will is wasted in entertainment",
+		 "Marriage Prospects for Male Natives",
+        "Financial Benefits from Wife",
+        "Female Progeny",
+        "Celebration at Home",
+        "Purchase of Car",
+        "House",
+        "Assets",
+        "Financial Stability"
       ],
       "Mars": [
         "Mental Tensions",
@@ -169,7 +252,14 @@ var transit = {
         "Me with Natal Mars may support IT, Technical skills",
         "Native thinks to quit job",
         "New job is less paid",
-        "Husband may suffer from ill health and laziness"
+        "Husband may suffer from ill health and laziness",
+		"Mental Tensions",
+        "Professional Harassment",
+        "Quarrels",
+        "Disputes with Superior Officers at Work Place",
+        "Obstacles to Income",
+        "Disputes with Husband for Female Natives",
+        "Disputes with Brother"
       ],
       "Jupiter": [
         "Professional growth",
@@ -179,7 +269,15 @@ var transit = {
         "New avenues",
         "Life settling transit",
         "Turning point of life",
-        "Gastric problems"
+        "Gastric problems",
+		 "New Job",
+        "Promotion",
+        "Transfer",
+        "Development",
+        "Professional Growth",
+        "Respect",
+        "Friendship with Big Personalities",
+        "gastric problems"
       ],
       "Saturn": [
         "Additional Work due to heavy workload",
@@ -190,7 +288,10 @@ var transit = {
         "Change in lifestyle",
         "Health problems",
         "Gastric troubles",
-        "Person may have to work double or much harder"
+        "Person may have to work double or much harder",
+		 "Work Tension",
+        "Heavy or Additional Work",
+        "troubles"
       ],
       "Rahu": [
         "Person may involve in shadowy activities",
@@ -204,7 +305,16 @@ var transit = {
         "Can be good if person starts something new (initial problems - 1st year)",
         "Online business",
         "MNC work",
-        "Software engineering etc."
+        "Software engineering etc.",
+		"Foreign Travel",
+        "Hard Work",
+        "Low Salary Jobs",
+        "Purchase of Vehicles",
+        "Professional Disturbances",
+        "Legal Problems",
+        "Unethical deeds",
+        "corruption",
+        "death in the house"
       ],
       "Ketu": [
         "Dejections and disputes at work",
@@ -216,7 +326,18 @@ var transit = {
         "Period of depression",
         "Stress",
         "Karmo ki maar (results of all bad deeds)",
-        "Person should not change job unless he/she has an offer letter"
+        "Person should not change job unless he/she has an offer letter",
+		 "Unemployed",
+        "Vexation with the Job",
+        "Termination or Resignation",
+        "Professional Disturbances",
+        "No Aim or Ambition",
+        "Legal Problems",
+        "I T OR CBI OR ACB Rides",
+        "litigation",
+        "disputes",
+        "Imprisonment",
+        "visiting holy places"
       ]
     }
   }
