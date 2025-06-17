@@ -1827,9 +1827,9 @@
                                 // Then mark the house as malefic of which the current planet is karak of
                                 // Find each Karak house of current planet and mark it as malefic
                                 planetsTable[planet].houses.forEach(function (mhouse) {
-                                    // Mark the house Sun as malefic
-                                    houses[mhouse].status = "M";
+                                    // Mark the house as malefic
                                     console.log('House ' + mhouse + ' is malefic as ' + planet + ' is sitting with its enemy ' + enemy);
+                                    houses[mhouse].status = "M";
                                     if (!maleficHouses.includes(mhouse + "")) {
                                         maleficHouses.push(mhouse + "");
                                     }
