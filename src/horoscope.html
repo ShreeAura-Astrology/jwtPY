@@ -1814,6 +1814,7 @@
         }
 
         function maleficRule2(houses) {
+            console.log(`Evaluating malefic Rule2 for All Houses:${houses}`)
             for (const house in houses) {
                 console.log(`Evaluating malefic Rule2 House:${house}`);
                 if (houses[house].planets.length > 1) {
@@ -1829,11 +1830,12 @@
                                 planetsTable[planet].houses.forEach(function (mhouse) {
                                     // Mark the house as malefic
                                     console.log('House ' + mhouse + ' is malefic as ' + planet + ' is sitting with its enemy ' + enemy);
-                                    houses[mhouse].status = "M";
+                                    if(houses[mhouse]){
+                                        houses[mhouse].status = "M";
                                     if (!maleficHouses.includes(mhouse + "")) {
                                         maleficHouses.push(mhouse + "");
                                     }
-
+                                    }
                                 })
                                 // Adding the current planet to malefic planet as its with its enemy
                                 if (!maleficPlanets.includes(planet)) {
