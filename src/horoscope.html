@@ -1830,7 +1830,7 @@
                                 planetsTable[planet].houses.forEach(function (mhouse) {
                                     // Mark the house as malefic
                                     console.log('House ' + mhouse + ' is malefic as ' + planet + ' is sitting with its enemy ' + enemy);
-                                    if(houses[mhouse]){
+                                    if(houses.hasOwnProperty(mhouse)){
                                         houses[mhouse].status = "M";
                                     if (!maleficHouses.includes(mhouse + "")) {
                                         maleficHouses.push(mhouse + "");
