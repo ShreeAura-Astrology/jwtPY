@@ -1121,7 +1121,7 @@
         const lord = signLords[sign];
         const planetData = horoscope[lord];
         if (planetData && planetData.house) {
-          placements[`Sign ${sign}`] = `${lord} (lord of Sign ${sign}) is placed in House ${planetData.house}`;
+          placements[`Sign ${sign}`] = `${lord} ( ${getHouseOfSign(sign,horoscope)} house lord of Sign ${sign}) is placed in House ${planetData.house}`;
         } else {
           placements[`Sign ${sign}`] = `${lord} not found or house not defined in chart`;
         }
@@ -1129,6 +1129,10 @@
       return placements;
     }
 
+    const getHouseOfSign = (sign, horoscope) => {
+  const entry = Object.values(horoscope).find(p => p.sign === sign);
+  return entry?.house || null;
+};
     // Add button to show sign lord placements
     function showSignLordPlacements(horoscope) {
       const placements = getSignLordPlacements(horoscope);
