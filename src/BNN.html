@@ -1082,7 +1082,7 @@
       outputTarget.innerHTML = '';
       outputTarget.appendChild(container);
       const div = document.getElementById("results");
-      div.insertAdjacentHTML('afterbegin', `<p><strong>${outputTarget}</strong></p>`);
+      div.insertAdjacentHTML('afterbegin', `${outputTarget.innerHTML}`);
 
       return Object.keys(results);
     }
