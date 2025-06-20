@@ -1121,7 +1121,7 @@
         const lord = signLords[sign];
         const planetData = horoscope[lord];
         if (planetData && planetData.house) {
-          placements[`Sign ${sign}`] = `${lord} ( ${getHouseOfSign(sign,horoscope)} house lord of Sign ${sign}) is placed in House ${planetData.house}`;
+          placements[`Sign ${sign}`] = `${lord} ( ${getHouseOfSign(sign,horoscope)} house lord is placed in House ${planetData.house}`;
         } else {
           placements[`Sign ${sign}`] = `${lord} not found or house not defined in chart`;
         }
