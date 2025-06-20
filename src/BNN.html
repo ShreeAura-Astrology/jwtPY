@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="BNN_Comb.js"></script>
 	<script src="transit.js"></script>
+  <script src="significator.js"></script>
 	
   <title>BNN Trine Visualizer</title>
   <style>
@@ -271,7 +272,7 @@ document.getElementById('transit-saturn-sign').innerHTML =  `${signs.map((s, i) 
         <h3>Trine: ${g.trineSigns.join("-")}</h3>
         <strong>Planets:</strong>
         <ul>${g.planets.map(p => `<li>${p.planet}: Sign ${p.sign}, ${p.degree.toFixed(2)}°</li>`).join('')}</ul>
-        ${g.conjunctions.length ? `<strong>Conjunctions:</strong><ul>${g.conjunctions.map(c => `<li>${c.pair.join(' & ')} in Sign ${c.sign}</li>`).join('')}</ul>` : ''}
+        ${g.conjunctions.length ? `<strong>Conjunctions:</strong><ul>${g.conjunctions.map(c => `<li>${c.pair.join(' & ')} in Sign ${c.sign}</li><li>${interpretConjunction(c.pair, signs[c.sign - 1] , property)}</li>`).join('')}</ul>` : ''}
         ${g.aspects.length ? `<strong>Aspects:</strong><ul>${g.aspects.map(a => `<li>${a.note}</li>`).join('')}</ul>` : ''}
         ${g.predictions.length ? `<strong>Predictions:</strong><ul>${g.predictions.map(p => `<li>${p}</li>`).join('')}</ul>` : ''}
       `;
@@ -935,6 +936,33 @@ function updateHoroscopeDropdown() {
     opt.textContent = name;
     dropdown.appendChild(opt);
   });
+}
+
+// Interpret a conjunction using living/non-living and sign traits
+function interpretConjunction(planets, sign, data) {
+  const planetData = data.planets;
+  const signData = data.zodiac_signs.find(z => z.sign === sign);
+
+  const livingTraits = [];
+  const nonLivingTraits = [];
+
+  planets.forEach((p, idx) => {
+    const pData = planetData.find(x => x.name === p);
+    if (!pData || !pData.characteristics?.significators?.length) return;
+    const sigs = pData.characteristics.significators;
+    if (idx === 0) {
+      livingTraits.push(...sigs.filter(s => !s.toLowerCase().includes("karma")));
+    } else {
+      nonLivingTraits.push(...sigs.filter(s => s.length < 30));
+    }
+  });
+
+  const signTraits = signData?.characteristics?.slice(0, 3) || [];
+  const subject = livingTraits[0] || 'Someone';
+  const effect = nonLivingTraits[0] || 'some outcome';
+  const field = signTraits[0] || 'some area';
+
+  return `${subject} experiences ${effect} in ${field} (Sign: ${sign})`;
 }
 
 // Attach save and load UI components

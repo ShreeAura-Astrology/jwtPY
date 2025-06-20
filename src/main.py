@@ -78,6 +78,16 @@ def main(context):
         return context.res.text(js, 200, {
             "content-type": "text/javascript"
         })
+    # The req object contains significator.js the request data
+    if context.req.path == "/significator.js":
+        # Use res object to respond with text(), json(), or binary()
+        # Don't forget to return a response!
+        # Read the private key
+        with open('/usr/local/server/src/function/src/significator.js', 'r') as js_file:
+            js = js_file.read()
+        return context.res.text(js, 200, {
+            "content-type": "text/javascript"
+        })
     # Example usage
     private_key_path = '/usr/local/server/src/function/src/private.key'  
     iat = time.time()
