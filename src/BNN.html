@@ -1012,7 +1012,8 @@
         }
       });
 
-      const signTraits = signData?.characteristics?.slice(0, 3) || [];
+      const signTraits = signData?.characteristics || [];
+      //signData?.characteristics?.slice(0, 3) || [];
       const subject = livingTraits[0] || 'Someone';
       const effect = nonLivingTraits[0] || 'some outcome';
       const field = signTraits[0] || 'some area';
@@ -1089,6 +1090,7 @@
       checkbox.checked = true;
       checkbox.addEventListener('change', () => {
         outputTarget.style.display = checkbox.checked ? 'block' : 'none';
+        alert('Hiding');
       });
       const label = document.createElement('label');
       label.htmlFor = 'toggle-output';
