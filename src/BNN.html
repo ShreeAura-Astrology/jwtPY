@@ -1077,13 +1077,29 @@
         container.appendChild(card);
       });
 
-      const outputTarget =  document.createElement('div');
+      const outputTarget = document.createElement('div');
       outputTarget.scrollIntoView({ behavior: 'smooth' });
       //outputTarget.innerHTML = '';
       outputTarget.appendChild(container);
+      const toggleContainer = document.createElement('div');
+      toggleContainer.style.marginTop = '10px';
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = 'toggle-output';
+      checkbox.checked = true;
+      checkbox.addEventListener('change', () => {
+        outputTarget.style.display = checkbox.checked ? 'block' : 'none';
+      });
+      const label = document.createElement('label');
+      label.htmlFor = 'toggle-output';
+      label.textContent = ' Show Interpretations';
+      toggleContainer.appendChild(checkbox);
+      toggleContainer.appendChild(label);
+
       const div = document.getElementById("results");
+      div.insertBefore(toggleContainer, outputTarget);
       div.insertAdjacentHTML('afterbegin', `${outputTarget.innerHTML}`);
-      console.log('interpretAllConjunctions',results);
+      console.log('interpretAllConjunctions', results);
       return Object.keys(results);
     }
 
