@@ -327,7 +327,7 @@
         <h3>Trine: ${g.trineSigns.join("-")}</h3>
         <strong>Planets:</strong>
         <ul>${g.planets.map(p => `<li>${p.planet}: Sign ${p.sign}, ${p.degree.toFixed(2)}°</li>`).join('')}</ul>
-        ${g.conjunctions.length ? `<strong>Conjunctions:</strong><ul>${g.conjunctions.map(c => `<li>${c.pair.join(' & ')} in Sign ${c.sign}</li><li>${interpretConjunction(c.pair, signs[c.sign - 1], property)}</li>`).join('')}</ul>` : ''}
+        ${g.conjunctions.length ? `<strong>Conjunctions:</strong><ul>${g.conjunctions.map(c => `<li>${c.pair.join(' & ')} in Sign ${c.sign}</li>`).join('')}</ul>` : ''}
         ${g.aspects.length ? `<strong>Aspects:</strong><ul>${g.aspects.map(a => `<li>${a.note}</li>`).join('')}</ul>` : ''}
         ${g.predictions.length ? `<strong>Predictions:</strong><ul>${g.predictions.map(p => `<li>${p}</li>`).join('')}</ul>` : ''}
       `;
