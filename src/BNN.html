@@ -1095,10 +1095,9 @@
       label.textContent = ' Show Interpretations';
       toggleContainer.appendChild(checkbox);
       toggleContainer.appendChild(label);
-
+      toggleContainer.appendChild(outputTarget);
       const div = document.getElementById("results");
-      div.insertAdjacentHTML('afterbegin', outputTarget);
-      div.insertBefore(toggleContainer, outputTarget);
+      div.insertAdjacentHTML('afterbegin', toggleContainer);
       console.log('interpretAllConjunctions', results);
       return Object.keys(results);
     }
