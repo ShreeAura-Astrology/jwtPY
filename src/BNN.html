@@ -1080,6 +1080,7 @@
       });
 
       const outputTarget = document.createElement('div');
+      outputTarget.id = 'interpretationCont';
       outputTarget.scrollIntoView({ behavior: 'smooth' });
       //outputTarget.innerHTML = '';
       outputTarget.appendChild(container);
@@ -1091,7 +1092,7 @@
       checkbox.checked = true;
       checkbox.addEventListener('change', () => {
         outputTarget.style.display = checkbox.checked ? 'block' : 'none';
-        alert('Hiding');
+        console.log('Visibility',outputTarget.style.display);
       });
       const label = document.createElement('label');
       label.htmlFor = 'toggle-output';
@@ -1102,6 +1103,11 @@
       const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', toggleContainer.innerHTML);
       console.log('interpretAllConjunctions', results);
+
+      document.getElementById('toggle-output').addEventListener('change', () => {
+        document.getElementById('interpretationCont').style.display = this.checked ? 'block' : 'none';
+        console.log('Visibility',document.getElementById('interpretationCont').style.display);
+      });
       return Object.keys(results);
     }
 
@@ -1121,7 +1127,7 @@
         const lord = signLords[sign];
         const planetData = horoscope[lord];
         if (planetData && planetData.house) {
-          placements[`Sign ${sign}`] = `${lord} ( ${getHouseOfSign(sign,horoscope)} house lord is placed in House ${planetData.house}`;
+          placements[`Sign ${sign}`] = `${lord}:  ${getHouseOfSign(sign,horoscope)} house lord is placed in House ${planetData.house}`;
         } else {
           placements[`Sign ${sign}`] = `${lord} not found or house not defined in chart`;
         }
