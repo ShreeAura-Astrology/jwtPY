@@ -1089,7 +1089,7 @@
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.id = 'toggle-output';
-      checkbox.checked = true;
+      checkbox.checked = "checked";
       checkbox.addEventListener('change', () => {
         outputTarget.style.display = checkbox.checked ? 'block' : 'none';
         console.log('Visibility',outputTarget.style.display);
@@ -1106,7 +1106,7 @@
 
       document.getElementById('toggle-output').addEventListener('change', () => {
         document.getElementById('interpretationCont').style.display = this.checked ? 'block' : 'none';
-        console.log('Visibility',document.getElementById('interpretationCont').style.display);
+        console.log('Visibility',this.checked,document.getElementById('interpretationCont').style.display);
       });
       return Object.keys(results);
     }
