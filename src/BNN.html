@@ -1097,7 +1097,7 @@
       toggleContainer.appendChild(label);
       toggleContainer.appendChild(outputTarget);
       const div = document.getElementById("results");
-      div.insertAdjacentHTML('afterbegin', toggleContainer);
+      div.insertAdjacentHTML('afterbegin', toggleContainer.innerHTML);
       console.log('interpretAllConjunctions', results);
       return Object.keys(results);
     }
