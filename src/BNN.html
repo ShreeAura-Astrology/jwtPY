@@ -139,6 +139,7 @@ document.getElementById('transit-saturn-sign').innerHTML =  `${signs.map((s, i) 
 	renderDiamondChart(horoscope);
 	getMarriageOutcomeForFemale(horoscope);
 	getMarriageOutcomeForMale(horoscope);
+  interpretAllConjunctions(horoscope, property);
   }
 
   /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -962,8 +963,78 @@ function interpretConjunction(planets, sign, data) {
   const effect = nonLivingTraits[0] || 'some outcome';
   const field = signTraits[0] || 'some area';
 
-  return `${subject} experiences ${effect} in ${field} (Sign: ${sign})`;
+  let combinations = [];
+  livingTraits.forEach(subject => {
+    nonLivingTraits.forEach(effect => {
+      signTraits.forEach(field => {
+        combinations.push(`${subject} experiences ${effect} in ${field} (Sign: ${sign})`);
+      });
+    });
+  });
+  return combinations.length ? combinations : [`${subject} experiences ${effect} in ${field} (Sign: ${sign})`];
 }
+
+// Batch interpret all conjunctions and display
+function interpretAllConjunctions(horoscope, data) {
+  const results = {};
+  const signMap = {};
+
+  Object.entries(horoscope).forEach(([planet, { sign }]) => {
+    if (!signMap[sign]) signMap[sign] = [];
+    signMap[sign].push(planet);
+  });
+
+  Object.entries(signMap).forEach(([sign, planets]) => {
+    if (planets.length > 1) {
+      for (let i = 0; i < planets.length; i++) {
+        for (let j = i + 1; j < planets.length; j++) {
+          const pairKey = `${planets[i]} & ${planets[j]} in ${sign}`;
+results[pairKey] = interpretConjunction([planets[i], planets[j]], signs[sign -1], data);
+        }
+      }
+    }
+  });
+
+  const container = document.createElement('div');
+container.style.display = 'flex';
+container.style.flexWrap = 'wrap';
+container.style.gap = '16px';
+container.style.marginTop = '20px';
+
+Object.entries(results).forEach(([key, msgs]) => {
+  const card = document.createElement('div');
+  card.style.border = '1px solid #ccc';
+  card.style.padding = '12px';
+  card.style.borderRadius = '8px';
+  card.style.background = '#f9f9f9';
+  card.style.width = '300px';
+
+  const title = document.createElement('h4');
+  title.textContent = key;
+  card.appendChild(title);
+
+  const list = document.createElement('ul');
+  msgs.forEach(msg => {
+    const li = document.createElement('li');
+    li.textContent = msg;
+    list.appendChild(li);
+  });
+  card.appendChild(list);
+  container.appendChild(card);
+});
+
+const outputTarget = document.getElementById('results') || document.body;
+outputTarget.scrollIntoView({ behavior: 'smooth' });
+outputTarget.innerHTML = '';
+outputTarget.appendChild(container);
+
+return Object.keys(results);
+} 
+
+// Example usage:
+// const output = interpretAllConjunctions(horoscope, property);
+// output.forEach(msg => console.log(msg));
+
 
 // Attach save and load UI components
 window.addEventListener('DOMContentLoaded', () => {
