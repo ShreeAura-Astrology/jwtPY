@@ -1077,13 +1077,13 @@
         container.appendChild(card);
       });
 
-      const outputTarget = document.getElementById('results') || document.body;
+      const outputTarget =  document.createElement('div');
       outputTarget.scrollIntoView({ behavior: 'smooth' });
-      outputTarget.innerHTML = '';
+      //outputTarget.innerHTML = '';
       outputTarget.appendChild(container);
       const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', `${outputTarget.innerHTML}`);
-
+      console.log('interpretAllConjunctions',results);
       return Object.keys(results);
     }
 
