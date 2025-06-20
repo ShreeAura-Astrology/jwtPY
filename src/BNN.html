@@ -194,6 +194,7 @@
       getMarriageOutcomeForFemale(horoscope);
       getMarriageOutcomeForMale(horoscope);
       interpretAllConjunctions(horoscope, property);
+      showSignLordPlacements(horoscope);
     }
 
     /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -1108,6 +1109,49 @@
     // const output = interpretAllConjunctions(horoscope, property);
     // output.forEach(msg => console.log(msg));
 
+    // Find placement of sign lords in houses
+    function getSignLordPlacements(horoscope) {
+      const signLords = {
+        1: 'Mars', 2: 'Venus', 3: 'Mercury', 4: 'Moon', 5: 'Sun', 6: 'Mercury',
+        7: 'Venus', 8: 'Mars', 9: 'Jupiter', 10: 'Saturn', 11: 'Saturn', 12: 'Jupiter'
+      };
+
+      const placements = {};
+      for (let sign = 1; sign <= 12; sign++) {
+        const lord = signLords[sign];
+        const planetData = horoscope[lord];
+        if (planetData && planetData.house) {
+          placements[`Sign ${sign}`] = `${lord} (lord of Sign ${sign}) is placed in House ${planetData.house}`;
+        } else {
+          placements[`Sign ${sign}`] = `${lord} not found or house not defined in chart`;
+        }
+      }
+      return placements;
+    }
+
+    // Add button to show sign lord placements
+    function showSignLordPlacements(horoscope) {
+      const placements = getSignLordPlacements(horoscope);
+
+      let placementContainer = document.getElementById('lord-placement-results');
+      if (!placementContainer) {
+        placementContainer = document.createElement('div');
+        placementContainer.id = 'lord-placement-results';
+        placementContainer.style.marginTop = '20px';
+        document.body.appendChild(placementContainer);
+      }
+      placementContainer.innerHTML = '';
+      const list = document.createElement('ul');
+      Object.entries(placements).forEach(([sign, msg]) => {
+        const li = document.createElement('li');
+        li.textContent = msg;
+        list.appendChild(li);
+      });
+      placementContainer.appendChild(list);
+       const div = document.getElementById("results");
+      div.insertAdjacentHTML('afterbegin', `${placementContainer.innerHTML}`);
+
+    }
 
     // Attach save and load UI components
     window.addEventListener('DOMContentLoaded', () => {
