@@ -198,7 +198,8 @@
       getMarriageOutcomeForMale(horoscope);
       interpretAllConjunctions(horoscope, property);
       showSignLordPlacements(horoscope);
-       showProfessionFromHoroscope(horoscope);
+      showProfessionFromHoroscope(horoscope);
+      getWorkEnvironmentFromHoroscope(horoscope);
     }
 
     /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -1234,14 +1235,14 @@
         });
 
       const planetHints = {
-        Sun: 'High position, Authority, Politics',
-        Moon: 'Food, Water, Liquids, Travel',
-        Mars: 'Engineering, Real Estate, Defense',
-        Mercury: 'Business, Education, Journalism',
-        Venus: 'Banking, Finance, Fashion, Design',
-        Jupiter: 'Education, Law, Consulting',
-        Rahu: 'IT, MNC, Foreign Trade, Digital',
-        Ketu: 'Coding, Occult, Alternative Healing'
+        Sun: 'Name , Fame,Recognition in profession, High paid Job, Higher rank, Authority, Would be unsatisfied with low esteem job, Govt. Job, Politics, MBA, Hospital, Establishing Planet.',
+        Moon: 'Food Business, Grocery Store, Mo+Ra(Kirana store, Wholesale store), Tours and travel company, transferrable Govt./Private job, Navy, chemistry, economics, Liquor, Coldrinks, water related, Changes , up-down , travels in profession.',
+        Mars: 'Engineering, Technical skills, ITI, Army, Defense Forces, Police, Surgeon, Dentist, Construction Work, Real Estate, B.com, Accountant, Electronics, Vastu',
+        Mercury: 'Business, Education, Journalism, Mathematics',
+        Venus: ' Money, Assets, Vehicles , Bank, Finances, Insurance, Trading, Fine Arts, Garments, Utensils, Home Décor, Designing, smoothness in profession.',
+        Jupiter: 'Helps in Law education, Teacher, B.Ed. , Well educated, can always study, social work, CA, consultant, bank',
+        Rahu: 'Software Engineer, MNC, Shadow and unethical work(Betting etc.), Profession in foreign land, digital marketing, export import, person is extremely intelligent',
+        Ketu: 'Coding, Yoga teacher, spiritual guru, astrologer, occult, vastu , Surgery , Law, Low skilled jobs(Tailor, barber, painter etc.) Native is not happy with Job and wants to do something of his own.'
       };
 
       influenceDetails.forEach(detail => {
@@ -1280,6 +1281,42 @@
       para.textContent = professionText;
       card.appendChild(title);
       card.appendChild(para);
+    }
+
+    function getWorkEnvironmentFromHoroscope(horoscope) {
+      const saturn = horoscope['Saturn'];
+      if (!saturn || !saturn.sign) return 'Saturn sign not found.';
+
+      const twelfthSign = (saturn.sign + 11) % 12 || 12;
+      const twelfthHousePlanets = Object.entries(horoscope)
+        .filter(([p, d]) => d.sign === twelfthSign)
+        .map(([p]) => p);
+
+      const goodPlanets = ['Venus', 'Jupiter', 'Sun', 'Mercury'];
+      const badPlanets = ['Mars', 'Rahu', 'Ketu'];
+
+      const good = twelfthHousePlanets.filter(p => goodPlanets.includes(p));
+      const bad = twelfthHousePlanets.filter(p => badPlanets.includes(p));
+
+      let result = `12th from Saturn is Sign ${twelfthSign}.`;
+      if (twelfthHousePlanets.length === 0) {
+        result += `\nNo planets in the 12th from Saturn — neutral work environment.`;
+      } else {
+        result += `\nPlanets in 12th from Saturn: ${twelfthHousePlanets.join(', ')}`;
+        if (bad.length) {
+          result += `\n⚠️ Not good work environment due to: ${bad.join(', ')}`;
+        }
+        if (good.length) {
+          result += `\n✅ Enjoyable work environment due to: ${good.join(', ')}`;
+        }
+      }
+
+      if (twelfthHousePlanets.length && saturn.retrograde) {
+        result += `\n🌀 Since Saturn is retrograde, profession may be out of compulsion or external pressure.`;
+      }
+      const div = document.getElementById("results");
+      div.insertAdjacentHTML('afterbegin', `${result}`);
+      return result;
     }
 
     // Attach save and load UI components
