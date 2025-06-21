@@ -1242,9 +1242,11 @@
       });
 
       const aspectsText = influenceDetails.length ? `
-<br>Aspecting planets: ${influenceDetails.join(', ')}` : '';
+
+      Aspecting planets: ${influenceDetails.join(', ')}` : '';
       return `Saturn in sign ${saturn.sign}: ${prof}.
-<br>Additional indicators: ${extras.join('<br> ') || 'None'}${aspectsText}`;
+
+      Additional indicators: ${extras.join(' , ') || 'None'}${aspectsText}`;
     }
 
     // Show career insights from Saturn
