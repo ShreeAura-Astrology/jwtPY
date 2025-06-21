@@ -195,6 +195,7 @@
       getMarriageOutcomeForMale(horoscope);
       interpretAllConjunctions(horoscope, property);
       showSignLordPlacements(horoscope);
+       showProfessionFromHoroscope(horoscope);
     }
 
     /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -1092,7 +1093,7 @@
       checkbox.checked = "checked";
       checkbox.addEventListener('change', () => {
         outputTarget.style.display = checkbox.checked ? 'block' : 'none';
-        console.log('Visibility',outputTarget.style.display);
+        console.log('Visibility', outputTarget.style.display);
       });
       const label = document.createElement('label');
       label.htmlFor = 'toggle-output';
@@ -1106,7 +1107,7 @@
 
       document.getElementById('toggle-output').addEventListener('change', () => {
         document.getElementById('interpretationCont').style.display = this.checked ? 'block' : 'none';
-        console.log('Visibility',this.checked,document.getElementById('interpretationCont').style.display);
+        console.log('Visibility', this.checked, document.getElementById('interpretationCont').style.display);
       });
       return Object.keys(results);
     }
@@ -1127,7 +1128,7 @@
         const lord = signLords[sign];
         const planetData = horoscope[lord];
         if (planetData && planetData.house) {
-          placements[`Sign ${sign}`] = `${lord}:  ${getHouseOfSign(sign,horoscope)} house lord is placed in House ${planetData.house}`;
+          placements[`Sign ${sign}`] = `${lord}:  ${getHouseOfSign(sign, horoscope)} house lord is placed in House ${planetData.house}`;
         } else {
           placements[`Sign ${sign}`] = `${lord} not found or house not defined in chart`;
         }
@@ -1136,9 +1137,9 @@
     }
 
     const getHouseOfSign = (sign, horoscope) => {
-  const entry = Object.values(horoscope).find(p => p.sign === sign);
-  return entry?.house || null;
-};
+      const entry = Object.values(horoscope).find(p => p.sign === sign);
+      return entry?.house || null;
+    };
     // Add button to show sign lord placements
     function showSignLordPlacements(horoscope) {
       const placements = getSignLordPlacements(horoscope);
@@ -1158,9 +1159,119 @@
         list.appendChild(li);
       });
       placementContainer.appendChild(list);
-       const div = document.getElementById("results");
+      const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', `${placementContainer.innerHTML}`);
 
+    }
+
+    // Determine profession from horoscope
+    function getProfessionFromHoroscope(horoscope) {
+      const saturn = horoscope['Saturn'];
+      if (!saturn) return 'Saturn not found in chart';
+
+      const rashiProfessions = {
+        1: 'Govt. job, Police, Military Service, Engineering, Agriculture, Construction',
+        2: 'Fine Arts, Banking, Finance, Insurance, Share Market, Jewelry',
+        3: 'Journalism, Media, Marketing, Teaching, Tutoring',
+        4: 'Food, Travel, Marine, Economics, Navy, Hospitality',
+        5: 'CEO, Manager, Govt. Authority, Team Lead, HR',
+        6: 'Law, Astrology, Consulting, Agriculture, Village Admin',
+        7: 'Medicine, Law, Banking, Finance, Arts',
+        8: 'Engineering, Surgery, Machinery, Research, Coding',
+        9: 'Teaching, Consulting, Banking, Management',
+        10: 'CA, Professor, IAS, UPSC, Neurosurgeon',
+        11: 'Psychologist, Consultant, Telecom, Navy, CBI',
+        12: 'Aviation, Auto, International Travel, Foreign Work'
+      };
+
+      const prof = rashiProfessions[saturn.sign];
+      let extras = [];
+
+      // Get aspects: 3rd, 7th, 10th, and trine (1, 5, 9) signs from Saturn
+      const aspectSigns = [
+        (saturn.sign + 2) % 12 || 12,
+        (saturn.sign + 6) % 12 || 12,
+        (saturn.sign + 9) % 12 || 12,
+        saturn.sign,
+        (saturn.sign + 4) % 12 || 12,
+        (saturn.sign + 8) % 12 || 12
+      ];
+
+      // If retrograde, calculate trine signs from the sign preceding Saturn's sign
+      if (saturn.retrograde) {
+        const previousSign = (saturn.sign - 1 + 12) % 12 || 12;
+        aspectSigns.push(
+          previousSign,
+          (previousSign + 4) % 12 || 12,
+          (previousSign + 8) % 12 || 12
+        );
+      }
+
+      const influenceDetails = Object.entries(horoscope)
+        .filter(([p, d]) => p !== 'Saturn' && aspectSigns.includes(d.sign))
+        .map(([p, d]) => {
+          const diff = (d.sign - saturn.sign + 12) % 12;
+          let aspectType = '';
+          if (d.sign === saturn.sign) aspectType = 'Conjunction';
+          else if (diff === 2) aspectType = '3rd aspect';
+          else if (diff === 6) aspectType = '7th aspect';
+          else if (diff === 9) aspectType = '10th aspect';
+          else if (diff === 4 || diff === 8) aspectType = 'Trine';
+          else if (saturn.retrograde && [
+            (saturn.sign - 1 + 12) % 12 || 12,
+            (saturn.sign - 1 + 4 + 12) % 12 || 12,
+            (saturn.sign - 1 + 8 + 12) % 12 || 12
+          ].includes(d.sign)) aspectType = 'Retrograde Trine';
+          return `${p} (${aspectType})`;
+        });
+
+      const planetHints = {
+        Sun: 'High position, Authority, Politics',
+        Moon: 'Food, Water, Liquids, Travel',
+        Mars: 'Engineering, Real Estate, Defense',
+        Mercury: 'Business, Education, Journalism',
+        Venus: 'Banking, Finance, Fashion, Design',
+        Jupiter: 'Education, Law, Consulting',
+        Rahu: 'IT, MNC, Foreign Trade, Digital',
+        Ketu: 'Coding, Occult, Alternative Healing'
+      };
+
+      influenceDetails.forEach(detail => {
+        const name = detail.split(' ')[0];
+        if (planetHints[name]) extras.push(planetHints[name]);
+      });
+
+      const aspectsText = influenceDetails.length ? `
+Aspecting planets: ${influenceDetails.join(', ')}` : '';
+      return `Saturn in sign ${saturn.sign}: ${prof}.
+Additional indicators: ${extras.join(', ') || 'None'}${aspectsText}`;
+    }
+
+    // Show career insights from Saturn
+    function showProfessionFromHoroscope(horoscope) {
+      const professionText = getProfessionFromHoroscope(horoscope);
+      let card = document.getElementById('profession-card');
+      if (!card) {
+        card = document.createElement('div');
+        card.id = 'profession-card';
+        card.style.border = '2px solid #0066cc';
+        card.style.padding = '12px';
+        card.style.borderRadius = '8px';
+        card.style.background = '#e6f0ff';
+        card.style.marginTop = '20px';
+        card.style.width = '100%';
+        document.getElementById('results')?.prepend(card);
+      } else {
+        card.innerHTML = '';
+      }
+      const title = document.createElement('h3');
+      title.textContent = 'Career Insights based on Saturn';
+      const para = document.createElement('p');
+      para.textContent = professionText;
+      card.appendChild(title);
+      card.appendChild(para);
+      const div = document.getElementById("results");
+      div.insertAdjacentHTML('afterbegin', `${card.innerHTML}`);
     }
 
     // Attach save and load UI components
