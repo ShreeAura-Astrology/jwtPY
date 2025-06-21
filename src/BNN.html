@@ -189,6 +189,7 @@
         }
       });
       nativeHoroscope = horoscope;
+      console.log('Native Horoscope:', horoscope);
       const result = getTrineGroupsWithBNNAspects(horoscope);
       const parivartans = detectParivartan(horoscope);
       renderResults(result, parivartans);
