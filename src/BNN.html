@@ -1242,9 +1242,9 @@
       });
 
       const aspectsText = influenceDetails.length ? `
-Aspecting planets: ${influenceDetails.join(', ')}` : '';
+<br>Aspecting planets: ${influenceDetails.join(', ')}` : '';
       return `Saturn in sign ${saturn.sign}: ${prof}.
-Additional indicators: ${extras.join(', ') || 'None'}${aspectsText}`;
+<br>Additional indicators: ${extras.join('<br> ') || 'None'}${aspectsText}`;
     }
 
     // Show career insights from Saturn
@@ -1270,8 +1270,6 @@ Additional indicators: ${extras.join(', ') || 'None'}${aspectsText}`;
       para.textContent = professionText;
       card.appendChild(title);
       card.appendChild(para);
-      const div = document.getElementById("results");
-      div.insertAdjacentHTML('afterbegin', `${card.innerHTML}`);
     }
 
     // Attach save and load UI components
