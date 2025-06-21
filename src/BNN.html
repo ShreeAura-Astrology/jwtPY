@@ -975,6 +975,10 @@
           const signEl = document.getElementById(`${planet}-sign`);
           const degEl = document.getElementById(`${planet}-deg`);
           const houseE1 = document.getElementById(`${planet}-house`);
+          const retrogradeEl = document.getElementById(`${planet}-retrograde`);
+          if (retrogradeEl) {
+            retrogradeEl.checked = data.retrograde || false;
+          }
           if (signEl && degEl) {
             signEl.value = data.sign;
             degEl.value = data.degree;
