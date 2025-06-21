@@ -1258,6 +1258,39 @@
       Additional indicators: ${extras.join(' , ') || 'None'}${aspectsText}`;
     }
 
+    //Function creates a reusable card
+    function createCard(title, content) {
+      const card = document.createElement('div');
+      card.style.border = '2px solid #0066cc';
+      card.style.padding = '12px';
+      card.style.borderRadius = '8px';
+      card.style.background = '#e6f0ff';
+      card.style.marginTop = '20px';
+      card.style.width = '100%';
+      card.id = title.toLowerCase().replace(/\s+/g, '-') + '-card';
+      card.style.width = '100%';
+      card.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+      card.style.transition = 'transform 0.2s';
+      card.addEventListener('mouseover', () => {
+        card.style.transform = 'scale(1.02)';
+      });
+      card.addEventListener('mouseout', () => {
+        card.style.transform = 'scale(1)';
+      });
+      card.style.cursor = 'pointer';
+      card.style.textAlign = 'left';
+      card.style.fontFamily = 'Arial, sans-serif';
+      const cardTitle = document.createElement('h3');
+      cardTitle.textContent = title;
+      card.appendChild(cardTitle);
+
+      const cardContent = document.createElement('p');
+      cardContent.textContent = content;
+      card.appendChild(cardContent);
+      document.getElementById('results')?.prepend(card);
+      return card;
+    }
+
     // Show career insights from Saturn
     function showProfessionFromHoroscope(horoscope) {
       const professionText = getProfessionFromHoroscope(horoscope);
@@ -1314,8 +1347,9 @@
       if (twelfthHousePlanets.length && saturn.retrograde) {
         result += `\n🌀 Since Saturn is retrograde, profession may be out of compulsion or external pressure.`;
       }
-      const div = document.getElementById("results");
-      div.insertAdjacentHTML('afterbegin', `${result}`);
+      // const div = document.getElementById("results");
+      // div.insertAdjacentHTML('afterbegin', `${result}`);
+      createCard('Work Environment from Saturn', result);
       return result;
     }
 
