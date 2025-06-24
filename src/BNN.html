@@ -448,12 +448,14 @@
       const cyclicHoroscope = {};
       //Get Sun's position and count signs from there and store in cyclicHoroscope
       const sunSign = horoscope['Sun']?.sign;
+      const sunHouse = horoscope['Sun']?.house;
       if (!sunSign) return cyclicHoroscope;
       //Create a cyclic horoscope starting from Sun's sign with 1 based index
       for (let i = 0; i < 12; i++) {
         const signIndex = (sunSign - 1 + i) % 12 + 1;
+        const houseIndex = (sunHouse - 1 + i) % 12 + 1;
         //signs[signIndex - 1]
-        cyclicHoroscope[signIndex] = {
+        cyclicHoroscope[houseIndex] = {
           signid: signs[signIndex - 1],
           sign: signIndex, // 1 to 12
           // Will load planets in this sign from horoscope object which has sign, degree, house, retrograde
