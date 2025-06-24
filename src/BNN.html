@@ -80,6 +80,13 @@
       border-left: 4px solid #0077cc;
       background: #f0f8ff;
     }
+
+    #diamond-chart {
+      margin-top: -574px;
+      position: absolute;
+      margin-left: 743px;
+      zoom: 70%;
+    }
   </style>
 </head>
 
@@ -464,7 +471,7 @@
         };
       }
       for (const [planet, { sign, degree, house, retrograde }] of Object.entries(horoscope)) {
-          cyclicHoroscope[sign].planets.push(planet);
+        cyclicHoroscope[sign].planets.push(planet);
       }
       console.log('Cyclic Horoscope:', cyclicHoroscope);
       return cyclicHoroscope;
