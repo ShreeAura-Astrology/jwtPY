@@ -454,7 +454,8 @@
         const signIndex = (sunSign - 1 + i) % 12 + 1;
         //signs[signIndex - 1]
         cyclicHoroscope[signIndex] = {
-          sign: signs[signIndex - 1],
+          signid: signs[signIndex - 1],
+          sign: signIndex, // 1 to 12
           // Will load planets in this sign from horoscope object which has sign, degree, house, retrograde
           // iterate over horoscope and map planets to cyclicHoroscope and return array having planets in that sign
           planets: []
@@ -513,12 +514,12 @@
         { top: '14%', left: '87%' }, // 11
         { top: '3%', left: '70%' }  // 12
       ];
-
+      const cyclicHoroscope = createCyclicJSON(horoscope);
       console.log(layout);
       layout.forEach((sign, i) => {
         const box = document.createElement('div');
         const planets = housePlanets[sign - 1].join('<br>');
-        const allP = fixedHouse.hasOwnProperty(sign) ? fixedHouse[sign].join('<br>') : `${sign}<br>`;
+        const allP = fixedHouse.hasOwnProperty(sign) ? fixedHouse[sign].join('<br>') : `${cyclicHoroscope[sign]}<br>`;
         box.innerHTML = `<strong>${allP}</strong>`;
         //box.innerHTML = `<strong>${allP}</strong><strong><br>${signs[sign - 1]}</strong><br>${planets}`;
 
