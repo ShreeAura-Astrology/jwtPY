@@ -519,7 +519,7 @@
       layout.forEach((sign, i) => {
         const box = document.createElement('div');
         const planets = housePlanets[sign - 1].join('<br>');
-        const allP = fixedHouse.hasOwnProperty(sign) ? fixedHouse[sign].join('<br>') : `${cyclicHoroscope[sign]}<br>`;
+        const allP = fixedHouse.hasOwnProperty(sign) ? fixedHouse[sign].join('<br>') : `${cyclicHoroscope[sign].sign}<br>`;
         box.innerHTML = `<strong>${allP}</strong>`;
         //box.innerHTML = `<strong>${allP}</strong><strong><br>${signs[sign - 1]}</strong><br>${planets}`;
 
