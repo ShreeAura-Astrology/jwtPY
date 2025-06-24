@@ -444,7 +444,25 @@
       return parivartans;
     }
 
-
+    function createCyclicJSON(horoscope){
+      const cyclicHoroscope = {};
+      //Get Sun's position and count signs from there and store in cyclicHoroscope
+      const sunSign = horoscope['Sun']?.sign;
+      if (!sunSign) return cyclicHoroscope;
+      //Create a cyclic horoscope starting from Sun's sign with 1 based index
+      for (let i = 0; i < 12; i++) {
+        const signIndex = (sunSign - 1 + i) % 12 + 1;
+        //signs[signIndex - 1]
+        cyclicHoroscope[signIndex] = {
+          sign: signs[signIndex - 1],
+           // Will load planets in this sign from horoscope object which has sign, degree, house, retrograde
+           // iterate over horoscope and map planets to cyclicHoroscope
+          planets: horoscope.filter(p => p.sign === signIndex).map(p => (p.planet)).collect()
+        };
+      }
+      console.log('Cyclic Horoscope:', cyclicHoroscope);
+      return cyclicHoroscope;
+    }
     function renderDiamondChart(horoscope) {
       const housePlanets = Array.from({ length: 12 }, () => []);
       const fixedHouse = {};//Array.from({ length: 12 }, () => []);
@@ -516,6 +534,7 @@
       });
 
       container.appendChild(diamond);
+      createCyclicJSON(horoscope);
     }
     function getJupiterMajorProgression() {
       const jupiterSign = parseInt(document.getElementById('Jupiter-sign').value);
