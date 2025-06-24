@@ -456,8 +456,8 @@
         cyclicHoroscope[signIndex] = {
           sign: signs[signIndex - 1],
            // Will load planets in this sign from horoscope object which has sign, degree, house, retrograde
-           // iterate over horoscope and map planets to cyclicHoroscope
-          planets: Object.entries(horoscope).filter(p => p.sign === signIndex).map(p => (p.planet)).collect()
+           // iterate over horoscope and map planets to cyclicHoroscope and return array having planets in that sign
+          planets: Object.entries(horoscope).filter(p => p.sign === signIndex).map(p => (p.planet))
         };
       }
       console.log('Cyclic Horoscope:', cyclicHoroscope);
