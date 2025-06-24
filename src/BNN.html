@@ -444,7 +444,7 @@
       return parivartans;
     }
 
-    function createCyclicJSON(horoscope){
+    function createCyclicJSON(horoscope) {
       const cyclicHoroscope = {};
       //Get Sun's position and count signs from there and store in cyclicHoroscope
       const sunSign = horoscope['Sun']?.sign;
@@ -455,10 +455,15 @@
         //signs[signIndex - 1]
         cyclicHoroscope[signIndex] = {
           sign: signs[signIndex - 1],
-           // Will load planets in this sign from horoscope object which has sign, degree, house, retrograde
-           // iterate over horoscope and map planets to cyclicHoroscope and return array having planets in that sign
-          planets: Object.entries(horoscope).filter(p => p.sign === signIndex).map(p => (p.planet))
+          // Will load planets in this sign from horoscope object which has sign, degree, house, retrograde
+          // iterate over horoscope and map planets to cyclicHoroscope and return array having planets in that sign
+          planets: []
         };
+      }
+      for (const [planet, { sign, degree, house, retrograde }] of Object.entries(horoscope)) {
+        if (sign === signIndex) {
+          cyclicHoroscope[signIndex].planets.push(planet);
+        }
       }
       console.log('Cyclic Horoscope:', cyclicHoroscope);
       return cyclicHoroscope;
