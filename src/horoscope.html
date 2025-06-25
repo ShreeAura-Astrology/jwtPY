@@ -1490,7 +1490,7 @@
             $scope.currentVarshMonth = $scope.selectedMonth;
             $scope.dhokhaplanetbyAge = $scope.calculateDhokha(planetPositionsSnapshot);
             $scope.saalaChakkar = $scope.getLalKitab35YearCycleStatusWithAntardasha(age);
-            $scope.saalaChakkar = $scope.saalaChakkar.toString().replaceAll(',','<br>');
+            $scope.saalaChakkar = $scope.saalaChakkar.toString().replaceAll(',', '<br>');
         }
         $scope.resetVarshphal = function () {
             $scope.varshphalChart = varshphalHouses;
@@ -1830,11 +1830,11 @@
                                 planetsTable[planet].houses.forEach(function (mhouse) {
                                     // Mark the house as malefic
                                     console.log('House ' + mhouse + ' is malefic as ' + planet + ' is sitting with its enemy ' + enemy);
-                                    if(houses.hasOwnProperty(mhouse)){
+                                    if (houses.hasOwnProperty(mhouse)) {
                                         houses[mhouse].status = "M";
-                                    if (!maleficHouses.includes(mhouse + "")) {
-                                        maleficHouses.push(mhouse + "");
-                                    }
+                                        if (!maleficHouses.includes(mhouse + "")) {
+                                            maleficHouses.push(mhouse + "");
+                                        }
                                     }
                                 })
                                 // Adding the current planet to malefic planet as its with its enemy
@@ -1973,6 +1973,100 @@
                     }
                 });
             }
+        }
+
+        $scope.findMandaPlanets_ByAnyViolation = function (horoscope) {
+            const pakkaGharLords = {
+                1: 'Sun',
+                2: 'Jupiter',
+                3: 'Mars',
+                4: 'Moon',
+                5: 'Jupiter',
+                6: 'Ketu',
+                7: 'Venus',
+                8: 'Saturn',
+                9: 'Jupiter',
+                10: 'Saturn',
+                11: 'Jupiter',
+                12: 'Rahu'
+            };
+
+            const planetEnemies = {
+                Sun: ['Venus', 'Saturn', 'Rahu'],
+                Moon: ['Rahu', 'Ketu'],
+                Mars: ['Mercury', 'Ketu', 'Venus', 'Saturn', 'Rahu'],
+                Mercury: ['Moon', 'Saturn', 'Ketu', 'Mars', 'Jupiter'],
+                Jupiter: ['Venus', 'Rahu', 'Mercury'],
+                Venus: ['Sun', 'Moon', 'Mars', 'Jupiter', 'Rahu'],
+                Saturn: ['Sun', 'Moon', 'Mars'],
+                Rahu: ['Sun', 'Venus', 'Mars'],
+                Ketu: ['Moon', 'Mars']
+            };
+
+            const neechSigns = {
+                Sun: 7,
+                Moon: 8,
+                Mars: 4,
+                Mercury: 12,
+                Jupiter: 10,
+                Venus: 6,
+                Saturn: 1,
+                Rahu: 9,
+                Ketu: 3
+            };
+
+            // Build house-to-planets map dynamically
+            const houseOccupants = {};
+            for (const [planet, house] of Object.entries(horoscope.planetPositions)) {
+                if (!houseOccupants[house]) houseOccupants[house] = [];
+                houseOccupants[house].push(planet);
+            }
+
+            const mandaPlanets = [];
+
+            for (const [planet, house] of Object.entries(horoscope.planetPositions)) {
+                const enemies = planetEnemies[planet] || [];
+                const reasons = [];
+
+                // Condition 1: Debilitated
+                const isDebilitated = neechSigns[planet] === house;
+                if (isDebilitated) {
+                    reasons.push("Planet is debilitated");
+                }
+
+                // Condition 2: Enemy in same house
+                const coOccupants = houseOccupants[house] || [];
+                const hasEnemyInSameHouse = coOccupants.some(
+                    p => p !== planet && enemies.includes(p)
+                );
+                if (hasEnemyInSameHouse) {
+                    reasons.push("An enemy planet is sitting in the same house");
+                }
+
+                // Condition 3: Enemy in Pakka Ghar
+                const ruledHouses = Object.entries(pakkaGharLords)
+                    .filter(([_, lord]) => lord === planet)
+                    .map(([h]) => parseInt(h));
+
+                let hasEnemyInPakkaGhar = false;
+                for (const h of ruledHouses) {
+                    const occupants = houseOccupants[h] || [];
+                    if (occupants.some(p => enemies.includes(p))) {
+                        hasEnemyInPakkaGhar = true;
+                        break;
+                    }
+                }
+                if (hasEnemyInPakkaGhar) {
+                    reasons.push("Enemy planet found in its Pakka Ghar houses");
+                }
+
+                // Accept planet as Manda if ANY violation occurred
+                if (reasons.length > 0) {
+                    mandaPlanets.push(`${planet} is Manda because: ${reasons.join(', or ')}`);
+                }
+            }
+
+            return mandaPlanets;
         }
 
         $scope.toggleMessage = false;
@@ -2143,7 +2237,7 @@
             document.getElementById("B").innerHTML = beneficHouses.toString();
             document.getElementById("NM").innerHTML = neutralMaleficHouses.toString();
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
-            document.getElementById("MP").innerHTML = maleficPlanets.toString();
+            document.getElementById("MP").innerHTML = maleficPlanets.toString() + "<br> Manda Planets: <br>" + mandaPlanetsInHoroscope.toString().replaceAll(',', '<br>') ;
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
             document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:<br>" + isMangalBadh.toString() + "<br> Mangal Dosh:<br>" + isMangalDosh.toString() + "<br> BudhNali: <br>" + budhNali + "<br> House Building:<br> " + houseOutCome + "<br><br>Sleeping Houses:<br>" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:<br>" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets:<br> " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: <br>" + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega <br>" + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) :<br> " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) :<br> " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : <br>" + seventhaspect.toString().replaceAll(',', '<br>') + "<br><br> All Planetary Aspects : <br>" + planetaryAspects.toString().replaceAll(',', '<br>') + "<br><br>Dharmi Teva : <br>" + dharmiTeva.toString().replaceAll(',', '<br>') + "<br><br>Sathi Grahas : <br>" + sathiRelation.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
@@ -2212,10 +2306,10 @@
 
             var age = today.getFullYear() - birthDate.getFullYear();
             var m = today.getMonth() - birthDate.getMonth();
-            if(m > 0){
+            if (m > 0) {
                 age++;
             }
-            else if(today.getDate() > birthDate.getDate()){
+            else if (today.getDate() > birthDate.getDate()) {
                 age++;
             }
             // if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
@@ -4403,6 +4497,7 @@
             }
             return false;
         }
+        var mandaPlanetsInHoroscope = [];
         function getPlanetHouses(houses) {
             var planetSnapShot = {
                 Sun: 1,
@@ -4437,6 +4532,7 @@
             calculateAllPlanetAspects(planetSnapShot);
             isDharmi(planetSnapShot);
             isSathiRelation(planetSnapShot);
+            mandaPlanetsInHoroscope = $scope.findMandaPlanets_ByAnyViolation(planetSnapShot);
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
@@ -4935,8 +5031,8 @@ Team Mahesh Mankar
                         if (relation == 'takkar (8th)') {
                             aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse + ' Final Impact on ' + planetInNthHouse.map(planetInNthHouse => getKurbaniKeBakre(planetInNthHouse.toLowerCase())));
                         }
-                        else if(relation == 'dhokha (10th)'){
-                            aspects.push(planetInNthHouse + ' in ' + nthHouse + ' will give ' + relation + ' to ' + planetInCurrentHouse );
+                        else if (relation == 'dhokha (10th)') {
+                            aspects.push(planetInNthHouse + ' in ' + nthHouse + ' will give ' + relation + ' to ' + planetInCurrentHouse);
                         }
                         else {
                             aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse);
@@ -5313,7 +5409,7 @@ Team Mahesh Mankar
          * @param {number} age - The age of the person (a positive integer). The calculation is for the start of this age year.
          * @returns {{age: number, cycleNumber: number, cycleAge: number, mainDasha: {rulingPlanet: string|null, duration: number|null, ageRangeInCycle: string|null, startCycleAge: number|null}, antardasha: {completedYearsInMainPeriod: number|null, rulingPlanet: string|null, duration: number|null, dohraNumber: number|null}, notes?: string[]}|string} - An object detailing the cycle status, or an error message string if the age is invalid or status cannot be determined from sources.
          */
-       $scope.getLalKitab35YearCycleStatusWithAntardasha = function (age) {
+        $scope.getLalKitab35YearCycleStatusWithAntardasha = function (age) {
             // Validate input: age must be a positive integer.
             if (typeof age !== 'number' || !Number.isInteger(age) || age <= 0) {
                 return "Invalid age provided. Age must be a positive integer.";
@@ -5424,7 +5520,7 @@ Team Mahesh Mankar
             saalaChakkar.push('mainDasha: ' + mainDashaInfo.rulingPlanet);
             saalaChakkar.push('antardasha: ' + antardashaInfo.rulingPlanet);
             saalaChakkar.push('notes: ' + antardashaInfo.notes);
-            
+
             console.log({
                 age: age,
                 cycleNumber: cycleNumber, // The current 35-year cycle number (e.g., 1st, 2nd) [1]
@@ -5900,7 +5996,7 @@ relaxation from Son as Ketu belongs to Son.</pre>
                 <p> Benefic Planets : <span id="BP"></span></p>
                 <p> Neutral Planets : <span id="NP"></span></p>
                 <p> Dhoka Planet By Age:<span id="DH">{{dhokhaplanetbyAge}}</span>
-                <p> 35 Saala Chkkar <span id="CH" ng-bind-html="saalaChakkar"></span>    
+                <p> 35 Saala Chkkar <span id="CH" ng-bind-html="saalaChakkar"></span>
                 <p> Vakri drishti : <span id="VD"></span></p>
             </div>
             <div class="outer" ng-show="toggleMessage">
