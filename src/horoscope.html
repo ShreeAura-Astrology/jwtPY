@@ -2069,6 +2069,56 @@
             return mandaPlanets;
         }
 
+        const exhaustiveKarakas = {
+            Sun: [
+                "Soul", "Father", "Eyes", "Bones", "Heart", "Government", "Fame",
+                "Power", "Confidence", "Authority", "Raj Simhasan", "Pride", "Caste", "Success", "Respect", "Face", "Head"
+            ],
+            Moon: [
+                "Mother", "Mind", "Emotions", "Water", "Sleep", "Fluids", "Peace", "Face",
+                "Breast", "Public Image", "Comfort", "Happiness", "Blood", "Imagination"
+            ],
+            Mars: [
+                "Courage", "Energy", "Younger Siblings", "Fire", "Accidents", "Weapons",
+                "Aggression", "Property", "Muscles", "Surgery", "Blood", "Disputes", "Physical Power"
+            ],
+            Mercury: [
+                "Intelligence", "Communication", "Business", "Friends", "Skin", "Nervous System",
+                "Speech", "Logic", "Memory", "Analysis", "Wit", "Trade"
+            ],
+            Jupiter: [
+                "Wisdom", "Knowledge", "Children", "Religion", "Wealth", "Teaching",
+                "Husband (for women)", "Expansion", "Ethics", "Morality", "Spiritual Guidance"
+            ],
+            Venus: [
+                "Wife (for men)", "Love", "Luxury", "Beauty", "Art", "Vehicles", "Comforts",
+                "Semen", "Reproduction", "Entertainment", "Romance", "Creativity", "Fertility"
+            ],
+            Saturn: [
+                "Labor", "Discipline", "Old Age", "Service", "Grief", "Pain", "Longevity",
+                "Legs", "Teeth", "Masses", "Death", "Sorrow", "Duty", "Iron", "Slowness", "Karma"
+            ],
+            Rahu: [
+                "Worldly Desires", "Foreign Travel", "Sudden Events", "Politics", "Drugs",
+                "Illusion", "Confusion", "Deception", "Obsessions", "Shadows", "Electronics"
+            ],
+            Ketu: [
+                "Moksha", "Detachment", "Isolation", "Past-life Karma", "Renunciation",
+                "Loss", "Spirituality", "Dogs", "Hidden Enemies", "Sudden Breaks", "Liberation"
+            ]
+        };
+
+        function getMandaPlanetEffect(mandaPlanetsWithReason) {
+            return mandaPlanetsWithReason.map(entry => {
+                const planet = entry.split(" ")[0];
+                const karakas = planetRepresentations[planet];
+                const impact = karakas
+                    ? `→ Possible impacted areas: ${karakas.join(", ")}`
+                    : "→ Karaka impacts unknown";
+                return `${entry} ${impact}`;
+            });
+        }
+
         $scope.toggleMessage = false;
         $scope.horoscope = {};
         $scope.currentAge = 0;
@@ -2237,7 +2287,7 @@
             document.getElementById("B").innerHTML = beneficHouses.toString();
             document.getElementById("NM").innerHTML = neutralMaleficHouses.toString();
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
-            document.getElementById("MP").innerHTML = maleficPlanets.toString() + "<br> Manda Planets: <br>" + mandaPlanetsInHoroscope.toString().replaceAll(',', '<br>') ;
+            document.getElementById("MP").innerHTML = maleficPlanets.toString() + "<br> Manda Planets: <br>" + mandaPlanetsInHoroscope.toString().replaceAll(',', '<br>');
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
             document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:<br>" + isMangalBadh.toString() + "<br> Mangal Dosh:<br>" + isMangalDosh.toString() + "<br> BudhNali: <br>" + budhNali + "<br> House Building:<br> " + houseOutCome + "<br><br>Sleeping Houses:<br>" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:<br>" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets:<br> " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: <br>" + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega <br>" + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) :<br> " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) :<br> " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : <br>" + seventhaspect.toString().replaceAll(',', '<br>') + "<br><br> All Planetary Aspects : <br>" + planetaryAspects.toString().replaceAll(',', '<br>') + "<br><br>Dharmi Teva : <br>" + dharmiTeva.toString().replaceAll(',', '<br>') + "<br><br>Sathi Grahas : <br>" + sathiRelation.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
@@ -4532,7 +4582,7 @@
             calculateAllPlanetAspects(planetSnapShot);
             isDharmi(planetSnapShot);
             isSathiRelation(planetSnapShot);
-            mandaPlanetsInHoroscope = $scope.findMandaPlanets_ByAnyViolation(planetSnapShot);
+            mandaPlanetsInHoroscope = getMandaPlanetEffect($scope.findMandaPlanets_ByAnyViolation(planetSnapShot));
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
         }
