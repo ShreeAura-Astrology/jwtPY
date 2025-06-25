@@ -2017,14 +2017,14 @@
 
             // Build house-to-planets map dynamically
             const houseOccupants = {};
-            for (const [planet, house] of Object.entries(horoscope.planetPositions)) {
+            for (const [planet, house] of Object.entries(horoscope)) {
                 if (!houseOccupants[house]) houseOccupants[house] = [];
                 houseOccupants[house].push(planet);
             }
 
             const mandaPlanets = [];
 
-            for (const [planet, house] of Object.entries(horoscope.planetPositions)) {
+            for (const [planet, house] of Object.entries(horoscope)) {
                 const enemies = planetEnemies[planet] || [];
                 const reasons = [];
 
