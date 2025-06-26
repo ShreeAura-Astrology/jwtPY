@@ -1378,7 +1378,7 @@
     }
 
     const getHouseOfSign = (sign, horoscope) => {
-      const entry = Object.values(horoscope).find(p => p.sign === sign);
+      var entry = Object.values(horoscope).find(p => p.sign === sign);
       // if no entry found, search the house in which a sign is placed in the cyclicHoroscope object
       if (!entry) {
         Object.entries(createCyclicJSON(horoscope)).forEach(([planet, data]) => {
