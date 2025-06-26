@@ -106,18 +106,19 @@
     </select>
     <button onclick="calculateJupiterProgression()">Get Jupiters House</button>
     <button onclick="getJupiterMajorProgression()">Jupiters Major Progression</button>
-    
+
   </div>
-<br>
-    <div>
-     <label>Saturn's Progression</label>
+  <br>
+  <div>
+    <label>Saturn's Progression</label>
     <button onclick="calculateSaturnProgression()">Get Saturn's House</button>
     <button onclick="getSaturnMajorProgression()">Saturn Major Progression</button>
-  </div><div>
+  </div>
+  <div>
     <label>Rahu's Progression</label>
     <button onclick="calculateRahuProgression()">Get Rahu's House</button>
     <button onclick="getRahuMajorProgression()">Rahu Major Progression</button>
-    </div>
+  </div>
 
   <!-- Conjunction checker -->
   <div class="planet-input" style="margin-top:20px">
@@ -440,17 +441,14 @@
         alert('Please select Rahu sign');
         return;
       }
-      const totalMonths = age * 12;
       // Rahu takes 1.5 years to move 1 sign back, so we divide age by 1.5
-      const retrogradeSign = (rahuSign - 1 + Math.floor(age / 1.5)) % 12;
-      const retrogradeHouse = (rahuHouse - 1 + Math.floor(age / 1.5)) % 12;
-      const progressedSign = ((rahuSign - 1 + Math.floor(age / 1.5)) % 12) + 1;
-      const progressedHouse = ((rahuHouse - 1 + Math.floor(age / 1.5)) % 12) + 1;
+      const retrogradeSteps = Math.floor(age / 1.5);
+      let progressedSign = ((rahuSign - retrogradeSteps - 1 + 12) % 12) + 1;
+      let progressedHouse = ((rahuHouse - retrogradeSteps - 1 + 12) % 12) + 1;
       const result = `Age ${age} Rahu is currently in House ${rahuHouse} -> ${progressedHouse} Sign ${rahuSign} -> ${progressedSign} (Sign: ${signs[progressedSign - 1]})`;
       const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
     }
-
 
     function calculateJupiterProgression() {
       const jupiterSign = parseInt(document.getElementById('Jupiter-sign').value);
@@ -620,7 +618,7 @@
       if (!saturnSign || !age) return null;
 
       // Saturn takes 30 years to move 1 sign in it major , so we divide age by 30
-      const houseFocus = Math.floor(age / 30 ) + 1;
+      const houseFocus = Math.floor(age / 30) + 1;
       const houseFromSaturn = ((saturnSign - 1 + (houseFocus - 1)) % 12) + 1;
 
       const signLords = {
@@ -684,7 +682,7 @@
       const rahuHouse = parseInt(document.getElementById('Rahu-house').value);
       const age = parseInt(document.getElementById('age-select').value);
       var outputResult = performRahuProgression(nativeHoroscope, age)
-      const result = `Age ${outputResult.age} Rahu progressed to focusHouse from current sign ${outputResult.focusHouse} -> ${outputResult.progressedHouse} <br>Planets ${outputResult.keyPlanets.join(' , ')}`;  
+      const result = `Age ${outputResult.age} Rahu progressed to focusHouse from current sign ${outputResult.focusHouse} -> ${outputResult.progressedHouse} <br>Planets ${outputResult.keyPlanets.join(' , ')}`;
 
       const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
@@ -694,9 +692,10 @@
       const rahuSign = horoscope['Rahu']?.sign;
       if (!rahuSign || !age) return null;
 
-      // Rahu takes 18 years to move 1 sign back in it major , so we divide age by 18
+      // Rahu takes 18 years to move 1 sign/house BACKWARD in its major progression
       const houseFocus = Math.floor(age / 18) + 1;
-      const houseFromRahu = ((rahuSign - 1 + (houseFocus - 1)) % 12) + 1;
+      // Move backwards: subtract houseFocus - 1 from Rahu's sign/house, wrapping around 1-12
+      const houseFromRahu = ((rahuSign - (houseFocus - 1) - 1 + 12) % 12) + 1;
 
       const signLords = {
         1: 'Mars', 2: 'Venus', 3: 'Mercury', 4: 'Moon', 5: 'Sun', 6: 'Mercury',
@@ -717,8 +716,9 @@
       const seventh = Object.entries(horoscope)
         .filter(([_, val]) => val.sign === seventhHouse)
         .map(([p]) => p);
-      console.log('houseFocus:' + houseFocus + ' houseFromRahu:' + houseFromRahu + ' Dispositor Sign:' + (rahuSign + houseFromRahu));
-      var signOfRahuProgression = (rahuSign - 1 + houseFocus) % 12;
+
+      // Find the dispositor of Rahu's progressed sign
+      const signOfRahuProgression = houseFromRahu;
       const rahuDispositor = signLords[signOfRahuProgression];
       const dispositorsHouse = horoscope[rahuDispositor]?.sign;
       const conjunctionWithDispositor = Object.entries(horoscope)
@@ -729,6 +729,7 @@
       const seventhFromDisp = Object.entries(horoscope)
         .filter(([_, val]) => val.sign === seventhFromDispositor)
         .map(([p]) => p);
+
       const resultSet = new Set([
         ...planetsInHouse,
         ...conjunctions,
@@ -752,7 +753,6 @@
         keyPlanets: Array.from(resultSet)
       };
     }
-
     function getJupiterMajorProgression() {
       const jupiterSign = parseInt(document.getElementById('Jupiter-sign').value);
       const jupiterHouse = parseInt(document.getElementById('Jupiter-house').value);
