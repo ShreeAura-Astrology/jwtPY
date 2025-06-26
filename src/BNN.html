@@ -443,8 +443,9 @@
       }
       // Rahu takes 1.5 years to move 1 sign back, so we divide age by 1.5
       const retrogradeSteps = Math.floor(age / 1.5);
-      let progressedSign = ((rahuSign - retrogradeSteps - 1 + 12) % 12) + 1;
-      let progressedHouse = ((rahuHouse - retrogradeSteps - 1 + 12) % 12) + 1;
+      // Always keep result in 1-12 range, never negative or zero
+      let progressedSign = ((rahuSign - retrogradeSteps - 1 + 12 * 10) % 12) + 1;
+      let progressedHouse = ((rahuHouse - retrogradeSteps - 1 + 12 * 10) % 12) + 1;
       const result = `Age ${age} Rahu is currently in House ${rahuHouse} -> ${progressedHouse} Sign ${rahuSign} -> ${progressedSign} (Sign: ${signs[progressedSign - 1]})`;
       const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
