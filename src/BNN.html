@@ -426,7 +426,7 @@
       const progressedSign = ((saturnSign - 1 + Math.floor(age / 2.5)) % 12) + 1;
       const progressedHouse = ((saturnHouse - 1 + Math.floor(age / 2.5)) % 12) + 1;
 
-      const result = `Age ${age} Saturn is currently in House ${saturnHouse} -> ${progressedHouse} Sign ${saturnSign} -> ${progressedSign} (Sign: ${signs[progressedSign - 1]})`;
+      const result = `Age ${age} Saturn's minor progression is currently from House ${saturnHouse} --> ${progressedHouse} From Sign ${saturnSign} --> ${progressedSign} (Saturn's Final Sign: ${signs[progressedSign - 1]})`;
 
       const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
@@ -446,7 +446,7 @@
       // Always keep result in 1-12 range, never negative or zero
       let progressedSign = ((rahuSign - retrogradeSteps - 1 + 12 * 10) % 12) + 1;
       let progressedHouse = ((rahuHouse - retrogradeSteps - 1 + 12 * 10) % 12) + 1;
-      const result = `Age ${age} Rahu is currently in House ${rahuHouse} -> ${progressedHouse} Sign ${rahuSign} -> ${progressedSign} (Sign: ${signs[progressedSign - 1]})`;
+      const result = `Age ${age} Rahu's minor progression is currently from House ${rahuHouse} --> ${progressedHouse} From Sign ${rahuSign} -> ${progressedSign} (Rahu's Final Sign: ${signs[progressedSign - 1]})`;
       const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
     }
@@ -467,7 +467,7 @@
       const progressedSign = ((jupiterSign - 1 + age) % 12) == 0 ? jupiterSign : ((jupiterSign - 1 + age) % 12);
       const progressedHouse = ((jupiterHouse - 1 + age) % 12);
 
-      const result = `Age ${age} Jupiter is currently in House ${jupiterHouse} -> ${progressedHouse} Sign ${jupiterSign} -> ${progressedSign} (Sign: ${signs[progressedSign - 1]})`;
+      const result = `Age ${age} Jupiter's minor progression is currently from House ${jupiterHouse} -> ${progressedHouse} From Sign ${jupiterSign} -> ${progressedSign} (Jupiter's Sign: ${signs[progressedSign - 1]})`;
 
       const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
@@ -608,7 +608,7 @@
       const saturnHouse = parseInt(document.getElementById('Saturn-house').value);
       const age = parseInt(document.getElementById('age-select').value);
       var outputResult = performSaturnProgression(nativeHoroscope, age)
-      const result = `Age ${outputResult.age} Saturn Major progressed to focusHouse from current sign ${outputResult.progressedHouse} <br>Planets ${outputResult.keyPlanets.toString()}`;
+      const result = `Age ${outputResult.age} Saturn Major progressed to sign ${outputResult.progressedHouse} <br>Planets ${outputResult.keyPlanets.toString()}`;
 
       const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
@@ -683,7 +683,7 @@
       const rahuHouse = parseInt(document.getElementById('Rahu-house').value);
       const age = parseInt(document.getElementById('age-select').value);
       var outputResult = performRahuProgression(nativeHoroscope, age)
-      const result = `Age ${outputResult.age} Rahu progressed to focusHouse from current sign ${outputResult.focusHouse} -> ${outputResult.progressedHouse} <br>Planets ${outputResult.keyPlanets.join(' , ')}`;
+      const result = `Age ${outputResult.age} Rahu Major progressed to sign ${outputResult.focusHouse} -> ${outputResult.progressedHouse} <br>Planets ${outputResult.keyPlanets.join(' , ')}`;
 
       const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
@@ -759,7 +759,7 @@
       const jupiterHouse = parseInt(document.getElementById('Jupiter-house').value);
       const age = parseInt(document.getElementById('age-select').value);
       var outputResult = performJupiterProgression(nativeHoroscope, age)
-      const result = `Age ${outputResult.age} Jupiter progressed to focusHouse from current sign ${outputResult.focusHouse} -> ${outputResult.progressedHouse} <br>Planets ${outputResult.keyPlanets.join(' , ')}`;
+      const result = `Age ${outputResult.age} Jupiter Major progressed to sign ${outputResult.focusHouse} --> ${outputResult.progressedHouse} <br>Planets ${outputResult.keyPlanets.join(' , ')}`;
 
       const div = document.getElementById("results");
       div.insertAdjacentHTML('afterbegin', `<p><strong>${result}</strong></p>`);
