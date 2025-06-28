@@ -2071,23 +2071,23 @@
         }
 
 
-        
+
         /**
          * Returns probable disease predictions for each malefic planet.
          * @param {string[]} maleficPlanets - Array of planet names detected as malefic.
          * @returns {string[]} Array of prediction strings.
          */
         const planetBodyParts = {
-  Sun: ["Heart", "Right Eye", "Head", "Bones", "Face"],
-  Moon: ["Left Eye", "Breast", "Stomach", "Blood", "Mind", "Face"],
-  Mars: ["Blood", "Muscles", "Bone Marrow", "Eyebrows", "Teeth"],
-  Mercury: ["Skin", "Nervous System", "Throat", "Tongue", "Hands", "Neck", "Shoulders"],
-  Jupiter: ["Liver", "Thighs", "Nose", "Fat", "Feet"],
-  Venus: ["Cheeks", "Uterus", "Ovaries", "Semen", "Sperm", "Heart"],
-  Saturn: ["Legs", "Teeth", "Knees", "Chin", "Feet", "Buttocks", "Anus"],
-  Rahu: ["Head", "Mouth", "Ears", "Intestines", "Rectum"],
-  Ketu: ["Nerves", "Hairs", "Fingers", "Small Intestine", "Anus"]
-};
+            Sun: ["Heart", "Right Eye", "Head", "Bones", "Face"],
+            Moon: ["Left Eye", "Breast", "Stomach", "Blood", "Mind", "Face"],
+            Mars: ["Blood", "Muscles", "Bone Marrow", "Eyebrows", "Teeth"],
+            Mercury: ["Skin", "Nervous System", "Throat", "Tongue", "Hands", "Neck", "Shoulders"],
+            Jupiter: ["Liver", "Thighs", "Nose", "Fat", "Feet"],
+            Venus: ["Cheeks", "Uterus", "Ovaries", "Semen", "Sperm", "Heart"],
+            Saturn: ["Legs", "Teeth", "Knees", "Chin", "Feet", "Buttocks", "Anus"],
+            Rahu: ["Head", "Mouth", "Ears", "Intestines", "Rectum"],
+            Ketu: ["Nerves", "Hairs", "Fingers", "Small Intestine", "Anus"]
+        };
 
         function getProbableDiseasePredictions(maleficPlanets) {
             // Example disease mapping for demonstration; expand as needed.
@@ -2105,10 +2105,10 @@
 
             const predictions = [];
             for (const planet of maleficPlanets) {
-                const bodyParts = planetBodyParts[planet] ? planetBodyParts[planet].join(", ") : "Unknown body parts";
-                const diseases = planetDiseaseMap[planet] ? planetDiseaseMap[planet].join(", ") : "General health issues";
+                const bodyParts = planetBodyParts[planet] ? planetBodyParts[planet].join(" : ") : "Unknown body parts";
+                const diseases = planetDiseaseMap[planet] ? planetDiseaseMap[planet].join(" : ") : "General health issues";
                 predictions.push(
-                    `${planet}: Malefic. Body parts affected: ${bodyParts}. Probable diseases: ${diseases}.`
+                    `<br>${planet}: Malefic. Body parts affected: ${bodyParts}. <br>Probable diseases: ${diseases}.`
                 );
             }
             return predictions;
@@ -2188,7 +2188,7 @@
             console.log("Malefic Houses", maleficHouses, "Benific Houses", beneficHouses, "Neutral Malefic Houses", neutralMaleficHouses, "Neutral benefic Houses", neutralBenificHouses);
 
             console.log(houses);
-            console.log("Malefic Planets", maleficPlanets,getProbableDiseasePredictions(maleficPlanets), "Benific Planets", beneficPlanets, "Nuetral Planets", neutralPlanets);
+            console.log("Malefic Planets", maleficPlanets, getProbableDiseasePredictions(maleficPlanets), "Benific Planets", beneficPlanets, "Nuetral Planets", neutralPlanets);
             isVakri();
             getDhrishti();
             getRinReport();
@@ -2333,7 +2333,7 @@
             document.getElementById("NM").innerHTML = neutralMaleficHouses.toString();
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             maleficPlanetSet = new Set(maleficPlanets);
-            document.getElementById("MP").innerHTML = [...maleficPlanetSet].toString() + "<br> Disease Prediction: <br>"+ getProbableDiseasePredictions([...maleficPlanetSet]).toString().replaceAll(',', '<br>') + "<br> Manda Planets: <br>" + mandaPlanetsInHoroscope.toString().replaceAll(',', '<br>');
+            document.getElementById("MP").innerHTML = [...maleficPlanetSet].toString() + "<br> Disease Prediction: <br>" + getProbableDiseasePredictions([...maleficPlanetSet]).toString().replaceAll(',', '<br>') + "<br> Manda Planets: <br>" + mandaPlanetsInHoroscope.toString().replaceAll(',', '<br>');
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
             document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:<br>" + isMangalBadh.toString() + "<br> Mangal Dosh:<br>" + isMangalDosh.toString() + "<br> BudhNali: <br>" + budhNali + "<br> House Building:<br> " + houseOutCome + "<br><br>Sleeping Houses:<br>" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:<br>" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets:<br> " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: <br>" + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega <br>" + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) :<br> " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) :<br> " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : <br>" + seventhaspect.toString().replaceAll(',', '<br>') + "<br><br> All Planetary Aspects : <br>" + planetaryAspects.toString().replaceAll(',', '<br>') + "<br><br>Dharmi Teva : <br>" + dharmiTeva.toString().replaceAll(',', '<br>') + "<br><br>Sathi Grahas : <br>" + sathiRelation.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
