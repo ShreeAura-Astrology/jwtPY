@@ -2070,11 +2070,25 @@
             return mandaPlanets;
         }
 
+
+        
         /**
          * Returns probable disease predictions for each malefic planet.
          * @param {string[]} maleficPlanets - Array of planet names detected as malefic.
          * @returns {string[]} Array of prediction strings.
          */
+        const planetBodyParts = {
+  Sun: ["Heart", "Right Eye", "Head", "Bones", "Face"],
+  Moon: ["Left Eye", "Breast", "Stomach", "Blood", "Mind", "Face"],
+  Mars: ["Blood", "Muscles", "Bone Marrow", "Eyebrows", "Teeth"],
+  Mercury: ["Skin", "Nervous System", "Throat", "Tongue", "Hands", "Neck", "Shoulders"],
+  Jupiter: ["Liver", "Thighs", "Nose", "Fat", "Feet"],
+  Venus: ["Cheeks", "Uterus", "Ovaries", "Semen", "Sperm", "Heart"],
+  Saturn: ["Legs", "Teeth", "Knees", "Chin", "Feet", "Buttocks", "Anus"],
+  Rahu: ["Head", "Mouth", "Ears", "Intestines", "Rectum"],
+  Ketu: ["Nerves", "Hairs", "Fingers", "Small Intestine", "Anus"]
+};
+
         function getProbableDiseasePredictions(maleficPlanets) {
             // Example disease mapping for demonstration; expand as needed.
             const planetDiseaseMap = {
