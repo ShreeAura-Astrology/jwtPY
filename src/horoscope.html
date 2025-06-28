@@ -2070,7 +2070,25 @@
             return mandaPlanets;
         }
 
-
+        /**
+         * Returns negative outcomes for each malefic house.
+         * @param {string[]} maleficHouses - Array of house numbers (as strings) detected as malefic.
+         * @returns {string[]} Array of prediction strings.
+         */
+        function getMaleficHouseOutcomes(maleficHouses) {
+            // houseNegativeIndicator must be available in scope (see significator.js)
+            const outcomes = [];
+            for (const house of maleficHouses) {
+                if (houseNegativeIndicator[house]) {
+                    outcomes.push(
+                        `House ${house}:<br>Negative outcomes: ${houseNegativeIndicator[house].join("; ")}<br>`
+                    );
+                } else {
+                    outcomes.push(`House ${house}:<br>Negative outcomes: Not defined<br>`);
+                }
+            }
+            return outcomes;
+        }
 
         /**
          * Returns probable disease predictions for each malefic planet.
@@ -2107,13 +2125,43 @@
             for (const planet of maleficPlanets) {
                 const bodyParts = planetBodyParts[planet] ? planetBodyParts[planet].join(" : ") : "Unknown body parts";
                 const diseases = planetDiseaseMap[planet] ? planetDiseaseMap[planet].join(" : ") : "General health issues";
+                const characteristics = planetNegativeCharacteristics[planet] ? planetNegativeCharacteristics[planet].join(": ") : "Unknown characteristics";
                 predictions.push(
-                    `<br>${planet}: Malefic. Body parts affected: ${bodyParts}. <br>Probable diseases: ${diseases}.`
+                    `<br>${planet}: <br>Body parts affected: ${bodyParts}. <br>Probable diseases: ${diseases}.<br> Negative characteristics: ${characteristics}.<br>`
                 );
             }
             return predictions;
         }
-
+        // Negative characteristics for each planet
+        const planetNegativeCharacteristics = {
+            Sun: [
+                "Egoistic", "Arrogant", "Dominating", "Prideful", "Authoritarian", "Harsh", "Stubborn", "Self-centered", "Overbearing", "Intolerant", "Anger issues", "Dictatorial", "Lack of empathy"
+            ],
+            Moon: [
+                "Moody", "Overly emotional", "Unstable", "Indecisive", "Easily influenced", "Anxious", "Depressed", "Overly sensitive", "Escapist", "Lack of willpower", "Restless", "Dependent"
+            ],
+            Mars: [
+                "Aggressive", "Impulsive", "Violent", "Argumentative", "Hot-tempered", "Reckless", "Impatient", "Destructive", "Stubborn", "Ruthless", "Over-competitive", "Quarrelsome"
+            ],
+            Mercury: [
+                "Cunning", "Deceitful", "Restless", "Superficial", "Unreliable", "Gossipy", "Manipulative", "Nervous", "Inconsistent", "Overly critical", "Trickster", "Two-faced"
+            ],
+            Jupiter: [
+                "Overindulgent", "Dogmatic", "Self-righteous", "Overconfident", "Extravagant", "Careless", "Lazy", "Preachy", "Judgmental", "Irresponsible", "Boastful"
+            ],
+            Venus: [
+                "Indulgent", "Materialistic", "Lazy", "Sensual", "Jealous", "Possessive", "Frivolous", "Superficial", "Overly romantic", "Addicted to pleasure", "Unfaithful", "Vain"
+            ],
+            Saturn: [
+                "Pessimistic", "Depressed", "Cold", "Rigid", "Fearful", "Stingy", "Aloof", "Unforgiving", "Obstructive", "Overly critical", "Lonely", "Harsh", "Grudging"
+            ],
+            Rahu: [
+                "Obsessive", "Addictive", "Deceptive", "Illusive", "Unethical", "Restless", "Greedy", "Manipulative", "Unpredictable", "Rebellious", "Confused", "Materialistic"
+            ],
+            Ketu: [
+                "Detached", "Apathetic", "Confused", "Aimless", "Unstable", "Escapist", "Self-destructive", "Secretive", "Withdrawn", "Neglectful", "Indifferent", "Unrealistic"
+            ]
+        };
         const exhaustiveKarakas = {
             Sun: [
                 "Soul", "Father", "Eyes", "Bones", "Heart", "Government", "Fame",
@@ -2328,7 +2376,7 @@
 
 
         function showResult() {
-            document.getElementById("M").innerHTML = maleficHouses.toString();
+            document.getElementById("M").innerHTML = maleficHouses.toString() + "<br> Negative Outcomes: <br>" + getMaleficHouseOutcomes(maleficHouses).toString().replaceAll(',', '<br>');
             document.getElementById("B").innerHTML = beneficHouses.toString();
             document.getElementById("NM").innerHTML = neutralMaleficHouses.toString();
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
