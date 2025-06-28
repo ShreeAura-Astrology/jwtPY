@@ -1974,7 +1974,159 @@
                 });
             }
         }
-
+        var houseNegativeIndicator = {
+            "1": [
+                "illness",
+                "ego problems",
+                "physical deformity",
+                "loss of vitality",
+                "head-related diseases",
+                "loss of self-confidence",
+                "scar or wound on the body",
+                "poor physical constitution",
+                "early death if severely afflicted",
+                "mental disturbances",
+                "loss of dignity due to health issues"
+            ],
+            "2": [
+                "loss of wealth",
+                "bad speech",
+                "family disputes",
+                "loss of eyesight",
+                "bad reputation",
+                "disputes over family wealth",
+                "poor dietary habits",
+                "disgrace due to speech",
+                "loss through theft or deceit",
+                "speech disorders",
+                "quarrels over inheritance",
+                "food-related illnesses"
+            ],
+            "3": [
+                "issues with siblings",
+                "lack of courage",
+                "problems in communication",
+                "failure in undertakings",
+                "broken relationships with siblings",
+                "failure in artistic pursuits",
+                "loss through short journeys",
+                "loss through writings or communication",
+                "defamation through siblings",
+                "injuries to arms or shoulders"
+            ],
+            "4": [
+                "property disputes",
+                "emotional instability",
+                "loss of mother",
+                "loss of comfort",
+                "trouble with conveyances",
+                "loss of agricultural property",
+                "trouble in academic pursuits",
+                "loss of immovable property",
+                "destruction of domestic peace",
+                "difficulties in completing education",
+                "early separation from mother"
+            ],
+            "5": [
+                "abortions",
+                "problems with children",
+                "failure in education",
+                "immoral pleasures",
+                "loss of fame due to immoral behavior",
+                "speculative losses",
+                "childlessness",
+                "loss through speculation",
+                "disrepute due to children",
+                "fall from position due to immorality"
+            ],
+            "6": [
+                "disease",
+                "debt",
+                "enmity",
+                "legal issues",
+                "humiliation through enemies",
+                "chronic ulcers",
+                "servants turning against the native",
+                "defeat in legal battles",
+                "insurmountable debt",
+                "humiliation by rivals",
+                "incurable diseases"
+            ],
+            "7": [
+                "marital discord",
+                "divorce",
+                "problems in partnerships",
+                "death of spouse",
+                "loss through litigation",
+                "sexual misconduct",
+                "business failures",
+                "loss through spouse’s misdeeds",
+                "public disgrace through illicit relations",
+                "failure in business partnerships"
+            ],
+            "8": [
+                "sudden death",
+                "accidents",
+                "misery",
+                "chronic diseases",
+                "loss through inheritance",
+                "fear of sudden death",
+                "hidden enemies causing harm",
+                "loss through partner's wealth",
+                "unexpected widowhood or widowerhood",
+                "loss through insurances or legacies",
+                "danger from poison or hidden enemies"
+            ],
+            "9": [
+                "loss of fortune",
+                "problems with father",
+                "loss of faith",
+                "bad luck in journeys",
+                "misfortune in pilgrimages",
+                "loss of mentor's support",
+                "failure in higher studies",
+                "loss of reputation in religious circles",
+                "fall from moral standards",
+                "failures in long-distance ventures"
+            ],
+            "10": [
+                "career failure",
+                "loss of status",
+                "disgrace",
+                "obstacles in profession",
+                "scandals in profession",
+                "punishment from government",
+                "public disgrace",
+                "dishonor in public life",
+                "legal penalties affecting career",
+                "loss of authority"
+            ],
+            "11": [
+                "loss of gains",
+                "false friends",
+                "greed",
+                "unfulfilled desires",
+                "loss through friends",
+                "obstacles to ambitions",
+                "disputes in social circles",
+                "betrayal by friends",
+                "loss through speculative investments",
+                "obstacles to fulfillment of hopes"
+            ],
+            "12": [
+                "excessive expenditure",
+                "loss",
+                "isolation",
+                "hospitalization",
+                "imprisonment",
+                "exile or banishment",
+                "secret enemies causing loss",
+                "mental agony due to isolation",
+                "loss through secret enemies",
+                "harm in foreign lands",
+                "mental affliction due to isolation"
+            ]
+        };
         $scope.findMandaPlanets_ByAnyViolation = function (horoscope) {
             const pakkaGharLords = {
                 1: 'Sun',
