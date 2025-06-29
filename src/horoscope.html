@@ -1,7 +1,8 @@
 <!--Jai Shree Ganesh-->
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
 <script src="significator.js"></script>>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -359,6 +360,7 @@
         color: white;
     }
 </style>
+</head>
 <script>
     var app = angular.module('myApp', ['ngSanitize']);
     var newRefreshToken = "";
@@ -2717,7 +2719,7 @@ function getConjunctionSignifications(houses, livingSignifications, nonLivingSig
                 // Living significations
                 livingSignifications.forEach(living => {
                     if (isSameConjunction(living.planets_conjoined, combo)) {
-                        outcomes.push(`Conjunction of ${combo.join(", ")} => ${living.significations.join("; ")}`);
+                        outcomes.push(`Conjunction of ${combo.join(":: ")} => ${living.significations.join("; ")}`);
                     }
                 });
                 // Non-living significations
@@ -4915,7 +4917,7 @@ Returns array like:
             calculateAllPlanetAspects(planetSnapShot);
             isDharmi(planetSnapShot);
             isSathiRelation(planetSnapShot);
-            planetConjunctResult = getConjunctionSignifications(houses, property.livingSignifications,property.nonLivingSignifications);
+            planetConjunctResult = getConjunctionSignifications(houses, property.living_significations,property.non_living_significations);
             mandaPlanetsInHoroscope = getMandaPlanetEffect($scope.findMandaPlanets_ByAnyViolation(planetSnapShot));
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
