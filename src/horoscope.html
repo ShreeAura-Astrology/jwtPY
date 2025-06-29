@@ -2217,7 +2217,7 @@
 
                 // Accept planet as Manda if ANY violation occurred
                 if (reasons.length > 0) {
-                    mandaPlanets.push(`${planet} is Manda because: ${reasons.join(' :: or ')}`);
+                    mandaPlanets.push(`<b>${planet}<b> is Manda because: ${reasons.join(' :: or ')}`);
                     maleficPlanets.push(planet);
                 }
             }
@@ -2545,7 +2545,7 @@
             document.getElementById("NM").innerHTML = neutralMaleficHouses.toString();
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             maleficPlanetSet = new Set(maleficPlanets);
-            document.getElementById("MP").innerHTML = [...maleficPlanetSet].toString() + "<br> Disease Prediction: <br>" + getProbableDiseasePredictions([...maleficPlanetSet]).toString().replaceAll(',', '<br>') + "<br> Manda Planets: <br>" + mandaPlanetsInHoroscope.toString().replaceAll(',', '<br>');
+            document.getElementById("MP").innerHTML = [...maleficPlanetSet].toString() + "<br> Disease Prediction: <br>" + getProbableDiseasePredictions([...maleficPlanetSet]).toString().replaceAll(',', '<br>') + "<br> Manda Planets: <br>" + mandaPlanetsInHoroscope.toString().replaceAll(',', '<br><br>');
             document.getElementById("BP").innerHTML = beneficPlanets.toString();
             document.getElementById("NP").innerHTML = neutralPlanets.toString() + "<br> Mangal Badh:<br>" + isMangalBadh.toString() + "<br> Mangal Dosh:<br>" + isMangalDosh.toString() + "<br> BudhNali: <br>" + budhNali + "<br> House Building:<br> " + houseOutCome + "<br><br>Sleeping Houses:<br>" + sleepingHouses.toString().replaceAll(',', '<br>') + "<br><br> Sleeping Planets:<br>" + sleepingPlanets.toString().replaceAll(',', '<br>') + "<br><br> Awakened Planets:<br> " + awakeInPakkaGhar.toString().replaceAll(',', '<br>') + "<br><br> Masnui Planets: <br>" + masnuiResult.toString().replaceAll(',', '<br>') + "<br><br> Dhoka (10th Aspect: Left side ka Planet dhoka varshfal mein 10th house mein aayega tab dega <br>" + dhokaRelation.toString().replaceAll(',', '<br>') + "<br><br> Takkar (8th Aspect) :<br> " + takkarRelation.toString().replaceAll(',', '<br>') + "<br><br> Helps (5th Aspect) :<br> " + helpRelation.toString().replaceAll(',', '<br>') + "<br><br> Vedic Dhristi (7th Aspect) : <br>" + seventhaspect.toString().replaceAll(',', '<br>') + "<br><br> All Planetary Aspects : <br>" + planetaryAspects.toString().replaceAll(',', '<br>') + "<br><br>Dharmi Teva : <br>" + dharmiTeva.toString().replaceAll(',', '<br>') + "<br><br>Sathi Grahas : <br>" + sathiRelation.toString().replaceAll(',', '<br>');
             if (isMangalBadh) {
