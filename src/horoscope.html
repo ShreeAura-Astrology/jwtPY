@@ -2727,7 +2727,7 @@ function getConjunctionSignifications(houses, livingSignifications, nonLivingSig
                 // Non-living significations
                 nonLivingSignifications.forEach(nonLiving => {
                     if (isSameConjunction(nonLiving.planets_conjoined, combo)) {
-                        outcomes.push(`Conjunction of ${combo.join(", ")} => ${nonLiving.significations.join("; ")}`);
+                        outcomes.push(`Conjunction of ${combo.join(":: ")} => ${nonLiving.significations.join("; ")}`);
                     }
                 });
             });
