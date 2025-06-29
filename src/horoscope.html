@@ -2702,6 +2702,7 @@ function getConjunctionSignifications(houses, livingSignifications, nonLivingSig
     // Helper to check if all elements of arr1 are in arr2 (order-insensitive)
     function isSameConjunction(arr1, arr2) {
         console.log("Comparing conjunctions:", arr1, arr2);
+        if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
         if (arr1.length !== arr2.length) return false;
         const sorted1 = [...arr1].sort();
         const sorted2 = [...arr2].sort();
@@ -2719,7 +2720,7 @@ function getConjunctionSignifications(houses, livingSignifications, nonLivingSig
             combos.forEach(combo => {
                 // Living significations
                 livingSignifications.forEach(living => {
-                    if (isSameConjunction(living.planets_conjoined, combo)) {
+                    if (isSameConjunction(living.planets_conjoined, combo) ) {
                         outcomes.push(`Conjunction of ${combo.join(":: ")} => ${living.significations.join("; ")}`);
                     }
                 });
