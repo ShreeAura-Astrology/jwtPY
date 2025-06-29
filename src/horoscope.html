@@ -2217,7 +2217,7 @@
 
                 // Accept planet as Manda if ANY violation occurred
                 if (reasons.length > 0) {
-                    mandaPlanets.push(`${planet} is Manda because: ${reasons.join(', or ')}`);
+                    mandaPlanets.push(`${planet} is Manda because: ${reasons.join(' :: or ')}`);
                     maleficPlanets.push(planet);
                 }
             }
