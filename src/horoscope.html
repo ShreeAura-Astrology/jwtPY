@@ -2245,6 +2245,14 @@
             return outcomes;
         }
 
+        function getBeneficHouseOutcomes(beneficHouses) {
+            const outcomes = [];
+            for (const house of beneficHouses) {
+                outcomes.push(`House ${house}:<br>Positive outcomes: ${BeneficKarakasByHouse[house]}<br>`);
+            }
+            return outcomes;
+        }
+
         /**
          * Returns probable disease predictions for each malefic planet.
          * @param {string[]} maleficPlanets - Array of planet names detected as malefic.
@@ -2532,7 +2540,7 @@
 
         function showResult() {
             document.getElementById("M").innerHTML = maleficHouses.toString() + "<br> Negative Outcomes: <br>" + getMaleficHouseOutcomes(maleficHouses).toString().replaceAll(',', '<br>');
-            document.getElementById("B").innerHTML = beneficHouses.toString() + "<br> Planet Conjunct: <br>" + planetConjunctResult.toString().replaceAll(',', '<br>');
+            document.getElementById("B").innerHTML = beneficHouses.toString() + "<br> Positive Outcomes:<br>"  + getBeneficHouseOutcomes(beneficHouses).toString().replaceAll(',', '<br>') + "<br> Planet Conjunct: <br>" + planetConjunctResult.toString().replaceAll(',', '<br>');
             document.getElementById("NM").innerHTML = neutralMaleficHouses.toString();
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             maleficPlanetSet = new Set(maleficPlanets);
@@ -2754,29 +2762,6 @@ function getCombinations(arr, size) {
     return results;
 }
 
-// Example usage in AngularJS controller:
-// let outcomes = getConjunctionSignifications(houses, property.living_significations, property.non_living_significations);
-// outcomes.forEach(outcome => {
-//   console.log(`House ${outcome.house}: ${outcome.type} conjunction of ${outcome.planets.join(", ")} => ${outcome.significations.join("; ")}`);
-// });
-
-/*
-Returns array like:
-[
-  {
-    house: "7",
-    type: "living",
-    planets: ["Mars", "Venus"],
-    significations: ["Love Marriage (Female Native)"]
-  },
-  {
-    house: "3",
-    type: "non-living",
-    planets: ["Mars", "Rahu"],
-    significations: ["Computers Sciences in Engineering"]
-  }
-]
-*/
         function getRemedies() {
 
         }
