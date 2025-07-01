@@ -317,6 +317,22 @@
           }
         }
 
+        // --- NEW LOGIC: Check all pairs of trine planets (even if not in same sign) ---
+        for (let i = 0; i < uniqueGroup.length; i++) {
+          for (let j = i + 1; j < uniqueGroup.length; j++) {
+            const p1 = uniqueGroup[i].planet;
+            const p2 = uniqueGroup[j].planet;
+            // Only consider if both are in trine signs (already true for uniqueGroup)
+            // But skip if already in same sign (already handled above)
+            if (uniqueGroup[i].sign !== uniqueGroup[j].sign) {
+              const combo = findCombination(p1, p2);
+              if (combo) {
+                combo.predictions.forEach(pr => predictions.push(`[Trine] ${p1} & ${p2}: ${pr}`));
+              }
+            }
+          }
+        }
+
         result[k] = {
           trineSigns: trineMap[k],
           planets: uniqueGroup,
