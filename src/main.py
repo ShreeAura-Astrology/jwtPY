@@ -91,7 +91,7 @@ def main(context):
     # The req object contains the request data
     if context.req.path == "/kundali":
         # Serve the New-Kundali.png image
-        with open('/usr/local/server/src/function/New-Kundali.png', 'rb') as img_file:
+        with open('/usr/local/server/src/function/src/New-Kundali.png', 'rb') as img_file:
             img = img_file.read()
         return context.res.binary(img, 200, {
             "content-type": "image/png"
