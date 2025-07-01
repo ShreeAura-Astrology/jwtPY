@@ -89,7 +89,7 @@ def main(context):
             "content-type": "text/javascript"
         })
     # The req object contains the request data
-    if context.req.path == "/kundali":
+    if context.req.path == "/kundali.png":
         # Serve the New-Kundali.png image
         with open('/usr/local/server/src/function/src/New-Kundali.png', 'rb') as img_file:
             img = img_file.read()
