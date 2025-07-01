@@ -8,6 +8,7 @@ import datetime
 import time
 import requests
 import json
+from PIL import Image
 # This Appwrite function will be executed every time your function is triggered
 def main(context):
     # You can use the Appwrite SDK to interact with other services
@@ -91,9 +92,10 @@ def main(context):
     # The req object contains the request data
     if context.req.path == "/kundali.png":
         # Serve the New-Kundali.png image
-        with open('/usr/local/server/src/function/src/New-Kundali.png', 'rb') as img_file:
-            img = img_file.read()
-        return context.res.binary(img, 200, {
+        with Image.open('/usr/local/server/src/function/src/New-Kundali.png') as img:
+        #with open('/usr/local/server/src/function/src/New-Kundali.png', 'rb') as img_file:
+            imag = img
+        return context.res.binary(imag, 200, {
             "content-type": "image/png"
         })
     # Example usage
