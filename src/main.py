@@ -88,6 +88,14 @@ def main(context):
         return context.res.text(js, 200, {
             "content-type": "text/javascript"
         })
+    # The req object contains the request data
+    if context.req.path == "/kundali":
+        # Serve the New-Kundali.png image
+        with open('/usr/local/server/src/function/New-Kundali.png', 'rb') as img_file:
+            img = img_file.read()
+        return context.res.binary(img, 200, {
+            "content-type": "image/png"
+        })
     # Example usage
     private_key_path = '/usr/local/server/src/function/src/private.key'  
     iat = time.time()
