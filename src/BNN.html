@@ -1353,11 +1353,11 @@
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.id = 'toggle-output';
-      checkbox.checked = "checked";
-      checkbox.addEventListener('change', () => {
-        outputTarget.style.display = checkbox.checked ? 'block' : 'none';
-        console.log('Visibility', outputTarget.style.display);
-      });
+      checkbox.checked =true;
+      // checkbox.addEventListener('change', () => {
+      //   outputTarget.style.display = checkbox.checked ? 'block' : 'none';
+      //   console.log('Visibility', outputTarget.style.display);
+      // });
       const label = document.createElement('label');
       label.htmlFor = 'toggle-output';
       label.textContent = ' Show Interpretations';
@@ -1368,12 +1368,40 @@
       div.insertAdjacentHTML('afterbegin', toggleContainer.innerHTML);
       console.log('interpretAllConjunctions', results);
 
-      document.getElementById('toggle-output').addEventListener('change', () => {
-        document.getElementById('interpretationCont').style.display = this.checked ? 'block' : 'none';
-        console.log('Visibility', this.checked, document.getElementById('interpretationCont').style.display);
+      // document.getElementById('toggle-output').addEventListener('change', () => {
+      //   document.getElementById('interpretationCont').style.display = this.checked ? 'block' : 'none';
+      //   console.log('Visibility', this.checked, document.getElementById('interpretationCont').style.display);
+      // });
+
+      document.addEventListener('DOMContentLoaded', () => {
+       
+      const toggleConjunctionsCheckbox = document.getElementById('toggle-output');
+      const conjunctionsContainer = document.getElementById('outputTarget');
+
+      // Function to toggle visibility
+      const toggleVisibility = (checkbox, container) => {
+        if (checkbox.checked) {
+          container.style.display = 'block'; // or 'flex', 'grid', etc. based on your layout
+        } else {
+          container.style.display = 'none';
+        }
+      };
+
+       // Add event listeners
+      if (toggleConjunctionsCheckbox && conjunctionsContainer) {
+        toggleConjunctionsCheckbox.addEventListener('change', () => {
+          toggleVisibility(toggleConjunctionsCheckbox, conjunctionsContainer);
+        });
+        // Initial state
+        toggleVisibility(toggleConjunctionsCheckbox, conjunctionsContainer);
+      }
       });
+
+
       return Object.keys(results);
     }
+
+    
 
     // Example usage:
     // const output = interpretAllConjunctions(horoscope, property);
