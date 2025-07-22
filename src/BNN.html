@@ -1353,7 +1353,7 @@
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.id = 'toggle-output';
-      checkbox.checked =true;
+      checkbox.checked ='true';
       // checkbox.addEventListener('change', () => {
       //   outputTarget.style.display = checkbox.checked ? 'block' : 'none';
       //   console.log('Visibility', outputTarget.style.display);
@@ -1373,7 +1373,7 @@
       //   console.log('Visibility', this.checked, document.getElementById('interpretationCont').style.display);
       // });
 
-      document.addEventListener('DOMContentLoaded', () => {
+      // document.addEventListener('DOMContentLoaded', () => {
        
       const toggleConjunctionsCheckbox = document.getElementById('toggle-output');
       const conjunctionsContainer = document.getElementById('interpretationCont');
@@ -1395,7 +1395,7 @@
         // Initial state
         toggleVisibility(toggleConjunctionsCheckbox, conjunctionsContainer);
       }
-      });
+      // });
 
 
       return Object.keys(results);
