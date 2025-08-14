@@ -1,365 +1,366 @@
 <!--Jai Shree Ganesh-->
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
-<script src="significator.js"></script>>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-<style>
-    body {
-        zoom: 80%;
-    }
-
-    #horoscope-chart {
-        position: absolute;
-        width: 500px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        top: 15%;
-        left: 40%;
-        transform: translate(-50%, -50%);
-    }
-
-    /* Styles for desktops */
-    @media only screen and (min-width: 1025px) {
-
-
-        .container {
-            padding: 30px;
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
+    <script src="significator.js"></script>>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <style>
+        body {
+            zoom: 80%;
         }
 
-        .header {
-            font-size: 2.5em;
-        }
-
-        #varshphal-horoscope-chart {
+        #horoscope-chart {
             position: absolute;
             width: 500px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             top: 15%;
-            left: 80%;
-            transform: translate(-50%, -50%);
-        }
-
-        .result-container {
-            position: absolute;
-            top: 29%;
-            left: 22%;
-        }
-    }
-
-    /* Styles for mobile devices */
-    @media only screen and (max-width: 767px) {
-        body {
-            background-color: lightblue;
-        }
-
-        .container {
-            padding: 10px;
-        }
-
-        .header {
-            font-size: 1.5em;
-        }
-
-        #varshphal-horoscope-chart {
-            position: absolute;
-            width: 500px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            top: 25%;
             left: 40%;
             transform: translate(-50%, -50%);
         }
 
-        .result-container {
-            position: absolute;
-            top: 50%;
-            left: 26%;
+        /* Styles for desktops */
+        @media only screen and (min-width: 1025px) {
+
+
+            .container {
+                padding: 30px;
+            }
+
+            .header {
+                font-size: 2.5em;
+            }
+
+            #varshphal-horoscope-chart {
+                position: absolute;
+                width: 500px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                top: 15%;
+                left: 80%;
+                transform: translate(-50%, -50%);
+            }
+
+            .result-container {
+                position: absolute;
+                top: 29%;
+                left: 22%;
+            }
         }
-    }
 
-    .house-span {
-        position: absolute;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 14px;
-        color: rgb(197, 13, 13);
-    }
+        /* Styles for mobile devices */
+        @media only screen and (max-width: 767px) {
+            body {
+                background-color: lightblue;
+            }
 
-    #house-1 {
-        top: 15%;
-        left: 30%;
-        width: 20%;
-        height: 19%;
-    }
+            .container {
+                padding: 10px;
+            }
 
-    #house-2 {
-        top: 6%;
-        left: 10%;
-        width: 30%;
-        height: 10%;
-    }
+            .header {
+                font-size: 1.5em;
+            }
 
-    #house-3 {
-        top: 14%;
-        left: 1%;
-        width: 13%;
-        height: 20%;
-    }
+            #varshphal-horoscope-chart {
+                position: absolute;
+                width: 500px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                top: 25%;
+                left: 40%;
+                transform: translate(-50%, -50%);
+            }
 
-    #house-4 {
-        top: 40%;
-        left: 7%;
-        width: 20%;
-        height: 17%;
-    }
+            .result-container {
+                position: absolute;
+                top: 50%;
+                left: 26%;
+            }
+        }
 
-    #house-5 {
-        top: 61%;
-        left: 1%;
-        width: 10%;
-        height: 25%;
-    }
+        .house-span {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: rgb(197, 13, 13);
+        }
 
-    #house-6 {
-        top: 79%;
-        left: 13%;
-        width: 23%;
-        height: 12%;
-    }
+        #house-1 {
+            top: 15%;
+            left: 30%;
+            width: 20%;
+            height: 19%;
+        }
 
-    #house-7 {
-        top: 66%;
-        left: 30%;
-        width: 42%;
-        height: 18%;
-    }
+        #house-2 {
+            top: 6%;
+            left: 10%;
+            width: 30%;
+            height: 10%;
+        }
 
-    #house-8 {
-        top: 79%;
-        left: 59%;
-        width: 28%;
-        height: 13%;
-    }
+        #house-3 {
+            top: 14%;
+            left: 1%;
+            width: 13%;
+            height: 20%;
+        }
 
-    #house-9 {
-        top: 66%;
-        left: 86%;
-        width: 13%;
-        height: 20%;
-    }
+        #house-4 {
+            top: 40%;
+            left: 7%;
+            width: 20%;
+            height: 17%;
+        }
 
-    #house-10 {
-        top: 41%;
-        left: 61%;
-        width: 30%;
-        height: 17%;
-    }
+        #house-5 {
+            top: 61%;
+            left: 1%;
+            width: 10%;
+            height: 25%;
+        }
 
-    #house-11 {
-        top: 14%;
-        left: 87%;
-        width: 9%;
-        height: 20%;
-    }
+        #house-6 {
+            top: 79%;
+            left: 13%;
+            width: 23%;
+            height: 12%;
+        }
 
-    #house-12 {
-        top: 6%;
-        left: 62%;
-        width: 28%;
-        height: 13%;
-    }
+        #house-7 {
+            top: 66%;
+            left: 30%;
+            width: 42%;
+            height: 18%;
+        }
 
-    button {
-        background-color: #c0392b;
-        /* Red background */
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s ease;
-        /* Smooth transition on hover */
-    }
+        #house-8 {
+            top: 79%;
+            left: 59%;
+            width: 28%;
+            height: 13%;
+        }
 
-    button:hover {
-        background-color: #e74c3c;
-        /* Lighter red on hover */
-    }
+        #house-9 {
+            top: 66%;
+            left: 86%;
+            width: 13%;
+            height: 20%;
+        }
 
-    label {
-        display: block;
-        margin-bottom: 5px;
-        color: #db1818;
-        font-size: 21px;
-    }
+        #house-10 {
+            top: 41%;
+            left: 61%;
+            width: 30%;
+            height: 17%;
+        }
 
-    input {
-        border-radius: 15px;
-        width: 55%;
-        height: 30px;
-        padding: 10px;
-        border-color: crimson;
-    }
+        #house-11 {
+            top: 14%;
+            left: 87%;
+            width: 9%;
+            height: 20%;
+        }
 
-    select {
-        width: 200px;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(234, 30, 30, 0.1);
-    }
+        #house-12 {
+            top: 6%;
+            left: 62%;
+            width: 28%;
+            height: 13%;
+        }
 
-    select option:hover {
-        background-color: #e74c3c;
-        /* Lighter red on hover */
-        color: white;
-    }
+        button {
+            background-color: #c0392b;
+            /* Red background */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+            /* Smooth transition on hover */
+        }
 
-    p {
-        margin-top: 10px;
-        color: #cd3131;
-    }
+        button:hover {
+            background-color: #e74c3c;
+            /* Lighter red on hover */
+        }
 
-    span {
-        font-weight: bold;
-        color: #d63636;
-    }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #db1818;
+            font-size: 21px;
+        }
 
-    img {
-        width: 100%;
-    }
+        input {
+            border-radius: 15px;
+            width: 55%;
+            height: 30px;
+            padding: 10px;
+            border-color: crimson;
+        }
 
-    .select-container {
-        position: absolute;
-        margin-top: 5%;
-        margin-left: 2%;
-    }
+        select {
+            width: 200px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(234, 30, 30, 0.1);
+        }
 
-    .varshphalCtrl {
-        position: relative;
-        left: 8%;
-    }
+        select option:hover {
+            background-color: #e74c3c;
+            /* Lighter red on hover */
+            color: white;
+        }
 
-    .varshphalMonthCtrl {
-        position: relative;
-        margin-left: 40%;
-        margin-top: 1%;
-    }
+        p {
+            margin-top: 10px;
+            color: #cd3131;
+        }
 
-    .popup {
-        background-color: #fafafa;
-        width: 366px;
-        height: 222px;
-        border-radius: 26px;
-        text-align: center;
-        transition: all 0.5s ease;
-        transition-duration: 1s;
-    }
+        span {
+            font-weight: bold;
+            color: #d63636;
+        }
 
-    .outer {
-        position: fixed;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        width: 100%;
-        z-index: 1;
-        background-color: rgb(0 0 0 / 82%);
-    }
+        img {
+            width: 100%;
+        }
 
-    .hide {
-        display: none;
-        position: absolute;
-        margin-top: 265px;
-        margin-left: 165px;
-        background: #494646;
-        padding: 33px;
-        color: #FFC107;
-        font-size: 20px;
-        border-radius: 15px;
-        z-index: 999;
-    }
+        .select-container {
+            position: absolute;
+            margin-top: 5%;
+            margin-left: 2%;
+        }
 
-    #house-info,
-    #planet-info {
-        position: relative;
-        /* margin-top: -280px; */
-        margin-left: -55px;
-        background: #494646;
-        padding: 33px;
-        color: #FFC107;
-        font-size: 20px;
-        border-radius: 15px;
-        z-index: 999;
-    }
+        .varshphalCtrl {
+            position: relative;
+            left: 8%;
+        }
 
-    #house-1:hover+.hide {
-        display: block;
-        color: white;
-    }
+        .varshphalMonthCtrl {
+            position: relative;
+            margin-left: 40%;
+            margin-top: 1%;
+        }
 
-    #house-2:hover+.hide {
-        display: block;
-        color: white;
-    }
+        .popup {
+            background-color: #fafafa;
+            width: 366px;
+            height: 222px;
+            border-radius: 26px;
+            text-align: center;
+            transition: all 0.5s ease;
+            transition-duration: 1s;
+        }
 
-    #house-3:hover+.hide {
-        display: block;
-        color: white;
-    }
+        .outer {
+            position: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+            background-color: rgb(0 0 0 / 82%);
+        }
 
-    #house-4:hover+.hide {
-        display: block;
-        color: white;
-    }
+        .hide {
+            display: none;
+            position: absolute;
+            margin-top: 265px;
+            margin-left: 165px;
+            background: #494646;
+            padding: 33px;
+            color: #FFC107;
+            font-size: 20px;
+            border-radius: 15px;
+            z-index: 999;
+        }
 
-    #house-5:hover+.hide {
-        display: block;
-        color: white;
-    }
+        #house-info,
+        #planet-info {
+            position: relative;
+            /* margin-top: -280px; */
+            margin-left: -55px;
+            background: #494646;
+            padding: 33px;
+            color: #FFC107;
+            font-size: 20px;
+            border-radius: 15px;
+            z-index: 999;
+        }
 
-    #house-6:hover+.hide {
-        display: block;
-        color: white;
-    }
+        #house-1:hover+.hide {
+            display: block;
+            color: white;
+        }
 
-    #house-7:hover+.hide {
-        display: block;
-        color: white;
-    }
+        #house-2:hover+.hide {
+            display: block;
+            color: white;
+        }
 
-    #house-8:hover+.hide {
-        display: block;
-        color: white;
-    }
+        #house-3:hover+.hide {
+            display: block;
+            color: white;
+        }
 
-    #house-9:hover+.hide {
-        display: block;
-        color: white;
-    }
+        #house-4:hover+.hide {
+            display: block;
+            color: white;
+        }
+
+        #house-5:hover+.hide {
+            display: block;
+            color: white;
+        }
+
+        #house-6:hover+.hide {
+            display: block;
+            color: white;
+        }
+
+        #house-7:hover+.hide {
+            display: block;
+            color: white;
+        }
+
+        #house-8:hover+.hide {
+            display: block;
+            color: white;
+        }
+
+        #house-9:hover+.hide {
+            display: block;
+            color: white;
+        }
 
 
-    #house-10:hover+.hide {
-        display: block;
-        color: white;
-    }
+        #house-10:hover+.hide {
+            display: block;
+            color: white;
+        }
 
 
-    #house-11:hover+.hide {
-        display: block;
-        color: white;
-    }
+        #house-11:hover+.hide {
+            display: block;
+            color: white;
+        }
 
 
-    #house-12:hover+.hide {
-        display: block;
-        color: white;
-    }
-</style>
+        #house-12:hover+.hide {
+            display: block;
+            color: white;
+        }
+    </style>
 </head>
 <script>
     var app = angular.module('myApp', ['ngSanitize']);
@@ -2541,7 +2542,7 @@
         function showResult() {
             // Show the results in the HTML elements
             document.getElementById("M").innerHTML = maleficHouses.toString() + "<br> Negative Outcomes: <br>" + getMaleficHouseOutcomes(maleficHouses).toString().replaceAll(',', '<br>');
-            document.getElementById("B").innerHTML = beneficHouses.toString() + "<br> Positive Outcomes:<br>"  + getBeneficHouseOutcomes(beneficHouses).toString().replaceAll(',', '<br>') + "<br> Planet Conjunct: <br>" + planetConjunctResult.toString().replaceAll(',', '<br>');
+            document.getElementById("B").innerHTML = beneficHouses.toString() + "<br> Positive Outcomes:<br>" + getBeneficHouseOutcomes(beneficHouses).toString().replaceAll(',', '<br>') + "<br> Planet Conjunct: <br>" + planetConjunctResult.toString().replaceAll(',', '<br>');
             document.getElementById("NM").innerHTML = neutralMaleficHouses.toString();
             document.getElementById("NB").innerHTML = neutralBenificHouses.toString();
             maleficPlanetSet = new Set(maleficPlanets);
@@ -2705,63 +2706,63 @@
  * @param {Array} nonLivingSignifications - Array of objects with {planets_conjoined, significations}.
  * @returns {Array} Array of outcome objects for each house with conjunctions found.
  */
-function getConjunctionSignifications(houses, livingSignifications, nonLivingSignifications) {
-    const outcomes = [];
+        function getConjunctionSignifications(houses, livingSignifications, nonLivingSignifications) {
+            const outcomes = [];
 
-    // Helper to check if all elements of arr1 are in arr2 (order-insensitive)
-    function isSameConjunction(arr1, arr2) {
-        console.log("Comparing conjunctions:", arr1, arr2);
-        if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
-        if (arr1.length !== arr2.length) return false;
-        const sorted1 = [...arr1].sort();
-        const sorted2 = [...arr2].sort();
-        return sorted1.every((val, idx) => val === sorted2[idx]);
-    }
+            // Helper to check if all elements of arr1 are in arr2 (order-insensitive)
+            function isSameConjunction(arr1, arr2) {
+                console.log("Comparing conjunctions:", arr1, arr2);
+                if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
+                if (arr1.length !== arr2.length) return false;
+                const sorted1 = [...arr1].sort();
+                const sorted2 = [...arr2].sort();
+                return sorted1.every((val, idx) => val === sorted2[idx]);
+            }
 
-    for (const houseNum in houses) {
-        const planets = houses[houseNum].planets;
-        if (planets.length < 2) continue; // Only check conjunctions
+            for (const houseNum in houses) {
+                const planets = houses[houseNum].planets;
+                if (planets.length < 2) continue; // Only check conjunctions
 
-        // Check all possible conjunctions in this house (size 2+)
-        for (let size = 2; size <= planets.length; size++) {
-            // Generate all combinations of 'size' planets
-            const combos = getCombinations(planets, size);
-            combos.forEach(combo => {
-                // Living significations
-                livingSignifications.forEach(living => {
-                    if (isSameConjunction(living.planets_conjoined, combo) ) {
-                        outcomes.push(`Conjunction of ${combo.join(":: ")} => ${living.significations.join("; ")}`);
-                    }
-                });
-                // Non-living significations
-                nonLivingSignifications.forEach(nonLiving => {
-                    if (isSameConjunction(nonLiving.planets_conjoined, combo)) {
-                        outcomes.push(`Conjunction of ${combo.join(":: ")} => ${nonLiving.significations.join("; ")}`);
-                    }
-                });
-            });
+                // Check all possible conjunctions in this house (size 2+)
+                for (let size = 2; size <= planets.length; size++) {
+                    // Generate all combinations of 'size' planets
+                    const combos = getCombinations(planets, size);
+                    combos.forEach(combo => {
+                        // Living significations
+                        livingSignifications.forEach(living => {
+                            if (isSameConjunction(living.planets_conjoined, combo)) {
+                                outcomes.push(`Conjunction of ${combo.join(":: ")} => ${living.significations.join("; ")}`);
+                            }
+                        });
+                        // Non-living significations
+                        nonLivingSignifications.forEach(nonLiving => {
+                            if (isSameConjunction(nonLiving.planets_conjoined, combo)) {
+                                outcomes.push(`Conjunction of ${combo.join(":: ")} => ${nonLiving.significations.join("; ")}`);
+                            }
+                        });
+                    });
+                }
+            }
+            return outcomes;
         }
-    }
-    return outcomes;
-}
 
-// Helper: Generate all combinations of a given size from an array
-function getCombinations(arr, size) {
-    const results = [];
-    function combine(start, combo) {
-        if (combo.length === size) {
-            results.push([...combo]);
-            return;
+        // Helper: Generate all combinations of a given size from an array
+        function getCombinations(arr, size) {
+            const results = [];
+            function combine(start, combo) {
+                if (combo.length === size) {
+                    results.push([...combo]);
+                    return;
+                }
+                for (let i = start; i < arr.length; i++) {
+                    combo.push(arr[i]);
+                    combine(i + 1, combo);
+                    combo.pop();
+                }
+            }
+            combine(0, []);
+            return results;
         }
-        for (let i = start; i < arr.length; i++) {
-            combo.push(arr[i]);
-            combine(i + 1, combo);
-            combo.pop();
-        }
-    }
-    combine(0, []);
-    return results;
-}
 
         function getRemedies() {
 
@@ -3385,6 +3386,31 @@ function getCombinations(arr, size) {
                         "2nd house 10th house se jagtha hai. 10th house khali ho toh 2nd soya hoga [9]",
                         "Agar 4th house and 2nd house khali ho toh last time tak unnati hoti hai [10]",
                         "Agar 2nd house khali ho toh 8th house and 12th house ke planet aapas mein shatru ho tab mandir nahi jaana chaiye [11]"
+                    ],
+                    "Second_Lord_Conjunctions": [
+                        {
+                            "Conjunction": "With Rahu",
+                            "Summary": "Significantly increases earning capacity, often through unconventional or strategic methods, including destroying competition.",
+                            "Details": [
+                                "**Earning capacity increases significantly**.",
+                                "Generates **unconventional or 'atrengi' (unique) ideas for making money**, possibly through the internet, or even illegal means (though not recommended).",
+                                "**Believes in removing or destroying competition** (e.g., by drastically lowering prices, as seen with Jio).",
+                                "Tends to **learn first before striking** at the right time.",
+                                "**Recommendation**: While competition destruction can be a strategy, it should be balanced and not completely destroy others' livelihoods."
+                            ]
+                        },
+                        {
+                            "Conjunction": "With Ketu",
+                            "Summary": "The person may not keep track of money but receives wealth from unearned or unexpected sources, often from past lives. Donations are a powerful remedy for increasing wealth.",
+                            "Details": [
+                                "The person **does not keep an account of money**; may forget about money lent or rents owed for property.",
+                                "Receives money from **unearned or unexpected sources**.",
+                                "**Major Blessing**: **Continuous donations lead to increased wealth**. The more you donate, the more your money grows.",
+                                "Ketu can provide **extreme wealth (billions)** that is 'unearned' in this life, often coming from past lives.",
+                                "**Strong Recommendation**: **Donate as much as possible** and **help people** to increase wealth and gain peace of mind.",
+                                "The 12th house is often active in millionaires'/billionaires' charts, as it can bring this 'unearned' extreme wealth."
+                            ]
+                        }
                     ]
                 },
                 "3": {
@@ -4905,7 +4931,7 @@ function getCombinations(arr, size) {
             calculateAllPlanetAspects(planetSnapShot);
             isDharmi(planetSnapShot);
             isSathiRelation(planetSnapShot);
-            planetConjunctResult = getConjunctionSignifications(houses, property.living_significations,property.non_living_significations);
+            planetConjunctResult = getConjunctionSignifications(houses, property.living_significations, property.non_living_significations);
             mandaPlanetsInHoroscope = getMandaPlanetEffect($scope.findMandaPlanets_ByAnyViolation(planetSnapShot));
             console.log("Mangal Badh Result: " + isMangalBadh);
             console.log("Mangal Dosh Result: " + isMangalDosh);
