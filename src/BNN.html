@@ -1494,7 +1494,7 @@
     tableHTML += generateHTMLTable(jsonData);
     // Append the table to the body of the HTML document
       }
-      createCard('House Lord Placements', tableHTML);
+      createCard('House Lord Placements', tableHTML ,'html');
       return placements;
     }
 
@@ -1620,7 +1620,7 @@
     }
 
     //Function creates a reusable card
-    function createCard(title, content) {
+    function createCard(title, content, type) {
       const card = document.createElement('div');
       card.style.border = '2px solid #0066cc';
       card.style.padding = '12px';
@@ -1646,7 +1646,16 @@
       card.appendChild(cardTitle);
 
       const cardContent = document.createElement('p');
-      cardContent.textContent = content;
+      if (type === 'html') {
+        cardContent.innerHTML = content;
+      } else {
+        cardContent.style.whiteSpace = 'pre-line';
+        cardContent.style.lineHeight = '1.5';
+        cardContent.style.fontSize = '14px';
+        cardContent.style.color = '#333';
+        cardContent.style.marginTop = '10px';
+        cardContent.textContent = content;
+      }
       card.appendChild(cardContent);
       document.getElementById('results')?.prepend(card);
       return card;
@@ -1710,7 +1719,7 @@
       }
       // const div = document.getElementById("results");
       // div.insertAdjacentHTML('afterbegin', `${result}`);
-      createCard('Work Environment from Saturn', result);
+      createCard('Work Environment from Saturn', result, 'text');
       return result;
     }
 
