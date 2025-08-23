@@ -1491,7 +1491,7 @@
           placements[`Sign ${sign}`] = `${lord} not found or house not defined in chart`;
         }
         const jsonData = fetchLordData(houseOfSign + "Lord", planetData.house + ""); // Replace with your fetchLordData function
-        tableHTML += generateHTMLTable(jsonData, houseOfSign + "Lord" , "In " + planetData.house + " House");
+        tableHTML += generateHTMLTable(jsonData, lord  + "( "+ houseOfSign + "Lord )" , "In " + planetData.house + " House");
         // Append the table to the body of the HTML document
       }
       createCard('House Lord Placements', tableHTML, 'html');
