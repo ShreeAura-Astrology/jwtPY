@@ -1420,7 +1420,7 @@
       }
     }
 
-  //const result = fetchLordData("8th Lord", "1");
+    //const result = fetchLordData("8th Lord", "1");
     //console.log(result);
     function generateHTMLTable(jsonData) {
       // Helper function to create a table row
@@ -1468,7 +1468,7 @@
     }
 
     // Example usage
-    
+
     // Example usage:
     // const output = interpretAllConjunctions(horoscope, property);
     // output.forEach(msg => console.log(msg));
@@ -1491,10 +1491,10 @@
           placements[`Sign ${sign}`] = `${lord} not found or house not defined in chart`;
         }
         const jsonData = fetchLordData(houseOfSign + "Lord", planetData.house + ""); // Replace with your fetchLordData function
-    tableHTML += generateHTMLTable(jsonData);
-    // Append the table to the body of the HTML document
+        tableHTML += generateHTMLTable(jsonData);
+        // Append the table to the body of the HTML document
       }
-      createCard('House Lord Placements', tableHTML ,'html');
+      createCard('House Lord Placements', tableHTML, 'html');
       return placements;
     }
 
