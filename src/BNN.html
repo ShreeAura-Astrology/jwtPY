@@ -7,6 +7,7 @@
   <script src="BNN_Comb.js"></script>
   <script src="transit.js"></script>
   <script src="significator.js"></script>
+  <script src="houseLord.js"></script>
 
   <title>BNN Trine Visualizer</title>
   <style>
@@ -1353,7 +1354,7 @@
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.id = 'toggle-output';
-      checkbox.checked ='true';
+      checkbox.checked = 'true';
       // checkbox.addEventListener('change', () => {
       //   outputTarget.style.display = checkbox.checked ? 'block' : 'none';
       //   console.log('Visibility', outputTarget.style.display);
@@ -1374,7 +1375,7 @@
       // });
 
       // document.addEventListener('DOMContentLoaded', () => {
-       
+
       const toggleConjunctionsCheckbox = document.getElementById('toggle-output');
       const conjunctionsContainer = document.getElementById('interpretationCont');
 
@@ -1387,7 +1388,7 @@
         }
       };
 
-       // Add event listeners
+      // Add event listeners
       if (toggleConjunctionsCheckbox && conjunctionsContainer) {
         toggleConjunctionsCheckbox.addEventListener('change', () => {
           toggleVisibility(toggleConjunctionsCheckbox, conjunctionsContainer);
@@ -1401,8 +1402,73 @@
       return Object.keys(results);
     }
 
-    
+    // Interpret house lord placements and display results
+    function fetchLordData(nthLord, inHouse) {
+      // Load the JSON data (replace this with the actual JSON object or fetch it dynamically)
+      const jsonData = houseLordData;
 
+      // Check if the nth Lord exists in the JSON data
+      if (jsonData[nthLord]) {
+        // Check if the inHouse exists for the nth Lord
+        if (jsonData[nthLord][inHouse]) {
+          return jsonData[nthLord][inHouse];
+        } else {
+          return `House ${inHouse} not found for ${nthLord}.`;
+        }
+      } else {
+        return `${nthLord} not found in the data.`;
+      }
+    }
+
+  //const result = fetchLordData("8th Lord", "1");
+    //console.log(result);
+    function generateHTMLTable(jsonData) {
+      // Helper function to create a table row
+      function createRow(key, value) {
+        return `<tr>
+                    <td style="border: 1px solid #ccc; padding: 8px; font-weight: bold;">${key}</td>
+                    <td style="border: 1px solid #ccc; padding: 8px;">${value}</td>
+                </tr>`;
+      }
+
+      // Recursive function to process JSON data
+      function processJSON(data) {
+        let html = "";
+        for (const key in data) {
+          if (typeof data[key] === "object" && data[key] !== null) {
+            // If the value is an object, recursively process it
+            html += `<tr>
+                            <td colspan="2" style="border: 1px solid #ccc; padding: 8px; background-color: #f9f9f9; font-weight: bold;">${key}</td>
+                         </tr>`;
+            html += processJSON(data[key]);
+          } else {
+            // If the value is a primitive, add it to the table
+            html += createRow(key, data[key]);
+          }
+        }
+        return html;
+      }
+
+      // Generate the table structure
+      const tableHTML = `
+        <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
+            <thead>
+                <tr>
+                    <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">Key</th>
+                    <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${processJSON(jsonData)}
+            </tbody>
+        </table>
+    `;
+
+      return tableHTML;
+    }
+
+    // Example usage
+    
     // Example usage:
     // const output = interpretAllConjunctions(horoscope, property);
     // output.forEach(msg => console.log(msg));
@@ -1413,17 +1479,22 @@
         1: 'Mars', 2: 'Venus', 3: 'Mercury', 4: 'Moon', 5: 'Sun', 6: 'Mercury',
         7: 'Venus', 8: 'Mars', 9: 'Jupiter', 10: 'Saturn', 11: 'Saturn', 12: 'Jupiter'
       };
-
+      var tableHTML = '';
       const placements = {};
       for (let sign = 1; sign <= 12; sign++) {
         const lord = signLords[sign];
         const planetData = horoscope[lord];
         if (planetData && planetData.house) {
-          placements[`Sign ${sign}`] = `${lord}:  ${getHouseOfSign(sign, horoscope)} house lord is placed in House ${planetData.house}`;
+          var houseOfSign = getHouseOfSign(sign, horoscope);
+          placements[`Sign ${sign}`] = `${lord}:  ${houseOfSign} house lord is placed in House ${planetData.house}`;
         } else {
           placements[`Sign ${sign}`] = `${lord} not found or house not defined in chart`;
         }
+        const jsonData = fetchLordData(houseOfSign + "Lord", planetData.house + ""); // Replace with your fetchLordData function
+    tableHTML += generateHTMLTable(jsonData);
+    // Append the table to the body of the HTML document
       }
+      createCard('House Lord Placements', tableHTML);
       return placements;
     }
 
