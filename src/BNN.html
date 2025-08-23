@@ -1422,7 +1422,7 @@
 
     //const result = fetchLordData("8th Lord", "1");
     //console.log(result);
-    function generateHTMLTable(jsonData) {
+    function generateHTMLTable(jsonData,column1hdr, column2hdr) {
       // Helper function to create a table row
       function createRow(key, value) {
         return `<tr>
@@ -1454,8 +1454,8 @@
         <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
             <thead>
                 <tr>
-                    <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">Key</th>
-                    <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">Value</th>
+                    <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">${column1hdr}</th>
+                    <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">${column2hdr}</th>
                 </tr>
             </thead>
             <tbody>
@@ -1491,7 +1491,7 @@
           placements[`Sign ${sign}`] = `${lord} not found or house not defined in chart`;
         }
         const jsonData = fetchLordData(houseOfSign + "Lord", planetData.house + ""); // Replace with your fetchLordData function
-        tableHTML += generateHTMLTable(jsonData);
+        tableHTML += generateHTMLTable(jsonData, houseOfSign + "Lord" , "In " + planetData.house + " House");
         // Append the table to the body of the HTML document
       }
       createCard('House Lord Placements', tableHTML, 'html');
