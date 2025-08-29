@@ -625,321 +625,804 @@ var houseLordData = {
     },
     "2Lord": {
         "1": {
-            "summary": "The person himself/herself is the product for earning money, often leading to a Mahadhan Yoga (great wealth combination) if well-placed.",
-            "money_and_career": [
-                "The person themselves is the product for earning money; their personality or specialty attracts wealth, making the product secondary.",
-                "**Very good wealth combination**, potentially forming a **Mahadhan Yoga** if the 2nd Lord is in its Mool Trikon, Swarashi, Vargottama, or Digbali (Jupiter and Mercury in the 1st house are Digbali).",
-                "Always thinks about money.",
-                "Can make money even if doing simple jobs like selling vegetables, due to their unique approach.",
-                "Money will be made regardless of family connection, either through strong family support or entirely on their own if estranged."
+            "house_placement": "Second Lord in First House",
+            "general_attributes": [
+                "Self-made person; no one will make money for you.",
+                "Your money and wealth are connected to your personality, including thoughts, appearance, and health.",
+                "A lot of responsibility towards family members; you are concerned for their well-being and are looked up to to maintain social status.",
+                "You magnify the quality of life for your family.",
+                "Obsession towards your family.",
+                "Hardworking attribute devoted to family growth.",
+                "The person is the product for earning money; their personality is key, not necessarily the product they sell.",
+                "Can be highly attractive to others.",
+                "High intuition; good at forecasting the future.",
+                "Analytical and critical, remembers enmities for a long time."
+            ],
+            "money_and_wealth": [
+                "You must make your own wealth.",
+                "The more you focus on your health and appearance (e.g., getting six-packs, grooming), the more money you will earn.",
+                "Motivated to enhance savings and accumulate money.",
+                "Considered a good placement, almost parallel to a Dhan Yoga.",
+                "Can form a 'Mahadhan Yoga' if well-placed (e.g., Mool Trikona, exalted, Vargottam, Digbali).",
+                "May come from a money-oriented or noble family.",
+                "Can receive passive income or running businesses from the father.",
+                "Multiple properties are possible."
             ],
             "family_and_relationships": [
-                "**Attached to family**, always receives something from family (money, property, running businesses, passive income from father).",
-                "Family aura is also connected to money, potentially coming from a wealthy family and continuing/expanding the family business.",
-                "Two extreme scenarios with family: either very connected and supported, or completely distant (even moving to a foreign country) and earning independently. No mid-way situation.",
-                "Strong connection with cousins; cousins often act as their friends, with fewer outside friends."
+                "Caring, devoted, and worried about family members.",
+                "Strongly attached to family, always receives something from them.",
+                "Family connection can be extreme: either very attached or completely detached and earning independently.",
+                "Often very connected with cousins, who become their friends.",
+                "Can cause dissatisfaction in marriage; it's always about the Second and Seventh Houses.",
+                "In negative scenarios, may lead to being away from family due to job/education or even extramarital affairs."
             ],
-            "personal_traits": [
-                "**Attractive**; people are drawn to them.",
-                "**Sweet voice**, knows how to get work done from others using their voice.",
-                "Fond of food, potentially leading to **obesity**.",
-                "**High intuition**; good at forecasting the future.",
-                "Speech is powerful: **whatever they say about themselves manifests**. It is crucial to engage in positive self-talk and avoid negative self-talk, even jokingly. This is a blessing.",
-                "**Analytical and critical**.",
-                "**Remembers animosity** for a long time (10 years or more); able to forget but not forgive."
+            "speech_and_communication": [
+                "Speech can be warm, soft, or direct and honest, depending on planetary influences.",
+                "You communicate your thoughts truly from the heart.",
+                "Sweet voice, able to get work done through speech.",
+                "Whatever you say about yourself manifests; positive self-talk is crucial."
             ],
-            "other_aspects": [
-                "Can have **multiple properties**.",
-                "Siblings are often **successful**.",
-                "Can cause **dissatisfaction in marriage**; horoscope matching is highly recommended, especially considering Venus's position."
+            "health_and_wellbeing": [
+                "Risk of major loss of health or chronic diseases, as the Second Lord can act as a Maraka.",
+                "Food lover, potential for obesity.",
+                "In turbulent situations, may end up eating stale or frozen food due to lack of access to fresh options."
+            ],
+            "challenges_and_risks": [
+                "If afflicted by malefic aspects, can lead to burning family wealth or taking on unprofitable loans/projects.",
+                "Negative self-talk can manifest unfavorably.",
+                "Dissatisfaction in married life is a possibility.",
+                "Potential for being away from family or extramarital affairs in extreme negative scenarios."
+            ],
+            "remedies_and_advice": [
+                "Maintain proper grooming and focus on personal health and fitness.",
+                "Practice positive self-talk and avoid negative statements about yourself, even in jest, as they tend to manifest.",
+                "If facing marital issues with this placement, carefully match horoscopes before marriage and consider the position of Venus."
+            ],
+            "additional_notes": [
+                "The Second House is an extension of the personality.",
+                "Jupiter and Mercury are Digbali in the First House, which can enhance the Mahadhan Yoga."
             ]
         },
         "2": {
-            "summary": "Excellent for wealth accumulation; responsibilities and money grow with age. Individuals often come from noble families and take on significant family responsibilities.",
-            "money_and_career": [
-                "**Very good for earning wealth**; money and responsibilities both increase with age, eventually responsibilities stabilize while money continues to grow.",
-                "Works in **finance, banking, food industry**, or roles requiring public interaction where **speech is the hero**.",
-                "Communication skills lead to promotions and advancement, even in back-office roles."
+            "house_placement": "Second Lord in Second House",
+            "general_attributes": [
+                "You feel comfortable, chill, and relaxed when in your own domain.",
+                "Content with the money you have; not driven by a strong ambition or 'fire' for excessive wealth.",
+                "Follows the family's value system regarding money and investments.",
+                "Strong family bonding and support.",
+                "Good metabolism and cautious about food quality.",
+                "Often the eldest sibling, taking on family responsibilities.",
+                "Comes from a noble, well-known family with a good background history.",
+                "Authoritative in speech and actions.",
+                "Attractive facial features.",
+                "Requires competition to advance in life."
+            ],
+            "money_and_wealth": [
+                "Content with money for sustenance; not necessarily aiming for millions or billions.",
+                "Accumulates money with age and increasing responsibilities.",
+                "Good for wealth accumulation and savings, as the Lord is in its own house.",
+                "Family business can be joined if the eighth house is not empty.",
+                "Good for careers in finance, banking, the food industry, or roles involving public interaction and speech.",
+                "May not send money to family if the eighth house is afflicted, despite earning well."
             ],
             "family_and_relationships": [
-                "Comes from a **noble or well-known family** with a good background history.",
-                "Can experience a **father's downfall after their birth** if the Sun's position is weak, and the native is destined to **restore the family name**.",
-                "Often the **eldest child** in the family and takes on **all family responsibilities**, including financial support for siblings.",
-                "Family members can cause **problems in married life**, especially in-laws' interference.",
-                "**Recommendation for marital stability**: move away from home for a period after marriage."
+                "Upholds family value systems, such as investing in FDs or real estate if the family tradition dictates.",
+                "Enjoys life's pleasures with ease and has strong family support for a peaceful environment.",
+                "Is a patient listener, contributing to family bliss.",
+                "The birth of the native might coincide with a downfall for the father, with the native later restoring the family name.",
+                "Takes responsibility for siblings, who may experience delays in their professional settlement.",
+                "Mother might be self-obsessed or highly spiritual, depending on other planetary aspects.",
+                "Family members can create problems in married life, such as in-laws' interference.",
+                "May lead to forming a nuclear family to avoid family conflict."
             ],
-            "personal_traits": [
-                "**Authoritative speech**.",
-                "Achieves **dreams and aspirations through hard work** over time.",
-                "Mother often has a **prominent trait** (e.g., self-obsessed, talkative, spiritual depending on Moon's conjunction).",
-                "Has **attractive facial features** (e.g., sharp eyes with Mars, unique smile with Sun, pink lips with Jupiter, moles/cuts with Saturn).",
-                "**Needs competition** to advance in life."
+            "speech_and_communication": [
+                "Measured way of communication, knowing when and what to speak for the benefit of family.",
+                "Speech is a key product; interaction with people is very important.",
+                "Promotions and career advancement can come through effective communication skills."
             ],
-            "other_aspects": [
-                "Experiences **periodic, mysterious health problems** (e.g., severe back pain) that defy diagnosis and treatment but eventually vanish on their own, becoming a part of life but not permanent.",
-                "Gains **good longevity and status**.",
-                "If the 8th house is afflicted, the person may earn significant money but **fail to support their family**, potentially moving abroad selfishly.",
-                "Can travel abroad after fulfilling family responsibilities."
+            "health_and_wellbeing": [
+                "Generally good metabolism and a cautious approach to food quality.",
+                "Can bring health challenges to family members during the Dasha-Antardasha of the Second Lord, as it is a Maraka house.",
+                "Experiences a phase during Saturn's transit where a heavy, undiagnosed health problem appears but eventually vanishes.",
+                "Potential for sinus, cough, and cold problems."
+            ],
+            "challenges_and_risks": [
+                "Contentment can lead to a lack of ambition for greater wealth, settling for what is sufficient.",
+                "As a Maraka house, it can bring health challenges to family members.",
+                "Siblings may experience health struggles.",
+                "Can cause problems in marriage due to family interference.",
+                "In negative scenarios, may earn money but fail to provide for family if the eighth house is afflicted."
+            ],
+            "remedies_and_advice": [
+                "If marital problems arise due to family, maintaining a communication gap or temporarily living away from home after marriage can help stabilize family life.",
+                "If family responsibilities are met and the eighth house is not afflicted, travel abroad is possible."
+            ],
+            "additional_notes": [
+                "This placement is considered 'first to itself,' indicating strong self-reliance in the domain of the second house.",
+                "To achieve marital and financial success, it may be necessary to live away from the family."
             ]
         },
         "3": {
-            "summary": "Earning capacity is directly tied to effort and travel. Individuals may face communication challenges but can thrive in commission-based or online work.",
-            "money_and_career": [
-                "**Earning capacity is directly linked to efforts**; requires significant hard work to make money.",
-                "**Extensive travel is a major part of earning money**, often involving long daily commutes and multiple modes of transportation, even within the same city.",
-                "Suited for **daily wage or on-site effort-based jobs** (e.g., restaurant waiter).",
-                "Best suited for **commission-based businesses** (e.g., selling property, products).",
-                "Income may increase slowly but **gradually grows**.",
-                "**Strong for internet-based work** like drop shipping, Amazon FBA, or online teaching."
+            "house_placement": "Second Lord in Third House",
+            "general_attributes": [
+                "Wealth is acquired through hard work and struggle; one must 'roll many papads' (go through many difficulties) for money.",
+                "Entrepreneurial by nature, with a growth mindset connected to personal effort.",
+                "Often involves a 'rags to riches' story, uplifting the family's living standard.",
+                "Visibility is brought to all second-house aspects through personal efforts.",
+                "Changes food habits and explores different cuisines.",
+                "Can be prone to laziness or procrastination in negative scenarios.",
+                "Parents often hustle for their money, so the native understands struggle."
+            ],
+            "money_and_wealth": [
+                "Money comes with significant effort and struggle.",
+                "Often requires leaving one's birth city or traveling extensively (even short distances) to earn money.",
+                "Communication, online business, social media, sales, and marketing are key to wealth creation.",
+                "Wealth expands through individual efforts.",
+                "Potential for high earnings in fields like sports broadcasting.",
+                "Commission-based businesses (e.g., property sales) are highly recommended, directly linking income to effort.",
+                "Income will gradually increase over time, as the third house is a developing house.",
+                "Good for real estate and property dealing, especially with beneficial aspects from Mars, Saturn, or Jupiter.",
+                "Risks of losses due to mismanaged investments or poorly considered loans."
             ],
             "family_and_relationships": [
-                "Parents hustle to earn money but may face losses due to financial mismanagement or misinvestment."
+                "Expands and improves the status of the family through personal efforts.",
+                "Siblings might face health challenges.",
+                "Can be found working on daily wages or on-site jobs, especially if living in foreign countries."
             ],
-            "personal_traits": [
-                "If afflicted by malefic planets (Rahu/Ketu) or if the 2nd house is weak, can experience **speech difficulties** like stammering or inability to express themselves well, leading to misunderstandings.",
-                "Can be **soft-hearted but speak harshly or fiercely**, potentially damaging relationships.",
-                "Embodies **immature Mercury energy** (impetuous speech, wrong things at wrong places).",
-                "**Face structure improves with age**; may not look good in childhood but becomes handsome/beautiful later.",
-                "Makes **big decisions immaturely** and quickly, while **small decisions take a long time**."
+            "speech_and_communication": [
+                "Communication is directly involved in generating wealth.",
+                "Can sometimes be misinterpreted, leading to misunderstandings.",
+                "In negative scenarios, may experience speech difficulties like stammering or inability to express well.",
+                "Can be harsh or critical in speech, potentially damaging relationships.",
+                "Controlling speech is very important."
             ],
-            "other_aspects": [
-                "Income experiences **fluctuations**.",
-                "**Caution against taking loans for property**; terms and conditions must be very clear to avoid future issues."
+            "health_and_wellbeing": [
+                "Siblings' health might be affected."
+            ],
+            "challenges_and_risks": [
+                "Requires immense hard work and struggle; money does not come easily.",
+                "Can lose money by making hasty decisions, as seen during events like the crypto wave.",
+                "In negative scenarios, tendency for procrastination and laziness.",
+                "May involve unnecessary travel.",
+                "Speech can be misinterpreted, leading to negative perceptions and strained relationships.",
+                "Financial fluctuations are common.",
+                "Poor decision-making, especially in large financial matters, and misinvestments can lead to losses.",
+                "Signing documents without thorough review can lead to problems with loans."
+            ],
+            "remedies_and_advice": [
+                "Control speech and avoid harsh criticism.",
+                "Focus on commission-based businesses or online ventures like drop shipping, Amazon, or social media.",
+                "Avoid taking loans for a home, or ensure all terms and conditions are clearly understood before signing documents."
+            ],
+            "additional_notes": [
+                "The third house is an 'Upachaya' house, meaning it improves and grows over time.",
+                "Mercury in the third house is considered 'immature Mercury,' implying a need for development in communication.",
+                "Travel for money tends to decrease with age for this placement, unlike the general nature of the third house."
             ]
         },
         "4": {
-            "summary": "A very luxurious placement, indicating inheritance and easy access to resources, often through family connections. Strong maternal influence and good for love marriage.",
-            "money_and_career": [
-                "**Very luxurious placement**; provides inheritance, resources, and an **easy lifestyle**.",
-                "Doesn't need to seek work outside; **basic work is readily available**.",
-                "**Family contacts and extended family connections provide resources** for starting and succeeding in business.",
-                "Less effort required to find resources (e.g., finding engineers for a tech startup through a family contact).",
-                "Common for those who continue their **family business** (e.g., sitting at father's shop)."
+            "house_placement": "Second Lord in Fourth House",
+            "general_attributes": [
+                "Prefers comfort and luxury, desiring money to come easily and disliking being pushed out of their comfort zone.",
+                "After acquiring wealth, they often contribute to their hometown or family.",
+                "Aspires to build grand and luxurious assets, such as large houses or lavish cars.",
+                "Enjoys meals in peace, either alone or with family.",
+                "Speech can have a calming and healing effect on others.",
+                "Early in life, they are often reliant on their mother's support for sustenance.",
+                "Their value system is primarily derived from their mother and home environment.",
+                "Often continues a family business.",
+                "Leads a luxurious lifestyle and often has basic work readily available without having to search."
+            ],
+            "money_and_wealth": [
+                "Money can come from property and vehicles, or the mother can be a source of initial capital.",
+                "Accumulates wealth in tangible assets like immovable property and mansions.",
+                "The purchase of property in their name can activate their wealth potential.",
+                "Showing value and care towards the mother can activate more sustainable money flows.",
+                "Receives inheritance and resources from the family; this can include property from the maternal side.",
+                "This combination is favorable for love marriages.",
+                "Can acquire multiple properties both in their homeland and abroad, especially if they live away from family."
             ],
             "family_and_relationships": [
-                "**Close to mother**; receives significant help and blessings from mother. Often the mother's favorite child.",
-                "Can receive **property from the maternal side** (e.g., grandfather's property through the mother).",
-                "**Good for love marriage**, especially if the 7th house lord connects with the 5th house and the 2nd house lord influences the 4th house.",
-                "Concerned about **spouse's compatibility with their family**.",
-                "If family relationships are poor despite this placement, finances and marriage can be difficult."
+                "Often makes contributions to their hometown or family after achieving financial success.",
+                "The mother is a significant helper and source of blessings in their life, often making them a favorite child.",
+                "Can join their mother's profession or contribute to her financial growth.",
+                "In negative scenarios, the mother's health can be detrimentally affected, potentially experiencing a downfall during specific planetary periods.",
+                "Early in life, they require significant support from their home or mother.",
+                "The relationship with mother or guardians can be challenging, requiring substantial effort to maintain.",
+                "May struggle with maintaining relationships due to a tendency towards laziness.",
+                "Compromises with family and spouse are critical for this placement to function positively.",
+                "If they live away from home, they can achieve both financial success and family happiness."
             ],
-            "personal_traits": [
-                "Speech is generally **peaceful, attractive, and authoritative** (e.g., similar to PM Modi's speech quality)."
+            "speech_and_communication": [
+                "Speech often has a calming and healing effect on people.",
+                "Their speech can be described as peaceful, attractive, and authoritative."
             ],
-            "health_and_challenges": [
-                "**Exceptions**: For Capricorn ascendant, if Saturn (2nd lord) is in the 4th house (debilitated), it indicates problems with family inheritance, family disrespect, and father's disrespect.",
-                "For Pisces ascendant, if Mars (2nd lord) is in the 4th house (debilitated), it can lead to **chest, cholesterol, and blood pressure issues**, though it's good for enjoyment.",
-                "Overall, can give **health problems related to chest and cholesterol**."
+            "health_and_wellbeing": [
+                "Potential for continuous repairs in large houses, which can be an ongoing financial drain.",
+                "May experience chest issues, high cholesterol, and blood pressure problems, particularly for Pisces ascendants."
             ],
-            "remedies": [
-                "**If the 2nd Lord in the 4th house is afflicted (e.g., by Ketu, Sun, Saturn, Mercury)**, identify the afflicting planet and provide a 'home' or resource related to its significations to others. For example:",
-                "If **Ketu afflicts**: Bring a dog home.",
-                "If **Sun afflicts**: Keep a bird at home.",
-                "If **Mercury afflicts**: Provide space for college students who can't afford rent in extra property, charging minimal rent. Visit orphanages and donate food, providing a motherly/homely feeling.",
-                "If **Saturn afflicts**: Offer temporary shelter to homeless people near your home.",
-                "**General Remedy**: Donate a lot of food with a smile, making the recipient feel cared for like by their parents."
+            "challenges_and_risks": [
+                "If afflicted, it can negatively impact mental peace.",
+                "Can be detrimental to the mother's health, with potential for downfall during specific Dasha periods.",
+                "Risks in land, property, or car deals that could lead to accidents.",
+                "A difficult relationship with mother or guardians that requires considerable effort to sustain.",
+                "A tendency towards laziness in maintaining relationships.",
+                "Difficulty in letting go of deeply ingrained principles, even if they become counterproductive.",
+                "For Capricorn ascendants, Saturn being debilitated in the fourth house can cause problems with family inheritance, disrespect from family, and father's disrespect.",
+                "If family relationships are strained, finances and marriage can become difficult."
+            ],
+            "remedies_and_advice": [
+                "Actively caring for the mother is an effective remedy.",
+                "Donating food, especially with a smile and a motherly feeling, can bring positive results.",
+                "If Mercury is afflicted in the fourth house, regularly visiting orphanages and providing food is recommended.",
+                "For a planet afflicting the fourth house, providing accommodation or support to those in need, related to that planet's significations, can be a remedy."
+            ],
+            "additional_notes": [
+                "This placement is considered 'third to itself' when calculating distances in a chart.",
+                "Love marriage combinations are possible if the Seventh Lord connects with the Fifth House and the Second Lord aspects the Fourth.",
+                "If residing far from home, one can achieve both financial success and family happiness."
             ]
         },
         "5": {
-            "summary": "A very lucky combination for earning money, especially through speculative ventures. Individuals are often affluent and achieve managerial positions, though childbirth and children's relationships can be challenging.",
-            "money_and_career": [
-                "**Very good, lucky combination for fast money**, particularly through **stock market and cryptocurrency investments**.",
-                "Luck plays a significant role in earning money; finding resources and help is easy (both family and external).",
-                "**Excellent for stock market gains** if the 5th lord connects with the 11th house.",
-                "Likely to reach **managerial positions quickly**, always having many people working under them, even in small businesses.",
-                "**One of the best placements for winning court cases, litigation, and overcoming enmity**; enemies cannot overpower them."
+            "house_placement": "Second Lord in Fifth House",
+            "general_attributes": [
+                "Earns money by adding enjoyment and entertainment to others' lives.",
+                "Benefits from learning; 'the more you learn, the more you earn'.",
+                "Receives a 'helping hand' from past life deeds.",
+                "Often holds managerial positions with many people working under them.",
+                "Highly affluent and achieves significant success in life.",
+                "Children are seen as teaching the most valuable lessons in life.",
+                "Values fun, living and letting live, and wants to contribute to future generations."
+            ],
+            "money_and_wealth": [
+                "Money can be earned through child-related businesses.",
+                "Good for earning through the share market and other speculative businesses, including calculated bets and cryptocurrency investments.",
+                "Mantras, especially Lakshmi Mantras, can significantly help in acquiring money and wealth.",
+                "Wealth increases with the birth of a child and the completion of education or certifications.",
+                "Favorable for winning court cases and litigations.",
+                "Can make money through funeral-related services, like funeral homes."
             ],
             "family_and_relationships": [
-                "When stable in romantic relationships, family relationships (with parents) can experience **ups and downs**.",
-                "**Childbirth can be problematic**, leading to late childbirth or complications, requiring medical intervention.",
-                "Relationship with children can have **ups and downs** initially.",
-                "Children may seem less talented or develop slowly in childhood but show **exponential growth later in life**.",
-                "**Tussle between continuing family business and child's passion**; forcing the child into business is not recommended.",
-                "**Remedy for children's relationships**: Send children abroad for studies or to hostels to create some distance."
+                "The birth of children often marks the beginning of the native's ability to provide for themselves.",
+                "Children teach significant values.",
+                "Can lead to problems with childbirth, such as delays or complications, often requiring medical intervention.",
+                "The relationship with children can be inconsistent, with ups and downs.",
+                "Children of these natives often show exponential growth after a certain age, even if they seem less talented in childhood.",
+                "If in a stable relationship, the relationship with family might experience ups and downs.",
+                "Children might not be interested in continuing the family business, leading to a 'tussle' between creativity and money.",
+                "Not considered a very good combination for childbirth; extreme financial success often correlates with childbirth issues."
             ],
-            "personal_traits": [
-                "Generally **affluent and wealthy**, achieving much in life.",
-                "Has a **special element in their speech**, like beatboxing, mimicry, or a unique singing voice (e.g., a specific genre singer)."
+            "speech_and_communication": [
+                "Possesses a special element in speech, such as talent in beatboxing, mimicry, or singing."
+            ],
+            "health_and_wellbeing": [
+                "Challenges in conceiving a child are possible.",
+                "The child's health can be impacted."
+            ],
+            "challenges_and_risks": [
+                "Can severely impact a child's health and cause difficulties in conceiving.",
+                "Potential for dropping out of college or experiencing sudden breaks in education.",
+                "Bad investment timing can lead to financial losses.",
+                "Saturn's influence may not favor speculative gains.",
+                "Children might be perceived as less talented in early childhood.",
+                "Children can become spoiled due to an abundance of amenities."
+            ],
+            "remedies_and_advice": [
+                "Encourage children to study abroad or live in hostels, maintaining a slight distance to balance family dynamics.",
+                "Avoid forcing children to continue the family business if their interests lie elsewhere.",
+                "Regularly practice mantras for wealth."
+            ],
+            "additional_notes": [
+                "The fifth house is known as Lakshmi Sthan, a place of creativity, speculation, education, and children.",
+                "This placement is 'fourth to itself' when considering house distances in a chart.",
+                "Entertainment-related professions can be a significant source of income."
             ]
         },
         "6": {
-            "summary": "A tricky placement, linking wealth to job, debt, disease, and enemies. It emphasizes earning through hard work and being cautious about trust and loans.",
-            "money_and_career": [
-                "**Tricky placement** as wealth is connected to job, disease, debt, and enemies.",
-                "**Start with a job first, then transition to business**; direct business is not recommended initially.",
-                "**Earning money requires significant effort**.",
-                "**Professions**: Good for lawyers, doctors, CAs, dispute settlement, judges, and potentially even gangster-like activities, as they earn from others' losses or problems."
+            "house_placement": "Second Lord in Sixth House",
+            "general_attributes": [
+                "Money often comes from unexpected sources, sometimes even from enemies.",
+                "A problem-solving approach to earning wealth.",
+                "Emphasis on continuous service.",
+                "May have to ask for work or jobs from people they dislike.",
+                "Earns money by resolving issues for others, such as debt, health problems, or disputes.",
+                "Must be prepared to fight for their money.",
+                "Possesses a kind-hearted nature, but people may exploit this."
+            ],
+            "money_and_wealth": [
+                "Income derived from problem-solving roles such as lawyers, doctors, or those dealing with loans or health issues.",
+                "Continuous service is advised for passive income, especially by helping people related to specific planets.",
+                "It is recommended to start with a job and then transition to business.",
+                "Can generate savings from problematic situations, such as in law, healthcare, or business transformation.",
+                "Lawyers, doctors, CAs, dispute settlers, and judges can thrive in this placement.",
+                "Can become a financial advisor focusing on clients with heavy debt.",
+                "Financial activity often increases after helping a sick family member.",
+                "Involves dealing with government organizations and NGOs.",
+                "Commission-based work is a viable option."
             ],
             "family_and_relationships": [
-                "**Trust issues**: Tends to trust people wholesale rather than retail, often signing documents without proper due diligence, leading to betrayal, increased enmity, and unrecovered money.",
-                "Money lent on interest often leads to **animosity and disputes**, potentially turning friends into enemies.",
-                "**Strong recommendation**: **Do NOT lend money on interest**."
+                "Providing service to individuals associated with certain planets (e.g., wife for Venus, father for Sun) can bring passive income.",
+                "There is a high probability of joining the family profession.",
+                "In negative scenarios, risks include loss for family/wealth, separation, divorce, family misalignment, and extramarital affairs.",
+                "Lending money to friends or colleagues can lead to enmity.",
+                "Siblings may experience health challenges."
             ],
-            "personal_traits": [
-                "If **benefics are strong** (e.g., Jupiter as 2nd Lord), the person may struggle to distinguish friends from enemies and lose money.",
-                "If **malefics are strong** (e.g., Rahu/Ketu with the 2nd Lord), the person might earn by taking advantage of others' losses, but should **avoid 'eating' others' money** as it causes problems with future gains."
+            "speech_and_communication": [
+                "No specific attributes are mentioned about speech or communication for this placement in the provided texts."
+            ],
+            "health_and_wellbeing": [
+                "Sickness can be followed by an opportunity.",
+                "Money often becomes active after recovery from an illness.",
+                "Can lead to chronic health problems and lifelong diseases.",
+                "Poor dietary habits can become an issue.",
+                "Ailments are possible if the house is afflicted by malefics."
+            ],
+            "challenges_and_risks": [
+                "Potential for chronic health issues and lifelong diseases.",
+                "Losses stemming from litigations.",
+                "Risks of family/wealth loss, separation/divorce, and extramarital affairs.",
+                "Trust issues, as people may take advantage of the native's kind-heartedness.",
+                "Tendency to sign documents without proper diligence, leading to financial losses and increased enmity.",
+                "Lending money on interest can lead to animosity.",
+                "If malefics are strong, there is a risk of taking other people's money.",
+                "Benefic planets like Jupiter in this position can make it difficult to distinguish friends from enemies, leading to financial losses."
+            ],
+            "remedies_and_advice": [
+                "Consistently engage in service, focusing on individuals associated with the relevant planets.",
+                "If experiencing illness, serving others can bring opportunities.",
+                "Make service a regular part of your life.",
+                "Begin with a job before venturing into business.",
+                "Avoid trusting people with money, especially when lending on interest.",
+                "If malefics are strong, refrain from taking advantage of others' money."
+            ],
+            "additional_notes": [
+                "This placement is 'fifth to itself' when considering house distances.",
+                "It carries creative blessings for wealth creation.",
+                "Favorable for competitive examinations.",
+                "Can be adept at transforming struggling businesses.",
+                "For actors, roles that involve fighting injustice or poverty, or portraying lawyers, can lead to significant success."
             ]
         },
         "7": {
-            "summary": "Individuals are kind-hearted but prone to being taken advantage of. Marriage often brings significant changes, and family interference can strain marital life, often leading to relocation for success.",
-            "money_and_career": [
-                "Earning capacity is linked to **partnerships**; independent business is not recommended.",
-                "**Should work with others**, as their kind-heartedness is not suited for independent business, especially if Mercury is weak.",
-                "**Earns good money in life**, which increases with age.",
-                "**Major changes in profession and money after marriage** (e.g., job change, new ventures).",
-                "Status and wealth can significantly increase due to the **spouse's family support** (e.g., a wealthy family for a male native).",
-                "**Very good for property acquisition**, both in homeland and foreign countries, after achieving success."
+            "house_placement": "Second Lord in Seventh House",
+            "general_attributes": [
+                "Spouse's permission is needed to spend money.",
+                "The partner brings wealth and growth to life after marriage.",
+                "Excels in teamwork situations and can effectively motivate a team.",
+                "Strong potential to be a good coach, captain, or team leader.",
+                "Enjoys resolving disputes for others and possesses a philanthropic nature.",
+                "Feels understood after marriage.",
+                "Is kind-hearted and consistently helps others, even when taken advantage of."
+            ],
+            "money_and_wealth": [
+                "Spouse or business partners contribute to wealth and growth.",
+                "Good for earning money through business partnerships and one-to-one client interactions.",
+                "Experiences growth in wealth and family life post-marriage.",
+                "Money increases with age.",
+                "For males, wealth can come from the wife's family.",
+                "Favorable for acquiring multiple properties, both in the homeland and abroad."
             ],
             "family_and_relationships": [
-                "**Kind-hearted and helpful to others**, but people frequently take advantage of them.",
-                "**Family (in-laws)** often creates problems in married life (e.g., wife's father for males, husband's mother for females).",
-                "**First marriage is often difficult to sustain**, potentially leading to separation or significant distance between partners.",
-                "Often has to **choose between their spouse and family**.",
-                "This combination can lead to the formation of a **nuclear family**.",
-                "**Recommendation**: Staying away from home/family is beneficial for both financial success and family happiness.",
-                "Often leads to **moving to a foreign country or far from home** for success.",
-                "**Rules and regulations are crucial** for both money management and married life, implying the need for clear boundaries and respect within relationships (e.g., avoiding disrespectful language).",
-                "Spouse can be **dominating**; establishing clear boundaries is important."
+                "Spouse brings overall growth.",
+                "Marriage can lead to a feeling of being understood.",
+                "This is a 'Maraka to Maraka' connection, which can bring challenges to one's own health and finances, as well as the spouse's health issues or workplace accidents.",
+                "Can lead to delays in marriage.",
+                "Family, particularly in-laws, can create problems in married life.",
+                "The first marriage may face difficulties such as separation or significant distance between partners.",
+                "Often results in the formation of a nuclear family to avoid family conflict.",
+                "The native may have to choose between their spouse and their family."
             ],
-            "health_and_challenges": [
-                "Can cause **health problems**, particularly **sinus issues, cough, and cold** (especially if Moon or Venus is the planet)."
+            "speech_and_communication": [
+                "Expresses themselves better in teamwork settings."
+            ],
+            "health_and_wellbeing": [
+                "Health and finances are at risk.",
+                "The spouse may experience health issues or accidents.",
+                "Potential for sinus, cough, and cold problems."
+            ],
+            "challenges_and_risks": [
+                "Requires the spouse's permission for spending money.",
+                "Potential for business losses if the placement is afflicted.",
+                "Spouse's health issues or accidents are possible.",
+                "Marriage may be delayed.",
+                "Family interference can cause significant problems in married life.",
+                "The first marriage is often challenging.",
+                "The native may be forced to choose between their spouse and their family."
+            ],
+            "remedies_and_advice": [
+                "Living away from home can promote both marital and financial success.",
+                "Establishing clear rules and regulations in both money management and married life is crucial, especially if Saturn is involved.",
+                "Avoid independent business ventures; instead, work with a partner, particularly if Mercury is weak in the chart."
+            ],
+            "additional_notes": [
+                "This placement is 'sixth to itself' in terms of house distances.",
+                "It is generally considered a 'Dhan Yoga' or a positive combination.",
+                "For actors, roles involving marriage issues, business partnerships, or one-on-one combat are favorable.",
+                "If Moon or Venus are involved, there is a possibility of cough-related problems.",
+                "Saturn exalted in the seventh house emphasizes the importance of rules and regulations in both marriage and finances."
             ]
         },
         "8": {
-            "summary": "A good placement where luck brings financial gains and needs are fulfilled. Individuals are often good speakers, leaders, and have strong relationships with their fathers.",
-            "money_and_career": [
-                "**Good placement**, receiving much through **luck**; all needs are fulfilled.",
-                "Always has some **luck factor in business and job** (e.g., sudden offers, joining successful ventures).",
-                "Can become a **group leader**.",
-                "Can work in **import/export, travel-related jobs, leadership roles** in organizations, government, or higher positions.",
-                "**Success is proportional to engaging in religious/spiritual discourse**.",
-                "Requires **travel for money in initial stages**, but travel time reduces as they progress in life."
+            "house_placement": "Second Lord in Eighth House",
+            "general_attributes": [
+                "Extremely secretive about finances.",
+                "Has a unique hobby of collecting strange or unusual items.",
+                "May experience a significant downfall or 'death-like suffering' in financial matters, followed by a rise in wealth.",
+                "Enjoys hunting for rare or hidden objects.",
+                "Holds a core value of keeping wealth a secret.",
+                "Can be a late bloomer or late starter in life.",
+                "Tends to be very introspective and does not communicate much in public."
+            ],
+            "money_and_wealth": [
+                "Wealth is often accumulated through secret methods, family blessings, or secret mantras passed down through generations.",
+                "Astrology can help in balancing the eighth house's energy and generating income.",
+                "Professions related to the eighth house, such as astrologer, surgeon, tax professional, engineer, or working on mysterious projects/movies, can bring wealth.",
+                "Experiences sudden gains or sudden losses in savings.",
+                "Can achieve tremendous gains through life insurance or from in-laws.",
+                "Potential to earn money through occult practices like Reiki, Tantra, or Yoga.",
+                "May leverage others' wealth to generate income.",
+                "Good for professions in tax collection, accounting, and dealing with regulations and policies.",
+                "Plumbing in specific, problem-prone areas can lead to significant earnings."
             ],
             "family_and_relationships": [
-                "**Close relationship with father** (unless Sun is severely afflicted by Rahu/Ketu).",
-                "Supports father during his downfalls.",
-                "**Father's blessings are very important** for the native's financial growth.",
-                "Referred to as 'Father's boy/girl' similar to 'Mother's boy' for 2nd Lord in 4th House."
+                "Family values emphasize keeping wealth hidden and not displaying it.",
+                "In-laws can be strong supporters.",
+                "There is a risk of the partner having an affair."
             ],
-            "personal_traits": [
-                "**Good speaker**.",
-                "Speech defines character; it's important to **speak good and religious things**.",
-                "**Remedy**: **Stop using abusive language/cursing** to enhance respect and status."
+            "speech_and_communication": [
+                "Highly secretive about financial matters.",
+                "Generally does not communicate much about personal finances in public."
+            ],
+            "health_and_wellbeing": [
+                "May experience 'death-like' struggles or suffering in the pursuit of wealth."
+            ],
+            "challenges_and_risks": [
+                "Risk of a major financial downfall or bankruptcy.",
+                "Potential for the partner to engage in an affair.",
+                "This placement can be a 'Maraka to Maraka' connection, indicating potential challenges.",
+                "Individuals with this placement often consult astrologers for financial guidance."
+            ],
+            "remedies_and_advice": [
+                "Learning astrology is beneficial.",
+                "Pursue professions aligned with the eighth house's themes, such as astrology, surgery, tax-related work, engineering, or mystery-related acting roles.",
+                "Avoid disclosing income or savings to others to deter potential enemies."
+            ],
+            "additional_notes": [
+                "This placement is 'seventh to itself' in terms of house distances.",
+                "The eighth house signifies suddenness and hidden aspects.",
+                "Inheritance from the father is possible through the connection of the ninth and eighth houses."
             ]
         },
         "9": {
-            "summary": "One of the best placements for career enhancement, making the individual the 'product' of their profession. Strong family support, but cautions against impulsive investments and potential issues in family life.",
-            "money_and_career": [
-                "**One of the best placements for career enhancement and development**.",
-                "The person's **face value and way of speaking are directly linked to their career**; they are the 'self-product' and people give them work based on judging them (like investing in the founder, not just the business).",
-                "**Highly confident** in their business/profession.",
-                "Good for **acting, speech-related businesses** (singing, mimicry).",
-                "Supports **expansion and development of current family business**.",
-                "Money increases with time.",
-                "**Speech is a very important factor in career**; improving speech acts as a remedy for professional growth.",
-                "Highly focused and **workaholic** in their career/profession.",
-                "**Caution**: Prone to making **one major wrong investment** due to desire for fast money (e.g., cheap property deals, falling for builder scams, MLM schemes). This can lead to debt and losses.",
-                "**Siblings often face professional problems** and experience delays in settlement and success, possibly until their mid-30s."
+            "house_placement": "Second Lord in Ninth House",
+            "general_attributes": [
+                "Considered a lucky and fortunate placement for wealth.",
+                "Money often comes when the native is far away from their birthplace.",
+                "Becoming more religious and following family traditions enhances luck.",
+                "Frequent long-distance travel, including flights and family vacations abroad, is common.",
+                "Maintains a strong connection with the father.",
+                "Often acts as a trusted 'right-hand man' to superiors, contributing to their growth and receiving mentorship in return.",
+                "Communicates directly and openly, without sugarcoating.",
+                "May hold strong, sometimes crude or rigid, values that can negatively impact their luck.",
+                "Even without formal certificates, they may possess more knowledge than others due to their luck and guidance.",
+                "Can emerge as a group leader and is skilled in public speaking."
+            ],
+            "money_and_wealth": [
+                "Wealth comes after completing higher education.",
+                "Lucky in financial matters, often receiving guidance or teaching from someone.",
+                "Professions in banking, teaching, and counseling are favorable.",
+                "Money is obtained by traveling far from the birthplace.",
+                "There is a high probability of adopting and growing the father's profession.",
+                "Tourism and banking institutes can be sources of income.",
+                "Working in high-altitude locations can bring success.",
+                "Earning by preserving or assisting with established knowledge or a guru's work (e.g., translating astrology) is also possible.",
+                "Luck often plays a significant role in business and job opportunities, with sudden offers leading to growth.",
+                "Initially involves extensive travel for money, which tends to decrease with age."
             ],
             "family_and_relationships": [
-                "Comes from a **noble or upper-middle-class family** that is supportive.",
-                "While good for earning money, it's **not good for family life**.",
-                "**Problematic for females** as it may lead to a lack of time for family and potential divorce, especially if the partner is not supportive. It is generally better for males."
+                "The father, guru, or mentor plays a crucial role in their financial journey.",
+                "Develops a close connection with superiors at work, often leading to social invitations involving families.",
+                "There is a possibility of the father's downfall coinciding with the native taking over the family business.",
+                "Family members are generally supportive, and wealth often expands after marriage and the birth of children.",
+                "The father may leave a legacy of wealth.",
+                "Maintains a close relationship with the father, often supporting him during difficult times.",
+                "The father's blessings are considered very important for their financial success."
             ],
-            "health_and_challenges": [
-                "Can cause **stomach-related issues, indigestion, and eye problems**, leading to early need for spectacles."
+            "speech_and_communication": [
+                "A direct, open, and honest communicator.",
+                "Speech is integral to their character; speaking positively and about religious matters is advised.",
+                "Refraining from using abusive language can enhance respect and status."
+            ],
+            "health_and_wellbeing": [
+                "Potential for misfortunes concerning the mother."
+            ],
+            "challenges_and_risks": [
+                "This is a 'Maraka' placement moving 'eighth to itself,' indicating potential challenges.",
+                "The longevity of luck can be unpredictable.",
+                "The father's downfall may occur as the native takes over the business.",
+                "There is a risk of a major career or business downfall, especially if there's a foreign connection.",
+                "Trading with family or foreign clients can lead to substantial losses.",
+                "Strong, rigid values can hinder luck and cause difficulties in relationships.",
+                "Rigidity in personal choices, such as marriage partners, can be a challenge."
+            ],
+            "remedies_and_advice": [
+                "Seeking out and caring for a mentor or guru is recommended.",
+                "Avoid using abusive language in speech.",
+                "Engage in religious discussions and speak positively."
+            ],
+            "additional_notes": [
+                "This is considered 'good news' as money is linked to fortune.",
+                "Travel to places where mountains and rivers meet, like Rishikesh, can bring opportunities.",
+                "This placement is 'eighth to itself' when considering house distances.",
+                "This connection to the ninth house (fortune) can lead to significant government or higher-position jobs."
             ]
         },
         "10": {
-            "summary": "A powerful money-making combination leading to significant financial success and foresight. Individuals may be unconventional in their earnings and should keep their financial history private to avoid jealousy.",
-            "money_and_career": [
-                "Leads to being **wealthy, financially stable**, and enjoying life with **multiple properties**.",
-                "Possesses **great foresight** and is good at predicting markets like the stock market.",
-                "**Money-making combination** that can make a person very rich.",
-                "Often associated with **unconventional or 'atrengi' (unique) ideas for earning money**, possibly through the internet, or even illegal means (though not recommended).",
-                "Seen in cases of **college/school dropouts who start their own ventures**.",
-                "The person's mindset is often geared towards making money like Rahu (unconventional, fast).",
-                "If positively placed, these unconventional businesses can bring wealth.",
-                "**Believes in destroying competition** by undercutting prices (like Jio) but should aim for a balanced approach. Learns first, then strikes at the right time."
+            "house_placement": "Second Lord in Tenth House",
+            "general_attributes": [
+                "Karma (action) and wealth are closely linked; an 'excellent yoga'.",
+                "Opportunities for work await outside the home; seeking work often leads to finding it.",
+                "Often experiences recognition and status before financial rewards.",
+                "Considered a lucky placement.",
+                "Traditional, rigid, and conservative in values.",
+                "Values helping either the common people or those in powerful positions.",
+                "Highly focused and workaholic in their career."
+            ],
+            "money_and_wealth": [
+                "Wealth is intertwined with one's actions and profession.",
+                "Easy to find work and secure new jobs quickly.",
+                "Financial success and good income typically begin after the age of 32.",
+                "Significant growth in profession, social status, and wealth.",
+                "Receives financial support and investment from family for business expansion.",
+                "Creatively multiplies wealth, and speculative gains often materialize.",
+                "This is considered a Raj Yoga and Dhan Yoga combination.",
+                "Can benefit from government subcontracts and government work.",
+                "Favorable for acting, singing, mimicry, and expanding family businesses.",
+                "Risk of major investment errors leading to losses.",
+                "Chasing fast money can lead to debt or consistent rent/interest payments."
             ],
             "family_and_relationships": [
-                "Receives **less support from mother/father**, but **more support from siblings**.",
-                "**Not a good combination for childbirth**; often indicates problems.",
-                "**Focus on money** can lead to neglecting children and family.",
-                "Children are often **born with a 'golden spoon'** but may become spoiled due to excessive amenities.",
-                "Children tend to **distance themselves** from parents, possibly for foreign studies or living away. Relationship with parents may be 'okay-okay'."
+                "Receives financial support from the father's lineage or family.",
+                "Family is highly supportive of professional growth, often centering their world around the native's aspirations.",
+                "The family's status and perception contribute to public and political success.",
+                "Strong and undeniable support from family members or their wealth for business ventures.",
+                "Family typically holds a stable or upper-middle-class position and is consistently supportive.",
+                "Siblings may experience challenges in their professional careers and settle late in life.",
+                "This combination is not considered ideal for family life, particularly for women, due to the demanding nature of the career and potential lack of time for family.",
+                "For women, it may even lead to divorce if a supportive partner for domestic life is not found."
             ],
-            "personal_traits": [
-                "Starts off less accomplished in childhood but gains **name and fame with age**.",
-                "People will be **jealous** of their life and try to bring them down.",
-                "**Crucial remedy**: **Do NOT disclose income or financial history** (savings, investments) to anyone to reduce enemies and jealousy."
+            "speech_and_communication": [
+                "Communication style is popular, warm, and inspiring, capable of leading and motivating people.",
+                "Speech is a critical factor in their career; controlling speech is important, especially if under malefic influence (e.g., Saturn)."
+            ],
+            "health_and_wellbeing": [
+                "Potential for stomach-related issues, indigestion, eye problems, and needing glasses at an early age."
+            ],
+            "challenges_and_risks": [
+                "Career may experience temporary setbacks or 'hiccups,' but these are not permanent.",
+                "Competition may conspire against them.",
+                "Initial success may be delayed until after age 32.",
+                "Life may appear dormant initially, with sudden, significant advancements later, like a crocodile striking.",
+                "High risk of making major, incorrect investments due to impatience or greed, leading to losses.",
+                "The pursuit of quick money can result in accumulating debt or persistent payments.",
+                "Siblings may face difficulties and delays in their careers.",
+                "This is not a favorable combination for family life, especially for women, due to potential conflicts between career demands and family time.",
+                "Risk of divorce if family support for career is lacking."
+            ],
+            "remedies_and_advice": [
+                "If under malefic influence (e.g., Saturn), improving speech and avoiding offensive language can act as a remedy and boost career progression.",
+                "Exercise caution with major investments and resist the temptation of quick, high returns."
+            ],
+            "additional_notes": [
+                "While generally good, the specific results can vary (e.g., Jupiter in the fourth house is good but can lead to a difficult childhood).",
+                "The native often gains recognition before financial rewards.",
+                "This placement is 'ninth to itself' in terms of house distances.",
+                "The analogy of a crocodile's dormant yet powerful strike is used to describe the native's career trajectory.",
+                "The 'Shark Tank' analogy suggests that people invest in the founder (the native) rather than just the business idea."
             ]
         },
         "11": {
-            "summary": "This placement often leads to financial losses, particularly due to uncontrolled speech. It necessitates extensive travel for earnings and a focus on spirituality and donations to mitigate negative effects.",
-            "money_and_career": [
-                "Associated with **extensive expenditure**.",
-                "Requires **traveling away from birthplace/home to earn money**; if they don't, they won't earn.",
-                "**Early family responsibilities** often push them to work away from home.",
-                "**Fluctuations in wealth**.",
-                "**Bad decisions due to 'big dreams' or illusions** projected by others (e.g., Ponzi schemes like Lakshmi Chit Fund, MLM companies).",
-                "Prone to **wrong investment decisions** and being tricked by others' promises of quick money.",
-                "Settlement in life usually comes **after the age of 45-50**."
+            "house_placement": "Second Lord in Eleventh House",
+            "general_attributes": [
+                "Considered very lucky; money often comes easily and unexpectedly.",
+                "Simply existing seems to bring money to them, often from a father or elder sibling.",
+                "Lucky in finding resources and opportunities.",
+                "Networking, relationships, and a strong friend circle are crucial for success.",
+                "Possesses a strong desire for more gains in all aspects of life.",
+                "Often has an entrepreneurial mindset and is likely to run their own enterprise rather than working a job.",
+                "Continuously seeks growth in their career to achieve higher savings.",
+                "Their value system revolves around connecting with people and having the best network.",
+                "Enjoys financial stability, multiple properties, and great foresight.",
+                "Others may envy their life and attempt to bring them down."
+            ],
+            "money_and_wealth": [
+                "Money often comes easily, sometimes brought by a father or elder sibling.",
+                "Wealth increases with age.",
+                "This is a powerful 'Dhana Yoga' and can form a 'Raj Yoga' when connected with the Ninth and Tenth Lords.",
+                "Gains are possible from unexpected sources; even malefic planets can yield positive results in this house.",
+                "Networking is a key factor in acquiring wealth.",
+                "Money can be earned through online ventures, betting, or unconventional methods.",
+                "Can lead to significant wealth, making the native a millionaire or even a billionaire.",
+                "Excellent at predicting the stock market.",
+                "Siblings achieve significant success and fame later in life.",
+                "Children are often born into wealth ('with a golden spoon')."
             ],
             "family_and_relationships": [
-                "**Father often experiences major expenditures or losses** (e.g., wrong investments, fire, accidents); the native must support the father.",
-                "The entire family may experience significant financial loss.",
-                "Receives **less support from family**, especially paternal side; may find support from mother or maternal side.",
-                "Can have a **difficult relationship with children**.",
-                "**Sacrifice** (going far from home) is necessary to earn."
+                "The father or elder sibling often brings money.",
+                "The family helps expand the native's social network.",
+                "May have a large joint family, extensive cousins, or friends who are like family members.",
+                "Risk of sudden financial losses for the family due to friends.",
+                "In negative affiliations, it can lead to affairs within a close circle (e.g., spouse's friend), causing separation.",
+                "Children may become spoiled, live away for studies, or have distant relationships with parents.",
+                "Not considered a very favorable combination for childbirth."
             ],
-            "personal_traits": [
-                "The **biggest problem is speech**: speaking without thinking, disrespecting others, hurting egos of influential people, leading to major losses.",
-                "**Words are extremely powerful**; speech can lead to significant positive or negative outcomes.",
-                "If they engage in **spiritual speech** (sharing spiritual knowledge), it leads to development and reduces financial problems.",
-                "**Importance of being spiritual**, in the company of a Guru, and engaging in proper donations."
+            "speech_and_communication": [
+                "No specific attributes are mentioned about speech or communication for this placement in the provided texts."
             ],
-            "health_and_challenges": [
-                "Can cause **health problems** related to **eyesight** and the **digestive system**."
+            "health_and_wellbeing": [
+                "Risk of developing bad habits, such as consuming harmful products (e.g., steroids for bodybuilding), leading to health losses."
             ],
-            "remedies": [
-                "**To control speech**: When angry or about to speak, take **three deep breaths and drink cold water** before speaking.",
-                "**To regulate losses/expenditure**: Engage in **self-initiated donations and charity** based on the planet occupying the 12th house as the 2nd Lord:",
-                "**Saturn**: Donate at old-age homes.",
-                "**Mercury**: Donate at orphanages.",
-                "**Rahu**: Donate to organizations for the blind.",
-                "**Jupiter**: Donate at temples.",
-                "**Ketu**: Donate to disabled individuals or for dogs.",
-                "This is seen as **paying back karmic debt**.",
-                "If **Saturn is the 2nd Lord in the 12th house**: This specific placement can lead to **multiple properties**, including foreign ones, especially through penance and donations to old age homes.",
-                "**Praise the Lord and stay close to a Guru**."
+            "challenges_and_risks": [
+                "Can result in sudden financial losses for the family due to friends.",
+                "In negative scenarios, may lead to affairs within close social circles, causing separation.",
+                "An obsession with things that prove detrimental.",
+                "Developing bad habits that are harmful to mental and physical health.",
+                "Making wishes for things that turn out to be detrimental.",
+                "Potential for losses if the Eleventh Lord is not well-placed.",
+                "Others may feel jealous and attempt to undermine the native's success."
+            ],
+            "remedies_and_advice": [
+                "Cultivate good friendships, engage in networking, and show respect to elder siblings.",
+                "Avoid disclosing income and savings to reduce the number of envious individuals.",
+                "Refrain from using steroids or other harmful products for health."
+            ],
+            "additional_notes": [
+                "This is a 'super powerful' Dhana Yoga.",
+                "The Eleventh House is known for expansion, where even malefic planets can yield positive results.",
+                "This placement is 'tenth to itself' in terms of house distances.",
+                "It is often seen in the charts of college or school dropouts who go on to start successful businesses.",
+                "Rahu's influence can bring unconventional ideas and a tendency to eliminate competition, similar to the strategy seen with Jio."
             ]
         },
-        "Second_Lord_Conjunctions": [
-            {
-                "Conjunction": "With Rahu",
-                "Summary": "Significantly increases earning capacity, often through unconventional or strategic methods, including destroying competition.",
-                "Details": [
-                    "**Earning capacity increases significantly**.",
-                    "Generates **unconventional or 'atrengi' (unique) ideas for making money**, possibly through the internet, or even illegal means (though not recommended).",
-                    "**Believes in removing or destroying competition** (e.g., by drastically lowering prices, as seen with Jio).",
-                    "Tends to **learn first before striking** at the right time.",
-                    "**Recommendation**: While competition destruction can be a strategy, it should be balanced and not completely destroy others' livelihoods."
-                ]
-            },
-            {
-                "Conjunction": "With Ketu",
-                "Summary": "The person may not keep track of money but receives wealth from unearned or unexpected sources, often from past lives. Donations are a powerful remedy for increasing wealth.",
-                "Details": [
-                    "The person **does not keep an account of money**; may forget about money lent or rents owed for property.",
-                    "Receives money from **unearned or unexpected sources**.",
-                    "**Major Blessing**: **Continuous donations lead to increased wealth**. The more you donate, the more your money grows.",
-                    "Ketu can provide **extreme wealth (billions)** that is 'unearned' in this life, often coming from past lives.",
-                    "**Strong Recommendation**: **Donate as much as possible** and **help people** to increase wealth and gain peace of mind.",
-                    "The 12th house is often active in millionaires'/billionaires' charts, as it can bring this 'unearned' extreme wealth."
-                ]
-            }
-        ]
+        "12": {
+            "house_placement": "Second Lord in Twelfth House",
+            "general_attributes": [
+                "Adopts the philosophy: 'The more I give, the more I get'.",
+                "Spends money to gain prestige and elevate social status.",
+                "Enjoys luxuries and is generous, treating family, spouse, and children.",
+                "Finds happiness in cuddling with partners and experiencing romance.",
+                "May have a tendency to sleep a lot, viewing it as a luxury.",
+                "Values donating to charitable causes.",
+                "May desire to serve in ashrams or with spiritual gurus.",
+                "Can be spiritual and prone to distributing spiritual knowledge.",
+                "Life tends to settle down gradually after the age of 45-50.",
+                "Requires a degree of sacrifice from the second house (e.g., living away from home) to achieve its potential."
+            ],
+            "money_and_wealth": [
+                "Spending money brings happiness to Lakshmi, leading to its return.",
+                "Expenditure on high-branded items or luxury goods can elevate one's status.",
+                "May spend beyond their financial capacity but finds happiness in it.",
+                "Deals with both losses and gains in investments, understanding the 'law' of this house.",
+                "Donations to ashrams are common.",
+                "Earning money through helping others and the needy.",
+                "Wealth often comes from distant places, requiring the native to leave their birthplace.",
+                "Experiences significant fluctuations in wealth.",
+                "Vulnerable to being misled by others, potentially investing in fraudulent schemes like MLM companies ('Lakshmi Chit Fund').",
+                "Exceptionally large sums of money (thousands of crores), often unearned, can originate from the 12th house, especially through Ketu or past life karma.",
+                "If Saturn is in this position, multiple properties, possibly abroad, are possible."
+            ],
+            "family_and_relationships": [
+                "Is generous and treats family, spouse, and children well.",
+                "Experiences early family responsibilities, often necessitating travel away from home.",
+                "The father may face significant financial losses or major expenditures due to various incidents.",
+                "The family as a whole might experience financial losses.",
+                "Receives limited support from the family, especially the paternal side; support may come more from the mother or maternal side.",
+                "Requires being away from home to earn money."
+            ],
+            "speech_and_communication": [
+                "Communicates with a higher value to their partner.",
+                "The biggest challenge is not thinking before speaking, leading to disrespectful or abusive language that can hurt others' egos and result in losses or revenge.",
+                "Speaking spiritually or sharing spiritual knowledge can foster personal development and prevent financial outflow."
+            ],
+            "health_and_wellbeing": [
+                "Potential for sleep-related problems like sleep apnea or snoring, and frequent headaches.",
+                "May experience issues with the digestive system and eyesight."
+            ],
+            "challenges_and_risks": [
+                "Significant losses due to disrespectful or offensive speech, which can provoke others to seek revenge.",
+                "Prone to extensive expenditures.",
+                "Must live away from their birthplace to earn money.",
+                "Early assumption of family responsibilities.",
+                "The father experiences major financial losses or expenditures.",
+                "The family as a unit may face financial setbacks.",
+                "Fluctuations in wealth are common.",
+                "Risk of making poor investment decisions due to unrealistic dreams or being duped by multi-level marketing (MLM) schemes.",
+                "If negatively prominent, can indicate earning money through deceit by showing false dreams to others."
+            ],
+            "remedies_and_advice": [
+                "When angry, take three deep breaths and drink cold water before speaking to avoid saying hurtful things.",
+                "Engage in spiritual conversations and share spiritual knowledge.",
+                "Practice self-initiated expenditures through donations and charity, proportional to the planet in the 12th house (e.g., Saturn: old age homes; Mercury: orphanages; Rahu: blind organizations; Jupiter: temples; Ketu: disabled/dogs).",
+                "Make a vow to donate a portion of earnings to Kuldevi/Kuldevta (family deity) temples as a grateful gesture.",
+                "Regularly make donations, maintain spiritual practices, and stay close to a guru.",
+                "Support the father.",
+                "Avoid falling for get-rich-quick schemes or trusting investment advice blindly."
+            ],
+            "additional_notes": [
+                "This placement is 'eleventh to itself,' suggesting a search for gains within the house of losses and expenses.",
+                "It represents a Maraka planet.",
+                "Malefic planets like Rahu in this position can make the native enjoy being far from home.",
+                "There is an emphasis on letting go of ingrained values.",
+                "The native's life and finances gradually settle after the age of 45-50, but before that, things remain turbulent."
+            ]
+        },
+        "Rahu": {
+            "house_placement": "Second Lord with Rahu",
+            "general_attributes": [
+                "The capacity to earn money increases significantly.",
+                "Comes up with unconventional and unique ideas for making money.",
+                "Believes in eliminating competition to succeed in the market.",
+                "Works in a learning phase initially, accumulating knowledge rather than immediate wealth."
+            ],
+            "money_and_wealth": [
+                "Money is earned through unconventional ideas, potentially utilizing the internet.",
+                "Strategies may involve aggressively undercutting competition (like Jio) to gain market share, then multiplying earnings.",
+                "Strikes at the right time after a period of learning, leading to substantial financial gains."
+            ],
+            "family_and_relationships": [
+                "No specific attributes mentioned regarding family and relationships for this combination in the provided texts."
+            ],
+            "speech_and_communication": [
+                "No specific attributes mentioned regarding speech and communication for this combination in the provided texts."
+            ],
+            "health_and_wellbeing": [
+                "No specific attributes mentioned regarding health and well-being for this combination in the provided texts."
+            ],
+            "challenges_and_risks": [
+                "There is a risk of engaging in illegal activities for money, though this is not recommended.",
+                "While eliminating competition can be a strategy, it should not involve destroying others' livelihoods."
+            ],
+            "remedies_and_advice": [
+                "Avoid completely destroying the competition or taking away their livelihood; aim for a balanced approach to uplift oneself."
+            ],
+            "additional_notes": [
+                "Rahu's energy in this context is about generating unique and often disruptive strategies for wealth creation."
+            ]
+        },
+        "Ketu": {
+            "house_placement": "Second Lord with Ketu",
+            "general_attributes": [
+                "The native does not keep track of money; may forget about loans given or rent due.",
+                "Receives money from unearned or unexpected sources.",
+                "Experiences inner peace through giving."
+            ],
+            "money_and_wealth": [
+                "Money comes from unexpected sources.",
+                "Receives blessings, with people often giving them things freely.",
+                "Donations are highly beneficial; the more one donates, the more money they receive.",
+                "Ketu can provide immense wealth, even greater than Rahu, often from past lives, without much effort.",
+                "The 12th house, often activated in millionaires' and billionaires' charts, is where this vast, unearned wealth originates."
+            ],
+            "family_and_relationships": [
+                "No specific attributes mentioned regarding family and relationships for this combination in the provided texts."
+            ],
+            "speech_and_communication": [
+                "No specific attributes mentioned regarding speech and communication for this combination in the provided texts."
+            ],
+            "health_and_wellbeing": [
+                "No specific attributes mentioned regarding health and well-being for this combination in the provided texts."
+            ],
+            "challenges_and_risks": [
+                "Poor money management, such as forgetting debts or payments owed to them."
+            ],
+            "remedies_and_advice": [
+                "Continuously make donations; increased giving leads to increased earnings.",
+                "Help others as much as possible, as this will increase wealth and bring peace of mind."
+            ],
+            "additional_notes": [
+                "Ketu's influence is linked to money from Akasma (unexpected) sources and past life karma."
+            ]
+        }
     },
     "3Lord": {
         "1": {
