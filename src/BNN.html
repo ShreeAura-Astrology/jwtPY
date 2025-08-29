@@ -1475,14 +1475,34 @@
 
     // Find placement of sign lords in houses
     function getSignLordPlacements(horoscope) {
+      // const signLords = {
+      //   1: 'Mars', 2: 'Venus', 3: 'Mercury', 4: 'Moon', 5: 'Sun', 6: 'Mercury',
+      //   7: 'Venus', 8: 'Mars', 9: 'Jupiter', 10: 'Saturn', 11: 'Saturn', 12: 'Jupiter'
+      // };
       const signLords = {
-        1: 'Mars', 2: 'Venus', 3: 'Mercury', 4: 'Moon', 5: 'Sun', 6: 'Mercury',
-        7: 'Venus', 8: 'Mars', 9: 'Jupiter', 10: 'Saturn', 11: 'Saturn', 12: 'Jupiter'
+        1: ['Mars'],
+        2: ['Venus'],
+        3: ['Mercury'],
+        4: ['Moon'],
+        5: ['Sun'],
+        6: ['Mercury'],
+        7: ['Venus'],
+        8: ['Mars', 'Ketu'],
+        9: ['Jupiter'],
+        10: ['Saturn'],
+        11: ['Saturn', 'Rahu'],
+        12: ['Jupiter']
       };
       var tableHTML = '';
       const placements = {};
       for (let sign = 1; sign <= 12; sign++) {
-        const lord = signLords[sign];
+
+        signLords[sign].forEach(lord => {
+          if (!horoscope[lord]) {
+            placements[`Sign ${sign}`] = `${lord} not found in chart`;
+            return;
+          }
+          //const lord = signLords[sign];
         const planetData = horoscope[lord];
         if (planetData && planetData.house) {
           var houseOfSign = getHouseOfSign(sign, horoscope);
@@ -1493,6 +1513,8 @@
         const jsonData = fetchLordData(houseOfSign + "Lord", planetData.house + ""); // Replace with your fetchLordData function
         tableHTML += generateHTMLTable(jsonData, lord  + "( "+ houseOfSign + "Lord )" , "In " + planetData.house + " House");
         // Append the table to the body of the HTML document
+        });
+        
       }
       createCard('House Lord Placements', tableHTML, 'html');
       return placements;
