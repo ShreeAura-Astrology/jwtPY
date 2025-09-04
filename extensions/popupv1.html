@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Extractor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            width: 300px;
+            background-color: #f0f2f5;
+        }
+        h2 {
+            font-size: 1.2em;
+            text-align: center;
+            color: #333;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            transition: background-color 0.2s;
+        }
+        #extractButton {
+            background-color: #4CAF50;
+        }
+        #extractButton:hover {
+            background-color: #45a049;
+        }
+        #loadButton {
+            background-color: #2196F3;
+        }
+        #loadButton:hover {
+            background-color: #0b7dda;
+        }
+        #result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.9em;
+        }
+        #jsonData {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+            font-size: 0.8em;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h2>Shree Aura Extractor</h2>
+    <div class="button-container">
+        <button id="extractButton">Extract Table</button>
+        <button id="loadButton">Load Data</button>
+    </div>
+    <div id="result"></div>
+    <pre id="jsonData"></pre>
+    <script src="popupv1.js"></script>
+</body>
+</html>

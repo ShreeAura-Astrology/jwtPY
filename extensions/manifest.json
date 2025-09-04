@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "ShreeAura Horoscope Extractor",
+  "version": "1.0",
+  "description": "Extracts Horoscope data from a specific table from https://www.neuastro.com/self_kundli.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popupv1.html",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
