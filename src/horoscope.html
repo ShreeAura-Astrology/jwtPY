@@ -2375,7 +2375,7 @@
                 return `${entry} ${impact}`;
             });
         }
-        var analysis = "";
+        var grahanalysis = "";
         $scope.toggleMessage = false;
         $scope.horoscope = {};
         $scope.currentAge = 0;
@@ -2409,7 +2409,7 @@
             getPredictions();
             $scope.twoPlanetPrediction();
             getPlanetHouses(houses);
-            analysis = generateHTMLTable(detectPlanets(houses)),'Area','Results';) ;
+            grahanalysis = generateHTMLTable(detectPlanets(houses),'Area','Results');
             showResult();
             $scope.horoscope = houses;
 
@@ -2711,7 +2711,7 @@
             if (isMangalDosh) {
                 document.getElementById("NP").innerHTML += mangalDoshRemedies;
             }
-            document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: <br>' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: <br>' + rinEffects.toString().replaceAll(',', '<br>') + "<br><br>Uch Grahas:<br>" + uchGrahas.toString().replaceAll(',', '<br>') + "<br><br>Neech Grahas:<br>" + neechGrahas.toString().replaceAll(',', '<br>')  + analysis + "<br>Predictions:<br>" + predictions.toString().replaceAll(',', '<br>') + twoPlanetPredictions.toString().replaceAll(',', '<br>');
+            document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: <br>' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: <br>' + rinEffects.toString().replaceAll(',', '<br>') + "<br><br>Uch Grahas:<br>" + uchGrahas.toString().replaceAll(',', '<br>') + "<br><br>Neech Grahas:<br>" + neechGrahas.toString().replaceAll(',', '<br>')  + grahanalysis + "<br>Predictions:<br>" + predictions.toString().replaceAll(',', '<br>') + twoPlanetPredictions.toString().replaceAll(',', '<br>');
         }
 
         $scope.planets = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Rahu", "Ketu"];
