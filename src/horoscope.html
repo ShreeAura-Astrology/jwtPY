@@ -2695,9 +2695,6 @@
             return ownRashi[planet] && ownRashi[planet].includes(parseInt(house));
         }
 
-        console.log(detectPlanets(horoscope));
-
-
         function showResult() {
             // Show the results in the HTML elements
             document.getElementById("M").innerHTML = maleficHouses.toString() + "<br> Negative Outcomes: <br>" + getMaleficHouseOutcomes(maleficHouses).toString().replaceAll(',', '<br>');
