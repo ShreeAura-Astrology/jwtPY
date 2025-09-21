@@ -1833,7 +1833,7 @@
             return false;
           }
           // Get the house number of the first planet in the list.
-          const firstPlanetHouse = horoscope[planetNames].house;
+          const firstPlanetHouse = horoscope[planet].house;
           const houses = planetNames.map(p => horoscope[p].house);
 
           // --- Check 1: Are all planets in the same house (Conjunction)? ---
