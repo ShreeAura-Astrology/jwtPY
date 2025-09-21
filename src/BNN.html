@@ -1827,9 +1827,40 @@
       };
 
       const checkCombination = (planetNames) => {
-        return planetNames.every(p => horoscope[p]);
-      };
+        // First, ensure all planets in the combination exist in the horoscope.
+        for (const planet of planetNames) {
+          if (!horoscope[planet]) {
+            return false;
+          }
+        }
 
+        // Get the house number of the first planet in the list.
+        const firstPlanetHouse = horoscope[planetNames].house;
+        const houses = planetNames.map(p => horoscope[p].house);
+
+        // --- Check 1: Are all planets in the same house (Conjunction)? ---
+        const allInSameHouse = houses.every(house => house === firstPlanetHouse);
+        if (allInSameHouse) {
+          return true;
+        }
+
+        // --- Check 2: Are all planets in the same trine? ---
+        // Trine houses from the first planet's house are: house, house+4, house+8 (wrapping around 12)
+        const trineHouses = [
+          firstPlanetHouse,
+          (firstPlanetHouse + 4 - 1) % 12 + 1, // 5th house from the first planet
+          (firstPlanetHouse + 8 - 1) % 12 + 1  // 9th house from the first planet
+        ];
+
+        // Check if every planet's house is one of these trine houses.
+        const allInSameTrine = houses.every(house => trineHouses.includes(house));
+        if (allInSameTrine) {
+          return true;
+        }
+
+        // If neither condition is met, the combination is not present.
+        return false;
+      }
       // --- Main Prediction Logic ---
 
       let predictions = {
