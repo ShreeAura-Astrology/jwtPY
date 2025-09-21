@@ -220,6 +220,7 @@
       showSignLordPlacements(horoscope);
       showProfessionFromHoroscope(horoscope);
       getWorkEnvironmentFromHoroscope(horoscope);
+      displayChildHealthPredictions(horoscope, getChildBirthHealthPredictions);
     }
 
     /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -1422,7 +1423,7 @@
 
     //const result = fetchLordData("8th Lord", "1");
     //console.log(result);
-    function generateHTMLTable(jsonData,column1hdr, column2hdr) {
+    function generateHTMLTable(jsonData, column1hdr, column2hdr) {
       // Helper function to create a table row
       function createRow(key, value) {
         return `<tr>
@@ -1503,18 +1504,18 @@
             return;
           }
           //const lord = signLords[sign];
-        const planetData = horoscope[lord];
-        if (planetData && planetData.house) {
-          var houseOfSign = getHouseOfSign(sign, horoscope);
-          placements[`Sign ${sign}`] = `${lord}:  ${houseOfSign} house lord is placed in House ${planetData.house}`;
-        } else {
-          placements[`Sign ${sign}`] = `${lord} not found or house not defined in chart`;
-        }
-        const jsonData = fetchLordData(houseOfSign + "Lord", planetData.house + ""); // Replace with your fetchLordData function
-        tableHTML += generateHTMLTable(jsonData, lord  + "( "+ houseOfSign + "Lord )" , "In " + planetData.house + " House");
-        // Append the table to the body of the HTML document
+          const planetData = horoscope[lord];
+          if (planetData && planetData.house) {
+            var houseOfSign = getHouseOfSign(sign, horoscope);
+            placements[`Sign ${sign}`] = `${lord}:  ${houseOfSign} house lord is placed in House ${planetData.house}`;
+          } else {
+            placements[`Sign ${sign}`] = `${lord} not found or house not defined in chart`;
+          }
+          const jsonData = fetchLordData(houseOfSign + "Lord", planetData.house + ""); // Replace with your fetchLordData function
+          tableHTML += generateHTMLTable(jsonData, lord + "( " + houseOfSign + "Lord )", "In " + planetData.house + " House");
+          // Append the table to the body of the HTML document
         });
-        
+
       }
       createCard('House Lord Placements', tableHTML, 'html');
       return placements;
@@ -1745,6 +1746,186 @@
       return result;
     }
 
+
+    /**
+ * A helper function that invokes getAstrologyPredictions and formats the output.
+ * It takes a horoscope object, generates predictions, and returns a formatted string.
+ *
+ * @param {object} horoscope - The horoscope data object.
+ * @param {function} predictionFunc - The prediction function to invoke (e.g., getAstrologyPredictions).
+ * @returns {string} A formatted string containing the astrological predictions.
+ */
+function displayChildHealthPredictions(horoscope, predictionFunc) {
+  // 1. Invoke the main prediction function to get the prediction data.
+  const predictions = predictionFunc(horoscope);
+
+  // 2. Format the output into a readable string.
+  let output = "--- Astrological Predictions ---\n\n";
+
+  // Format Childbirth Predictions
+  output += "CHILDREN & CHILDBIRTH PREDICTIONS:\n";
+  if (predictions.Childbirth && predictions.Childbirth.length > 0) {
+    predictions.Childbirth.forEach(p => {
+      output += `- ${p}\n`;
+    });
+  } else {
+    output += "- No specific childbirth predictions were found based on the available rules.\n";
+  }
+
+  // Format Health Predictions
+  output += "\nHEALTH PREDICTIONS:\n";
+  if (predictions.Health && predictions.Health.length > 0) {
+    predictions.Health.forEach(p => {
+      output += `- ${p}\n`;
+    });
+  } else {
+    output += "- No specific health yogas or conditions were identified based on the available rules.\n";
+  }
+  createCard('Child Birth and Health', output, 'text');
+  return output;
+}
+    /**
+ * Provides astrological predictions based on horoscope data.
+ * The logic is derived from the provided source materials on Bhrigu Nandi Nadi astrology.
+ * 
+ * @param {object} horoscope - The horoscope data object.
+ * @returns {object} An object containing arrays of predictions for Childbirth and Health.
+ */
+    function getChildBirthHealthPredictions(horoscope) {
+      // --- Helper Data & Functions ---
+
+      const signNames = {
+        1: "Aries", 2: "Taurus", 3: "Gemini", 4: "Cancer", 5: "Leo",
+        6: "Virgo", 7: "Libra", 8: "Scorpio", 9: "Sagittarius",
+        10: "Capricorn", 11: "Aquarius", 12: "Pisces"
+      };
+
+      const getPlanetsInSign = (signNumber) => {
+        let planets = [];
+        for (const planet in horoscope) {
+          if (horoscope[planet].sign === signNumber) {
+            planets.push(planet);
+          }
+        }
+        return planets;
+      };
+
+      const getHouseFromJupiter = (targetHouse) => {
+        const jupiterHouse = horoscope.Jupiter.house;
+        // Calculate the target house number, wrapping around if it exceeds 12
+        return (jupiterHouse + targetHouse - 2) % 12 + 1;
+      };
+
+      const getPlanetsInHouse = (houseNumber) => {
+        let planets = [];
+        for (const planet in horoscope) {
+          if (horoscope[planet].house === houseNumber) {
+            planets.push(planet);
+          }
+        }
+        return planets;
+      };
+
+      const checkCombination = (planetNames) => {
+        return planetNames.every(p => horoscope[p]);
+      };
+
+      // --- Main Prediction Logic ---
+
+      let predictions = {
+        Childbirth: [],
+        Health: []
+      };
+
+      // 1. Childbirth Predictions [1, 2]
+      const fifthHouseFromJupiter = getHouseFromJupiter(5);
+      const planetsInFifthFromJu = getPlanetsInHouse(fifthHouseFromJupiter);
+
+      if (planetsInFifthFromJu.length > 0) {
+        planetsInFifthFromJu.forEach(planet => {
+          switch (planet) {
+            case 'Ketu':
+              predictions.Childbirth.push("Ketu in the 5th house from Jupiter can signify miscarriage or no childbirth. [2]");
+              break;
+            case 'Rahu':
+              predictions.Childbirth.push("Rahu in the 5th house from Jupiter can signify delay, adoption, or a child after specific pujas (pitra/sarp dosh). [2]");
+              break;
+            case 'Saturn':
+              predictions.Childbirth.push("Saturn in the 5th house from Jupiter can signify delay in childbirth (after 32 years of age). Severe delays could lead to denial. [2]");
+              break;
+            case 'Moon':
+              predictions.Childbirth.push("Moon in the 5th house from Jupiter can signify adoption. [2]");
+              break;
+          }
+        });
+      } else {
+        predictions.Childbirth.push("No planet found in the 5th house from Jupiter. Further analysis of aspects or the 5th lord is needed. [1]");
+      }
+
+
+      // 2. Childbirth Problem Possibility (Planets in Libra) [3-5]
+      const planetsInLibra = getPlanetsInSign(7);
+      if (planetsInLibra.length > 0) {
+        planetsInLibra.forEach(planet => {
+          switch (planet) {
+            case 'Sun':
+              predictions.Childbirth.push("Sun in Libra: May indicate low sperm count in males or issues with egg cells/ovaries in females. [3]");
+              break;
+            case 'Moon':
+              predictions.Childbirth.push("Moon in Libra: Can cause early ejaculation or low sperm count in males, and menstrual cycle problems in females. [3]");
+              break;
+            case 'Mars':
+              predictions.Childbirth.push("Mars in Libra: Indicates strong sperm in males, but may suggest surgical delivery or issues with bed pleasure for females. [3]");
+              break;
+            case 'Mercury':
+              predictions.Childbirth.push("Mercury in Libra: Suggests no major issues, but possibly less interest in sexual activity. [3]");
+              break;
+            case 'Venus':
+              predictions.Childbirth.push("Venus in Libra: Generally no major problem, though males might have a slightly lower sperm count and females may have white discharge. [4]");
+              break;
+            case 'Saturn':
+              predictions.Childbirth.push("Saturn in Libra: Can indicate problems with sperm count in males or uterine issues and delays for females. [4]");
+              break;
+            case 'Rahu':
+              predictions.Childbirth.push("Rahu in Libra: May cause dryness in sperm counts for males and ovary problems for females. [4]");
+              break;
+            case 'Ketu':
+              predictions.Childbirth.push("Ketu in Libra: Suggests a need for medical attention like IVF for males. [4]");
+              break;
+            case 'Jupiter':
+              predictions.Childbirth.push("Jupiter in Libra: Indicates no problem in childbirth unless it is afflicted by multiple malefic planets. [5]");
+              break;
+          }
+        });
+      }
+
+      // 3. General Health Predictions based on Jupiter's connections [6]
+      const jupiterSign = horoscope.Jupiter.sign;
+      const planetsInJupiterSign = getPlanetsInSign(jupiterSign);
+
+      if (planetsInJupiterSign.includes('Mars')) predictions.Health.push("Jupiter with Mars indicates a possibility of surgery, accidents, or health issues. [6]");
+      if (planetsInJupiterSign.includes('Rahu')) predictions.Health.push("Jupiter with Rahu can be dangerous in the first year and suggest ill health throughout life. [6]");
+      if (planetsInJupiterSign.includes('Ketu')) predictions.Health.push("Jupiter with Ketu indicates potential for blockages and surgeries. [6]");
+      if (planetsInJupiterSign.includes('Venus')) predictions.Health.push("Jupiter with Venus suggests the possibility of lifelong medication. [6]");
+
+      // 4. Health Yogas (Planetary Combinations) [7, 8]
+      if (checkCombination(['Rahu', 'Mercury', 'Mars'])) predictions.Health.push("Yoga for spinal cord problems (Rahu + Mercury + Mars). [7]");
+      if (checkCombination(['Sun', 'Moon', 'Rahu', 'Saturn'])) predictions.Health.push("Yoga for migraine/headache (Sun + Moon + Rahu + Saturn). [7]");
+      if (checkCombination(['Mercury', 'Moon'])) predictions.Health.push("Yoga for thyroid or throat issues (Mercury + Moon). [7]");
+      if (checkCombination(['Mercury', 'Moon', 'Venus'])) predictions.Health.push("Yoga for thyroid issues (Mercury + Moon + Venus). [7]");
+      if (checkCombination(['Rahu', 'Mercury', 'Jupiter'])) predictions.Health.push("Yoga for ear disease (Rahu + Mercury + Jupiter). [7]");
+      if (checkCombination(['Saturn', 'Rahu', 'Mars'])) predictions.Health.push("Cancer yoga or decaying of teeth (Saturn + Rahu + Mars). [7]");
+      if (checkCombination(['Saturn', 'Moon']) || checkCombination(['Rahu', 'Moon']) || checkCombination(['Ketu', 'Moon']) || checkCombination(['Saturn', 'Sun']) || checkCombination(['Rahu', 'Sun']) || checkCombination(['Ketu', 'Sun'])) {
+        predictions.Health.push("Yoga for trouble in eyes (Saturn/Rahu/Ketu with Moon/Sun). [7]");
+      }
+      if (checkCombination(['Saturn', 'Moon', 'Ketu'])) predictions.Health.push("Yoga for asthma or breathing issues (Saturn + Moon + Ketu). [8]");
+      if (checkCombination(['Mars', 'Moon', 'Rahu'])) predictions.Health.push("Yoga for blood impurities, infection, or cancer (Mars + Moon + Rahu). [8]");
+      if (checkCombination(['Jupiter', 'Mars']) || checkCombination(['Jupiter', 'Ketu'])) predictions.Health.push("Yoga for blood pressure (Jupiter + Mars/Ketu). [8]");
+      if (checkCombination(['Sun', 'Saturn']) || checkCombination(['Mars', 'Saturn'])) predictions.Health.push("Yoga for arthritis or joint pain (Sun/Mars + Saturn). [8]");
+      if (checkCombination(['Moon', 'Rahu']) || checkCombination(['Moon', 'Ketu'])) predictions.Health.push("Yoga for psychological problems (Moon + Rahu/Ketu). [8]");
+
+      return predictions;
+    }
     // Attach save and load UI components
     window.addEventListener('DOMContentLoaded', () => {
       const container = document.createElement('div');
