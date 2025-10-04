@@ -1619,7 +1619,7 @@
             (saturn.sign - 1 + 4 + 12) % 12 || 12,
             (saturn.sign - 1 + 8 + 12) % 12 || 12
           ].includes(d.sign)) aspectType = 'Retrograde Trine';
-          return `${p} (${aspectType})`;
+          return `${p}:(${aspectType})`;
         });
 
       const planetHints = {
@@ -1634,8 +1634,8 @@
       };
 
       influenceDetails.forEach(detail => {
-        const name = detail.split(' ')[0];
-        if (planetHints[name]) extras.push("[ " + detail.split(' ')[1]  + " ] :" + planetHints[name]);
+        const name = detail.split(':')[0];
+        if (planetHints[name]) extras.push(name + " [ " + detail.split(' ')[1]  + " ] :" + planetHints[name]);
       });
 
       const aspectsText = influenceDetails.length ? `
