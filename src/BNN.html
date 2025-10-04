@@ -221,6 +221,7 @@
       showProfessionFromHoroscope(horoscope);
       getWorkEnvironmentFromHoroscope(horoscope);
       displayChildHealthPredictions(horoscope, getChildBirthHealthPredictions);
+      determineSunPredictions(horoscope);
     }
 
     /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -1984,6 +1985,333 @@
 
       return predictions;
     }
+/**
+ * Determines predictions based on the 51 Unknown Facts about Sun rules (Bhrigu Nandi Nadi principles).
+ * Uses the structure: { Sun: { sign: X, house: Y }, ... }
+ * 
+ * NOTE: The logic relies on Graha Drishti rules from BPHS/Uttara Kalamrita for aspects [10-12].
+ * The source material does not provide specific coding instructions; this is a logical implementation.
+ * @param {object} horoscope - The chart data containing planet placements (house and sign).
+ * @returns {Array<string>} - A list of generated predictions.
+ */
+function determineSunPredictions(horoscope) {
+  const { Sun, Moon, Mars, Mercury, Venus, Jupiter, Saturn, Rahu, Ketu } = horoscope;
+  const predictions = [];
+  const lordshipMap = {
+    Sun: [5],      // Leo
+    Moon: [4],     // Cancer
+    Mars: [1,8],    // Aries, Scorpio
+    Mercury: [3, 6],   // Gemini, Virgo
+    Venus: [2, 7],    // Taurus, Libra
+    Jupiter: [9, 12],  // Sagittarius, Pisces
+    Saturn: [10, 11]  // Capricorn, Aquarius
+};
+  // --- Utility Functions ---
+/**
+   * Checks for a Rashi exchange (Parivartana Yoga) between two planets.
+   * P1 is in P2's sign AND P2 is in P1's sign.
+   */
+  const checkExchange = (P1_name, P1_data, P2_name, P2_data) => {
+      // 1. Get the signs ruled by P1 and P2
+      const P1_rashi_signs = lordshipMap[P1_name]; // e.g., Sun: [2]
+      const P2_rashi_signs = lordshipMap[P2_name]; // e.g., Jupiter: [10, 11]
+
+      if (!P1_rashi_signs || !P2_rashi_signs) return false;
+
+      // 2. Condition A: P1 is in a sign ruled by P2
+      const P1_in_P2_sign = P2_rashi_signs.includes(P1_data.sign);
+
+      // 3. Condition B: P2 is in a sign ruled by P1
+      const P2_in_P1_sign = P1_rashi_signs.includes(P2_data.sign);
+
+      return P1_in_P2_sign && P2_in_P1_sign;
+  };
+  // Checks if two planets are in the same house
+  const isConjunction = (P1, P2) => P1.house === P2.house;
+
+  // Calculates house distance (1 to 12) from P1 to P2
+  const getRelativeHouse = (P1, P2) => ((P2.house - P1.house + 12) % 12) + 1;
+  
+  // Helper to check if a planet is in a specific Rashi
+  const isInRashi = (P, signId) => P.sign === signId; 
+
+  /**
+   * Checks if Planet P1 aspects the target house.
+   * Special aspect houses: Mars (4, 8), Jupiter (5, 9), Saturn (3, 10), Nodes (5, 9). 7th is universal [11].
+   */
+  const isAspectedBy = (P1, targetHouse, specialAspects = []) => {
+      // All planets aspect the 7th house [13]
+      const universalAspect = ((P1.house + 6) % 12) + 1;
+      let aspectHouses = [universalAspect];
+
+      // Add special aspects if applicable
+      const relativeAspects = specialAspects.map(a => ((P1.house + a - 1 - 1 + 12) % 12) + 1);
+      aspectHouses = aspectHouses.concat(relativeAspects);
+
+      return aspectHouses.includes(targetHouse);
+  };
+  
+  // --- Planetary Aspect Configuration based on Source [11, 12, 14] ---
+  const aspectConfig = {
+      Mars: [4,7,8],
+      Jupiter: [5,7,9],
+      Saturn: [3,7,10],
+      Rahu: [5,7,9],
+      Ketu: [5,7,9],
+      Sun: [7],
+      Moon: [7],
+      Mercury: [7],
+      Venus: [7]
+  };
+
+  // --- Implementation of the 51 Rules ---
+
+  // A. Rules Related to Family and Father's Status/Profession (Rules 1-35)
+  
+  // 1. Sun has Ve and Mo in successive Houses [1]
+  if (getRelativeHouse(Sun, Venus) === 2 && getRelativeHouse(Venus, Moon) === 2) {
+    predictions.push("The person may be the son of the 2nd wife of his father.");
+  }
+
+  // 2. Sun next to Venus (Ve in 2nd house from Su) [1]
+  if (getRelativeHouse(Sun, Venus) === 2) {
+    predictions.push("Wife is devotional.");
+  }
+
+  // 3. Sun has Ve in 2nd house and Ju aspects Venus [1]
+  const VeIn2ndFromSun = getRelativeHouse(Sun, Venus) === 2;
+  const JuAspectsVe = isAspectedBy(Jupiter, Venus.house, aspectConfig.Jupiter);
+  if (VeIn2ndFromSun && JuAspectsVe) {
+    predictions.push("The native and his father will be in the same profession.");
+  }
+
+  // 4. Sun and Mercury hemmed between Mars and Venus [1, 2]
+  if (isConjunction(Sun, Mercury) && getRelativeHouse(Mars, Sun) === 12 && getRelativeHouse(Sun, Venus) === 2) {
+    predictions.push("Father of the native had to undergo a surgery in middle of his age.");
+  }
+  
+  // 5. Sun with Saturn in Leo (Sign 5) [2]
+  if (isConjunction(Sun, Saturn) && isInRashi(Sun, 5)) {
+    predictions.push("The native will have a Govt. Job.");
+  }
+
+  // 6. Jupiter has Sun and Me in 2nd House [2]
+  if (isConjunction(Sun, Mercury) && getRelativeHouse(Jupiter, Sun) === 2) {
+    predictions.push("The native and Father can have the same education.");
+  }
+
+  // 7. Sun in Taurus (Sign 2) [2]
+  if (isInRashi(Sun, 2)) {
+    predictions.push("The mother of native is faithful to native’s father.");
+  }
+
+  // 8. Su and Me behind Ju in Sagittarius (Sign 9) [2]
+  if (isConjunction(Sun, Mercury) && getRelativeHouse(Sun, Jupiter) === 12 && isInRashi(Jupiter, 9)) {
+    predictions.push("The native is born in a noble family. The Father and grandfather are learned people.");
+  }
+
+  // 9. Sun and Rahu together [2]
+  if (isConjunction(Sun, Rahu)) {
+    predictions.push("Father’s married life may have issues.");
+  }
+
+  // 10. Sun in Ju rashi (Sagittarius=9 or Pisces=12) with mercury [3]
+  if (isConjunction(Sun, Mercury) && (isInRashi(Sun, 9) || isInRashi(Sun, 12))) {
+    predictions.push("Father will be godly and learned.");
+  }
+
+  // 11. Sun placed between 2 enimical planets [3] (Requires defined enemy list; skipped for precise definition)
+  
+  // 12. Sun has Ketu, Mercury, Venus in 2nd house [3]
+  if (getRelativeHouse(Sun, Ketu) === 2 && getRelativeHouse(Sun, Mercury) === 2 && getRelativeHouse(Sun, Venus) === 2) {
+    predictions.push("Father can have agricultural income.");
+  }
+
+  // 13. Sun in Aries (Sign 1), Ve in Pisces (Sign 12) [3]
+  if (isInRashi(Sun, 1) && isInRashi(Venus, 12)) {
+    predictions.push("Native’s father will be working in high govt. position.");
+  }
+
+  // 14. Mars in 2nd house from Sun [3]
+  if (getRelativeHouse(Sun, Mars) === 2) {
+    predictions.push("Father may have rental income, Mars related source of income.");
+  }
+
+  // 15. Jupiter in cancer (Sign 4) and Sun is exalted (Aries, Sign 1) [3]
+  if (isInRashi(Jupiter, 4) && isInRashi(Sun, 1)) {
+    predictions.push("Native may have topmost position.");
+  }
+
+  // 16. Sun, Saturn and Moon together and Rahu in 2nd to them [4]
+  if (isConjunction(Sun, Saturn) && isConjunction(Sun, Moon) && getRelativeHouse(Sun, Rahu) === 2) {
+    predictions.push("Father will be a dealer in sweets.");
+  }
+
+  // 17. Sun’s 10th house aspected by Mars [4]
+  const Sun10thHouse = ((Sun.house + 9) % 12) + 1;
+  if (isAspectedBy(Mars, Sun10thHouse, aspectConfig.Mars)) {
+    predictions.push("Father can be in Govt. Job.");
+  }
+
+  // 18. Sun has Mars and Rahu in 2nd and Saturn in 3rd [4]
+  if (getRelativeHouse(Sun, Mars) === 2 && getRelativeHouse(Sun, Rahu) === 2 && getRelativeHouse(Sun, Saturn) === 3) {
+    predictions.push("Father may have a low salaried job.");
+  }
+
+  // 19. Sun in Cancer (Sign 4) [4]
+  if (isInRashi(Sun, 4)) {
+    predictions.push("Native’s father can settle down with in laws.");
+  }
+
+  // 20. Sun’s 12th house aspected by Saturn [4]
+  const Sun12thHouse = ((Sun.house + 11) % 12) + 1;
+  if (isAspectedBy(Saturn, Sun12thHouse, aspectConfig.Saturn)) {
+    predictions.push("Father will have lot of problems because of bad company.");
+  }
+
+  // 21. Sun in Aries and Ve in Taurus [5]
+  if (isInRashi(Sun, 1) && isInRashi(Venus, 2)) {
+    predictions.push("Father is master of arts and rich.");
+  }
+
+  // 22. Sun and Mars in 7th house from Jupiter [5]
+  if (getRelativeHouse(Jupiter, Sun) === 7 && getRelativeHouse(Jupiter, Mars) === 7) {
+    predictions.push("Native will have unhappy married life.");
+  }
+
+  // 23. Sun has Ve and Ra in 2nd house [5]
+  if (getRelativeHouse(Sun, Venus) === 2 && getRelativeHouse(Sun, Rahu) === 2) {
+    predictions.push("The native’s father can have a mistress.");
+  }
+
+  // 24. Sun has no planets in either houses (12th and 2nd from Sun) [5]
+  // Complex: Requires checking ALL planet houses. Assume simplified check for the 9 defined planets.
+  const planets = [Moon, Mars, Mercury, Venus, Jupiter, Saturn, Rahu, Ketu];
+  const house12 = ((Sun.house + 11) % 12) + 1;
+  const house2 = ((Sun.house + 1) % 12) + 1;
+  const is12thEmpty = planets.every(p => p.house !== house12);
+  const is2ndEmpty = planets.every(p => p.house !== house2);
+  
+  if (is12thEmpty && is2ndEmpty) {
+      predictions.push("Father will have problems.");
+  }
+
+  // 25. Sun in debilitation (Sign 7, Libra) [5]
+  if (isInRashi(Sun, 7)) {
+    predictions.push("Father had lot of problems at the time of native’s birth.");
+  }
+
+  // 26. Sun touches 1st Sa then Ketu in its movements [5] (Requires transit logic; placeholder)
+  
+  // 27. Sun in Leo (Sign 5) and Me in Virgo (Sign 6) [5]
+  if (isInRashi(Sun, 5) && isInRashi(Mercury, 6)) {
+    predictions.push("Father may work for cooperative firm.");
+  }
+
+  // 28. If 10th rashi from Sun is ruled by Mars (Aries=1 or Scorpio=8) [6]
+  const Rashi10thFromSun = (Sun.sign + 9 > 12) ? Sun.sign + 9 - 12 : Sun.sign + 9;
+  if (Rashi10thFromSun === 1 || Rashi10thFromSun === 8) {
+    predictions.push("Father may be a govt. employee.");
+  }
+
+  // 29. 2nd lord from Sun sits with Ve or Ketu [6] (Requires identifying the Rashi Lord; skipped)
+  
+  // 30. Sun and Venus conjunction [6]
+  if (isConjunction(Sun, Venus)) {
+    predictions.push("No happiness from Money or marriage.");
+  }
+
+  // 31. Sun with Me and Ma Aspected by Sa and Ju [6]
+  const SunMeMaConjunction = isConjunction(Sun, Mercury) && isConjunction(Sun, Mars);
+  const house = Sun.house;
+  const SaAspects = isAspectedBy(Saturn, house, aspectConfig.Saturn);
+  const JuAspects = isAspectedBy(Jupiter, house, aspectConfig.Jupiter);
+  if (SunMeMaConjunction && SaAspects && JuAspects) {
+    predictions.push("The native’s business may receive government aids.");
+  }
+
+  // 32. Sun in 12th house to Jupiter [6]
+  if (getRelativeHouse(Jupiter, Sun) === 12) {
+    predictions.push("Birthplace of native is near temple.");
+  }
+
+  // 33. Sun has Ju and Sa in 2nd House [6]
+  if (getRelativeHouse(Sun, Jupiter) === 2 && getRelativeHouse(Sun, Saturn) === 2) {
+    predictions.push("Native and Father may carry on same profession.");
+  }
+
+  // 34. Sun and Jupiter exchange [7] (Requires Rashi exchange check; skipped)
+
+  // 35. Sun in Capricorn (10), Rahu in 2nd house (relative to Su), and Sa in Virgo(6)/Gemini(3) [7]
+  if (isInRashi(Sun, 10) && getRelativeHouse(Sun, Rahu) === 2 && (isInRashi(Saturn, 6) || isInRashi(Saturn, 3))) {
+    predictions.push("Native’s father has to face lot of legal problems.");
+  }
+
+  // B. Rules Related to Birthplace (Rules 36, 32)
+  
+  // 36. Sun in Pisces (Sign 12) [7]
+  if (isInRashi(Sun, 12)) {
+    predictions.push("Birthplace of native is near cremation ground or Ashram");
+  }
+
+  // C. Rules Related to Native's Physical Characteristics (Rules 37-48) [7-9]
+
+  // 43. Sun in Aries (Sign 1) [8]
+  if (isInRashi(Sun, 1)) { predictions.push("Head problems , migraine , hair loss."); }
+
+  // 37. Sun in Taurus (Sign 2) [7]
+  if (isInRashi(Sun, 2)) { predictions.push("Native will have reddish face and harsh voice."); }
+  
+  // 42. Sun in Gemini (Sign 3) [8]
+  if (isInRashi(Sun, 3)) { predictions.push("Native will have strong shoulders and arms."); }
+
+  // 38. Sun in Cancer (Sign 4) [7]
+  if (isInRashi(Sun, 4)) { predictions.push("Native will have strong heartbeats and problems to chest."); }
+
+  // 39. Sun in Leo (Sign 5) [7]
+  if (isInRashi(Sun, 5)) { predictions.push("Very good appetitite"); }
+
+  // 40. Sun in Virgo (Sign 6) [8]
+  if (isInRashi(Sun, 6)) { predictions.push("Native can have abs(intestinal muscles)"); }
+
+  // 41. Sun in Libra (Sign 7) [8]
+  if (isInRashi(Sun, 7)) { predictions.push("Native will have a good-looking body"); }
+
+  // 44. Sun in Scorpio (Sign 8) [8]
+  if (isInRashi(Sun, 8)) { predictions.push("Excess urination and problems in genitals"); }
+
+  // 45. Sun in Sagittarius (Sign 9) [8]
+  if (isInRashi(Sun, 9)) { predictions.push("Native will have good shaped thighs and hips"); }
+
+  // 46. Sun in Capricorn (Sign 10) [8]
+  if (isInRashi(Sun, 10)) { predictions.push("Native will have large knee caps and issues in them"); }
+
+  // 47. Sun in Aquarius (Sign 11) [9]
+  if (isInRashi(Sun, 11)) { predictions.push("Native will have good calve muscels"); }
+
+  // 48. Sun in Pisces (Sign 12) [9]
+  if (isInRashi(Sun, 12)) { predictions.push("Strong Feet"); }
+
+  // D. Miscellaneous and Specific Father/Danger Rules (Rules 49-51)
+
+  // 49. Sun in exaltation (Sign 1, Aries) and no planet behind (12th house from Sun is empty) [9]
+  if (isInRashi(Sun, 1) && is12thEmpty) {
+    predictions.push("Native’s father had struggled a lot to gain position.");
+  }
+
+  // 50. Sun with Sa And Ra in Mars rashi (Aries=1 or Scorpio=8) [9]
+  if (isConjunction(Sun, Saturn) && isConjunction(Sun, Rahu) && (isInRashi(Sun, 1) || isInRashi(Sun, 8))) {
+    predictions.push("Father will have old ancestral property.");
+  }
+
+  // 51. Sun in debilitation (Sign 7, Libra) and Ra in Leo (Sign 5) [9]
+  if (isInRashi(Sun, 7) && isInRashi(Rahu, 5)) {
+    predictions.push("Father will face great danger , when Ju touches Leo");
+  }
+  createCard('Sun Aspects', predictions, 'text');
+  return predictions;
+}
+
     // Attach save and load UI components
     window.addEventListener('DOMContentLoaded', () => {
       const container = document.createElement('div');
