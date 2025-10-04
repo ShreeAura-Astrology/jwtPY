@@ -224,6 +224,7 @@
       determineSunPredictions(horoscope);
       predictMoonFromJupiter(horoscope);
       getMoonRashiPredictions(horoscope);
+      getSaturnFromJupiterPredictions(horoscope);
     }
 
     /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -2808,6 +2809,221 @@
       return output;
     }
 
+    /**
+ * Maps Rashi numbers (1=Aries, 12=Pisces) to their names for better output readability.
+ */
+const RASHI_MAP = {
+    1: "Aries", 2: "Taurus", 3: "Gemini", 4: "Cancer", 5: "Leo", 6: "Virgo",
+    7: "Libra", 8: "Scorpio", 9: "Sagittarius", 10: "Capricorn", 11: "Aquarius", 12: "Pisces"
+};
+
+/**
+ * Astrological predictions for Saturn placed in relative houses from Jupiter.
+ * Source: [1] through [2].
+ */
+const SATURN_FROM_JUPITER_PREDICTIONS = {
+    1: { // Saturn in 1st House from Jupiter [1]
+        traits: [
+            "Native is Lazy",
+            "Will face struggle",
+            "Person is pious and has good thoughts",
+            "Tends to procrastinate things",
+            "Feels depressive often",
+            "Prosperity to father",
+            "Falls in bad habits and later on will try to recover with Guilt"
+        ],
+        special_note: "If Jupiter is ahead of Saturn (in Rashi number), the person has Maha Bhagya Yoga. Profession is inspired by Jupiter. They will develop other people by teaching and preaching them.",
+        professions: ["Managerial", "Teaching", "Consulting", "Own work"]
+    },
+    2: { // Saturn in 2nd House from Jupiter [3]
+        traits: [
+            "Has a rough and sharp tongue",
+            "Earns and wastes a lot of money",
+            "Lacks domestic happiness, despite having everything",
+            "Late marriage, but they try to select their own partners",
+            "Starts earning at very early age"
+        ],
+        special_note: "These people take low risk investments or very long term investments.",
+        professions: ["Related to finances", "Liquor", "Medicine", "Food", "Money lender", "Investment"]
+    },
+    3: { // Saturn in 3rd House from Jupiter [3, 4]
+        traits: [
+            "Very bold and high-risk taking personality",
+            "Will change Jobs frequently, typically from 24-36 years of age",
+            "Troubles from siblings",
+            "Can bring trouble in the form of court cases or fights with neighbors and siblings"
+        ],
+        special_note: "Signifies loss of Job or frequent losses in business. Native will incur losses from gambling, share market, or trading.",
+        professions: ["Communication related", "Mass media", "Marketing", "Tourism", "Packaging and shipping", "Railways", "Hands and Shoulders use like gym trainer and writer", "Singing", "Dancing", "Painting"]
+    },
+    4: { // Saturn in 4th House from Jupiter [5]
+        traits: [
+            "Hindrances/Obstacles in education (denotes technical nature of education)",
+            "Lacks *Ghar ka sukh* (domestic happiness)",
+            "Shows hardships in life of Mother",
+            "The person is born in an old and less ventilated house",
+            "Native may settle away from family"
+        ],
+        professions: ["Teaching", "Land/property", "Construction", "Garments", "Automobiles", "Home based office"]
+    },
+    5: { // Saturn in 5th House from Jupiter [5, 6]
+        traits: [
+            "Delay in childbirth (After 28, 30)",
+            "Signifies danger to first child (Many times the first child will be female)",
+            "Troubles in life 3-4 years after birth of 1st child",
+            "May give bad habits like gambling, prostitution, alcohol, cigarette",
+            "People will have spinal cord related issues"
+        ],
+        professions: ["Government Job", "Politics", "Mentor", "Sportsperson", "MBA", "CEO"]
+    },
+    6: { // Saturn in 6th House from Jupiter [6, 7]
+        traits: [
+            "Signifies prolonged sickness (liver, pancreas, large intestine)",
+            "Possibility of animal bite",
+            "Troubles through servants and employees",
+            "Long life but prolonged diseases",
+            "Open enemy is powerful",
+            "Native’s siblings will incur lot of losses in their life"
+        ],
+        professions: ["Law", "Medicine", "Doctor", "Auditing", "Analysis", "Competitive exams"]
+    },
+    7: { // Saturn in 7th House from Jupiter [7, 8]
+        traits: [
+            "Becomes popular, or receives a lot of public interaction in their profession",
+            "Will have bad company for friendships",
+            "Would not have the greatest of childhood",
+            "May have stone in kidneys",
+            "Problem in having 2nd child",
+            "Day-to-day Life is stressful and burdensome"
+        ],
+        professions: ["Teachers", "Preachers", "Bankers", "Lawyers", "Consultants", "Managers"]
+    },
+    8: { // Saturn in 8th House from Jupiter [8, 9]
+        traits: [
+            "Will make person interested in occult sciences, insurance, research, surgeon",
+            "Gives good longevity but gives long term sickness",
+            "Brother of native will have prolonged sickness",
+            "Has harsh tongue and may marry against tradition",
+            "Children can stay away from home",
+            "Problems pertaining to sexual organs and urinary tract issues"
+        ],
+        professions: ["Occult sciences", "Insurance", "Research", "Surgeon"]
+    },
+    9: { // Saturn in 9th House from Jupiter [9, 10]
+        traits: [
+            "Bad friends of Native",
+            "Problems in Sibling’s life",
+            "Native will have to undergo long distance travels for profession (may even go to foreign lands)",
+            "He will fall sick in long distance travels",
+            "Native may take a spiritual journey at the age of 39",
+            "Awards and honors in foreign land",
+            "2nd childbirth by delay or problems in having second child",
+            "Shows debtors or lot of enmities to father"
+        ],
+        professions: ["Teaching", "Preaching", "Travel", "Higher education", "Spiritual career"]
+    },
+    10: { // Saturn in 10th House from Jupiter [10]
+        traits: [
+            "Problems to both parents at the time of Birth of native",
+            "Father will have lot of problems and health issues",
+            "Will do well in profession and will have authority",
+            "People would work under native",
+            "Native will have troubles related to knee joint"
+        ],
+        professions: ["Civil services", "Neurology", "Govt. jobs", "MBA", "Top rank in any company"]
+    },
+    11: { // Saturn in 11th House from Jupiter [11]
+        traits: [
+            "Bad friends",
+            "Coming and going of gains (fluctuating)",
+            "Sadness from desires",
+            "Lot of troubles in early age (up to 28/29 years of Age)",
+            "Gambling, affairs, bad people, drinking habits",
+            "Delays native's childbirth",
+            "Would have interest in occult"
+        ],
+        professions: ["Research", "Innovation", "IT", "AI", "Public jobs like Bankers", "Relationship managers", "Communication related"]
+    },
+    12: { // Saturn in 12th House from Jupiter [2, 11]
+        traits: [
+            "Shows native can have job or profession in foreign land, or do business with foreigners",
+            "Job in watery place",
+            "Changeable job",
+            "Afflicted Saturn here can cause hospitalization and imprisonment",
+            "Strong/powerful secret enemy"
+        ],
+        professions: ["Spiritual field", "Navy", "Water", "Aviation", "Foreign", "MNC"]
+    }
+};
+
+/**
+ * Calculates the house placement of Saturn relative to Jupiter and returns the prediction.
+ * @param {object} horoscope - The chart data containing Saturn and Jupiter signs.
+ * @returns {object} The specific prediction for Saturn's relative placement.
+ */
+function getSaturnFromJupiterPredictions(horoscope) {
+    if (!horoscope || !horoscope.Saturn || !horoscope.Jupiter) {
+        return {
+            error: "Invalid horoscope object: Saturn and Jupiter data are required.",
+            citation: "N/A"
+        };
+    }
+
+    const saturnSign = horoscope.Saturn.sign;
+    const jupiterSign = horoscope.Jupiter.sign;
+
+    // Calculate the house number of Saturn from Jupiter (1 to 12)
+    // Formula: (Saturn_Sign - Jupiter_Sign + 12) % 12 + 1
+    const houseFromJupiter = (saturnSign - jupiterSign + 12) % 12 + 1;
+
+    const predictionData = SATURN_FROM_JUPITER_PREDICTIONS[houseFromJupiter];
+
+    if (!predictionData) {
+        return {
+            error: "Calculation error: Relative house position is out of range.",
+            citation: "N/A"
+        };
+    }
+
+    // Include General Saturn Karakas for context [12]
+    const saturnKarakas = [
+        "Action", "Karma", "Duty", "Profession", "Bad period", "Death", "Delay",
+        "Desire to do", "Obstacles", "Village headman", "Livelihood", "Elder brother", "Servants"
+    ];
+
+    createCard('Saturn from Jupiter', `
+        <h3>Saturn in ${RASHI_MAP[saturnSign]}, Jupiter in ${RASHI_MAP[jupiterSign]}</h3>
+        <h4>House from Jupiter: ${houseFromJupiter}</h4>
+        <h4>Traits:</h4>
+        <ul>
+            ${predictionData.traits.map(t => `<li>${t}</li>`).join('')}
+        </ul>
+        <h4>Professions:</h4>
+        <ul>
+            ${predictionData.professions.map(p => `<li>${p}</li>`).join('')}
+        </ul>
+        ${predictionData.special_note ? `<h4>Special Note:</h4><p>${predictionData.special_note}</p>` : ''}
+        <h4>General Saturn Karakas:</h4>
+        <ul>
+            ${saturnKarakas.map(k => `<li>${k} [12]</li>`).join('')}
+        </ul>
+        <p><em>Astrological principles source: Bhrigu Nandi Nadi (Class 21, Saturn in Different Houses from Jupiter) [1-12]</em></p>
+    `, 'html');
+    return {
+        planet_of_study: "Saturn",
+        relative_planet: "Jupiter",
+        saturn_sign: RASHI_MAP[saturnSign],
+        jupiter_sign: RASHI_MAP[jupiterSign],
+        house_from_jupiter: houseFromJupiter,
+        general_saturn_karakas: saturnKarakas,
+        predictions: {
+            character_and_family: predictionData.traits,
+            career_fields: predictionData.professions,
+            notes: predictionData.special_note || null
+        },
+        astrological_principles_source: "Bhrigu Nandi Nadi (Class 21, Saturn in Different Houses from Jupiter) [1-12]"
+    };
+}
     // Attach save and load UI components
     window.addEventListener('DOMContentLoaded', () => {
       const container = document.createElement('div');
