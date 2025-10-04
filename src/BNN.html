@@ -1986,467 +1986,827 @@
 
       return predictions;
     }
-/**
- * Determines predictions based on the 51 Unknown Facts about Sun rules (Bhrigu Nandi Nadi principles).
- * Uses the structure: { Sun: { sign: X, house: Y }, ... }
- * 
- * NOTE: The logic relies on Graha Drishti rules from BPHS/Uttara Kalamrita for aspects [10-12].
- * The source material does not provide specific coding instructions; this is a logical implementation.
- * @param {object} horoscope - The chart data containing planet placements (house and sign).
- * @returns {Array<string>} - A list of generated predictions.
- */
-function determineSunPredictions(horoscope) {
-  const { Sun, Moon, Mars, Mercury, Venus, Jupiter, Saturn, Rahu, Ketu } = horoscope;
-  const predictions = [];
-  const lordshipMap = {
-    Sun: [5],      // Leo
-    Moon: [4],     // Cancer
-    Mars: [1,8],    // Aries, Scorpio
-    Mercury: [3, 6],   // Gemini, Virgo
-    Venus: [2, 7],    // Taurus, Libra
-    Jupiter: [9, 12],  // Sagittarius, Pisces
-    Saturn: [10, 11]  // Capricorn, Aquarius
-};
-  // --- Utility Functions ---
-/**
-   * Checks for a Rashi exchange (Parivartana Yoga) between two planets.
-   * P1 is in P2's sign AND P2 is in P1's sign.
-   */
-  const checkExchange = (P1_name, P1_data, P2_name, P2_data) => {
-      // 1. Get the signs ruled by P1 and P2
-      const P1_rashi_signs = lordshipMap[P1_name]; // e.g., Sun: [2]
-      const P2_rashi_signs = lordshipMap[P2_name]; // e.g., Jupiter: [10, 11]
+    /**
+     * Determines predictions based on the 51 Unknown Facts about Sun rules (Bhrigu Nandi Nadi principles).
+     * Uses the structure: { Sun: { sign: X, house: Y }, ... }
+     * 
+     * NOTE: The logic relies on Graha Drishti rules from BPHS/Uttara Kalamrita for aspects [10-12].
+     * The source material does not provide specific coding instructions; this is a logical implementation.
+     * @param {object} horoscope - The chart data containing planet placements (house and sign).
+     * @returns {Array<string>} - A list of generated predictions.
+     */
+    function determineSunPredictions(horoscope) {
+      const { Sun, Moon, Mars, Mercury, Venus, Jupiter, Saturn, Rahu, Ketu } = horoscope;
+      const predictions = [];
+      const lordshipMap = {
+        Sun: [5],      // Leo
+        Moon: [4],     // Cancer
+        Mars: [1, 8],    // Aries, Scorpio
+        Mercury: [3, 6],   // Gemini, Virgo
+        Venus: [2, 7],    // Taurus, Libra
+        Jupiter: [9, 12],  // Sagittarius, Pisces
+        Saturn: [10, 11]  // Capricorn, Aquarius
+      };
+      // --- Utility Functions ---
+      /**
+         * Checks for a Rashi exchange (Parivartana Yoga) between two planets.
+         * P1 is in P2's sign AND P2 is in P1's sign.
+         */
+      const checkExchange = (P1_name, P1_data, P2_name, P2_data) => {
+        // 1. Get the signs ruled by P1 and P2
+        const P1_rashi_signs = lordshipMap[P1_name]; // e.g., Sun: [2]
+        const P2_rashi_signs = lordshipMap[P2_name]; // e.g., Jupiter: [10, 11]
 
-      if (!P1_rashi_signs || !P2_rashi_signs) return false;
+        if (!P1_rashi_signs || !P2_rashi_signs) return false;
 
-      // 2. Condition A: P1 is in a sign ruled by P2
-      const P1_in_P2_sign = P2_rashi_signs.includes(P1_data.sign);
+        // 2. Condition A: P1 is in a sign ruled by P2
+        const P1_in_P2_sign = P2_rashi_signs.includes(P1_data.sign);
 
-      // 3. Condition B: P2 is in a sign ruled by P1
-      const P2_in_P1_sign = P1_rashi_signs.includes(P2_data.sign);
+        // 3. Condition B: P2 is in a sign ruled by P1
+        const P2_in_P1_sign = P1_rashi_signs.includes(P2_data.sign);
 
-      return P1_in_P2_sign && P2_in_P1_sign;
-  };
-  // Checks if two planets are in the same house
-  const isConjunction = (P1, P2) => P1.house === P2.house;
+        return P1_in_P2_sign && P2_in_P1_sign;
+      };
+      // Checks if two planets are in the same house
+      const isConjunction = (P1, P2) => P1.house === P2.house;
 
-  // Calculates house distance (1 to 12) from P1 to P2
-  const getRelativeHouse = (P1, P2) => ((P2.house - P1.house + 12) % 12) + 1;
-  
-  // Helper to check if a planet is in a specific Rashi
-  const isInRashi = (P, signId) => P.sign === signId; 
+      // Calculates house distance (1 to 12) from P1 to P2
+      const getRelativeHouse = (P1, P2) => ((P2.house - P1.house + 12) % 12) + 1;
 
-  /**
-   * Checks if Planet P1 aspects the target house.
-   * Special aspect houses: Mars (4, 8), Jupiter (5, 9), Saturn (3, 10), Nodes (5, 9). 7th is universal [11].
-   */
-  const isAspectedBy = (P1, targetHouse, specialAspects = []) => {
-      // All planets aspect the 7th house [13]
-      const universalAspect = ((P1.house + 6) % 12) + 1;
-      let aspectHouses = [universalAspect];
+      // Helper to check if a planet is in a specific Rashi
+      const isInRashi = (P, signId) => P.sign === signId;
 
-      // Add special aspects if applicable
-      const relativeAspects = specialAspects.map(a => ((P1.house + a - 1 - 1 + 12) % 12) + 1);
-      aspectHouses = aspectHouses.concat(relativeAspects);
+      /**
+       * Checks if Planet P1 aspects the target house.
+       * Special aspect houses: Mars (4, 8), Jupiter (5, 9), Saturn (3, 10), Nodes (5, 9). 7th is universal [11].
+       */
+      const isAspectedBy = (P1, targetHouse, specialAspects = []) => {
+        // All planets aspect the 7th house [13]
+        const universalAspect = ((P1.house + 6) % 12) + 1;
+        let aspectHouses = [universalAspect];
 
-      return aspectHouses.includes(targetHouse);
-  };
-  
-  // --- Planetary Aspect Configuration based on Source [11, 12, 14] ---
-  const aspectConfig = {
-      Mars: [4,7,8],
-      Jupiter: [5,7,9],
-      Saturn: [3,7,10],
-      Rahu: [5,7,9],
-      Ketu: [5,7,9],
-      Sun: [7],
-      Moon: [7],
-      Mercury: [7],
-      Venus: [7]
-  };
+        // Add special aspects if applicable
+        const relativeAspects = specialAspects.map(a => ((P1.house + a - 1 - 1 + 12) % 12) + 1);
+        aspectHouses = aspectHouses.concat(relativeAspects);
 
-  // --- Implementation of the 51 Rules ---
+        return aspectHouses.includes(targetHouse);
+      };
 
-  // A. Rules Related to Family and Father's Status/Profession (Rules 1-35)
-  
-  // 1. Sun has Ve and Mo in successive Houses [1]
-  if (getRelativeHouse(Sun, Venus) === 2 && getRelativeHouse(Venus, Moon) === 2) {
-    predictions.push("The person may be the son of the 2nd wife of his father.");
-  }
+      // --- Planetary Aspect Configuration based on Source [11, 12, 14] ---
+      const aspectConfig = {
+        Mars: [4, 7, 8],
+        Jupiter: [5, 7, 9],
+        Saturn: [3, 7, 10],
+        Rahu: [5, 7, 9],
+        Ketu: [5, 7, 9],
+        Sun: [7],
+        Moon: [7],
+        Mercury: [7],
+        Venus: [7]
+      };
 
-  // 2. Sun next to Venus (Ve in 2nd house from Su) [1]
-  if (getRelativeHouse(Sun, Venus) === 2) {
-    predictions.push("Wife is devotional.");
-  }
+      // --- Implementation of the 51 Rules ---
 
-  // 3. Sun has Ve in 2nd house and Ju aspects Venus [1]
-  const VeIn2ndFromSun = getRelativeHouse(Sun, Venus) === 2;
-  const JuAspectsVe = isAspectedBy(Jupiter, Venus.house, aspectConfig.Jupiter);
-  if (VeIn2ndFromSun && JuAspectsVe) {
-    predictions.push("The native and his father will be in the same profession.");
-  }
+      // A. Rules Related to Family and Father's Status/Profession (Rules 1-35)
 
-  // 4. Sun and Mercury hemmed between Mars and Venus [1, 2]
-  if (isConjunction(Sun, Mercury) && getRelativeHouse(Mars, Sun) === 12 && getRelativeHouse(Sun, Venus) === 2) {
-    predictions.push("Father of the native had to undergo a surgery in middle of his age.");
-  }
-  
-  // 5. Sun with Saturn in Leo (Sign 5) [2]
-  if (isConjunction(Sun, Saturn) && isInRashi(Sun, 5)) {
-    predictions.push("The native will have a Govt. Job.");
-  }
+      // 1. Sun has Ve and Mo in successive Houses [1]
+      if (getRelativeHouse(Sun, Venus) === 2 && getRelativeHouse(Venus, Moon) === 2) {
+        predictions.push("The person may be the son of the 2nd wife of his father.");
+      }
 
-  // 6. Jupiter has Sun and Me in 2nd House [2]
-  if (isConjunction(Sun, Mercury) && getRelativeHouse(Jupiter, Sun) === 2) {
-    predictions.push("The native and Father can have the same education.");
-  }
+      // 2. Sun next to Venus (Ve in 2nd house from Su) [1]
+      if (getRelativeHouse(Sun, Venus) === 2) {
+        predictions.push("Wife is devotional.");
+      }
 
-  // 7. Sun in Taurus (Sign 2) [2]
-  if (isInRashi(Sun, 2)) {
-    predictions.push("The mother of native is faithful to native’s father.");
-  }
+      // 3. Sun has Ve in 2nd house and Ju aspects Venus [1]
+      const VeIn2ndFromSun = getRelativeHouse(Sun, Venus) === 2;
+      const JuAspectsVe = isAspectedBy(Jupiter, Venus.house, aspectConfig.Jupiter);
+      if (VeIn2ndFromSun && JuAspectsVe) {
+        predictions.push("The native and his father will be in the same profession.");
+      }
 
-  // 8. Su and Me behind Ju in Sagittarius (Sign 9) [2]
-  if (isConjunction(Sun, Mercury) && getRelativeHouse(Sun, Jupiter) === 12 && isInRashi(Jupiter, 9)) {
-    predictions.push("The native is born in a noble family. The Father and grandfather are learned people.");
-  }
+      // 4. Sun and Mercury hemmed between Mars and Venus [1, 2]
+      if (isConjunction(Sun, Mercury) && getRelativeHouse(Mars, Sun) === 12 && getRelativeHouse(Sun, Venus) === 2) {
+        predictions.push("Father of the native had to undergo a surgery in middle of his age.");
+      }
 
-  // 9. Sun and Rahu together [2]
-  if (isConjunction(Sun, Rahu)) {
-    predictions.push("Father’s married life may have issues.");
-  }
+      // 5. Sun with Saturn in Leo (Sign 5) [2]
+      if (isConjunction(Sun, Saturn) && isInRashi(Sun, 5)) {
+        predictions.push("The native will have a Govt. Job.");
+      }
 
-  // 10. Sun in Ju rashi (Sagittarius=9 or Pisces=12) with mercury [3]
-  if (isConjunction(Sun, Mercury) && (isInRashi(Sun, 9) || isInRashi(Sun, 12))) {
-    predictions.push("Father will be godly and learned.");
-  }
+      // 6. Jupiter has Sun and Me in 2nd House [2]
+      if (isConjunction(Sun, Mercury) && getRelativeHouse(Jupiter, Sun) === 2) {
+        predictions.push("The native and Father can have the same education.");
+      }
 
-  // 11. Sun placed between 2 enimical planets [3] (Requires defined enemy list; skipped for precise definition)
-  
-  // 12. Sun has Ketu, Mercury, Venus in 2nd house [3]
-  if (getRelativeHouse(Sun, Ketu) === 2 && getRelativeHouse(Sun, Mercury) === 2 && getRelativeHouse(Sun, Venus) === 2) {
-    predictions.push("Father can have agricultural income.");
-  }
+      // 7. Sun in Taurus (Sign 2) [2]
+      if (isInRashi(Sun, 2)) {
+        predictions.push("The mother of native is faithful to native’s father.");
+      }
 
-  // 13. Sun in Aries (Sign 1), Ve in Pisces (Sign 12) [3]
-  if (isInRashi(Sun, 1) && isInRashi(Venus, 12)) {
-    predictions.push("Native’s father will be working in high govt. position.");
-  }
+      // 8. Su and Me behind Ju in Sagittarius (Sign 9) [2]
+      if (isConjunction(Sun, Mercury) && getRelativeHouse(Sun, Jupiter) === 12 && isInRashi(Jupiter, 9)) {
+        predictions.push("The native is born in a noble family. The Father and grandfather are learned people.");
+      }
 
-  // 14. Mars in 2nd house from Sun [3]
-  if (getRelativeHouse(Sun, Mars) === 2) {
-    predictions.push("Father may have rental income, Mars related source of income.");
-  }
+      // 9. Sun and Rahu together [2]
+      if (isConjunction(Sun, Rahu)) {
+        predictions.push("Father’s married life may have issues.");
+      }
 
-  // 15. Jupiter in cancer (Sign 4) and Sun is exalted (Aries, Sign 1) [3]
-  if (isInRashi(Jupiter, 4) && isInRashi(Sun, 1)) {
-    predictions.push("Native may have topmost position.");
-  }
+      // 10. Sun in Ju rashi (Sagittarius=9 or Pisces=12) with mercury [3]
+      if (isConjunction(Sun, Mercury) && (isInRashi(Sun, 9) || isInRashi(Sun, 12))) {
+        predictions.push("Father will be godly and learned.");
+      }
 
-  // 16. Sun, Saturn and Moon together and Rahu in 2nd to them [4]
-  if (isConjunction(Sun, Saturn) && isConjunction(Sun, Moon) && getRelativeHouse(Sun, Rahu) === 2) {
-    predictions.push("Father will be a dealer in sweets.");
-  }
+      // 11. Sun placed between 2 enimical planets [3] (Requires defined enemy list; skipped for precise definition)
 
-  // 17. Sun’s 10th house aspected by Mars [4]
-  const Sun10thHouse = ((Sun.house + 9) % 12) + 1;
-  if (isAspectedBy(Mars, Sun10thHouse, aspectConfig.Mars)) {
-    predictions.push("Father can be in Govt. Job.");
-  }
+      // 12. Sun has Ketu, Mercury, Venus in 2nd house [3]
+      if (getRelativeHouse(Sun, Ketu) === 2 && getRelativeHouse(Sun, Mercury) === 2 && getRelativeHouse(Sun, Venus) === 2) {
+        predictions.push("Father can have agricultural income.");
+      }
 
-  // 18. Sun has Mars and Rahu in 2nd and Saturn in 3rd [4]
-  if (getRelativeHouse(Sun, Mars) === 2 && getRelativeHouse(Sun, Rahu) === 2 && getRelativeHouse(Sun, Saturn) === 3) {
-    predictions.push("Father may have a low salaried job.");
-  }
+      // 13. Sun in Aries (Sign 1), Ve in Pisces (Sign 12) [3]
+      if (isInRashi(Sun, 1) && isInRashi(Venus, 12)) {
+        predictions.push("Native’s father will be working in high govt. position.");
+      }
 
-  // 19. Sun in Cancer (Sign 4) [4]
-  if (isInRashi(Sun, 4)) {
-    predictions.push("Native’s father can settle down with in laws.");
-  }
+      // 14. Mars in 2nd house from Sun [3]
+      if (getRelativeHouse(Sun, Mars) === 2) {
+        predictions.push("Father may have rental income, Mars related source of income.");
+      }
 
-  // 20. Sun’s 12th house aspected by Saturn [4]
-  const Sun12thHouse = ((Sun.house + 11) % 12) + 1;
-  if (isAspectedBy(Saturn, Sun12thHouse, aspectConfig.Saturn)) {
-    predictions.push("Father will have lot of problems because of bad company.");
-  }
+      // 15. Jupiter in cancer (Sign 4) and Sun is exalted (Aries, Sign 1) [3]
+      if (isInRashi(Jupiter, 4) && isInRashi(Sun, 1)) {
+        predictions.push("Native may have topmost position.");
+      }
 
-  // 21. Sun in Aries and Ve in Taurus [5]
-  if (isInRashi(Sun, 1) && isInRashi(Venus, 2)) {
-    predictions.push("Father is master of arts and rich.");
-  }
+      // 16. Sun, Saturn and Moon together and Rahu in 2nd to them [4]
+      if (isConjunction(Sun, Saturn) && isConjunction(Sun, Moon) && getRelativeHouse(Sun, Rahu) === 2) {
+        predictions.push("Father will be a dealer in sweets.");
+      }
 
-  // 22. Sun and Mars in 7th house from Jupiter [5]
-  if (getRelativeHouse(Jupiter, Sun) === 7 && getRelativeHouse(Jupiter, Mars) === 7) {
-    predictions.push("Native will have unhappy married life.");
-  }
+      // 17. Sun’s 10th house aspected by Mars [4]
+      const Sun10thHouse = ((Sun.house + 9) % 12) + 1;
+      if (isAspectedBy(Mars, Sun10thHouse, aspectConfig.Mars)) {
+        predictions.push("Father can be in Govt. Job.");
+      }
 
-  // 23. Sun has Ve and Ra in 2nd house [5]
-  if (getRelativeHouse(Sun, Venus) === 2 && getRelativeHouse(Sun, Rahu) === 2) {
-    predictions.push("The native’s father can have a mistress.");
-  }
+      // 18. Sun has Mars and Rahu in 2nd and Saturn in 3rd [4]
+      if (getRelativeHouse(Sun, Mars) === 2 && getRelativeHouse(Sun, Rahu) === 2 && getRelativeHouse(Sun, Saturn) === 3) {
+        predictions.push("Father may have a low salaried job.");
+      }
 
-  // 24. Sun has no planets in either houses (12th and 2nd from Sun) [5]
-  // Complex: Requires checking ALL planet houses. Assume simplified check for the 9 defined planets.
-  const planets = [Moon, Mars, Mercury, Venus, Jupiter, Saturn, Rahu, Ketu];
-  const house12 = ((Sun.house + 11) % 12) + 1;
-  const house2 = ((Sun.house + 1) % 12) + 1;
-  const is12thEmpty = planets.every(p => p.house !== house12);
-  const is2ndEmpty = planets.every(p => p.house !== house2);
-  
-  if (is12thEmpty && is2ndEmpty) {
-      predictions.push("Father will have problems.");
-  }
+      // 19. Sun in Cancer (Sign 4) [4]
+      if (isInRashi(Sun, 4)) {
+        predictions.push("Native’s father can settle down with in laws.");
+      }
 
-  // 25. Sun in debilitation (Sign 7, Libra) [5]
-  if (isInRashi(Sun, 7)) {
-    predictions.push("Father had lot of problems at the time of native’s birth.");
-  }
+      // 20. Sun’s 12th house aspected by Saturn [4]
+      const Sun12thHouse = ((Sun.house + 11) % 12) + 1;
+      if (isAspectedBy(Saturn, Sun12thHouse, aspectConfig.Saturn)) {
+        predictions.push("Father will have lot of problems because of bad company.");
+      }
 
-  // 26. Sun touches 1st Sa then Ketu in its movements [5] (Requires transit logic; placeholder)
-  
-  // 27. Sun in Leo (Sign 5) and Me in Virgo (Sign 6) [5]
-  if (isInRashi(Sun, 5) && isInRashi(Mercury, 6)) {
-    predictions.push("Father may work for cooperative firm.");
-  }
+      // 21. Sun in Aries and Ve in Taurus [5]
+      if (isInRashi(Sun, 1) && isInRashi(Venus, 2)) {
+        predictions.push("Father is master of arts and rich.");
+      }
 
-  // 28. If 10th rashi from Sun is ruled by Mars (Aries=1 or Scorpio=8) [6]
-  const Rashi10thFromSun = (Sun.sign + 9 > 12) ? Sun.sign + 9 - 12 : Sun.sign + 9;
-  if (Rashi10thFromSun === 1 || Rashi10thFromSun === 8) {
-    predictions.push("Father may be a govt. employee.");
-  }
+      // 22. Sun and Mars in 7th house from Jupiter [5]
+      if (getRelativeHouse(Jupiter, Sun) === 7 && getRelativeHouse(Jupiter, Mars) === 7) {
+        predictions.push("Native will have unhappy married life.");
+      }
 
-  // 29. 2nd lord from Sun sits with Ve or Ketu [6] (Requires identifying the Rashi Lord; skipped)
-  
-  // 30. Sun and Venus conjunction [6]
-  if (isConjunction(Sun, Venus)) {
-    predictions.push("No happiness from Money or marriage.");
-  }
+      // 23. Sun has Ve and Ra in 2nd house [5]
+      if (getRelativeHouse(Sun, Venus) === 2 && getRelativeHouse(Sun, Rahu) === 2) {
+        predictions.push("The native’s father can have a mistress.");
+      }
 
-  // 31. Sun with Me and Ma Aspected by Sa and Ju [6]
-  const SunMeMaConjunction = isConjunction(Sun, Mercury) && isConjunction(Sun, Mars);
-  const house = Sun.house;
-  const SaAspects = isAspectedBy(Saturn, house, aspectConfig.Saturn);
-  const JuAspects = isAspectedBy(Jupiter, house, aspectConfig.Jupiter);
-  if (SunMeMaConjunction && SaAspects && JuAspects) {
-    predictions.push("The native’s business may receive government aids.");
-  }
+      // 24. Sun has no planets in either houses (12th and 2nd from Sun) [5]
+      // Complex: Requires checking ALL planet houses. Assume simplified check for the 9 defined planets.
+      const planets = [Moon, Mars, Mercury, Venus, Jupiter, Saturn, Rahu, Ketu];
+      const house12 = ((Sun.house + 11) % 12) + 1;
+      const house2 = ((Sun.house + 1) % 12) + 1;
+      const is12thEmpty = planets.every(p => p.house !== house12);
+      const is2ndEmpty = planets.every(p => p.house !== house2);
 
-  // 32. Sun in 12th house to Jupiter [6]
-  if (getRelativeHouse(Jupiter, Sun) === 12) {
-    predictions.push("Birthplace of native is near temple.");
-  }
+      if (is12thEmpty && is2ndEmpty) {
+        predictions.push("Father will have problems.");
+      }
 
-  // 33. Sun has Ju and Sa in 2nd House [6]
-  if (getRelativeHouse(Sun, Jupiter) === 2 && getRelativeHouse(Sun, Saturn) === 2) {
-    predictions.push("Native and Father may carry on same profession.");
-  }
+      // 25. Sun in debilitation (Sign 7, Libra) [5]
+      if (isInRashi(Sun, 7)) {
+        predictions.push("Father had lot of problems at the time of native’s birth.");
+      }
 
-  // 34. Sun and Jupiter exchange [7] (Requires Rashi exchange check; skipped)
+      // 26. Sun touches 1st Sa then Ketu in its movements [5] (Requires transit logic; placeholder)
 
-  // 35. Sun in Capricorn (10), Rahu in 2nd house (relative to Su), and Sa in Virgo(6)/Gemini(3) [7]
-  if (isInRashi(Sun, 10) && getRelativeHouse(Sun, Rahu) === 2 && (isInRashi(Saturn, 6) || isInRashi(Saturn, 3))) {
-    predictions.push("Native’s father has to face lot of legal problems.");
-  }
+      // 27. Sun in Leo (Sign 5) and Me in Virgo (Sign 6) [5]
+      if (isInRashi(Sun, 5) && isInRashi(Mercury, 6)) {
+        predictions.push("Father may work for cooperative firm.");
+      }
 
-  // B. Rules Related to Birthplace (Rules 36, 32)
-  
-  // 36. Sun in Pisces (Sign 12) [7]
-  if (isInRashi(Sun, 12)) {
-    predictions.push("Birthplace of native is near cremation ground or Ashram");
-  }
+      // 28. If 10th rashi from Sun is ruled by Mars (Aries=1 or Scorpio=8) [6]
+      const Rashi10thFromSun = (Sun.sign + 9 > 12) ? Sun.sign + 9 - 12 : Sun.sign + 9;
+      if (Rashi10thFromSun === 1 || Rashi10thFromSun === 8) {
+        predictions.push("Father may be a govt. employee.");
+      }
 
-  // C. Rules Related to Native's Physical Characteristics (Rules 37-48) [7-9]
+      // 29. 2nd lord from Sun sits with Ve or Ketu [6] (Requires identifying the Rashi Lord; skipped)
 
-  // 43. Sun in Aries (Sign 1) [8]
-  if (isInRashi(Sun, 1)) { predictions.push("Head problems , migraine , hair loss."); }
+      // 30. Sun and Venus conjunction [6]
+      if (isConjunction(Sun, Venus)) {
+        predictions.push("No happiness from Money or marriage.");
+      }
 
-  // 37. Sun in Taurus (Sign 2) [7]
-  if (isInRashi(Sun, 2)) { predictions.push("Native will have reddish face and harsh voice."); }
-  
-  // 42. Sun in Gemini (Sign 3) [8]
-  if (isInRashi(Sun, 3)) { predictions.push("Native will have strong shoulders and arms."); }
+      // 31. Sun with Me and Ma Aspected by Sa and Ju [6]
+      const SunMeMaConjunction = isConjunction(Sun, Mercury) && isConjunction(Sun, Mars);
+      const house = Sun.house;
+      const SaAspects = isAspectedBy(Saturn, house, aspectConfig.Saturn);
+      const JuAspects = isAspectedBy(Jupiter, house, aspectConfig.Jupiter);
+      if (SunMeMaConjunction && SaAspects && JuAspects) {
+        predictions.push("The native’s business may receive government aids.");
+      }
 
-  // 38. Sun in Cancer (Sign 4) [7]
-  if (isInRashi(Sun, 4)) { predictions.push("Native will have strong heartbeats and problems to chest."); }
+      // 32. Sun in 12th house to Jupiter [6]
+      if (getRelativeHouse(Jupiter, Sun) === 12) {
+        predictions.push("Birthplace of native is near temple.");
+      }
 
-  // 39. Sun in Leo (Sign 5) [7]
-  if (isInRashi(Sun, 5)) { predictions.push("Very good appetitite"); }
+      // 33. Sun has Ju and Sa in 2nd House [6]
+      if (getRelativeHouse(Sun, Jupiter) === 2 && getRelativeHouse(Sun, Saturn) === 2) {
+        predictions.push("Native and Father may carry on same profession.");
+      }
 
-  // 40. Sun in Virgo (Sign 6) [8]
-  if (isInRashi(Sun, 6)) { predictions.push("Native can have abs(intestinal muscles)"); }
+      // 34. Sun and Jupiter exchange [7] (Requires Rashi exchange check; skipped)
 
-  // 41. Sun in Libra (Sign 7) [8]
-  if (isInRashi(Sun, 7)) { predictions.push("Native will have a good-looking body"); }
+      // 35. Sun in Capricorn (10), Rahu in 2nd house (relative to Su), and Sa in Virgo(6)/Gemini(3) [7]
+      if (isInRashi(Sun, 10) && getRelativeHouse(Sun, Rahu) === 2 && (isInRashi(Saturn, 6) || isInRashi(Saturn, 3))) {
+        predictions.push("Native’s father has to face lot of legal problems.");
+      }
 
-  // 44. Sun in Scorpio (Sign 8) [8]
-  if (isInRashi(Sun, 8)) { predictions.push("Excess urination and problems in genitals"); }
+      // B. Rules Related to Birthplace (Rules 36, 32)
 
-  // 45. Sun in Sagittarius (Sign 9) [8]
-  if (isInRashi(Sun, 9)) { predictions.push("Native will have good shaped thighs and hips"); }
+      // 36. Sun in Pisces (Sign 12) [7]
+      if (isInRashi(Sun, 12)) {
+        predictions.push("Birthplace of native is near cremation ground or Ashram");
+      }
 
-  // 46. Sun in Capricorn (Sign 10) [8]
-  if (isInRashi(Sun, 10)) { predictions.push("Native will have large knee caps and issues in them"); }
+      // C. Rules Related to Native's Physical Characteristics (Rules 37-48) [7-9]
 
-  // 47. Sun in Aquarius (Sign 11) [9]
-  if (isInRashi(Sun, 11)) { predictions.push("Native will have good calve muscels"); }
+      // 43. Sun in Aries (Sign 1) [8]
+      if (isInRashi(Sun, 1)) { predictions.push("Head problems , migraine , hair loss."); }
 
-  // 48. Sun in Pisces (Sign 12) [9]
-  if (isInRashi(Sun, 12)) { predictions.push("Strong Feet"); }
+      // 37. Sun in Taurus (Sign 2) [7]
+      if (isInRashi(Sun, 2)) { predictions.push("Native will have reddish face and harsh voice."); }
 
-  // D. Miscellaneous and Specific Father/Danger Rules (Rules 49-51)
+      // 42. Sun in Gemini (Sign 3) [8]
+      if (isInRashi(Sun, 3)) { predictions.push("Native will have strong shoulders and arms."); }
 
-  // 49. Sun in exaltation (Sign 1, Aries) and no planet behind (12th house from Sun is empty) [9]
-  if (isInRashi(Sun, 1) && is12thEmpty) {
-    predictions.push("Native’s father had struggled a lot to gain position.");
-  }
+      // 38. Sun in Cancer (Sign 4) [7]
+      if (isInRashi(Sun, 4)) { predictions.push("Native will have strong heartbeats and problems to chest."); }
 
-  // 50. Sun with Sa And Ra in Mars rashi (Aries=1 or Scorpio=8) [9]
-  if (isConjunction(Sun, Saturn) && isConjunction(Sun, Rahu) && (isInRashi(Sun, 1) || isInRashi(Sun, 8))) {
-    predictions.push("Father will have old ancestral property.");
-  }
+      // 39. Sun in Leo (Sign 5) [7]
+      if (isInRashi(Sun, 5)) { predictions.push("Very good appetitite"); }
 
-  // 51. Sun in debilitation (Sign 7, Libra) and Ra in Leo (Sign 5) [9]
-  if (isInRashi(Sun, 7) && isInRashi(Rahu, 5)) {
-    predictions.push("Father will face great danger , when Ju touches Leo");
-  }
-  createCard('Sun Aspects', predictions, 'text');
-  return predictions;
-}
+      // 40. Sun in Virgo (Sign 6) [8]
+      if (isInRashi(Sun, 6)) { predictions.push("Native can have abs(intestinal muscles)"); }
+
+      // 41. Sun in Libra (Sign 7) [8]
+      if (isInRashi(Sun, 7)) { predictions.push("Native will have a good-looking body"); }
+
+      // 44. Sun in Scorpio (Sign 8) [8]
+      if (isInRashi(Sun, 8)) { predictions.push("Excess urination and problems in genitals"); }
+
+      // 45. Sun in Sagittarius (Sign 9) [8]
+      if (isInRashi(Sun, 9)) { predictions.push("Native will have good shaped thighs and hips"); }
+
+      // 46. Sun in Capricorn (Sign 10) [8]
+      if (isInRashi(Sun, 10)) { predictions.push("Native will have large knee caps and issues in them"); }
+
+      // 47. Sun in Aquarius (Sign 11) [9]
+      if (isInRashi(Sun, 11)) { predictions.push("Native will have good calve muscels"); }
+
+      // 48. Sun in Pisces (Sign 12) [9]
+      if (isInRashi(Sun, 12)) { predictions.push("Strong Feet"); }
+
+      // D. Miscellaneous and Specific Father/Danger Rules (Rules 49-51)
+
+      // 49. Sun in exaltation (Sign 1, Aries) and no planet behind (12th house from Sun is empty) [9]
+      if (isInRashi(Sun, 1) && is12thEmpty) {
+        predictions.push("Native’s father had struggled a lot to gain position.");
+      }
+
+      // 50. Sun with Sa And Ra in Mars rashi (Aries=1 or Scorpio=8) [9]
+      if (isConjunction(Sun, Saturn) && isConjunction(Sun, Rahu) && (isInRashi(Sun, 1) || isInRashi(Sun, 8))) {
+        predictions.push("Father will have old ancestral property.");
+      }
+
+      // 51. Sun in debilitation (Sign 7, Libra) and Ra in Leo (Sign 5) [9]
+      if (isInRashi(Sun, 7) && isInRashi(Rahu, 5)) {
+        predictions.push("Father will face great danger , when Ju touches Leo");
+      }
+      createCard('Sun Aspects', predictions, 'text');
+      return predictions;
+    }
 
 
-/**
- * Generates predictions based on Moon's placement relative to Jupiter (Moon in Different Houses from Jupiter).
- * @param {object} horoscope - Chart data including Moon and Jupiter placements.
- * @returns {Array<string>} - List of generated predictions.
- */
-function predictMoonFromJupiter(horoscope) {
-    const { Moon, Jupiter } = horoscope;
-    const predictions = [];
-    
-    // Calculates house distance (1 to 12) from P1 (Jupiter) to P2 (Moon)
-    const getRelativeHouse = (P1, P2) => ((P2.house - P1.house + 12) % 12) + 1;
-    
-    const relativeHouse = getRelativeHouse(Jupiter, Moon);
+    /**
+     * Generates predictions based on Moon's placement relative to Jupiter (Moon in Different Houses from Jupiter).
+     * @param {object} horoscope - Chart data including Moon and Jupiter placements.
+     * @returns {Array<string>} - List of generated predictions.
+     */
+    function predictMoonFromJupiter(horoscope) {
+      const { Moon, Jupiter } = horoscope;
+      const predictions = [];
 
-    // Common prediction when Moon is good (Implied general benefic influence of Ju on Mo) [1]
-    predictions.push("Moon becomes good, all karakas of Moon enhance (Food, goods, changes, nurture, care, Mother, Mind, Emotions) [1].");
-    predictions.push("Jupiter feels like it is exalted [1].");
-    predictions.push("Person is open hearted and has empathy and care for others [1].");
-    predictions.push("Mother is religious and pious and auspicious [1].");
-    predictions.push("Jeev and Mother look alike [1].");
-    predictions.push("Native's mind will be good and pious [1].");
+      // Calculates house distance (1 to 12) from P1 (Jupiter) to P2 (Moon)
+      const getRelativeHouse = (P1, P2) => ((P2.house - P1.house + 12) % 12) + 1;
 
-    switch (relativeHouse) {
+      const relativeHouse = getRelativeHouse(Jupiter, Moon);
+
+      // Common prediction when Moon is good (Implied general benefic influence of Ju on Mo) [1]
+      predictions.push("Moon becomes good, all karakas of Moon enhance (Food, goods, changes, nurture, care, Mother, Mind, Emotions) [1].");
+      predictions.push("Jupiter feels like it is exalted [1].");
+      predictions.push("Person is open hearted and has empathy and care for others [1].");
+      predictions.push("Mother is religious and pious and auspicious [1].");
+      predictions.push("Jeev and Mother look alike [1].");
+      predictions.push("Native's mind will be good and pious [1].");
+
+      switch (relativeHouse) {
         case 1: // Moon in 1st House from Jupiter [3]
-            predictions.push("Native may enter family life soon [3].");
-            predictions.push("Native's speech is soft and speaks fast and softly [3].");
-            predictions.push("Finance is inflow and outflow of money; no savings, no financial crisis [3].");
-            predictions.push("Difference of opinion with Mother [3].");
-            predictions.push("Mother has Jupiter in the 12th House from her Lagna; Mother does expenditure on religious things [3].");
-            predictions.push("Children can settle in different land for their profession [3].");
-            break;
+          predictions.push("Native may enter family life soon [3].");
+          predictions.push("Native's speech is soft and speaks fast and softly [3].");
+          predictions.push("Finance is inflow and outflow of money; no savings, no financial crisis [3].");
+          predictions.push("Difference of opinion with Mother [3].");
+          predictions.push("Mother has Jupiter in the 12th House from her Lagna; Mother does expenditure on religious things [3].");
+          predictions.push("Children can settle in different land for their profession [3].");
+          break;
 
         case 2: // Moon in 2nd House from Jupiter [4]
-            predictions.push("Person has karma related to Mother and Elder Sister or Daughter [4].");
-            break;
+          predictions.push("Person has karma related to Mother and Elder Sister or Daughter [4].");
+          break;
 
         case 3: // Moon in 3rd House from Jupiter [4, 5]
-            predictions.push("Less Inner Strength, Emotional [4].");
-            predictions.push("Very good orator, Fast communication [4].");
-            predictions.push("Travel: Unplanned, sudden [4].");
-            predictions.push("Skills: Good drawing and writing, fast writers [4].");
-            predictions.push("Mother will give you support (3rd house planet gives support) [4].");
-            predictions.push("Person will get blames/scandal for what he has not done [4].");
-            predictions.push("Relationship with mother will be friendly [4].");
-            predictions.push("Mother of native may have an elder brother [4].");
-            predictions.push("Mother has good friends, may have a sister [4].");
-            predictions.push("For Stability, the person should worship goddess Parvati [5].");
-            break;
+          predictions.push("Less Inner Strength, Emotional [4].");
+          predictions.push("Very good orator, Fast communication [4].");
+          predictions.push("Travel: Unplanned, sudden [4].");
+          predictions.push("Skills: Good drawing and writing, fast writers [4].");
+          predictions.push("Mother will give you support (3rd house planet gives support) [4].");
+          predictions.push("Person will get blames/scandal for what he has not done [4].");
+          predictions.push("Relationship with mother will be friendly [4].");
+          predictions.push("Mother of native may have an elder brother [4].");
+          predictions.push("Mother has good friends, may have a sister [4].");
+          predictions.push("For Stability, the person should worship goddess Parvati [5].");
+          break;
 
         case 4: // Moon in 4th House from Jupiter [5, 6]
-            predictions.push("Mother may be engaged in teaching, preaching, religious activities, maybe working in a school [5].");
-            predictions.push("Mother's Father will be a pious personality [5].");
-            predictions.push("Native's life has Ghar ka sukh (domestic happiness) [5].");
-            predictions.push("Native may change his houses and vehicles – Twice or Thrice [5].");
-            predictions.push("Education can have a lot of changes and travels, Can study at distant land, economics, psychology, hospitality [6].");
-            break;
+          predictions.push("Mother may be engaged in teaching, preaching, religious activities, maybe working in a school [5].");
+          predictions.push("Mother's Father will be a pious personality [5].");
+          predictions.push("Native's life has Ghar ka sukh (domestic happiness) [5].");
+          predictions.push("Native may change his houses and vehicles – Twice or Thrice [5].");
+          predictions.push("Education can have a lot of changes and travels, Can study at distant land, economics, psychology, hospitality [6].");
+          break;
 
         case 5: // Moon in 5th House from Jupiter [6, 7]
-            predictions.push("Can have a girl child [6].");
-            predictions.push("Considered little malefic here; can cause delay in child birth due to stree curse [6].");
-            predictions.push("5th house from Jupiter shows atma is interested in Travels, Nurturing others [6].");
-            predictions.push("Native will be lucky for mother [7].");
-            predictions.push("Can signify adoption/IVF [7].");
-            predictions.push("Father may suffer memory related issues or depression [7].");
-            predictions.push("Friendships will not last very long [7].");
-            break;
+          predictions.push("Can have a girl child [6].");
+          predictions.push("Considered little malefic here; can cause delay in child birth due to stree curse [6].");
+          predictions.push("5th house from Jupiter shows atma is interested in Travels, Nurturing others [6].");
+          predictions.push("Native will be lucky for mother [7].");
+          predictions.push("Can signify adoption/IVF [7].");
+          predictions.push("Father may suffer memory related issues or depression [7].");
+          predictions.push("Friendships will not last very long [7].");
+          break;
 
         case 6: // Moon in 6th House from Jupiter [7]
-            predictions.push("Diseases are not long lasting [7].");
-            predictions.push("Difference of opinion from Mother [7].");
-            predictions.push("Servants (People that work under you) get blames; they don't stay for long [7].");
-            predictions.push("Open enemy is weak but cunning [7].");
-            predictions.push("Mother's longevity is good [7].");
-            predictions.push("Diseases can be cold, cough, insomnia, depression, memory problems [7].");
-            break;
+          predictions.push("Diseases are not long lasting [7].");
+          predictions.push("Difference of opinion from Mother [7].");
+          predictions.push("Servants (People that work under you) get blames; they don't stay for long [7].");
+          predictions.push("Open enemy is weak but cunning [7].");
+          predictions.push("Mother's longevity is good [7].");
+          predictions.push("Diseases can be cold, cough, insomnia, depression, memory problems [7].");
+          break;
 
         case 7: // Moon in 7th House from Jupiter [8]
-            predictions.push("Friends and Partners are good and pious, maybe fluctuating in nature, emotional friends [8].");
-            predictions.push("Day to day activity will be fast and unplanned [8].");
-            predictions.push("Native will be having good thoughts, but is subject to a lot of changes in his life [8].");
-            break;
+          predictions.push("Friends and Partners are good and pious, maybe fluctuating in nature, emotional friends [8].");
+          predictions.push("Day to day activity will be fast and unplanned [8].");
+          predictions.push("Native will be having good thoughts, but is subject to a lot of changes in his life [8].");
+          break;
 
         case 8: // Moon in 8th House from Jupiter [8, 9]
-            predictions.push("Loose money all throughout life (Aspects 2nd house) [8].");
-            predictions.push("Name, Longevity is good, but may have memory, depression, sleep related problems [8].");
-            predictions.push("Difference of opinion with Mother [8].");
-            predictions.push("Mother if falls sick it is for long time [9].");
-            predictions.push("Friends maybe working in abroad [9].");
-            predictions.push("Keep donating articles of planets in 8th to Jupiter [9].");
-            break;
+          predictions.push("Loose money all throughout life (Aspects 2nd house) [8].");
+          predictions.push("Name, Longevity is good, but may have memory, depression, sleep related problems [8].");
+          predictions.push("Difference of opinion with Mother [8].");
+          predictions.push("Mother if falls sick it is for long time [9].");
+          predictions.push("Friends maybe working in abroad [9].");
+          predictions.push("Keep donating articles of planets in 8th to Jupiter [9].");
+          break;
 
         case 9: // Moon in 9th House from Jupiter [9, 10]
-            predictions.push("Long distance travels all of a sudden [9].");
-            predictions.push("Second Child will be good, will care for you in your last days [10].");
-            predictions.push("Post graduation can be from different land [10].");
-            predictions.push("Sudden good change in luck of native [10].");
-            predictions.push("Person may travel to distant place in search of Guru [10].");
-            break;
+          predictions.push("Long distance travels all of a sudden [9].");
+          predictions.push("Second Child will be good, will care for you in your last days [10].");
+          predictions.push("Post graduation can be from different land [10].");
+          predictions.push("Sudden good change in luck of native [10].");
+          predictions.push("Person may travel to distant place in search of Guru [10].");
+          break;
 
         case 10: // Moon in 10th House from Jupiter [10]
-            predictions.push("Changes in Profession [10].");
-            predictions.push("Change of place for Father [10].");
-            predictions.push("Mother has Jupiter in the 4th house, so gives her Ghar ka Sukh [10].");
-            predictions.push("Native's Karma is Linked to Mother, Elder sister or Daughter or in Nurture care and service of people [10].");
-            predictions.push("Person can go abroad, may have Foreign clients and will be able to get rid of his debt through them [10].");
-            break;
+          predictions.push("Changes in Profession [10].");
+          predictions.push("Change of place for Father [10].");
+          predictions.push("Mother has Jupiter in the 4th house, so gives her Ghar ka Sukh [10].");
+          predictions.push("Native's Karma is Linked to Mother, Elder sister or Daughter or in Nurture care and service of people [10].");
+          predictions.push("Person can go abroad, may have Foreign clients and will be able to get rid of his debt through them [10].");
+          break;
 
         case 11: // Moon in 11th House from Jupiter [10, 11]
-            predictions.push("Native can have elder sister; she will be good [11].");
-            predictions.push("Native may have a lot of friends, but friendships don't last for long [11].");
-            predictions.push("Gains are also coming and going [11].");
-            predictions.push("Friendly relations with Mother [11].");
-            predictions.push("Jupiter becomes powerful by this placement [11].");
-            predictions.push("Mother may be daily temple going [11].");
-            predictions.push("Mother may have a younger brother; Mother may have short travels to Religious places [11].");
-            break;
+          predictions.push("Native can have elder sister; she will be good [11].");
+          predictions.push("Native may have a lot of friends, but friendships don't last for long [11].");
+          predictions.push("Gains are also coming and going [11].");
+          predictions.push("Friendly relations with Mother [11].");
+          predictions.push("Jupiter becomes powerful by this placement [11].");
+          predictions.push("Mother may be daily temple going [11].");
+          predictions.push("Mother may have a younger brother; Mother may have short travels to Religious places [11].");
+          break;
 
         case 12: // Moon in 12th House from Jupiter [2, 11]
-            predictions.push("Weak secret enemy (will be weak and not stay for long) [11].");
-            predictions.push("Difference of opinion with Mother [11].");
-            predictions.push("Mother will be faithful [2].");
-            predictions.push("Secret loans of native – which nobody knows about [2].");
-            predictions.push("Fast expenses and savings becomes problematic [2].");
-            predictions.push("Finances and Family life of Mother is good [2].");
-            break;
+          predictions.push("Weak secret enemy (will be weak and not stay for long) [11].");
+          predictions.push("Difference of opinion with Mother [11].");
+          predictions.push("Mother will be faithful [2].");
+          predictions.push("Secret loans of native – which nobody knows about [2].");
+          predictions.push("Fast expenses and savings becomes problematic [2].");
+          predictions.push("Finances and Family life of Mother is good [2].");
+          break;
 
         default:
-            // This case should not be reached in a 1-12 house system
-            break;
+          // This case should not be reached in a 1-12 house system
+          break;
+      }
+      createCard('Moon from Jupiter', predictions, 'text');
+      return predictions;
     }
-    createCard('Moon from Jupiter', predictions, 'text');
-    return predictions;
-}
+
+    /**
+     * Maps Rashi numbers (1=Aries, 12=Pisces) to their Vedic astrological names.
+     */
+    const rashiNameMap = {
+      1: "Aries (Mesha)",
+      2: "Taurus (Vrishabha)",
+      3: "Gemini (Mithuna)",
+      4: "Cancer (Karka)",
+      5: "Leo (Simha)",
+      6: "Virgo (Kanya)",
+      7: "Libra (Tula)",
+      8: "Scorpio (Vrischika)",
+      9: "Sagittarius (Dhanu)",
+      10: "Capricorn (Makara)",
+      11: "Aquarius (Kumbha)",
+      12: "Pisces (Meena)"
+    };
+
+    /**
+     * Astrological predictions for Moon in different Rashis, derived from the source material.
+     * Data is indexed by Rashi number (1 to 12).
+     */
+    const moonRashiPredictions = {
+      1: { // Aries
+        rashi: "Aries (Mesha)",
+        status: null,
+        mother_traits: [
+          "Will be courageous [1]",
+          "Will be stubborn [1]",
+          "Can have accident or surgeries [2]",
+          "Is called Miss Fatafat [2]",
+          "May be Miser [2]"
+        ],
+        native_traits: [
+          "Mental ability is restricted due to stubbornness [1]",
+          "Is self centered in thoughts [1]",
+          "Has sympathy towards people in trouble but may not help them [1]",
+          "Gives sexual desires and attraction towards opposite sex (mainly in male chart) [1]"
+        ],
+        combinations: [
+          "Mo in Aries is considered Mo + Ma (Good for land property) [1]"
+        ]
+      },
+      2: { // Taurus
+        rashi: "Taurus (Vrishabha)",
+        status: "Exalted here [2]",
+        mother_traits: [
+          "Will be money minded [2]",
+          "May even work in financial institution like bank [2]",
+          "Can be of artistic nature [2]",
+          "Is influential and respected and loved by all [2]",
+          "Will have wealth [2]",
+          "Is fond of Luxurious things and articles [2]"
+        ],
+        native_traits: [
+          "Mind does not think small and thinks he/she is great [2]",
+          "Is attractive in appearance [2]",
+          "Money comes and goes fast [3]",
+          "May gain money after birth of Daughter [2]"
+        ],
+        combinations: []
+      },
+      3: { // Gemini
+        rashi: "Gemini (Mithuna)",
+        status: null,
+        mother_traits: [
+          "Will be intelligent, educated, and have good communication skills [3]",
+          "Is diplomatic, and she knows how to get things done [3]"
+        ],
+        native_traits: [
+          "Mind is analytical and calculative [3]",
+          "Has good memory and remembers everything (unless moon is weak) [3]",
+          "May face cheating and fraud in friendships and partnerships [3]",
+          "Will do well in business [3]"
+        ],
+        combinations: [
+          "Mo is dispositor of Me so Me will carry moon’s energy [3]"
+        ]
+      },
+      4: { // Cancer
+        rashi: "Cancer (Karka)",
+        status: "Own House (Implied by context, though not explicitly stated in the Cancer section, but mentioned in general Moon Karakas [12])",
+        mother_traits: [
+          "Will see lot of changes in her life [4]",
+          "Has good thoughts [4]",
+          "Is nurturing and empathetic and she is truly motherly in nature [4]"
+        ],
+        native_traits: [
+          "Is fickle minded [4]",
+          "Is Philanthropic in Nature and a lover of art [4]"
+        ],
+        combinations: []
+      },
+      5: { // Leo
+        rashi: "Leo (Simha)",
+        status: null,
+        mother_traits: [
+          "Will have control of Family, Head of Family [4]",
+          "Will Rule and enjoys authority [4]"
+        ],
+        native_traits: [
+          "Mind is practical and talks definitive and to the point [4]",
+          "Has royal thought, and likes things that are royal, branded and Luxurious [4, 5]",
+          "Is Strong minded and faces [challenges] [5]",
+          "Father and Son may encounter frequent changes and travels [5]",
+          "Elder sister will be dominating and egoistic [4]"
+        ],
+        combinations: [
+          "As Leo being Mooltrikon Rashi of Su makes it as Su + Mo combination [5]"
+        ]
+      },
+      6: { // Virgo
+        rashi: "Virgo (Kanya)",
+        status: null,
+        mother_traits: [
+          "Is well versed in communication [5]",
+          "Will be educated and highly Intelligent [5]",
+          "May find errors and faults in everything (Virgo signifies Nukta-Chini and analytical skills) [5]",
+          "Tries to accumulate wealth in as much quantity as possible [5]"
+        ],
+        native_traits: [
+          "Is intelligent, sharp and has large memory [5]",
+          "Has good mixing abilities with members of society [5]",
+          "Will be of Competitive, Jealous nature [6]"
+        ],
+        combinations: [
+          "Virgo is Mooltrikon of Me, Makes it a Mo + Me combination, which indulges a person [6]"
+        ]
+      },
+      7: { // Libra
+        rashi: "Libra (Tula)",
+        status: null,
+        mother_traits: [
+          "Has tendency to hoard wealth (Money minded) [6]",
+          "Is fond of luxurious things and articles [6]",
+          "Faced a downfall, problems, issues after your birth (as Mo is approaching debilitation) [6]",
+          "This combination is sometimes found in charts of Widows and signifies struggle for mother [7]"
+        ],
+        native_traits: [
+          "Mind has lot of desires [6]",
+          "Has sexual desires and is attracted towards opposite sex [6]",
+          "May not have large savings [6]"
+        ],
+        combinations: [
+          "Mo in Libra (Mooltrikon rashi of Ve makes it a Mo + Ve combination) [6]"
+        ]
+      },
+      8: { // Scorpio
+        rashi: "Scorpio (Vrischika)",
+        status: "Debilitated here [7]",
+        mother_traits: [
+          "Is very stubborn [7]",
+          "Sometimes says words that are arrow like and hurtful (Mo + Ma + Ke) [7]",
+          "Is miser [7]",
+          "Had a hard struggle in her life which made her a Hard nut [7]",
+          "Is not affected by happenings and problems of other people [7]",
+          "Is spiritually inclined [7]"
+        ],
+        native_traits: [
+          "Has interest in unproductive things [8]",
+          "Starts preaching others about right and wrong [8]",
+          "Is mysterious in nature and has invisible qualities of 8th house [8]",
+          "Mind of Male native may have a lot of sexual thoughts (violent and unethical too) [8]"
+        ],
+        combinations: []
+      },
+      9: { // Sagittarius
+        rashi: "Sagittarius (Dhanu)",
+        status: null,
+        mother_traits: [
+          "Will be religious [8]",
+          "Involved in Public activity [8]",
+          "Has Good Public relations [8]",
+          "Suffers from cold and allied complaints [8]"
+        ],
+        native_traits: [
+          "Has religious thoughts [8]",
+          "Will desire public recognition [8]",
+          "Is broad minded [8]",
+          "Will find it difficult to concentrate and Focus [9]",
+          "Will have a lot of changes [9]",
+          "Jeev has Karma attached to mother and maybe fond of her [9]"
+        ],
+        combinations: [
+          "Sagittarius is Mooltrikon of Ju so it is like a Ju + Mo combination [9]"
+        ]
+      },
+      10: { // Capricorn
+        rashi: "Capricorn (Makara)",
+        status: null,
+        mother_traits: [
+          "Will have obstacles, Hurdles in life (Saturn works as speed breaker) [9]",
+          "Is mufat (Thik of Thik aur galat ko galat bolegi) [9]",
+          "Suffers from ill health [9]"
+        ],
+        native_traits: [
+          "Gets obstacles, disturbance in work life [9]",
+          "Mind will get disturbed [9]",
+          "Takes hasty decisions in life and suffers due to this hastiness and emotional nature [9]",
+          "Life may ponder over a single desire fulfilment [10]"
+        ],
+        combinations: [
+          "Sa being dispositor carries energy of Moon which brings changes in career and unstable career [10]"
+        ]
+      },
+      11: { // Aquarius
+        rashi: "Aquarius (Kumbha)",
+        status: null,
+        mother_traits: [
+          "Will have obstacles, Hurdles in life (Saturn works as speed breaker) [10]",
+          "Is philanthropic and donates things [10]",
+          "May suffer from rheumatic complaints [10]"
+        ],
+        native_traits: [
+          "Will be of somewhat Psychic nature, Vahami [10]",
+          "Has different kind of thought process [10]",
+          "Is engaged in secret mental manipulations (Khayali pulav) [10]",
+          "Has intuition powers and can do well as a psychologist, occultist [11]",
+          "May send the native to foreign land [11]"
+        ],
+        combinations: [
+          "Aquarius is Mooltrikon rashi of Sa so it is a combination of Sa + Mo + Ra [11]"
+        ]
+      },
+      12: { // Pisces
+        rashi: "Pisces (Meena)",
+        status: null,
+        mother_traits: [
+          "Is religious, pious [11]"
+        ],
+        native_traits: [
+          "Will be more spiritual and a step ahead then being in Sagittarius [11]",
+          "Has shining eyes [11]",
+          "Is fickle minded ",
+          "Helps others in times of need ",
+          "Is imaginative and romantic ",
+          "Will encounter changes in life ",
+          "Mo + Me in Pisces can make a good writer "
+        ],
+        combinations: [
+          "Moon’s energy is carried by Jupiter as Jupiter is dispositor "
+        ]
+      }
+    };
+
+    function getMoonRashiPredictions(horoscope) {
+      // 1. Validate the input object structure
+      if (!horoscope || !horoscope.Moon || typeof horoscope.Moon.sign !== 'number') {
+        return {
+          error: "Invalid horoscope object: Moon sign is required.",
+          citation: "N/A"
+        };
+      }
+
+      const moonSignIndex = horoscope.Moon.sign;
+
+      // 2. Check if the sign index is valid (1-12)
+      if (moonSignIndex < 1 || moonSignIndex > 12) {
+        return {
+          error: `Sign index ${moonSignIndex} is out of the valid range (1-12).`,
+          citation: "N/A"
+        };
+      }
+
+      // 3. Retrieve predictions
+      const predictions = moonRashiPredictions[moonSignIndex];
+
+      // 4. Determine the Moon's general karakas (characteristics)
+      const moonKarakas = [
+        "Mother", "Elder sister", "Woman", "Milk", "Fickle", "Changing",
+        "Smooth", "vitreous", "Restaurants", "eatables", "Hotels",
+        "Foreign Land", "Psychology", "Soft", "Travels", "Changes",
+        "Mind", "Water", "Blames"
+      ];
+      const moonRelationships = {
+        friends: ["Jupiter", "Sun"],
+        moderate: ["Mars", "Mercury"],
+        enemy: ["Saturn", "Venus", "Rahu"]
+      };
+
+      // 5. Structure the comprehensive output
+      const output = {
+        planet: "Moon",
+        rashi: predictions.rashi,
+        general_karakas: moonKarakas.map(k => k + " [13]"),
+        general_relationships: {
+          friends: moonRelationships.friends.map(p => p + " [12]"),
+          moderate: moonRelationships.moderate.map(p => p + " [12]"),
+          enemy: moonRelationships.enemy.map(p => p + " [12]")
+        },
+        rashi_specific_predictions: {
+          status: predictions.status ? predictions.status + " [2, 7, 12]" : "Neutral",
+          mother: predictions.mother_traits,
+          native_mind_and_traits: predictions.native_traits,
+          combinations: predictions.combinations
+        }
+      };
+
+      // Include aspect details
+      output.aspects = {
+        aspect_house: "7th house from its position [12]",
+        nature: "Mild influence [14]",
+        effect: "Increases emotional sensitivity in relationships [14]",
+        classical_text_interpretation: "The Moon’s aspect nourishes the aspected house (Phal Deepika) [14]"
+      };
+
+      var outputHTML = `
+      <h3>Moon in ${output.rashi}</h3>
+      <h4>General Karakas:</h4>
+      <ul>
+        ${output.general_karakas.map(k => `<li>${k}</li>`).join('')}
+      </ul>
+      <h4>General Relationships:</h4>
+      <ul>
+        <li>Friends: ${output.general_relationships.friends.join(', ')}</li>
+        <li>Moderate: ${output.general_relationships.moderate.join(', ')}</li>
+        <li>Enemy: ${output.general_relationships.enemy.join(', ')}</li>
+      </ul>
+      <h4>Aspects:</h4>
+      <ul>
+        <li>Aspect House: ${output.aspects.aspect_house}</li>
+        <li>Nature: ${output.aspects.nature}</li>
+        <li>Effect: ${output.aspects.effect}</li>
+        <li>Classical Text Interpretation: ${output.aspects.classical_text_interpretation}</li>
+      </ul>
+      <h4>Rashi Specific Predictions:</h4>
+      <ul>
+        <li>Status: ${output.rashi_specific_predictions.status}</li>
+        <li>Mother Traits:
+          <ul>
+            ${output.rashi_specific_predictions.mother.map(t => `<li>${t}</li>`).join('')}
+          </ul>
+        </li>
+        <li>Native Mind and Traits:
+          <ul>
+            ${output.rashi_specific_predictions.native_mind_and_traits.map(t => `<li>${t}</li>`).join('')}
+          </ul>
+        </li>
+        <li>Combinations:
+          <ul>
+            ${output.rashi_specific_predictions.combinations.length > 0 ? output.rashi_specific_predictions.combinations.map(c => `<li>${c}</li>`).join('') : '<li>None</li>'}
+          </ul>
+        </li>
+      </ul>
+      <p><em></em></p>
+    `;
+      output.output_summary =
+    [
+        `Rashi: ${output.rashi}`,
+        `Status: ${output.rashi_specific_predictions.status}`,
+        `Mother Traits: ${output.rashi_specific_predictions.mother.join('; ')}`,
+        `Native Mind and Traits: ${output.rashi_specific_predictions.native_mind_and_traits.join('; ')}`,
+        `Combinations: ${output.rashi_specific_predictions.combinations.join('; ') || 'None'}`
+      ];
+
+      createCard('Moon in Rashi', outputHTML, 'html');
+      return output;
+    }
+
     // Attach save and load UI components
     window.addEventListener('DOMContentLoaded', () => {
       const container = document.createElement('div');
