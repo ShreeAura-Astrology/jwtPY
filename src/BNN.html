@@ -1640,7 +1640,10 @@
 
       const aspectsText = influenceDetails.length ? `
 
-      Aspecting planets: ${influenceDetails.join(', ')}` : '';
+      Aspecting planets: ${influenceDetails.join('<br> ')}` : '';
+
+      createCard('Career Insights from Saturn', `Saturn in sign ${saturn.sign}: ${prof}.<br>
+      <strong>Additional indicators:</strong> ${extras.join(' <br> ') || 'None'}${aspectsText}`, 'html');
       return `Saturn in sign ${saturn.sign}: ${prof}.
 
       Additional indicators: ${extras.join(' , ') || 'None'}${aspectsText}`;
