@@ -2049,7 +2049,7 @@
        */
       const isAspectedBy = (P1, targetHouse, specialAspects = []) => {
         // All planets aspect the 7th house [13]
-        const universalAspect = ((P1.house + 6) % 12) + 1;
+        const universalAspect = ((P1.house + 7 - 2) % 12) + 1;
         let aspectHouses = [universalAspect];
 
         // Add special aspects if applicable
