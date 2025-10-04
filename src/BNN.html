@@ -1635,15 +1635,15 @@
 
       influenceDetails.forEach(detail => {
         const name = detail.split(' ')[0];
-        if (planetHints[name]) extras.push(planetHints[name]);
+        if (planetHints[name]) extras.push("[ " + detail.split(' ')[1]  + " ] :" + planetHints[name]);
       });
 
       const aspectsText = influenceDetails.length ? `
-
+<br>
       Aspecting planets: ${influenceDetails.join('<br> ')}` : '';
 
       createCard('Career Insights from Saturn', `Saturn in sign ${saturn.sign}: ${prof}.<br>
-      <strong>Additional indicators:</strong> ${extras.join(' <br> ') || 'None'}${aspectsText}`, 'html');
+      <br><strong>Additional indicators:</strong> ${extras.join(' <br> ') || 'None'}${aspectsText}`, 'html');
       return `Saturn in sign ${saturn.sign}: ${prof}.
 
       Additional indicators: ${extras.join(' , ') || 'None'}${aspectsText}`;
