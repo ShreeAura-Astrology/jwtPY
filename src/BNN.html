@@ -222,6 +222,7 @@
       getWorkEnvironmentFromHoroscope(horoscope);
       displayChildHealthPredictions(horoscope, getChildBirthHealthPredictions);
       determineSunPredictions(horoscope);
+      predictMoonFromJupiter(horoscope);
     }
 
     /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -2312,6 +2313,140 @@ function determineSunPredictions(horoscope) {
   return predictions;
 }
 
+
+/**
+ * Generates predictions based on Moon's placement relative to Jupiter (Moon in Different Houses from Jupiter).
+ * @param {object} horoscope - Chart data including Moon and Jupiter placements.
+ * @returns {Array<string>} - List of generated predictions.
+ */
+function predictMoonFromJupiter(horoscope) {
+    const { Moon, Jupiter } = horoscope;
+    const predictions = [];
+    
+    // Calculates house distance (1 to 12) from P1 (Jupiter) to P2 (Moon)
+    const getRelativeHouse = (P1, P2) => ((P2.house - P1.house + 12) % 12) + 1;
+    
+    const relativeHouse = getRelativeHouse(Jupiter, Moon);
+
+    // Common prediction when Moon is good (Implied general benefic influence of Ju on Mo) [1]
+    predictions.push("Moon becomes good, all karakas of Moon enhance (Food, goods, changes, nurture, care, Mother, Mind, Emotions) [1].");
+    predictions.push("Jupiter feels like it is exalted [1].");
+    predictions.push("Person is open hearted and has empathy and care for others [1].");
+    predictions.push("Mother is religious and pious and auspicious [1].");
+    predictions.push("Jeev and Mother look alike [1].");
+    predictions.push("Native's mind will be good and pious [1].");
+
+    switch (relativeHouse) {
+        case 1: // Moon in 1st House from Jupiter [3]
+            predictions.push("Native may enter family life soon [3].");
+            predictions.push("Native's speech is soft and speaks fast and softly [3].");
+            predictions.push("Finance is inflow and outflow of money; no savings, no financial crisis [3].");
+            predictions.push("Difference of opinion with Mother [3].");
+            predictions.push("Mother has Jupiter in the 12th House from her Lagna; Mother does expenditure on religious things [3].");
+            predictions.push("Children can settle in different land for their profession [3].");
+            break;
+
+        case 2: // Moon in 2nd House from Jupiter [4]
+            predictions.push("Person has karma related to Mother and Elder Sister or Daughter [4].");
+            break;
+
+        case 3: // Moon in 3rd House from Jupiter [4, 5]
+            predictions.push("Less Inner Strength, Emotional [4].");
+            predictions.push("Very good orator, Fast communication [4].");
+            predictions.push("Travel: Unplanned, sudden [4].");
+            predictions.push("Skills: Good drawing and writing, fast writers [4].");
+            predictions.push("Mother will give you support (3rd house planet gives support) [4].");
+            predictions.push("Person will get blames/scandal for what he has not done [4].");
+            predictions.push("Relationship with mother will be friendly [4].");
+            predictions.push("Mother of native may have an elder brother [4].");
+            predictions.push("Mother has good friends, may have a sister [4].");
+            predictions.push("For Stability, the person should worship goddess Parvati [5].");
+            break;
+
+        case 4: // Moon in 4th House from Jupiter [5, 6]
+            predictions.push("Mother may be engaged in teaching, preaching, religious activities, maybe working in a school [5].");
+            predictions.push("Mother's Father will be a pious personality [5].");
+            predictions.push("Native's life has Ghar ka sukh (domestic happiness) [5].");
+            predictions.push("Native may change his houses and vehicles – Twice or Thrice [5].");
+            predictions.push("Education can have a lot of changes and travels, Can study at distant land, economics, psychology, hospitality [6].");
+            break;
+
+        case 5: // Moon in 5th House from Jupiter [6, 7]
+            predictions.push("Can have a girl child [6].");
+            predictions.push("Considered little malefic here; can cause delay in child birth due to stree curse [6].");
+            predictions.push("5th house from Jupiter shows atma is interested in Travels, Nurturing others [6].");
+            predictions.push("Native will be lucky for mother [7].");
+            predictions.push("Can signify adoption/IVF [7].");
+            predictions.push("Father may suffer memory related issues or depression [7].");
+            predictions.push("Friendships will not last very long [7].");
+            break;
+
+        case 6: // Moon in 6th House from Jupiter [7]
+            predictions.push("Diseases are not long lasting [7].");
+            predictions.push("Difference of opinion from Mother [7].");
+            predictions.push("Servants (People that work under you) get blames; they don't stay for long [7].");
+            predictions.push("Open enemy is weak but cunning [7].");
+            predictions.push("Mother's longevity is good [7].");
+            predictions.push("Diseases can be cold, cough, insomnia, depression, memory problems [7].");
+            break;
+
+        case 7: // Moon in 7th House from Jupiter [8]
+            predictions.push("Friends and Partners are good and pious, maybe fluctuating in nature, emotional friends [8].");
+            predictions.push("Day to day activity will be fast and unplanned [8].");
+            predictions.push("Native will be having good thoughts, but is subject to a lot of changes in his life [8].");
+            break;
+
+        case 8: // Moon in 8th House from Jupiter [8, 9]
+            predictions.push("Loose money all throughout life (Aspects 2nd house) [8].");
+            predictions.push("Name, Longevity is good, but may have memory, depression, sleep related problems [8].");
+            predictions.push("Difference of opinion with Mother [8].");
+            predictions.push("Mother if falls sick it is for long time [9].");
+            predictions.push("Friends maybe working in abroad [9].");
+            predictions.push("Keep donating articles of planets in 8th to Jupiter [9].");
+            break;
+
+        case 9: // Moon in 9th House from Jupiter [9, 10]
+            predictions.push("Long distance travels all of a sudden [9].");
+            predictions.push("Second Child will be good, will care for you in your last days [10].");
+            predictions.push("Post graduation can be from different land [10].");
+            predictions.push("Sudden good change in luck of native [10].");
+            predictions.push("Person may travel to distant place in search of Guru [10].");
+            break;
+
+        case 10: // Moon in 10th House from Jupiter [10]
+            predictions.push("Changes in Profession [10].");
+            predictions.push("Change of place for Father [10].");
+            predictions.push("Mother has Jupiter in the 4th house, so gives her Ghar ka Sukh [10].");
+            predictions.push("Native's Karma is Linked to Mother, Elder sister or Daughter or in Nurture care and service of people [10].");
+            predictions.push("Person can go abroad, may have Foreign clients and will be able to get rid of his debt through them [10].");
+            break;
+
+        case 11: // Moon in 11th House from Jupiter [10, 11]
+            predictions.push("Native can have elder sister; she will be good [11].");
+            predictions.push("Native may have a lot of friends, but friendships don't last for long [11].");
+            predictions.push("Gains are also coming and going [11].");
+            predictions.push("Friendly relations with Mother [11].");
+            predictions.push("Jupiter becomes powerful by this placement [11].");
+            predictions.push("Mother may be daily temple going [11].");
+            predictions.push("Mother may have a younger brother; Mother may have short travels to Religious places [11].");
+            break;
+
+        case 12: // Moon in 12th House from Jupiter [2, 11]
+            predictions.push("Weak secret enemy (will be weak and not stay for long) [11].");
+            predictions.push("Difference of opinion with Mother [11].");
+            predictions.push("Mother will be faithful [2].");
+            predictions.push("Secret loans of native – which nobody knows about [2].");
+            predictions.push("Fast expenses and savings becomes problematic [2].");
+            predictions.push("Finances and Family life of Mother is good [2].");
+            break;
+
+        default:
+            // This case should not be reached in a 1-12 house system
+            break;
+    }
+    createCard('Moon from Jupiter', predictions, 'text');
+    return predictions;
+}
     // Attach save and load UI components
     window.addEventListener('DOMContentLoaded', () => {
       const container = document.createElement('div');
