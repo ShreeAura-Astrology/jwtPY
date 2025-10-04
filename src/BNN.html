@@ -1679,7 +1679,7 @@
         cardContent.style.fontSize = '14px';
         cardContent.style.color = '#333';
         cardContent.style.marginTop = '10px';
-        cardContent.textContent = content;
+        cardContent.textContent = content.replaceAll(/,/g, '\n');
       }
       card.appendChild(cardContent);
       document.getElementById('results')?.prepend(card);
