@@ -2156,7 +2156,7 @@
       }
 
       // 17. Sun’s 10th house aspected by Mars [4]
-      const Sun10thHouse = ((Sun.house + 9) % 12) + 1;
+      const Sun10thHouse = ((Sun.house + 10 - 2) % 12) + 1;
       if (isAspectedBy(Mars, Sun10thHouse, aspectConfig.Mars)) {
         predictions.push("Father can be in Govt. Job.");
       }
@@ -2172,7 +2172,7 @@
       }
 
       // 20. Sun’s 12th house aspected by Saturn [4]
-      const Sun12thHouse = ((Sun.house + 11) % 12) + 1;
+      const Sun12thHouse = ((Sun.house + 12 - 2) % 12) + 1;
       if (isAspectedBy(Saturn, Sun12thHouse, aspectConfig.Saturn)) {
         predictions.push("Father will have lot of problems because of bad company.");
       }
