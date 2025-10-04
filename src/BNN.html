@@ -1610,9 +1610,11 @@
           const diff = (d.sign - saturn.sign + 12) % 12;
           let aspectType = '';
           if (d.sign === saturn.sign) aspectType = 'Conjunction';
-          else if (diff === 2) aspectType = '3rd aspect';
-          else if (diff === 6) aspectType = '7th aspect';
-          else if (diff === 9) aspectType = '10th aspect';
+          else if (diff === 1) aspectType = '(Action of Saturn) 2nd aspect';
+          else if (diff === 2) aspectType = '(Start Prof.)  3rd aspect';
+          else if (diff === 6) aspectType = '(Middle Prof.) 7th aspect';
+          else if (diff === 9) aspectType = '(End Prof.)    10th aspect';
+          else if (diff === 11) aspectType = '(Prof under pressure) 12th aspect';
           else if (diff === 4 || diff === 8) aspectType = 'Trine';
           else if (saturn.retrograde && [
             (saturn.sign - 1 + 12) % 12 || 12,
