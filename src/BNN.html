@@ -1635,7 +1635,7 @@
 
       influenceDetails.forEach(detail => {
         const name = detail.split(':')[0];
-        if (planetHints[name]) extras.push(name + " [ " + detail.split(' ')[1]  + " ] :" + planetHints[name]);
+        if (planetHints[name]) extras.push(name + " [ " + detail.split(':')[1]  + " ] :" + planetHints[name]);
       });
 
       const aspectsText = influenceDetails.length ? `
