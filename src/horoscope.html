@@ -1495,6 +1495,7 @@
             $scope.dhokhaplanetbyAge = $scope.calculateDhokha(planetPositionsSnapshot);
             $scope.saalaChakkar = $scope.getLalKitab35YearCycleStatusWithAntardasha(age);
             $scope.saalaChakkar = $scope.saalaChakkar.toString().replaceAll(',', '<br>');
+            $scope.ketuTravel = $scope.predictKetuTravelEffectVarshphal($scope.varshphalChart);
         }
         $scope.resetVarshphal = function () {
             $scope.varshphalChart = varshphalHouses;
@@ -2409,7 +2410,7 @@
             getPredictions();
             $scope.twoPlanetPrediction();
             getPlanetHouses(houses);
-            grahanalysis = generateHTMLTable(detectPlanets(houses),'Area','Results');
+            grahanalysis = generateHTMLTable(detectPlanets(houses), 'Area', 'Results');
             showResult();
             $scope.horoscope = houses;
 
@@ -2711,7 +2712,7 @@
             if (isMangalDosh) {
                 document.getElementById("NP").innerHTML += mangalDoshRemedies;
             }
-            document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: <br>' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: <br>' + rinEffects.toString().replaceAll(',', '<br>') + "<br><br>Uch Grahas:<br>" + uchGrahas.toString().replaceAll(',', '<br>') + "<br><br>Neech Grahas:<br>" + neechGrahas.toString().replaceAll(',', '<br>')  + grahanalysis + "<br>Predictions:<br>" + predictions.toString().replaceAll(',', '<br>') + twoPlanetPredictions.toString().replaceAll(',', '<br>');
+            document.getElementById("VD").innerHTML = vakri.toString().replaceAll(',', '<br>') + '<br<br><p>Normal Drishti: </p>' + drishti.toString().replaceAll(',', '<br>') + '<br><br><p> Rakesh Effect: </p>' + analysis.toString().replaceAll(',', '<br>') + '<br><br><p> Bala: </p>' + bala.toString().replaceAll(',', '<br>') + '<br><br>Blind Planets Kundali: <br>' + blindPlanets.toString().replaceAll(',', '<br>') + '<br><br>Rin Effects: <br>' + rinEffects.toString().replaceAll(',', '<br>') + "<br><br>Uch Grahas:<br>" + uchGrahas.toString().replaceAll(',', '<br>') + "<br><br>Neech Grahas:<br>" + neechGrahas.toString().replaceAll(',', '<br>') + grahanalysis + "<br>Predictions:<br>" + predictions.toString().replaceAll(',', '<br>') + twoPlanetPredictions.toString().replaceAll(',', '<br>');
         }
 
         $scope.planets = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Rahu", "Ketu"];
@@ -6360,6 +6361,127 @@ Team Mahesh Mankar
         }
         // console.log(`Birth Time: 14:30, Planet: ${getLalKitabHoraPlanet(14, 30)}`); // Expected: Mars [5]
 
+        /**
+         * Predicts the effect of Ketu on travel (Yatra ka Phal) based on its placement 
+         * in the varshphal chart, drawing position data from the input 'houses' object.
+         * 
+         * @param {object} houses An object containing detailed house information (Khana numbers 1-12).
+         * @returns {string} The predicted travel outcome and associated conditions, or an error message.
+         */
+        $scope.predictKetuTravelEffectVarshphal = function(houses) {
+
+            let ketuHouse = null;
+            const houseKeys = Object.keys(houses);
+
+            // Step 1: Find Ketu's Position
+            for (const houseNumber of houseKeys) {
+                if (houses[houseNumber] && houses[houseNumber].planets.includes("Ketu")) {
+                    ketuHouse = parseInt(houseNumber);
+                    break;
+                }
+            }
+
+            // Helper function to check if a specific house is empty
+            const isHouseEmpty = (houseNum) => {
+                const houseData = houses[String(houseNum)];
+                return houseData && houseData.planets.length === 0;
+            };
+
+            // Helper function to check if a specific house has any planet
+            const isHouseOccupied = (houseNum) => {
+                const houseData = houses[String(houseNum)];
+                return houseData && houseData.planets.length > 0;
+            };
+
+            if (ketuHouse === null) {
+                return "Error: Ketu position was not found in the provided houses object.";
+            }
+
+            // Step 2: Determine Travel Prediction based on Ketu's Khana
+            switch (ketuHouse) {
+                case 1:
+                    // Ketu Khana Number 1
+                    return "Ketu Khana number 1: Yatra ki tayari ho jati hai aur orders bhi diye jate hain, lekin aakhir mein yatra nahi hoti [2]. Agar hoti bhi hai, toh wapas aana padta hai [2]. 100 din ki yatra ko yatra nahi maana jata [2]. Yatra purab (East) ki taraf hogi [2].";
+
+                case 2:
+                    // Ketu Khana Number 2
+                    let h2_result = "Ketu Khana number 2: Agar progress milti hai to travel bhi hoga, nahi to dono nahi honge [2]. Agar house number eight Manda na ho, Yatra journey **north-west ki taraf hogi** [2].";
+                    // Foreign settlement context [8]
+                    h2_result += " Note: Ketu in 2nd house is also a high chance factor for Foreign settlement if Moon, Guru, Mangal, Rahu is in good position [8].";
+                    return h2_result;
+
+                case 3:
+                    // Ketu House Number 3
+                    let h3_result = "Ketu house number 3: ";
+                    // Check co-position (House 9 empty) [3]
+                    if (isHouseEmpty(9)) {
+                        h3_result += "**Agar house number 9 khali hai to aapko bhai-behno se door ek foreign country me rehna padega** [3]. Journey south ki taraf hogi [3].";
+                    } else {
+                        h3_result += "Journey south ki taraf hogi [3]. (The condition for foreign stay depends on house number 9 being empty [3]).";
+                    }
+                    // Foreign settlement context [6-8]
+                    h3_result += " Note: Short journeys are generally seen from the third house [6]. Ketu in 3rd house is also a high chance factor for Foreign settlement if Moon, Guru, Mangal, Rahu is in good position [8].";
+                    return h3_result;
+
+                case 4:
+                    // Ketu Khana Number 4
+                    return "Ketu Khana number 4: Agar travel nahi hai to bas usi jagah tak hoga jahan maa rehti hain [3]. Place change nahi hoga aur travel Manda Nahi hoga, Jab Khana number 10 sahi hai [3].";
+
+                case 5:
+                    // Ketu Khana Number 5
+                    return "Ketu Khana number 5: Koi bade change nahi honge, na to place ya city change hoga [3]. Shayad department ke andar hi kisi aur jagah par baithna ho [3]. Ye change inauspicious nahi hoga, agar Jupiter benefic hai [3].";
+
+                case 6:
+                    // Ketu Khana Number 6
+                    let h6_result = "Ketu Khana number 6: **North ki taraf travel ka order jaari ho kar, but woh definitely cancel ho jayega** [4]";
+                    // Check co-position (House 12 occupied) [4]
+                    if (isHouseOccupied(12)) {
+                        h6_result += " agar koi planet Khana number 12 me hai toh [4]. (Varshfal ke according [4]).";
+                    } else {
+                        h6_result += ". (Cancellation condition is dependent on any planet being in Khana number 12 [4]).";
+                    }
+                    return h6_result;
+
+                case 7:
+                    // Ketu Khana Number 7
+                    let h7_result = "Ketu Khana number 7: Yatra Progress ke liye nahi hai [4]. Agar vyakti nahi jata to bimaar hone ke baad jana padega [4]. City change zaroori hai [4]. Result achha hoga agar house number 1 theek hai aur house number 1 kisi aur planet se debilitated nahi hai [4].";
+                    // Foreign travel context [7]
+                    h7_result += " Note: Analyzing the seventh house is necessary to know when abroad travel will happen [7].";
+                    return h7_result;
+
+                case 8:
+                    // Ketu Khana Number 8
+                    let h8_result = "Ketu Khana number 8: Koi khaas khushi ki journey nahi hogi [4]. Journey dheere hoga aur against the wishes hoga [4].";
+                    // Foreign travel context [7]
+                    h8_result += " Note: The eighth house is the most important house for abroad travel or foreign country settlement [7].";
+                    return h8_result;
+
+                case 9:
+                    // Ketu Khana Number 9
+                    let h9_result = "Ketu Khana Number 9: Apni marzi se, khushi se, apni marzi se **Ghar baar ki yatra hogi** [5]. Parniam Theek rahega agar khana No 3 Shubh ho toh [5].";
+                    // Foreign settlement context [7, 8]
+                    h9_result += " Note: The ninth house plays an important role in foreign travel [7]. Ketu in 9th house is also a high chance factor for Foreign settlement if Moon, Guru, Mangal, Rahu is in good position [8].";
+                    return h9_result;
+
+                case 10:
+                    // Ketu Khana Number 10
+                    return "Ketu Khana Number 10: Journey bina time ke hogi [5]. Agar Saturn horoscope me auspicious hai to duguna benefit milega [5]. Agar Saturn inauspicious hai to journey inauspicious hogi [5]. Agar khana number 8 Manda hai to journey bhi definitely Mandi hogi, par number 2 ke planets yahan helpful honge [5].";
+
+                case 11:
+                    // Ketu Khana Number 11
+                    return "Ketu Khana Number 11: Travel ka order senior officer se aane ke baad lower level tak nahi pohnchega [6]. **Fake movement hoga**, yani ke fake movement hi hoga [6].";
+
+                case 12:
+                    // Ketu Khana Number 12
+                    let h12_result = "Ketu Khana Number 12: Jab Ketu 12th house mein hota hai, toh yatra ka result yeh hota hai [1]. Jab house number 2 aur 6 auspicious hain tab **auspicious progress hogi**, change ki koi condition nahi hogi [6]. Family ke saath khushi se rehne ka samay milega [6].";
+                    // Travel context [6, 7]
+                    h12_result += " Note: Long journeys are seen from the twelfth house [6]. Analyzing the twelfth house is necessary to know when abroad travel will happen [7].";
+                    return h12_result;
+
+                default:
+                    return "Invalid house number. Please ensure the Ketu position in the Varshphal Khana is between 1 and 12.";
+            }
+        }
     });
 </script>
 
@@ -6703,6 +6825,7 @@ relaxation from Son as Ketu belongs to Son.</pre>
                 <p> Malefic Planets : <span id="MP"></span></p>
                 <p> Benefic Planets : <span id="BP"></span></p>
                 <p> Neutral Planets : <span id="NP"></span></p>
+                <p> Travel Prediction by Ketu in Varshphal : <span id="TP">{{ketuTravel}}</span></p>
                 <p> Dhoka Planet By Age:<span id="DH">{{dhokhaplanetbyAge}}</span>
                 <p> 35 Saala Chkkar <span id="CH" ng-bind-html="saalaChakkar"></span>
                 <p> Vakri drishti : <span id="VD"></span></p>
