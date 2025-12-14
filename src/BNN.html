@@ -169,6 +169,60 @@
   */
     /* ---------- BUILD INPUT FORM ---------- */
     const formDiv = document.getElementById("inputForm");
+
+    /* ---------- NAKSHATRA DROPDOWN (from JSON) ---------- */
+    const nakshatras = [
+      { "Nakshatra": "Ashwini", "NakshatraLord": "Ketu", "sequence": 1, "NakshatraAlias": "Ashwini" },
+      { "Nakshatra": "Bharani", "NakshatraLord": "Venus", "sequence": 2, "NakshatraAlias": "Bharni" },
+      { "Nakshatra": "Krittika", "NakshatraLord": "Sun", "sequence": 3, "NakshatraAlias": "Krittika" },
+      { "Nakshatra": "Rohini", "NakshatraLord": "Moon", "sequence": 4, "NakshatraAlias": "Rohini" },
+      { "Nakshatra": "Mrigashira", "NakshatraLord": "Mars", "sequence": 5, "NakshatraAlias": "Mrigashira" },
+      { "Nakshatra": "Ardra", "NakshatraLord": "Rahu", "sequence": 6, "NakshatraAlias": "Ardra" },
+      { "Nakshatra": "Punarvasu", "NakshatraLord": "Jupiter", "sequence": 7, "NakshatraAlias": "Punarvasu" },
+      { "Nakshatra": "Pushya", "NakshatraLord": "Saturn", "sequence": 8, "NakshatraAlias": "Pushya" },
+      { "Nakshatra": "Ashlesha", "NakshatraLord": "Mercury", "sequence": 9, "NakshatraAlias": "Ashlesha" },
+      { "Nakshatra": "Magha", "NakshatraLord": "Ketu", "sequence": 10, "NakshatraAlias": "Magha" },
+      { "Nakshatra": "Purva Phalguni", "NakshatraLord": "Venus", "sequence": 11, "NakshatraAlias": "Purva Phalguni" },
+      { "Nakshatra": "Uttara Phalguni", "NakshatraLord": "Sun", "sequence": 12, "NakshatraAlias": "Uttara Phalguni" },
+      { "Nakshatra": "Hasta", "NakshatraLord": "Moon", "sequence": 13, "NakshatraAlias": "Hasta" },
+      { "Nakshatra": "Chitra", "NakshatraLord": "Mars", "sequence": 14, "NakshatraAlias": "Chitra" },
+      { "Nakshatra": "Swati", "NakshatraLord": "Rahu", "sequence": 15, "NakshatraAlias": "Swati" },
+      { "Nakshatra": "Vishakha", "NakshatraLord": "Jupiter", "sequence": 16, "NakshatraAlias": "Vishakha" },
+      { "Nakshatra": "Anuradha", "NakshatraLord": "Saturn", "sequence": 17, "NakshatraAlias": "Anuradha" },
+      { "Nakshatra": "Jyeshtha", "NakshatraLord": "Mercury", "sequence": 18, "NakshatraAlias": "Jyeshtha" },
+      { "Nakshatra": "Mula", "NakshatraLord": "Ketu", "sequence": 19, "NakshatraAlias": "Mole" },
+      { "Nakshatra": "Purva Ashadha", "NakshatraLord": "Venus", "sequence": 20, "NakshatraAlias": "Purva Ashadha" },
+      { "Nakshatra": "Uttara Ashadha", "NakshatraLord": "Sun", "sequence": 21, "NakshatraAlias": "Uttara Ashadha" },
+      { "Nakshatra": "Shravana", "NakshatraLord": "Moon", "sequence": 22, "NakshatraAlias": "Shravana" },
+      { "Nakshatra": "Dhanishta", "NakshatraLord": "Mars", "sequence": 23, "NakshatraAlias": "Dhanishta" },
+      { "Nakshatra": "Shatabhisha", "NakshatraLord": "Rahu", "sequence": 24, "NakshatraAlias": "Shatabhisha" },
+      { "Nakshatra": "Purva Bhadrapada", "NakshatraLord": "Jupiter", "sequence": 25, "NakshatraAlias": "Purva Bhadrapada" },
+      { "Nakshatra": "Uttara Bhadrapada", "NakshatraLord": "Saturn", "sequence": 26, "NakshatraAlias": "Uttara Bhadrapada" },
+      { "Nakshatra": "Revati", "NakshatraLord": "Mercury", "sequence": 27, "NakshatraAlias": "Revati" }
+    ];
+
+    // Create a simple Nakshatra selector above the planet inputs
+    const nakDiv = document.createElement('div');
+    nakDiv.className = 'planet-input';
+    nakDiv.innerHTML = `
+      <label>Nakshatra</label>
+      <select id="nakshatra-select">
+        ${nakshatras.map(n => `<option value="${n.Nakshatra}">${n.Nakshatra}</option>`).join('')}
+      </select>
+      <label>Nakshatra Lord</label>
+      <input id="nakshatra-lord" readonly placeholder="Lord will appear here" />
+    `;
+    formDiv.appendChild(nakDiv);
+
+    // When the user changes nakshatra, show its lord in the readonly field
+    updateNakshatraLord = (planet) => {
+      const sel = document.getElementById(`${planet}-nakshatra`);
+      const lordInput = document.getElementById(`${planet}-nakshatra-lord`);
+      if (sel && lordInput) {
+        const found = nakshatras.find(n => n.Nakshatra === sel.value);
+        lordInput.value = found ? found.NakshatraLord : '';
+      }
+    };
     planets.forEach(planet => {
       const div = document.createElement("div");
       div.className = "planet-input";
@@ -182,6 +236,14 @@
         ${[...Array(12).keys()].map(i => `<option value="${i + 1}">${i + 1} House</option>`).join('')}
       </select>
       <input id="${planet}-retrograde" type="checkbox" />
+      <select id="${planet}-nakshatra" onchange="updateNakshatraLord('${planet}')">
+        ${nakshatras.map(n => `<option value="${n.Nakshatra}">${n.Nakshatra}</option>`).join('')}
+      </select>
+      <label>Nakshatra Pad</label>
+      <select id="${planet}-nakshatra-pad">
+        ${[1,2,3,4].map(pad => `<option value="${pad}">${pad}</option>`).join('')}
+      </select>
+      <input id="${planet}-nakshatra-lord" readonly placeholder="Lord will appear here" />
     `;
       formDiv.appendChild(div);
     });
