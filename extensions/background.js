@@ -204,12 +204,12 @@ function populateFormData(data) {
             "Nakshatra": "Purva Ashadha",
             "NakshatraLord": "Venus",
             "sequence": 20,
-            "NakshatraAlias": "Purva Ashadha"
+            "NakshatraAlias": "Purva Shadha"
         }, {
             "Nakshatra": "Uttara Ashadha",
             "NakshatraLord": "Sun",
             "sequence": 21,
-            "NakshatraAlias": "Uttara Ashadha"
+            "NakshatraAlias": "Uttara Shadha"
         }, {
             "Nakshatra": "Shravana",
             "NakshatraLord": "Moon",
