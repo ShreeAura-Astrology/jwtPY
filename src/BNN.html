@@ -2923,6 +2923,34 @@ const MERCURY_HEALTH_ISSUES = {
     spinal_cord_problems: "Conjunction of Rahu, Mercury, and Mars."
 };
 
+const MERCURY_EVALUATION_STEPS = [
+    {
+        step: 1,
+        description: "Identify the Rashi (Zodiac sign) Mercury occupies.",
+        type: "rashi"
+    },
+    {
+        step: 2,
+        description: "Check planets conjunct with Mercury and those in its trines; if Mercury is retrograde, consider the previous trine as well.",
+        type: "conjunctions_and_trines"
+    },
+    {
+        step: 3,
+        description: "Examine the 2nd and 12th houses relative to Mercury.",
+        type: "second_twelfth_houses"
+    },
+    {
+        step: 4,
+        description: "Assess the 7th Aspect Dristi of Mercury.",
+        type: "seventh_aspect"
+    },
+    {
+        step: 5,
+        description: "Analyze the directional aspects from the 11th and 3rd houses from Mercury.",
+        type: "eleventh_third_houses"
+    }
+];
+
 const RASHI_MAP = {
     1: "Aries", 2: "Taurus", 3: "Gemini", 4: "Cancer", 5: "Leo", 6: "Virgo",
     7: "Libra", 8: "Scorpio", 9: "Sagittarius", 10: "Capricorn", 11: "Aquarius", 12: "Pisces"
@@ -3216,17 +3244,158 @@ function mercuryAnalysis(horoscope) {
     // Get Mercury's Rashi-based prediction
     const raschiPrediction = MERCURY_PREDICTIONS_BY_RASHI[mercurySign] || "No specific prediction found.";
 
-    // Find planets in conjunction with Mercury (same sign)
-    const conjunctions = [];
+    // ===== EVALUATION STEPS ANALYSIS =====
+    const evaluationResults = {};
+
+    // Helper function to get trine group for a sign
+    const getTrineGroup = (sign) => {
+        const trineMap = {
+            '1': [1, 5, 9],
+            '2': [2, 6, 10],
+            '3': [3, 7, 11],
+            '4': [4, 8, 12]
+        };
+        for (const [key, signs] of Object.entries(trineMap)) {
+            if (signs.includes(sign)) return signs;
+        }
+        return [];
+    };
+
+    // Step 1: Mercury's Rashi
+    evaluationResults.step1 = {
+        description: "Identify the Rashi (Zodiac sign) Mercury occupies.",
+        planets: ["Mercury"],
+        details: `Mercury in ${mercuryRashi} (Sign #${mercurySign})`
+    };
+
+    // Step 2: Conjunctions and Trines
     const conjunctingPlanets = [];
+    const triningsignList = getTrineGroup(mercurySign);
+    const planetsInTrines = [];
+    
     for (const [planet, data] of Object.entries(horoscope)) {
         if (planet === 'Mercury' || !data || typeof data.sign !== 'number') continue;
+        
+        // Check conjunction (same sign)
         if (data.sign === mercurySign) {
             conjunctingPlanets.push(planet);
-            const conjPrediction = MERCURY_CONJUNCTIONS[planet];
-            if (conjPrediction) {
-                conjunctions.push(`<strong>${planet}</strong>: ${conjPrediction}`);
+        }
+        
+        // Check trines
+        if (triningsignList.includes(data.sign)) {
+            planetsInTrines.push(planet);
+        }
+    }
+
+    // If Mercury is retrograde, also consider previous trine
+    let previousTrineGroup = [];
+    if (mercuryRetrograde) {
+        const previousSign = mercurySign === 1 ? 12 : mercurySign - 1;
+        previousTrineGroup = getTrineGroup(previousSign);
+        for (const [planet, data] of Object.entries(horoscope)) {
+            if (planet === 'Mercury' || !data || typeof data.sign !== 'number') continue;
+            if (previousTrineGroup.includes(data.sign) && !planetsInTrines.includes(planet)) {
+                planetsInTrines.push(planet);
             }
+        }
+    }
+
+    evaluationResults.step2 = {
+        description: "Check planets conjunct with Mercury and those in its trines; if Mercury is retrograde, consider the previous trine as well.",
+        conjunctions: conjunctingPlanets,
+        trines: planetsInTrines,
+        retrogradeNote: mercuryRetrograde ? `Previous trine group (Sign #${mercurySign === 1 ? 12 : mercurySign - 1}) also considered: ${previousTrineGroup.join(', ')}` : null,
+        planets: [...new Set([...conjunctingPlanets, ...planetsInTrines])]
+    };
+
+    // Step 3: 2nd and 12th houses from Mercury
+    const mercurySecondHouse = (mercurySign % 12) + 1;
+    const mercuryTwelfthHouse = ((mercurySign + 10) % 12) + 1;
+    const planetsInSecondHouse = [];
+    const planetsInTwelfthHouse = [];
+
+    for (const [planet, data] of Object.entries(horoscope)) {
+        if (planet === 'Mercury' || !data || typeof data.sign !== 'number') continue;
+        if (data.sign === mercurySecondHouse) {
+            planetsInSecondHouse.push(planet);
+        }
+        if (data.sign === mercuryTwelfthHouse) {
+            planetsInTwelfthHouse.push(planet);
+        }
+    }
+
+    evaluationResults.step3 = {
+        description: "Examine the 2nd and 12th houses relative to Mercury.",
+        secondHouse: {
+            sign: mercurySecondHouse,
+            rashi: RASHI_MAP[mercurySecondHouse],
+            planets: planetsInSecondHouse
+        },
+        twelfthHouse: {
+            sign: mercuryTwelfthHouse,
+            rashi: RASHI_MAP[mercuryTwelfthHouse],
+            planets: planetsInTwelfthHouse
+        },
+        planets: [...new Set([...planetsInSecondHouse, ...planetsInTwelfthHouse])]
+    };
+
+    // Step 4: 7th Aspect (Dristi)
+    const mercurySeventh = ((mercurySign + 6) % 12) + 1;
+    const planetsInSeventhAspect = [];
+
+    for (const [planet, data] of Object.entries(horoscope)) {
+        if (planet === 'Mercury' || !data || typeof data.sign !== 'number') continue;
+        if (data.sign === mercurySeventh) {
+            planetsInSeventhAspect.push(planet);
+        }
+    }
+
+    evaluationResults.step4 = {
+        description: "Assess the 7th Aspect Dristi of Mercury.",
+        seventhAspect: {
+            sign: mercurySeventh,
+            rashi: RASHI_MAP[mercurySeventh]
+        },
+        planets: planetsInSeventhAspect
+    };
+
+    // Step 5: 11th and 3rd houses from Mercury
+    const mercuryEleventhHouse = ((mercurySign + 10) % 12) + 1;
+    const mercuryThirdHouse = ((mercurySign + 2) % 12) + 1;
+    const planetsInEleventhHouse = [];
+    const planetsInThirdHouse = [];
+
+    for (const [planet, data] of Object.entries(horoscope)) {
+        if (planet === 'Mercury' || !data || typeof data.sign !== 'number') continue;
+        if (data.sign === mercuryEleventhHouse) {
+            planetsInEleventhHouse.push(planet);
+        }
+        if (data.sign === mercuryThirdHouse) {
+            planetsInThirdHouse.push(planet);
+        }
+    }
+
+    evaluationResults.step5 = {
+        description: "Analyze the directional aspects from the 11th and 3rd houses from Mercury.",
+        eleventhHouse: {
+            sign: mercuryEleventhHouse,
+            rashi: RASHI_MAP[mercuryEleventhHouse],
+            planets: planetsInEleventhHouse
+        },
+        thirdHouse: {
+            sign: mercuryThirdHouse,
+            rashi: RASHI_MAP[mercuryThirdHouse],
+            planets: planetsInThirdHouse
+        },
+        planets: [...new Set([...planetsInEleventhHouse, ...planetsInThirdHouse])]
+    };
+
+    // Find planets in conjunction with Mercury (same sign) - for old logic
+    const conjunctions = [];
+    for (const planet of conjunctingPlanets) {
+        const conjPrediction = MERCURY_CONJUNCTIONS[planet];
+        if (conjPrediction) {
+            conjunctions.push(`<strong>${planet}</strong>: ${conjPrediction}`);
         }
     }
 
@@ -3261,11 +3430,6 @@ function mercuryAnalysis(horoscope) {
         horoscope.Mercury.sign === horoscope.Rahu.sign && horoscope.Mercury.sign === horoscope.Mars.sign) {
         healthIndicators.push("Spinal cord problems (Rahu-Mercury-Mars conjunction)");
     }
-
-    // Calculate relative house positions for Mercury
-    const mercurySecondHouse = (mercurySign % 12) + 1;
-    const mercuryTwelfthHouse = ((mercurySign + 10) % 12) + 1;
-    const mercurySeventh = ((mercurySign + 6) % 12) + 1;
 
     // Check environmental factors
     let educationEnvironment = "Neutral";
@@ -3312,6 +3476,39 @@ function mercuryAnalysis(horoscope) {
         </ul>
         ` : '<p><em>No specific health issues indicated by Mercury conjunctions.</em></p>'}
         
+        <h4>Mercury Evaluation Steps Analysis:</h4>
+        <div style="background: #f5f5f5; padding: 10px; border-left: 4px solid #0066cc;">
+            ${[1, 2, 3, 4, 5].map(stepNum => {
+                const stepData = evaluationResults[`step${stepNum}`];
+                if (!stepData) return '';
+                
+                let stepContent = `<strong>Step ${stepNum}:</strong> ${stepData.description}<br/>`;
+                
+                if (stepNum === 1) {
+                    stepContent += `<strong>Planets:</strong> ${stepData.planets.join(', ')}<br/>Details: ${stepData.details}<br/>`;
+                } else if (stepNum === 2) {
+                    stepContent += `<strong>Conjunctions:</strong> ${stepData.conjunctions.length > 0 ? stepData.conjunctions.join(', ') : 'None'}<br/>`;
+                    stepContent += `<strong>Planets in Trines (Signs ${triningsignList.join(', ')}):</strong> ${stepData.trines.length > 0 ? stepData.trines.join(', ') : 'None'}<br/>`;
+                    if (stepData.retrogradeNote) {
+                        stepContent += `<em>${stepData.retrogradeNote}</em><br/>`;
+                    }
+                    stepContent += `<strong>Total Planets Found:</strong> ${stepData.planets.length > 0 ? stepData.planets.join(', ') : 'None'}<br/>`;
+                } else if (stepNum === 3) {
+                    stepContent += `<strong>2nd House from Mercury (Sign #${stepData.secondHouse.sign} - ${stepData.secondHouse.rashi}):</strong> ${stepData.secondHouse.planets.length > 0 ? stepData.secondHouse.planets.join(', ') : 'None'}<br/>`;
+                    stepContent += `<strong>12th House from Mercury (Sign #${stepData.twelfthHouse.sign} - ${stepData.twelfthHouse.rashi}):</strong> ${stepData.twelfthHouse.planets.length > 0 ? stepData.twelfthHouse.planets.join(', ') : 'None'}<br/>`;
+                    stepContent += `<strong>Total Planets Found:</strong> ${stepData.planets.length > 0 ? stepData.planets.join(', ') : 'None'}<br/>`;
+                } else if (stepNum === 4) {
+                    stepContent += `<strong>7th Aspect/Dristi (Sign #${stepData.seventhAspect.sign} - ${stepData.seventhAspect.rashi}):</strong> ${stepData.planets.length > 0 ? stepData.planets.join(', ') : 'None'}<br/>`;
+                } else if (stepNum === 5) {
+                    stepContent += `<strong>11th House from Mercury (Sign #${stepData.eleventhHouse.sign} - ${stepData.eleventhHouse.rashi}):</strong> ${stepData.eleventhHouse.planets.length > 0 ? stepData.eleventhHouse.planets.join(', ') : 'None'}<br/>`;
+                    stepContent += `<strong>3rd House from Mercury (Sign #${stepData.thirdHouse.sign} - ${stepData.thirdHouse.rashi}):</strong> ${stepData.thirdHouse.planets.length > 0 ? stepData.thirdHouse.planets.join(', ') : 'None'}<br/>`;
+                    stepContent += `<strong>Total Planets Found:</strong> ${stepData.planets.length > 0 ? stepData.planets.join(', ') : 'None'}<br/>`;
+                }
+                
+                return `<div style="margin: 8px 0; padding: 8px; background: white; border-radius: 4px;">${stepContent}</div>`;
+            }).join('')}
+        </div>
+        
         <h4>Analysis Framework:</h4>
         <ul>
             <li>Rashi (Sign): ${mercuryRashi}</li>
@@ -3342,9 +3539,11 @@ function mercuryAnalysis(horoscope) {
         second_house_from_mercury: RASHI_MAP[mercurySecondHouse],
         twelfth_house_from_mercury: RASHI_MAP[mercuryTwelfthHouse],
         seventh_aspect_from_mercury: RASHI_MAP[mercurySeventh],
+        evaluation_steps_results: evaluationResults,
         astrological_principles_source: "Mercury Predictions Framework - Mercury Analysis by Rashi and Yogas"
     };
 }
+
 
 /**
  * Calculates house placements for all planets relative to Jupiter and displays predictions.
