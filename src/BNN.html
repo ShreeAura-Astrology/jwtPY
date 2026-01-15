@@ -289,6 +289,7 @@
       getMoonRashiPredictions(horoscope);
       getSaturnFromJupiterPredictions(horoscope);
       getHouseFromJupiterPredictions(horoscope);
+      mercuryAnalysis(horoscope);
     }
 
     /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -2881,6 +2882,47 @@
     /**
  * Maps Rashi numbers (1=Aries, 12=Pisces) to their names for better output readability.
  */
+const MERCURY_PREDICTIONS_BY_RASHI = {
+    1: "Technical skills, IT sector, engineering, machinery, defense, and potential as a surgeon.",
+    2: "Fine arts, fashion design, finance, banking, commerce, and trade.",
+    3: "Journalism, media, marketing, sales, accountancy, and a business mindset.",
+    4: "Hospitality, food business, transportation, nursing, psychology, and numerology.",
+    5: "Administration, politics, hospitals, civil services (IAS/UPSC), and social work.",
+    6: "Law, Chartered Accountancy (CA), competitive exams, teaching, and agriculture.",
+    7: "Medicine, garments, HRD, gemstone business, and commission agents.",
+    8: "Research, biotechnology, coding, occult sciences, engineering, and forensic science.",
+    9: "Teaching, consultancy, spiritual education, astrology, and bookstore ownership; may indicate an introvert nature.",
+    10: "Judiciary, labor law, mining, oil business, and civil services.",
+    11: "Psychology, aviation, telecom industry, NGOs, and the study of the mind.",
+    12: "Foreign education, aviation, social welfare, teaching, and pilla/bookstores."
+};
+
+const MERCURY_CONJUNCTIONS = {
+    Sun: "Reputed or government institutes, MBBS, and involvement in the father's business.",
+    Moon: "Unstable mind but good memory, psychology, food business, and hospitality.",
+    Mars: "Engineering, real estate, technical skills, and potential breaks in education.",
+    Venus: "Smoothness in education, finance, garments, and high-level studies.",
+    Jupiter: "Law, teaching, CA, and advisory or consultancy businesses.",
+    Saturn: "Judiciary, labor law, mining, and potential struggle or hard work in business.",
+    Rahu: "Software engineering, online business, export-import, and foreign land education.",
+    Ketu: "Astrology, occult, coding, and mysterious fields; also indicates breaks in education."
+};
+
+const MERCURY_YOGAS = {
+    datattreya_yoga: { planets: ["Jupiter", "Mercury", "Sun"], meaning: "Prosperity and divine knowledge" },
+    saraswathi_kalanidhi_yoga: { planets: ["Jupiter", "Venus", "Mercury"], meaning: "Wealth and artistic talents" },
+    budha_adhitya_yoga: { planets: ["Sun", "Mercury"], meaning: "Intellectual brilliance and eloquence" },
+    pranihita_yoga: { planets: ["Mercury", "Ketu"], meaning: "Concentrated thought and spiritual knowledge" },
+    brammaanda_buddhi_yoga: { planets: ["Mercury", "Rahu"], meaning: "Unconventional intelligence and innovation" },
+    multi_millionaire_yoga: { planets: ["Saturn", "Venus", "Mercury", "Rahu"], meaning: "Financial abundance and business success" }
+};
+
+const MERCURY_HEALTH_ISSUES = {
+    thyroid_and_throat: "Mercury conjunct with the Moon, or Mercury with the Moon and Venus.",
+    ear_disease: "Conjunction of Rahu, Mercury, and Jupiter.",
+    spinal_cord_problems: "Conjunction of Rahu, Mercury, and Mars."
+};
+
 const RASHI_MAP = {
     1: "Aries", 2: "Taurus", 3: "Gemini", 4: "Cancer", 5: "Leo", 6: "Virgo",
     7: "Libra", 8: "Scorpio", 9: "Sagittarius", 10: "Capricorn", 11: "Aquarius", 12: "Pisces"
@@ -3151,6 +3193,158 @@ const SATURN_FROM_JUPITER_PREDICTIONS = {
         professions: ["Spiritual field", "Navy", "Water", "Aviation", "Foreign", "MNC"]
     }
 };
+
+/**
+ * Analyzes Mercury's position and its conjunctions to provide comprehensive predictions.
+ * Based on Mercury's Rashi, planetary conjunctions, and yogas formation.
+ * @param {object} horoscope - The chart data containing Mercury and other planet positions.
+ * @returns {object} Mercury analysis results.
+ */
+function mercuryAnalysis(horoscope) {
+    if (!horoscope || !horoscope.Mercury) {
+        return {
+            error: "Invalid horoscope object: Mercury data is required.",
+            citation: "Mercury Predictions Framework"
+        };
+    }
+
+    const mercurySign = horoscope.Mercury.sign;
+    const mercuryRashi = RASHI_MAP[mercurySign];
+    const mercuryHouse = horoscope.Mercury.house;
+    const mercuryRetrograde = horoscope.Mercury.retrograde || false;
+
+    // Get Mercury's Rashi-based prediction
+    const raschiPrediction = MERCURY_PREDICTIONS_BY_RASHI[mercurySign] || "No specific prediction found.";
+
+    // Find planets in conjunction with Mercury (same sign)
+    const conjunctions = [];
+    const conjunctingPlanets = [];
+    for (const [planet, data] of Object.entries(horoscope)) {
+        if (planet === 'Mercury' || !data || typeof data.sign !== 'number') continue;
+        if (data.sign === mercurySign) {
+            conjunctingPlanets.push(planet);
+            const conjPrediction = MERCURY_CONJUNCTIONS[planet];
+            if (conjPrediction) {
+                conjunctions.push(`<strong>${planet}</strong>: ${conjPrediction}`);
+            }
+        }
+    }
+
+    // Detect yogas involving Mercury
+    const detectedYogas = [];
+    for (const [yogaName, yogaData] of Object.entries(MERCURY_YOGAS)) {
+        const requiredPlanets = yogaData.planets;
+        const allPlanetsPresent = requiredPlanets.every(p => {
+            if (p === 'Mercury') return true;
+            return horoscope[p] !== undefined;
+        });
+        if (allPlanetsPresent) {
+            detectedYogas.push(`<strong>${yogaName.replace(/_/g, ' ').toUpperCase()}</strong>: ${yogaData.meaning} (${requiredPlanets.join(', ')})`);
+        }
+    }
+
+    // Check for health issues indicated by Mercury
+    const healthIndicators = [];
+    // Thyroid and throat
+    if ((horoscope.Mercury && horoscope.Moon && horoscope.Mercury.sign === horoscope.Moon.sign) ||
+        (horoscope.Mercury && horoscope.Moon && horoscope.Venus && 
+         horoscope.Mercury.sign === horoscope.Moon.sign && horoscope.Mercury.sign === horoscope.Venus.sign)) {
+        healthIndicators.push("Thyroid and throat issues (Mercury-Moon or Mercury-Moon-Venus conjunction)");
+    }
+    // Ear disease
+    if (horoscope.Mercury && horoscope.Rahu && horoscope.Jupiter &&
+        horoscope.Mercury.sign === horoscope.Rahu.sign && horoscope.Mercury.sign === horoscope.Jupiter.sign) {
+        healthIndicators.push("Ear disease risk (Rahu-Mercury-Jupiter conjunction)");
+    }
+    // Spinal cord problems
+    if (horoscope.Mercury && horoscope.Rahu && horoscope.Mars &&
+        horoscope.Mercury.sign === horoscope.Rahu.sign && horoscope.Mercury.sign === horoscope.Mars.sign) {
+        healthIndicators.push("Spinal cord problems (Rahu-Mercury-Mars conjunction)");
+    }
+
+    // Calculate relative house positions for Mercury
+    const mercurySecondHouse = (mercurySign % 12) + 1;
+    const mercuryTwelfthHouse = ((mercurySign + 10) % 12) + 1;
+    const mercurySeventh = ((mercurySign + 6) % 12) + 1;
+
+    // Check environmental factors
+    let educationEnvironment = "Neutral";
+    for (const [planet, data] of Object.entries(horoscope)) {
+        if (planet === 'Mercury' || !data || typeof data.sign !== 'number') continue;
+        if (data.sign === mercuryTwelfthHouse) {
+            if (['Mars', 'Rahu', 'Ketu'].includes(planet)) {
+                educationEnvironment = `Poor (${planet} in 12th house from Mercury)`;
+            } else if (['Venus', 'Jupiter', 'Sun'].includes(planet)) {
+                educationEnvironment = `Excellent (${planet} in 12th house from Mercury)`;
+            }
+        }
+    }
+
+    // Build the prediction card
+    const cardHTML = `
+        <h3>Mercury Analysis - ${mercuryRashi} (House ${mercuryHouse}${mercuryRetrograde ? ', Retrograde' : ''})</h3>
+        
+        <h4>Mercury Rashi-Based Predictions:</h4>
+        <p>${raschiPrediction}</p>
+        
+        ${conjunctions.length > 0 ? `
+        <h4>Planetary Conjunctions with Mercury:</h4>
+        <ul>
+            ${conjunctions.map(c => `<li>${c}</li>`).join('')}
+        </ul>
+        ` : '<p><em>No planetary conjunctions with Mercury detected.</em></p>'}
+        
+        <h4>Educational Environment:</h4>
+        <p><strong>${educationEnvironment}</strong></p>
+        <p><em>The 12th house from Mercury signifies the educational environment. Malefics (Mars, Rahu, Ketu) indicate poor environment, while Venus, Jupiter, or Sun suggest enjoyable pursuits.</em></p>
+        
+        ${detectedYogas.length > 0 ? `
+        <h4>Detected Auspicious Yogas:</h4>
+        <ul>
+            ${detectedYogas.map(y => `<li>${y}</li>`).join('')}
+        </ul>
+        ` : ''}
+        
+        ${healthIndicators.length > 0 ? `
+        <h4>Health Indicators:</h4>
+        <ul>
+            ${healthIndicators.map(h => `<li>${h}</li>`).join('')}
+        </ul>
+        ` : '<p><em>No specific health issues indicated by Mercury conjunctions.</em></p>'}
+        
+        <h4>Analysis Framework:</h4>
+        <ul>
+            <li>Rashi (Sign): ${mercuryRashi}</li>
+            <li>House: ${mercuryHouse}</li>
+            <li>Retrograde: ${mercuryRetrograde ? 'Yes' : 'No'}</li>
+            <li>Conjuncting Planets: ${conjunctingPlanets.length > 0 ? conjunctingPlanets.join(', ') : 'None'}</li>
+            <li>2nd House from Mercury: ${RASHI_MAP[mercurySecondHouse]}</li>
+            <li>12th House from Mercury: ${RASHI_MAP[mercuryTwelfthHouse]}</li>
+            <li>7th Aspect from Mercury: ${RASHI_MAP[mercurySeventh]}</li>
+        </ul>
+        
+        <p><em>Source: Mercury Analysis Framework - Predictions by Rashi and Planetary Conjunctions</em></p>
+    `;
+
+    createCard('Mercury Analysis', cardHTML, 'html');
+
+    return {
+        planet_of_study: "Mercury",
+        mercury_sign: mercuryRashi,
+        mercury_house: mercuryHouse,
+        mercury_retrograde: mercuryRetrograde,
+        rashi_prediction: raschiPrediction,
+        conjuncting_planets: conjunctingPlanets,
+        conjunction_predictions: conjunctions,
+        detected_yogas: detectedYogas,
+        health_indicators: healthIndicators,
+        education_environment: educationEnvironment,
+        second_house_from_mercury: RASHI_MAP[mercurySecondHouse],
+        twelfth_house_from_mercury: RASHI_MAP[mercuryTwelfthHouse],
+        seventh_aspect_from_mercury: RASHI_MAP[mercurySeventh],
+        astrological_principles_source: "Mercury Predictions Framework - Mercury Analysis by Rashi and Yogas"
+    };
+}
 
 /**
  * Calculates house placements for all planets relative to Jupiter and displays predictions.
