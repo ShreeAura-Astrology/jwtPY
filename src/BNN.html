@@ -3340,7 +3340,7 @@ function mercuryAnalysis(horoscope) {
     };
 
     // Step 4: 7th Aspect (Dristi)
-    const mercurySeventh = ((mercurySign + 6) % 12) + 1;
+    const mercurySeventh = ((mercurySign + 5) % 12) + 1;
     const planetsInSeventhAspect = [];
 
     for (const [planet, data] of Object.entries(horoscope)) {
@@ -3360,8 +3360,8 @@ function mercuryAnalysis(horoscope) {
     };
 
     // Step 5: 11th and 3rd houses from Mercury
-    const mercuryEleventhHouse = ((mercurySign + 10) % 12) + 1;
-    const mercuryThirdHouse = ((mercurySign + 2) % 12) + 1;
+    const mercuryEleventhHouse = ((mercurySign + 9) % 12) + 1;
+    const mercuryThirdHouse = ((mercurySign + 1) % 12) + 1;
     const planetsInEleventhHouse = [];
     const planetsInThirdHouse = [];
 
