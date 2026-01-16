@@ -2909,12 +2909,29 @@ const MERCURY_CONJUNCTIONS = {
 };
 
 const MERCURY_YOGAS = {
+    // Spiritual and Philosophical Yogas
     datattreya_yoga: { planets: ["Jupiter", "Mercury", "Sun"], meaning: "Prosperity and divine knowledge" },
-    saraswathi_kalanidhi_yoga: { planets: ["Jupiter", "Venus", "Mercury"], meaning: "Wealth and artistic talents" },
-    budha_adhitya_yoga: { planets: ["Sun", "Mercury"], meaning: "Intellectual brilliance and eloquence" },
     pranihita_yoga: { planets: ["Mercury", "Ketu"], meaning: "Concentrated thought and spiritual knowledge" },
+    
+    // Wealth and Success Yogas
+    saraswathi_kalanidhi_yoga: { planets: ["Jupiter", "Venus", "Mercury"], meaning: "Wealth and artistic talents" },
+    multi_millionaire_yoga: { planets: ["Saturn", "Venus", "Mercury", "Rahu"], meaning: "Financial abundance and business success" },
+    special_raja_yoga: { planets: ["Sun", "Mars", "Jupiter", "Mercury"], meaning: "Royal influence and prosperity" },
+    dwikalatra_yoga: { planets: ["Venus", "Mercury"], meaning: "Dual benefits (when combined with Jupiter or Sun)" },
+    
+    // Knowledge and Arts Yogas
+    budha_adhitya_yoga: { planets: ["Sun", "Mercury"], meaning: "Intellectual brilliance and eloquence" },
     brammaanda_buddhi_yoga: { planets: ["Mercury", "Rahu"], meaning: "Unconventional intelligence and innovation" },
-    multi_millionaire_yoga: { planets: ["Saturn", "Venus", "Mercury", "Rahu"], meaning: "Financial abundance and business success" }
+    sangeeth_kala_guru_yoga: { planets: ["Moon", "Mercury", "Venus"], meaning: "Artistic talents and musical abilities" },
+    
+    // Career and Professional Yogas
+    tantric_yoga: { planets: ["Mercury", "Mars", "Rahu", "Saturn"], meaning: "Specialized knowledge and mystical pursuits" },
+    pilgrimage_travel_business: { planets: ["Mercury", "Moon", "Ketu"], meaning: "Travel, spirituality, and business acumen" },
+    
+    // Health-related Yogas (indicate potential health concerns)
+    spinal_cord_problems: { planets: ["Rahu", "Mercury", "Mars"], meaning: "Caution: potential spinal cord issues" },
+    thyroid_throat_issues: { planets: ["Mercury", "Moon"], meaning: "Caution: thyroid and throat sensitivity" },
+    ear_disease: { planets: ["Rahu", "Mercury", "Jupiter"], meaning: "Caution: ear-related health concerns" }
 };
 
 const MERCURY_HEALTH_ISSUES = {
@@ -3399,16 +3416,45 @@ function mercuryAnalysis(horoscope) {
         }
     }
 
-    // Detect yogas involving Mercury
+    // Detect yogas involving Mercury - check if all required planets are conjunct (same sign)
     const detectedYogas = [];
     for (const [yogaName, yogaData] of Object.entries(MERCURY_YOGAS)) {
         const requiredPlanets = yogaData.planets;
+        
+        // Check if all required planets exist
         const allPlanetsPresent = requiredPlanets.every(p => {
             if (p === 'Mercury') return true;
             return horoscope[p] !== undefined;
         });
+        
         if (allPlanetsPresent) {
-            detectedYogas.push(`<strong>${yogaName.replace(/_/g, ' ').toUpperCase()}</strong>: ${yogaData.meaning} (${requiredPlanets.join(', ')})`);
+            // Check if all required planets are conjunct (in the same sign)
+            let allConjunct = true;
+            let conjunctionSign = null;
+            
+            for (const planet of requiredPlanets) {
+                if (planet === 'Mercury') {
+                    if (conjunctionSign === null) {
+                        conjunctionSign = mercurySign;
+                    } else if (conjunctionSign !== mercurySign) {
+                        allConjunct = false;
+                        break;
+                    }
+                } else if (horoscope[planet]) {
+                    const planetSign = horoscope[planet].sign;
+                    if (conjunctionSign === null) {
+                        conjunctionSign = planetSign;
+                    } else if (conjunctionSign !== planetSign) {
+                        allConjunct = false;
+                        break;
+                    }
+                }
+            }
+            
+            if (allConjunct && conjunctionSign !== null) {
+                const conjunctionRashi = RASHI_MAP[conjunctionSign];
+                detectedYogas.push(`<strong>${yogaName.replace(/_/g, ' ').toUpperCase()}</strong>: ${yogaData.meaning} (${requiredPlanets.join(', ')} in ${conjunctionRashi})`);
+            }
         }
     }
 
