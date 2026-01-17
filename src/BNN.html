@@ -267,8 +267,11 @@
         const degree = parseFloat(document.getElementById(`${p}-deg`).value);
         const house = parseInt(document.getElementById(`${p}-house`).value);
         const retrograde = document.getElementById(`${p}-retrograde`)?.checked || false;
+        const nakshatra = document.getElementById(`${p}-nakshatra`)?.value || '';
+        const nakshatraPad = document.getElementById(`${p}-nakshatra-pad`)?.value || '';
+        const nakshatraLord = document.getElementById(`${p}-nakshatra-lord`)?.value || '';
         if (!isNaN(degree)) {
-          horoscope[p] = { sign, degree, house, retrograde };
+          horoscope[p] = { sign, degree, house, retrograde, nakshatra, nakshatraPad, nakshatraLord };
         }
       });
       nativeHoroscope = horoscope;
@@ -1298,18 +1301,31 @@
       const all = JSON.parse(localStorage.getItem('bnnHoroscopes') || '{}');
       const horoscope = all[name];
       if (horoscope) {
-        Object.entries(horoscope).forEach(([planet, data, house]) => {
+        Object.entries(horoscope).forEach(([planet, data]) => {
           const signEl = document.getElementById(`${planet}-sign`);
           const degEl = document.getElementById(`${planet}-deg`);
-          const houseE1 = document.getElementById(`${planet}-house`);
+          const houseEl = document.getElementById(`${planet}-house`);
           const retrogradeEl = document.getElementById(`${planet}-retrograde`);
+          const nakshatraEl = document.getElementById(`${planet}-nakshatra`);
+          const nakshatraPadEl = document.getElementById(`${planet}-nakshatra-pad`);
+          const nakshatraLordEl = document.getElementById(`${planet}-nakshatra-lord`);
+          
           if (retrogradeEl) {
             retrogradeEl.checked = data.retrograde || false;
           }
           if (signEl && degEl) {
             signEl.value = data.sign;
             degEl.value = data.degree;
-            houseE1.value = data.house;
+            houseEl.value = data.house;
+          }
+          if (nakshatraEl) {
+            nakshatraEl.value = data.nakshatra || '';
+          }
+          if (nakshatraPadEl) {
+            nakshatraPadEl.value = data.nakshatraPad || '';
+          }
+          if (nakshatraLordEl) {
+            nakshatraLordEl.value = data.nakshatraLord || '';
           }
         });
         document.getElementById('horoscope-name').value = name;
