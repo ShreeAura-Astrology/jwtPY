@@ -3451,7 +3451,59 @@ function mercuryAnalysis(horoscope) {
 
     // Detect yogas involving Mercury - check if all required planets are conjunct or in trines
     const detectedYogas = [];
+    
+    // Special handling for Kemadruma Yoga - check if there are NO planets in 2nd or 12th from Moon
+    if (horoscope.Moon) {
+        const moonSign = horoscope.Moon.sign;
+        const moonSecondHouse = (moonSign % 12) + 1;
+        const moonTwelfthHouse = ((moonSign + 10) % 12) + 1;
+        
+        let planetsInMoonSecondHouse = 0;
+        let planetsInMoonTwelfthHouse = 0;
+        
+        for (const [planet, data] of Object.entries(horoscope)) {
+            if (planet === 'Moon' || !data || typeof data.sign !== 'number') continue;
+            if (data.sign === moonSecondHouse) planetsInMoonSecondHouse++;
+            if (data.sign === moonTwelfthHouse) planetsInMoonTwelfthHouse++;
+        }
+        
+        if (planetsInMoonSecondHouse === 0 && planetsInMoonTwelfthHouse === 0) {
+            const moonRashi = RASHI_MAP[moonSign];
+            detectedYogas.push(`<strong>KEMADRUMA YOGA</strong>: Isolation and challenges due to lack of planetary support (No planets in 2nd or 12th houses from Moon in ${moonRashi})`);
+        }
+    }
+    
+    // Special handling for Siva Nayana Yoga - Moon, Jupiter, and Mercury placed 3rd from each other in any order
+    if (horoscope.Moon && horoscope.Jupiter && horoscope.Mercury) {
+        const moonSign = horoscope.Moon.sign;
+        const jupiterSign = horoscope.Jupiter.sign;
+        const mercurySign = horoscope.Mercury.sign;
+        
+        // Check if any two of the three planets are 3 houses apart from each other
+        // "3rd house from" counting starts from the same house itself, so 3rd house is 2 positions away
+        const is3HousesApart = (sign1, sign2) => {
+            const diff = Math.abs(sign1 - sign2);
+            return diff === 2 || diff === 10; // 2 positions apart (3rd house counting from itself) or 10 (same on zodiac circle)
+        };
+        
+        const moonToJupiter = is3HousesApart(moonSign, jupiterSign);
+        const jupiterToMercury = is3HousesApart(jupiterSign, mercurySign);
+        const mercuryToMoon = is3HousesApart(mercurySign, moonSign);
+        
+        // Siva Nayana Yoga occurs when all three pairs are 3 houses apart (forming an equilateral triangle)
+        if (moonToJupiter && jupiterToMercury && mercuryToMoon) {
+            const moonRashi = RASHI_MAP[moonSign];
+            const jupiterRashi = RASHI_MAP[jupiterSign];
+            const mercuryRashi = RASHI_MAP[mercurySign];
+            detectedYogas.push(`<strong>SIVA NAYANA YOGA</strong>: Divine vision and spiritual insight (Moon in ${moonRashi}, Jupiter in ${jupiterRashi}, Mercury in ${mercuryRashi} - all 3 houses apart from each other)`);
+        }
+    }
+    
+    // Regular yoga detection for all other yogas
     for (const [yogaName, yogaData] of Object.entries(MERCURY_YOGAS)) {
+        // Skip Kemadruma Yoga as it's already handled above
+        if (yogaName === 'kemadruma_yoga') continue;
+        
         const requiredPlanets = yogaData.planets;
         
         // Check if all required planets exist
