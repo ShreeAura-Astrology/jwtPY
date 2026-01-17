@@ -2909,29 +2909,62 @@ const MERCURY_CONJUNCTIONS = {
 };
 
 const MERCURY_YOGAS = {
-    // Spiritual and Philosophical Yogas
+    // ===== SPIRITUAL AND PHILOSOPHICAL YOGAS =====
+    jeevaathmaa_yoga: { planets: ["Jupiter", "Sun"], meaning: "Divine consciousness and spiritual awakening" },
     datattreya_yoga: { planets: ["Jupiter", "Mercury", "Sun"], meaning: "Prosperity and divine knowledge" },
+    kala_bhairava_yoga: { planets: ["Saturn", "Rahu"], meaning: "Fierce spiritual power and transformation" },
+    chitta_nirodha_yoga: { planets: ["Moon", "Ketu"], meaning: "Control over the mind and meditation" },
     pranihita_yoga: { planets: ["Mercury", "Ketu"], meaning: "Concentrated thought and spiritual knowledge" },
+    siva_nayana_yoga: { planets: ["Moon", "Jupiter", "Mercury"], meaning: "Divine vision and spiritual insight" },
+    guru_gangadhara_yoga: { planets: ["Saturn", "Moon", "Jupiter"], meaning: "Divine grace and spiritual wisdom" },
+    sanyas_yoga_monk_nun: { planets: ["Saturn", "Moon", "Ketu"], meaning: "Renunciation and monastic life" },
     
-    // Wealth and Success Yogas
-    saraswathi_kalanidhi_yoga: { planets: ["Jupiter", "Venus", "Mercury"], meaning: "Wealth and artistic talents" },
+    // ===== WEALTH AND SUCCESS YOGAS =====
+    ashtalakshmi_yoga: { planets: ["Jupiter", "Venus", "Saturn", "Rahu"], meaning: "Prosperity and abundant blessings" },
+    bruhat_bahu_dhana_yoga: { planets: ["Venus", "Rahu"], meaning: "Great wealth and financial abundance" },
     multi_millionaire_yoga: { planets: ["Saturn", "Venus", "Mercury", "Rahu"], meaning: "Financial abundance and business success" },
+    maha_bhagya_yoga: { planets: ["Saturn", "Jupiter"], meaning: "Great fortune and blessings" },
+    bhagya_yoga: { planets: ["Venus", "Saturn"], meaning: "Fortune and luck" },
+    maharaja_yoga: { planets: ["Sun", "Jupiter", "Ketu"], meaning: "Royal influence and prosperity" },
     special_raja_yoga: { planets: ["Sun", "Mars", "Jupiter", "Mercury"], meaning: "Royal influence and prosperity" },
-    dwikalatra_yoga: { planets: ["Venus", "Mercury"], meaning: "Dual benefits (when combined with Jupiter or Sun)" },
+    dharma_karmathipathi_yoga: { planets: ["Jupiter", "Saturn"], meaning: "Spiritual duty and karmic fulfillment" },
     
-    // Knowledge and Arts Yogas
+    // ===== KNOWLEDGE AND ARTS YOGAS =====
+    saraswathi_kalanidhi_yoga: { planets: ["Jupiter", "Venus", "Mercury"], meaning: "Wealth and artistic talents" },
     budha_adhitya_yoga: { planets: ["Sun", "Mercury"], meaning: "Intellectual brilliance and eloquence" },
     brammaanda_buddhi_yoga: { planets: ["Mercury", "Rahu"], meaning: "Unconventional intelligence and innovation" },
-    sangeeth_kala_guru_yoga: { planets: ["Moon", "Mercury", "Venus"], meaning: "Artistic talents and musical abilities" },
+    sangeeth_kala_guru_yoga: { planets: ["Moon", "Mercury", "Venus", "Jupiter", "Saturn"], meaning: "Artistic talents and musical abilities" },
+    padma_yoga: { planets: ["Venus", "Ketu"], meaning: "Lotus-like purity and beauty" },
     
-    // Career and Professional Yogas
-    tantric_yoga: { planets: ["Mercury", "Mars", "Rahu", "Saturn"], meaning: "Specialized knowledge and mystical pursuits" },
-    pilgrimage_travel_business: { planets: ["Mercury", "Moon", "Ketu"], meaning: "Travel, spirituality, and business acumen" },
+    // ===== PLANETARY INTERACTION YOGAS =====
+    tejo_agni_yoga: { planets: ["Sun", "Mars"], meaning: "Divine fire and warrior spirit" },
+    kemadruma_yoga: { planets: ["Moon"], meaning: "Isolation and challenges due to lack of planetary support" },
+    thorn_yoga_mullu: { planets: ["Mars", "Ketu"], meaning: "Sharp intellect and cutting words" },
+    agni_marutha_yoga: { planets: ["Mars", "Saturn"], meaning: "Struggle and perseverance" },
+    sanjeevani_yoga_athi_kaama: { planets: ["Jupiter", "Venus"], meaning: "Life-giving energy and vitality" },
+    vasikara_yoga_kalanka: { planets: ["Jupiter", "Venus", "Moon"], meaning: "Attraction and charm" },
+    brighu_mangala_yoga: { planets: ["Venus", "Mars"], meaning: "Passion and creative energy" },
+    guru_mangala_yoga: { planets: ["Jupiter", "Mars"], meaning: "Courage and righteous action" },
+    arthanariswara_yoga: { planets: ["Sun", "Moon"], meaning: "Perfect balance of masculine and feminine energies" },
+    angaraka_yoga: { planets: ["Mars", "Rahu"], meaning: "Dynamic energy and unforeseen events" },
+    dwikalatra_yoga: { planets: ["Jupiter", "Sun", "Venus", "Mercury"], meaning: "Dual benefits and versatility" },
+    aputra_yoga: { planets: ["Sun", "Rahu", "Venus", "Ketu"], meaning: "Challenges in progeny" },
     
-    // Health-related Yogas (indicate potential health concerns)
+    // ===== HEALTH AND DISEASE YOGAS =====
+    cancer_yoga: { planets: ["Saturn", "Rahu", "Mars", "Moon"], meaning: "Caution: potential cancer risk" },
     spinal_cord_problems: { planets: ["Rahu", "Mercury", "Mars"], meaning: "Caution: potential spinal cord issues" },
-    thyroid_throat_issues: { planets: ["Mercury", "Moon"], meaning: "Caution: thyroid and throat sensitivity" },
-    ear_disease: { planets: ["Rahu", "Mercury", "Jupiter"], meaning: "Caution: ear-related health concerns" }
+    thyroid_throat_issues: { planets: ["Mercury", "Moon", "Venus"], meaning: "Caution: thyroid and throat sensitivity" },
+    ear_disease: { planets: ["Rahu", "Mercury", "Jupiter"], meaning: "Caution: ear-related health concerns" },
+    migraine_headache_yoga: { planets: ["Sun", "Moon", "Rahu", "Saturn"], meaning: "Caution: migraine headaches" },
+    asthma_breathing_issues: { planets: ["Saturn", "Moon", "Ketu"], meaning: "Caution: asthma and breathing issues" },
+    blood_pressure_yoga: { planets: ["Jupiter", "Mars", "Ketu", "Rahu"], meaning: "Caution: blood pressure issues" },
+    arthritis_joint_pain: { planets: ["Sun", "Saturn", "Mars"], meaning: "Caution: arthritis and joint pain" },
+    psychological_problems: { planets: ["Moon", "Rahu", "Ketu"], meaning: "Caution: psychological challenges" },
+    
+    // ===== CAREER COMBINATIONS =====
+    surgeon_doctor: { planets: ["Sun", "Mars", "Ketu"], meaning: "Medical profession and surgery" },
+    science_maths: { planets: ["Venus", "Mars", "Mercury"], meaning: "Science and mathematics expertise" },
+    it_sector: { planets: ["Moon", "Mercury"], meaning: "Information technology sector" }
 };
 
 const MERCURY_HEALTH_ISSUES = {
@@ -3416,7 +3449,7 @@ function mercuryAnalysis(horoscope) {
         }
     }
 
-    // Detect yogas involving Mercury - check if all required planets are conjunct (same sign)
+    // Detect yogas involving Mercury - check if all required planets are conjunct or in trines
     const detectedYogas = [];
     for (const [yogaName, yogaData] of Object.entries(MERCURY_YOGAS)) {
         const requiredPlanets = yogaData.planets;
@@ -3428,7 +3461,24 @@ function mercuryAnalysis(horoscope) {
         });
         
         if (allPlanetsPresent) {
-            // Check if all required planets are conjunct (in the same sign)
+            // Build list of valid signs for Mercury (current trine)
+            const validTrineSignsMercury = triningsignList;
+            
+            // Build list of valid signs for previous trine (if retrograde)
+            let validTrineSignsPrevious = [];
+            if (mercuryRetrograde) {
+                const previousSign = mercurySign === 1 ? 12 : mercurySign - 1;
+                validTrineSignsPrevious = getTrineGroup(previousSign);
+            }
+            
+            // Combine all valid signs
+            const allValidSigns = [mercurySign, ...validTrineSignsMercury, ...validTrineSignsPrevious];
+            
+            // Check two scenarios:
+            // 1. All planets are conjunct (in the same sign)
+            // 2. All planets are within Mercury's trine or previous trine (if retrograde)
+            
+            // Scenario 1: Check if all required planets are conjunct (in the same sign)
             let allConjunct = true;
             let conjunctionSign = null;
             
@@ -3454,6 +3504,30 @@ function mercuryAnalysis(horoscope) {
             if (allConjunct && conjunctionSign !== null) {
                 const conjunctionRashi = RASHI_MAP[conjunctionSign];
                 detectedYogas.push(`<strong>${yogaName.replace(/_/g, ' ').toUpperCase()}</strong>: ${yogaData.meaning} (${requiredPlanets.join(', ')} in ${conjunctionRashi})`);
+            }
+            
+            // Scenario 2: Check if all required planets are within Mercury's trine houses
+            let allInTrines = true;
+            const planetsInTrineInfo = [];
+            
+            for (const planet of requiredPlanets) {
+                if (planet === 'Mercury') {
+                    planetsInTrineInfo.push({ planet: 'Mercury', sign: mercurySign, inTrine: true });
+                } else if (horoscope[planet]) {
+                    const planetSign = horoscope[planet].sign;
+                    const inTrine = allValidSigns.includes(planetSign);
+                    if (!inTrine) {
+                        allInTrines = false;
+                    }
+                    planetsInTrineInfo.push({ planet, sign: planetSign, inTrine });
+                }
+            }
+            
+            // Only add if all planets are in trines and this yoga wasn't already added as a conjunction
+            if (allInTrines && !allConjunct) {
+                const trineRashis = planetsInTrineInfo.map(p => `${p.planet}(${RASHI_MAP[p.sign]})`).join(', ');
+                const retrogradeNote = mercuryRetrograde ? ' [including previous trine due to retrograde]' : '';
+                detectedYogas.push(`<strong>${yogaName.replace(/_/g, ' ').toUpperCase()}</strong>: ${yogaData.meaning} (${trineRashis} in Mercury's trine houses${retrogradeNote})`);
             }
         }
     }
