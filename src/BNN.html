@@ -8,7 +8,7 @@
   <script src="transit.js"></script>
   <script src="significator.js"></script>
   <script src="houseLord.js"></script>
-
+  <script src="RahuKetuAxis.js"></script>
   <title>BNN Trine Visualizer</title>
   <style>
     body {
@@ -2894,6 +2894,90 @@
       createCard('Moon in Rashi', outputHTML, 'html');
       return output;
     }
+
+        /**
+         * Rahu Ketu Axis Prediction
+         * Loads `src/RahuKetuAxis.json` and returns the matching axis interpretation.
+         * @param {object} horoscope - optional horoscope object with `Rahu.house` or `Ketu.house` (1-12)
+         * @param {object} opts - optional: { json: <preloaded json>, axis: <axis string> }
+         * @returns {Promise<object>} prediction object and HTML card created via `createCard`.
+         */
+        async function RahuKetuAxisPrediction(horoscope = {}, opts = {}) {
+          const data = RahuKetuAxis;
+          if (!data) {
+            const err = { error: 'RahuKetuAxis.json not available' };
+            createCard('Rahu Ketu Axis Prediction', JSON.stringify(err), 'text');
+            return err;
+          }
+
+          const root = data.rahu_ketu_full_horoscope_deciphering_json;
+
+          const ordinal = n => {
+            if (n === 1) return '1st';
+            if (n === 2) return '2nd';
+            if (n === 3) return '3rd';
+            return `${n}th`;
+          };
+
+          // determine matching key: prefer explicit axis string, then Rahu.house, then Ketu.house
+          let match = null;
+          const axisStr = opts.axis || horoscope.axis;
+          if (axisStr) {
+            match = root.all_house_placements.find(p => p.axis.toLowerCase().includes(axisStr.toLowerCase()));
+          }
+
+          const rahuHouse = horoscope && horoscope.Rahu && typeof horoscope.Rahu.house === 'number' ? horoscope.Rahu.house : null;
+          const ketuHouse = horoscope && horoscope.Ketu && typeof horoscope.Ketu.house === 'number' ? horoscope.Ketu.house : null;
+
+          if (!match && rahuHouse) {
+            const rOrd = ordinal(rahuHouse);
+            match = root.all_house_placements.find(p => p.axis.includes(`Rahu ${rOrd}`) || p.axis.includes(`Rahu ${rahuHouse}`));
+          }
+          if (!match && ketuHouse) {
+            const kOrd = ordinal(ketuHouse);
+            match = root.all_house_placements.find(p => p.axis.includes(`Ketu ${kOrd}`) || p.axis.includes(`Ketu ${ketuHouse}`));
+          }
+
+          // fallback: try to match by house words (1st..12th) anywhere in axis
+          if (!match && (rahuHouse || ketuHouse)) {
+            const candidate = rahuHouse || ketuHouse;
+            const cOrd = ordinal(candidate);
+            match = root.all_house_placements.find(p => p.axis.includes(cOrd));
+          }
+
+          const output = {
+            found: !!match,
+            interpretive_framework_sop: root.interpretive_framework_sop,
+            universal_rahu_remedy: root.universal_rahu_remedy || null,
+            placement: match || null
+          };
+
+          // Build readable HTML summary
+          let html = '<div class="rahu-ketu-axis-prediction">';
+          html += `<h3>Rahu Ketu Axis Prediction</h3>`;
+          if (!match) {
+            html += '<p>No matching axis placement found for provided horoscope input.</p>';
+          } else {
+            html += `<h4>Axis</h4><p>${match.axis}</p>`;
+            if (match.epicenter_past_themes) html += `<h4>Past-life Epicenter</h4><p>${match.epicenter_past_themes}</p>`;
+            if (match.current_ketu_manifestation) html += `<h4>Current Ketu Manifestation</h4><p>${match.current_ketu_manifestation}</p>`;
+            if (match.rahu_hit_houses) {
+              html += `<h4>Rahu Hit Houses</h4>`;
+              html += '<ul>';
+              Object.keys(match.rahu_hit_houses).forEach(key => {
+                const obj = match.rahu_hit_houses[key];
+                html += `<li><strong>${key.replace(/_/g, ' ')}:</strong> ${obj.karakas || ''} - ${obj.manifestation || ''}</li>`;
+              });
+              html += '</ul>';
+            }
+            if (match.prescribed_remedies) html += `<h4>Prescribed Remedies</h4><p>${match.prescribed_remedies}</p>`;
+          }
+          if (output.universal_rahu_remedy) html += `<h4>Universal Rahu Remedy</h4><p>${output.universal_rahu_remedy}</p>`;
+          html += '</div>';
+
+          createCard('Rahu Ketu Axis Prediction', html, 'html');
+          return output;
+        }
 
     /**
  * Maps Rashi numbers (1=Aries, 12=Pisces) to their names for better output readability.
