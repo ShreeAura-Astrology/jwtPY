@@ -129,7 +129,7 @@ function populateFormData(data) {
             "Nakshatra": "Mrigashira",
             "NakshatraLord": "Mars",
             "sequence": 5,
-            "NakshatraAlias": "Mrigashira"
+            "NakshatraAlias": "Mrigshira"
         }, {
             "Nakshatra": "Ardra",
             "NakshatraLord": "Rahu",
@@ -204,7 +204,7 @@ function populateFormData(data) {
             "Nakshatra": "Purva Ashadha",
             "NakshatraLord": "Venus",
             "sequence": 20,
-            "NakshatraAlias": "Purva Shadha"
+            "NakshatraAlias": "Old Shadha"
         }, {
             "Nakshatra": "Uttara Ashadha",
             "NakshatraLord": "Sun",
@@ -219,7 +219,7 @@ function populateFormData(data) {
             "Nakshatra": "Dhanishta",
             "NakshatraLord": "Mars",
             "sequence": 23,
-            "NakshatraAlias": "Dhanishta"
+            "NakshatraAlias": "Dhanishtha"
         }, {
             "Nakshatra": "Shatabhisha",
             "NakshatraLord": "Rahu",
@@ -234,7 +234,7 @@ function populateFormData(data) {
             "Nakshatra": "Uttara Bhadrapada",
             "NakshatraLord": "Saturn",
             "sequence": 26,
-            "NakshatraAlias": "Uttara Bhadrapada"
+            "NakshatraAlias": "Uttar Bhadrapad"
         }, {
             "Nakshatra": "Revati",
             "NakshatraLord": "Mercury",
@@ -316,6 +316,8 @@ function populateFormData(data) {
                     nakSelect.value = nakOption.value;
                     // If there is a corresponding lord input, try to populate it from data
                     const lordInput = inputForm.querySelector(`#${planetName}-nakshatra-lord`);
+					
+					
                     if (lordInput) {
                         // Prefer explicit NakshatraLord field if available
                         if (planetData['NakshatraLord'] || planetData['Nakshatra Lord']) {
