@@ -2,7 +2,7 @@ var RahuKetuAxis = {
   "rahu_ketu_full_horoscope_deciphering_json": {
     "interpretive_framework_sop": {
       "step_1": "Identify the Axis and define Ketu as the past-life epicenter.",
-      "step_2": "Analyze Past Life Themes based on Ketu’s house.",
+      "step_2": "Analyze Past Life Themes based on Ketus house.",
       "step_3": "Map the Karmic Funnel to Rahu's placement and its 1-5-9 aspect 'Hits'.",
       "step_4": "Evaluate manifestations using Living/Non-Living Karakas.",
       "step_5": "Identify specific Life Lessons and Behavioral Remedies."
