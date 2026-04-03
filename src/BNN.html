@@ -3106,9 +3106,8 @@ function getUpapadaLagnaDetails(horoscope) {
     };
 
     // 2. Identify Ascendant Sign and 12th House Sign
-    // Venus is in House 1, Sign 3 (Gemini). So H1 = Sign 3.
-    const ascendantSign = 3;
-    const twelfthHouseSign = (ascendantSign + 11 - 1) % 12 + 1; // Result: 2 (Taurus)
+    const ascendantSign = createCyclicJSON(horoscope)[1].sign;
+    const twelfthHouseSign = (ascendantSign + 11 - 1) % 12 + 1;
 
     // 3. Find 12th Lord and its house
     const twelfthLordName = signLords[twelfthHouseSign];
