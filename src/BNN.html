@@ -2930,7 +2930,7 @@
 
           const rahuHouse = horoscope && horoscope.Rahu && typeof horoscope.Rahu.house === 'number' ? horoscope.Rahu.house : null;
           const ketuHouse = horoscope && horoscope.Ketu && typeof horoscope.Ketu.house === 'number' ? horoscope.Ketu.house : null;
-
+          console.log('Rahu House:', rahuHouse, 'Ketu House:', ketuHouse);
           if (!match && rahuHouse) {
             const rOrd = ordinal(rahuHouse);
             match = root.all_house_placements.find(p => p.axis.includes(`Rahu ${rOrd}`) || p.axis.includes(`Rahu ${rahuHouse}`));
