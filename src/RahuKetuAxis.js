@@ -251,4 +251,4 @@ var RahuKetuAxis = {
     ],
     "universal_rahu_remedy": "Worship of Ma Durga (specifically during Navaratri) is the primary remedy for all Rahu troubles."
   }
-}
+};
