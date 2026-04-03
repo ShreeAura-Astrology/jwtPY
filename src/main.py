@@ -98,6 +98,16 @@ def main(context):
         return context.res.text(js, 200, {
             "content-type": "text/javascript"
         })
+    # The req object contains houseLord.js the request data
+    if context.req.path == "/RahuKetuAxis.js":
+        # Use res object to respond with text(), json(), or binary()
+        # Don't forget to return a response!
+        # Read the private key
+        with open('/usr/local/server/src/function/src/RahuKetuAxis.js', 'r') as js_file:
+            js = js_file.read()
+        return context.res.text(js, 200, {
+            "content-type": "text/javascript"
+        })
     # The req object contains the request data
     if context.req.path == "/kundali.png":
         # Serve the New-Kundali.png image
