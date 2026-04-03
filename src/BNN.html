@@ -294,6 +294,7 @@
       getHouseFromJupiterPredictions(horoscope);
       mercuryAnalysis(horoscope);
       RahuKetuAxisPrediction(horoscope);
+      getUpapadaLagnaDetails(horoscope);
     }
 
     /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
@@ -2980,7 +2981,194 @@
           return output;
         }
 
-    /**
+function getUpapadaLagnaDetails(horoscope) {
+    // 1. Data Structures from previous steps
+    const housePredictions = {
+  2: {
+    "core_themes": "Known as the 'Marriage House' in this context, it focuses on family, money, values, and daily maintenance [1].",
+    "nature_of_marriage": "The marriage acts as a continuous test involving family expectations and financial transparency [1], [2]. It often results in increased family politics and interference from in-laws [3].",
+    "challenges": "Major issues include clashes over food habits, lifestyle values, and speech [1], [3]. Financial pressure or ego-driven communication can lead to mental separation even if a legal divorce doesn't occur [2], [4].",
+    "remedies_and_advice": "Partners should set clear family boundaries, maintain money transparency, cook or eat together, and practice 'routine bonding' [5], [4]. Controlling one's language is essential to prevent the relationship from cracking [4], [6].",
+    "spouse_origin": "The spouse may come through family arrangements or financial/professional streams [6]."
+  },
+  3: {
+    "core_themes": "Represents new beginnings, movement, and a 'fresh breeze' in life [7].",
+    "nature_of_marriage": "Marriage is dynamic and growth-oriented, often leading to changes in location, job, or routine [7]. It forces the individual to show courage and take initiative, often turning a 'lazy' person into a responsible 'gentleman' [8].",
+    "challenges": "The relationship requires constant effort and movement rather than comfort; it forces you to run, chase, and show your courage [8], [9].",
+    "remedies_and_advice": "Embrace the movement and travel; support each other 'shoulder to shoulder' to cross life's hurdles [8]. Avoid staying static or resistant to change [9].",
+    "spouse_origin": "The partner might be found in the neighborhood, through online platforms/social media, social interactions, or during travels [10]."
+  },
+  4: {
+    "core_themes": "Linked to domestic happiness, property, vehicles, and emotional settlement [11], [12].",
+    "nature_of_marriage": "The relationship is centered on 'building a home' and typically brings great joy, comfort, and an increase in social status and fame [11], [13].",
+    "challenges": "Malefic influences (like Saturn or Rahu) can disturb internal peace, making the marriage look perfect to the world while lacking soul [12]. A major internal challenge is the tendency to compare the spouse with past interests [14].",
+    "remedies_and_advice": "Focus on domestic peace and emotional maturity [14]. The most critical advice is: 'Do not compare' your partner to others to maintain long-term happiness [14].",
+    "spouse_origin": "Met through property dealings, vehicle purchases, or through the mother's side of the family (nanihaal) [13]."
+  },
+  8: {
+    "core_themes": "Deeply karmic, mysterious, and transformative [15].",
+    "nature_of_marriage": "This is a relationship of 'debt-clearing' where emotions and events often remain hidden or mysterious [16], [17]. It feels like a 'karmic package' where everything is not visible on the surface [18].",
+    "challenges": "Issues include trust, suspicion, hidden resentment, and heavy responsibilities toward in-laws [19], [20]. It can feel like a 'heavy' burden where one partner gives much more than the other [16].",
+    "remedies_and_advice": "Acceptance is key—viewing the relationship as a responsibility to be fulfilled rather than a burden [20]. Benefic influences can turn these trials into spiritual growth or shared interests in occult sciences [18].",
+    "spouse_origin": "Often linked to deep karmic connections or 'past life' meetings where the connection feels instantaneous and non-casual [16], [18]."
+  },
+  9: {
+    "core_themes": "Associated with luck, higher wisdom, and future-oriented planning [21], [22].",
+    "nature_of_marriage": "Marriage typically boosts the individual's fortune, education, and travel opportunities [23], [24]. It is a stable, long-term placement where luck rises significantly after the wedding [23].",
+    "challenges": "Marriage is often delayed because the individual has very high expectations, constantly feeling they 'deserve better' [22], [25]. There is a risk of extra-marital interests if the partner doesn't meet these idealistic standards [25].",
+    "remedies_and_advice": "Focus on shared religious or philosophical routines [24]. Shift focus from 'finding someone better' to 'commitment' and shared future planning [26].",
+    "spouse_origin": "The partner is often found in long-distance settings, higher education environments, or religious/philosophical gatherings [23], [24]."
+  },
+  10: {
+    "core_themes": "Focused on career, status, and public image; the 'Power Couple' placement [27].",
+    "nature_of_marriage": "The marriage is viewed as a mission to build professional success and acts as a catalyst for career jumps and improved social standing [27], [28].",
+    "challenges": "The relationship can lack romance, as conversations often revolve around work, bosses, and promotions [29], [30]. If career or status declines, the marriage may face significant stress as its 'base' is career-related [31].",
+    "remedies_and_advice": "Intentionally schedule 'quality time' and romance (like dinner dates or movies) to ensure the relationship isn't purely transactional or work-focused [30].",
+    "spouse_origin": "The partner is often met through the workplace, professional networks, or public practical settings [28]."
+  }
+};
+    const rashiPredictions = {
+        1: {
+            "personality": "The partner views the relationship as a mission to achieve something or prove a point together [1]. They are highly active and participating, often showing a dominating nature in decisions [1].",
+            "emotional_style": "They have no 'filter' in either love or anger [1]. While they can be triggered easily into arguments, they often return to a normal state quickly as if nothing happened [2].",
+            "key_traits": "They are natural protectors who will defend the family fiercely against outsiders [3]. Their love language is rooted in action and motivation rather than just words [4]."
+        },
+        2: {
+            "personality": "They appear grounded, humble, and stable on the outside, but internally they are deeply attached and can be quite possessive [5].",
+            "emotional_style": "They are slow to express emotions and prefer to show care through consistency and financial security rather than verbal grand gestures [5].",
+            "key_traits": "When hurt or insecure, they become highly rigid and may resort to silence and internalizing their thoughts rather than arguing [6]."
+        },
+        3: {
+            "personality": "The partner provides a youthful, mentally active experience characterized by humor, jokes, and intellectual stimulation [7].",
+            "emotional_style": "The relationship often feels like a deep friendship, though they are prone to over-analyzing situations, which can lead to sudden emotional distance [8, 9].",
+            "key_traits": "They have a sharp, 'brainy' nature and are excellent problem solvers who require constant mental engagement to avoid boredom [8, 10]."
+        },
+        4: {
+            "personality": "Deeply emotional and sensitive, they do not live on the surface and feel every interaction intensely [11].",
+            "emotional_style": "They provide a nurturing, 'mother-like' care, often noticing and reacting to the partner's smallest mood swings [11].",
+            "key_traits": "Family is central to their life; they often express anger through silence or creating emotional distance [12, 13]."
+        },
+        5: {
+            "personality": "They need to feel like the most important person in your life and require significant attention and respect [14, 15].",
+            "emotional_style": "They possess a royal, large-hearted style and use grand gestures to show love, but they are highly sensitive to public respect [14, 16].",
+            "key_traits": "They are fiercely loyal but need constant appreciation and praise to feel secure in the relationship [15, 16]."
+        },
+        6: {
+            "personality": "Extremely observant and analytical, they notice every tiny habit and detail in the relationship [17].",
+            "emotional_style": "They show love through acts of 'improvement,' constantly motivating or criticizing the partner to help them become a better version [17, 18].",
+            "key_traits": "They seek a perfect, organized life and are highly dependable once trust is established, though they can be overly critical [19, 20]."
+        },
+        7: {
+            "personality": "Charming and polite, they seek balance and harmony in every aspect of life [21, 22].",
+            "emotional_style": "They will do almost anything to avoid conflict, often compromising or changing topics to maintain peace [23].",
+            "key_traits": "They are prone to indecisiveness and crave validation and recognition for their efforts to keep the relationship beautiful [22, 24]."
+        },
+        8: {
+            "personality": "The partner is intense and deep; the connection often feels 'karmic' and non-casual [25].",
+            "emotional_style": "They are highly observant and prefer to understand every layer of their partner while keeping their own emotions hidden [26].",
+            "key_traits": "Trust is their highest priority; they do not forget betrayals and can be subtly controlling or possessive [26, 27]."
+        },
+        9: {
+            "personality": "A free-spirited soul who values freedom, growth, and exploration [28].",
+            "emotional_style": "Optimistic and motivating, they push their partner toward a better future and higher learning [28, 29].",
+            "key_traits": "They hate being restricted by rules and prioritize honesty over manipulation, often speaking a blunt, direct truth [28, 29]."
+        },
+        10: {
+            "personality": "They view the relationship as a serious, lifelong commitment and take a long time to build full trust [30].",
+            "emotional_style": "They are not expressive with romantic words but prove their devotion through practical actions and immense responsibility [31].",
+            "key_traits": "Highly career-oriented and practical, they show stability and take on significant family burdens to ensure long-term security [31, 32]."
+        },
+        11: {
+            "personality": "Unconventional and unique, they do not follow traditional romantic patterns and value individuality [33].",
+            "emotional_style": "They value mental connection and friendship above all else, often alternating between being very close and needing significant personal space [33, 34].",
+            "key_traits": "They hate being emotionally pressured or 'bound' and will distance themselves if they feel their freedom is threatened [34, 35]."
+        },
+        12: {
+            "personality": "A romantic dreamer who experiences love as a profound feeling rather than just a relationship [35].",
+            "emotional_style": "They are highly imaginative and spiritual, often creating a 'fairytale' atmosphere, but they may avoid reality during difficult times [35, 36].",
+            "key_traits": "They tend to avoid conflict by withdrawing or 'escaping' and require a grounded partner to help them navigate practical matters [36, 37]."
+        }
+    };
+
+    const signLords = {
+        1: "Mars",
+        2: "Venus",
+        3: "Mercury",
+        4: "Moon",
+        5: "Sun",
+        6: "Mercury",
+        7: "Venus",
+        8: "Mars",
+        9: "Jupiter",
+        10: "Saturn",
+        11: "Saturn",
+        12: "Jupiter"
+    };
+
+    // 2. Identify Ascendant Sign and 12th House Sign
+    // Venus is in House 1, Sign 3 (Gemini). So H1 = Sign 3.
+    const ascendantSign = 3;
+    const twelfthHouseSign = (ascendantSign + 11 - 1) % 12 + 1; // Result: 2 (Taurus)
+
+    // 3. Find 12th Lord and its house
+    const twelfthLordName = signLords[twelfthHouseSign];
+    const twelfthLordHouse = horoscope[twelfthLordName].house;
+
+    // 4. Calculate Distance and UL House
+    let distance = (twelfthLordHouse - 12 + 12) % 12 + 1;
+    let ulHouse = (twelfthLordHouse + distance - 1);
+    if (ulHouse > 12)
+        ulHouse -= 12;
+
+    // 5. Handle Exceptions (UL cannot be House 6 or 12)
+    if (ulHouse === 12)
+        ulHouse = 9;
+    if (ulHouse === 6)
+        ulHouse = 3;
+
+    // 6. Calculate the Sign (Rashi) sitting in the UL House
+    // Formula: (AscendantSign + HouseNumber - 1)
+    let ulSign = (ascendantSign + ulHouse - 1);
+    if (ulSign > 12)
+        ulSign -= 12;
+
+    // 7. Return combined results
+    const result = {
+        calculation_summary: {
+            ul_house: ulHouse,
+            ul_sign_number: ulSign,
+            twelfth_lord: twelfthLordName
+        },
+        house_prediction: housePredictions[ulHouse] || "Standard marriage prediction applies.",
+        spouse_nature: rashiPredictions[ulSign]
+    };
+
+    // Build HTML for the card
+    let html = '<div class="upapada-lagna-details">';
+    html += '<h3>Upapada Lagna Details</h3>';
+    html += '<h4>Calculation Summary</h4>';
+    html += `<p>UL House: ${result.calculation_summary.ul_house}</p>`;
+    html += `<p>UL Sign: ${result.calculation_summary.ul_sign_number}</p>`;
+    html += `<p>12th Lord: ${result.calculation_summary.twelfth_lord}</p>`;
+    if (result.house_prediction !== "Standard marriage prediction applies.") {
+        html += '<h4>House Prediction</h4>';
+        html += `<p><strong>Core Themes:</strong> ${result.house_prediction.core_themes}</p>`;
+        html += `<p><strong>Nature of Marriage:</strong> ${result.house_prediction.nature_of_marriage}</p>`;
+        html += `<p><strong>Challenges:</strong> ${result.house_prediction.challenges}</p>`;
+        html += `<p><strong>Remedies and Advice:</strong> ${result.house_prediction.remedies_and_advice}</p>`;
+        html += `<p><strong>Spouse Origin:</strong> ${result.house_prediction.spouse_origin}</p>`;
+    }
+    html += '<h4>Spouse Nature</h4>';
+    html += `<p><strong>Personality:</strong> ${result.spouse_nature.personality}</p>`;
+    html += `<p><strong>Emotional Style:</strong> ${result.spouse_nature.emotional_style}</p>`;
+    html += `<p><strong>Key Traits:</strong> ${result.spouse_nature.key_traits}</p>`;
+    html += '</div>';
+
+    createCard('Upapada Lagna Details', html, 'html');
+    return result;
+}
+
+/**
  * Maps Rashi numbers (1=Aries, 12=Pisces) to their names for better output readability.
  */
 const MERCURY_PREDICTIONS_BY_RASHI = {
