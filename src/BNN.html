@@ -2933,18 +2933,11 @@
           console.log('Rahu House:', rahuHouse, 'Ketu House:', ketuHouse);
           if (!match && rahuHouse) {
             const rOrd = ordinal(rahuHouse);
-            match = root.all_house_placements.find(p => p.axis.includes(`Rahu ${rOrd}`) || p.axis.includes(`Rahu ${rahuHouse}`));
+            match = root.all_house_placements.find(p => p.axis.includes(`Rahu ${rOrd}`));
           }
           if (!match && ketuHouse) {
             const kOrd = ordinal(ketuHouse);
-            match = root.all_house_placements.find(p => p.axis.includes(`Ketu ${kOrd}`) || p.axis.includes(`Ketu ${ketuHouse}`));
-          }
-
-          // fallback: try to match by house words (1st..12th) anywhere in axis
-          if (!match && (rahuHouse || ketuHouse)) {
-            const candidate = rahuHouse || ketuHouse;
-            const cOrd = ordinal(candidate);
-            match = root.all_house_placements.find(p => p.axis.includes(cOrd));
+            match = root.all_house_placements.find(p => p.axis.includes(`Ketu ${kOrd}`));
           }
 
           const output = {
