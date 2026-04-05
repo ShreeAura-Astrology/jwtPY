@@ -934,14 +934,15 @@
       planets.forEach(p => {
         const sign = parseInt(document.getElementById(`${p}-sign`).value);
         const degree = parseFloat(document.getElementById(`${p}-deg`).value);
+        const house = parseInt(document.getElementById(`${p}-house`).value);
         if (!isNaN(sign) && !isNaN(degree)) {
-          horoscope[p] = { sign, degree };
+          horoscope[p] = { sign, degree, house };
         }
       });
 
       const transits = [];
       const planetInTransitAspects = { "Jupiter": [], "Saturn": [] };
-      for (const [planet, { sign }] of Object.entries(horoscope)) {
+      for (const [planet, { sign, house }] of Object.entries(horoscope)) {
         const aspects = [sign];
 
         if ((Math.abs(jSign - sign) % 12) === 6 || (Math.abs(jSign - sign) % 12) === 8 || (Math.abs(jSign - sign) % 12) === 2 || (Math.abs(jSign - sign) % 12) === 10)
@@ -1050,11 +1051,11 @@
           }
         };
       }
-
+      const cyclicHoroscope = createCyclicJSON(horoscope);
       const sunSign = sun.sign;
       const sunHouse = horoscope['Sun']?.house;
-      const natal7th = normalizeSign(sunSign + 6);
-      const natal9th = normalizeSign(sunSign + 8);
+      const natal7th = cyclicHoroscope[7]?.sign;
+      const natal9th = cyclicHoroscope[9]?.sign;
       const seventhLord = getSignLord(natal7th);
       const ninthLord = getSignLord(natal9th);
       const seventhLordSign = horoscope[seventhLord]?.sign;
