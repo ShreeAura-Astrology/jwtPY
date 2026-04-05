@@ -1010,10 +1010,10 @@
         <h3>Promotion Window Summary</h3>
         <p><strong>Fulfillment: ${promotion.fulfillment}%</strong> — ${promotion.summary}</p>
         <ul>
-          <li>Jupiter condition: ${promotion.conditions.jupiter ? 'Yes' : 'No'}</li>
-          <li>Saturn condition: ${promotion.conditions.saturn ? 'Yes' : 'No'}</li>
-          <li>Rahu-Sun trigger: ${promotion.conditions.rahu ? 'Yes' : 'No'}</li>
-          <li>Sun transit trigger: ${promotion.conditions.sunTransit ? 'Yes' : 'No'}</li>
+          <li>Connected points: ${promotion.conditions.connectedPoints} out of 4 (${promotion.conditions.connectedPoints > 0 ? promotion.conditions.connectedPoints.map(p => signs[p-1]).join(', ') : 'None'})</li>
+          <li>Jupiter connects: ${promotion.conditions.jupiterConnects ? 'Yes' : 'No'}</li>
+          <li>Saturn connects: ${promotion.conditions.saturnConnects ? 'Yes' : 'No'}</li>
+          <li>Sun trigger: ${promotion.conditions.sunTrigger ? 'Yes' : 'No'}</li>
           <li>Sun strength: ${promotion.conditions.powerfulSun ? 'Strong' : promotion.conditions.weakSun ? 'Weak' : 'Neutral'}</li>
         </ul>`;
       div.insertAdjacentHTML('beforeend', html + promoHtml);
@@ -1037,15 +1037,15 @@
 
     function getPromotionWindow(horoscope, jSign, sSign, rSign) {
       const sun = horoscope['Sun'];
-      if (!sun || !sun.sign) {
+      if (!sun || !sun.sign || !sun.house) {
         return {
           fulfillment: 0,
-          summary: 'Native Sun sign data is missing. Promotion window cannot be determined.',
+          summary: 'Native Sun sign or house data is missing. Promotion window cannot be determined.',
           conditions: {
-            jupiter: false,
-            saturn: false,
-            rahu: false,
-            sunTransit: false,
+            connectedPoints: 0,
+            jupiterConnects: false,
+            saturnConnects: false,
+            sunTrigger: false,
             powerfulSun: false,
             weakSun: false
           }
@@ -1053,21 +1053,41 @@
       }
       const cyclicHoroscope = createCyclicJSON(horoscope);
       const sunSign = sun.sign;
-      const sunHouse = horoscope['Sun']?.house;
+      const sunHouse = sun.house;
       const natal7th = cyclicHoroscope[7]?.sign;
       const natal9th = cyclicHoroscope[9]?.sign;
+      if (!natal7th || !natal9th) {
+        return {
+          fulfillment: 0,
+          summary: '7th or 9th house signs not found in cyclic horoscope.',
+          conditions: {
+            connectedPoints: 0,
+            jupiterConnects: false,
+            saturnConnects: false,
+            sunTrigger: false,
+            powerfulSun: false,
+            weakSun: false
+          }
+        };
+      }
       const seventhLord = getSignLord(natal7th);
       const ninthLord = getSignLord(natal9th);
       const seventhLordSign = horoscope[seventhLord]?.sign;
       const ninthLordSign = horoscope[ninthLord]?.sign;
+      const points = [natal7th, seventhLordSign, natal9th, ninthLordSign].filter(Boolean);
       const jupiterAspects = signAspects(jSign, [4, 6, 8]);
       const saturnAspects = signAspects(sSign, [2, 6, 9]);
       const rahuAspects = [rSign, normalizeSign(rSign + 6)];
 
-      const jupiterCondition = [jSign, ...jupiterAspects].some(sign => [natal7th, natal9th, seventhLordSign, ninthLordSign].includes(sign));
-      const saturnCondition = [sSign, ...saturnAspects].some(sign => [natal7th, natal9th, seventhLordSign, ninthLordSign].includes(sign));
-      const rahuCondition = rahuAspects.includes(sunSign);
-      const sunTransitTrigger = [jSign, sSign, rSign].some(sign => sign === sunSign || normalizeSign(sign + 6) === sunSign);
+      const connectedPoints = new Set();
+      points.forEach(point => {
+        if ([jSign, ...jupiterAspects].includes(point)) connectedPoints.add(point);
+        if ([sSign, ...saturnAspects].includes(point)) connectedPoints.add(point);
+      });
+      const conditionsMet = connectedPoints.size;
+      const jupiterConnects = points.some(point => [jSign, ...jupiterAspects].includes(point));
+      const saturnConnects = points.some(point => [sSign, ...saturnAspects].includes(point));
+      const sunTrigger = [jSign, sSign, rSign].some(sign => sign === sunSign || normalizeSign(sign + 6) === sunSign);
       const powerfulSun = [1, 10].includes(sunHouse) || [1, 5, 10].includes(sunSign) || sunHouse === 6 || sunHouse === 2;
       const weakSun = [8].includes(sunHouse) || sunSign === 8 || [horoscope['Rahu']?.sign, horoscope['Saturn']?.sign, horoscope['Ketu']?.sign].includes(sunSign);
       console.log('Promotion Window Debug:', {
@@ -1089,45 +1109,54 @@
         powerfulSun,
         weakSun
       });
-      const conditionsMet = [jupiterCondition, saturnCondition, rahuCondition, sunTransitTrigger].filter(Boolean).length;
       let fulfillment = 0;
       let summary = 'No strong promotion window detected at this time.';
 
-      if (conditionsMet >= 4) {
-        fulfillment = 100;
-        summary = 'Major upgrade and full goal achievement.';
-      } else if (conditionsMet === 3) {
-        fulfillment = 75;
-        summary = 'Very good time with significant gains.';
-      } else if (conditionsMet === 2) {
-        fulfillment = 50;
-        summary = 'Partial success, roughly half of desired growth.';
-      } else if (conditionsMet === 1) {
-        fulfillment = 25;
-        summary = 'Minor or negligible upgrade.';
+      if (!jupiterConnects || !saturnConnects) {
+        fulfillment = 0;
+        summary = 'Both Jupiter and Saturn must establish connections for a promotion window.';
+      } else {
+        if (conditionsMet === 4) {
+          fulfillment = 100;
+          summary = 'Major upgrade and full goal achievement.';
+        } else if (conditionsMet === 3) {
+          fulfillment = 75;
+          summary = 'Very good time with significant gains.';
+        } else if (conditionsMet === 2) {
+          fulfillment = 50;
+          summary = 'Partial success, roughly half of desired growth.';
+        } else if (conditionsMet === 1) {
+          fulfillment = 25;
+          summary = 'Minor or negligible upgrade.';
+        }
       }
 
-      if (fulfillment > 0 && weakSun) {
-        summary += ' Warning: Natal Sun is weak, this may reduce the benefit or create obstacles.';
-      }
-      if (fulfillment > 0 && powerfulSun) {
-        summary += ' Natal Sun is strong, promotion potential is enhanced.';
+      if (sunTrigger) {
+        if (powerfulSun) {
+          summary += ' Sun trigger active: Enhances promotion potential.';
+        } else if (weakSun) {
+          summary += ' Sun trigger active but Sun is weak: May lead to demotion instead.';
+        } else {
+          summary += ' Sun trigger active: Neutral effect on Sun strength.';
+        }
       }
 
       return {
         fulfillment,
         summary,
         conditions: {
-          jupiter: jupiterCondition,
-          saturn: saturnCondition,
-          rahu: rahuCondition,
-          sunTransit: sunTransitTrigger,
+          connectedPoints: conditionsMet,
+          jupiterConnects,
+          saturnConnects,
+          sunTrigger,
           powerfulSun,
           weakSun,
           natal7th,
           natal9th,
           seventhLord,
           ninthLord,
+          points,
+          connectedPoints: Array.from(connectedPoints),
           jupiterAspects,
           saturnAspects,
           rahuAspects
