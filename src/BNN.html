@@ -1010,7 +1010,10 @@
         <h3>Promotion Window Summary</h3>
         <p><strong>Fulfillment: ${promotion.fulfillment}%</strong> — ${promotion.summary}</p>
         <ul>
-          <li>Connected points: ${promotion.conditions.connectedPoints} out of 4 (${promotion.conditions.connectedPoints > 0 ? promotion.conditions.connectedPoints.map(p => signs[p-1]).join(', ') : 'None'})</li>
+          <li>Connected points: ${promotion.conditions.connectedPoints} out of 4</li>
+          ${Object.entries(promotion.conditions.connections).map(([key, { sign, connectedBy }]) => 
+            `<li>${key} (${signs[sign-1]}): ${connectedBy.length > 0 ? `Connected by ${connectedBy.join(' and ')}` : 'Not connected'}</li>`
+          ).join('')}
           <li>Jupiter connects: ${promotion.conditions.jupiterConnects ? 'Yes' : 'No'}</li>
           <li>Saturn connects: ${promotion.conditions.saturnConnects ? 'Yes' : 'No'}</li>
           <li>Sun trigger: ${promotion.conditions.sunTrigger ? 'Yes' : 'No'}</li>
@@ -1078,6 +1081,19 @@
       const jupiterAspects = signAspects(jSign, [4, 6, 8]);
       const saturnAspects = signAspects(sSign, [2, 6, 9]);
       const rahuAspects = [rSign, normalizeSign(rSign + 6)];
+
+      const connections = {
+        '7th House': { sign: natal7th, connectedBy: [] },
+        '7th Lord': { sign: seventhLordSign, connectedBy: [] },
+        '9th House': { sign: natal9th, connectedBy: [] },
+        '9th Lord': { sign: ninthLordSign, connectedBy: [] }
+      };
+
+      Object.keys(connections).forEach(key => {
+        const point = connections[key].sign;
+        if (point && [jSign, ...jupiterAspects].includes(point)) connections[key].connectedBy.push('Jupiter');
+        if (point && [sSign, ...saturnAspects].includes(point)) connections[key].connectedBy.push('Saturn');
+      });
 
       const connectedPoints = new Set();
       points.forEach(point => {
@@ -1157,6 +1173,7 @@
           ninthLord,
           points,
           connectedPoints: Array.from(connectedPoints),
+          connections,
           jupiterAspects,
           saturnAspects,
           rahuAspects
