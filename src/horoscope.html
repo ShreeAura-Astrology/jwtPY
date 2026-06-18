@@ -1744,6 +1744,7 @@
         }
 
         function checkRealityOfNeutralHousesAndRakeshEffect(houses) {
+
             // Check if Neutral 4th house has either Rahu/Ketu
             if (houses["4"].status == "N" && (houses["4"].planets.includes("Rahu") || houses["4"].planets.includes("Ketu"))) {
                 houses["4"].status = "NM";
@@ -1752,33 +1753,29 @@
                 analysis.push("Rahu/Ketu found in 4th house hence 4th house is Neutral malefic");
             }
             var neutralMaleficIndicator = false;
-            if((houses["4"].planets.includes("Rahu") || houses["4"].planets.includes("Ketu"))){
-                console.log('Rahu/Ketu found in 4th house hence all the benific neutral benific house will be Neutral malefic');
-                analysis.push('Rahu/Ketu found in 4th house hence all the benific neutral benific house will be Neutral malefic');
-                houses["4"].status = 'NM';
-                neutralMaleficHouses.push("4");
+            var moonWithRahuKetuFound = false;
+            for (const h in houses) {
+                if (houses[h].planets.includes("Moon") && (houses[h].planets.includes("Rahu") || houses[h].planets.includes("Ketu"))) {
+                    moonWithRahuKetuFound = true;
+                    break;
+                }
+            }
+            if ((houses["4"].planets.includes("Rahu") || houses["4"].planets.includes("Ketu")) || moonWithRahuKetuFound) {
+                console.log('Rahu/Ketu in 4th house or Moon with Rahu/Ketu found anywhere in horoscope; neutral benefic houses will become Neutral malefic');
+                analysis.push('Rahu/Ketu in 4th house or Moon with Rahu/Ketu found anywhere in horoscope; neutral benefic houses will become Neutral malefic');
                 neutralMaleficIndicator = true;
             }
+    
             for (const house in houses) {
                 // Scan for Neutral Houses only
-                if (!maleficHouses.includes(house)) {
+                if (!maleficHouses.includes(house) && !beneficHouses.includes(house)) {
                     console.log(`Evaluating reality of Neutral House :${house} Current Status: ${house}.status`);
                     // Check if Moon is with Rahu/Ketu in any house or if Rahu/Ketu are occupying the 4th house
-                    if (houses[house].planets.includes("Moon")) {
-                        if (houses[house].planets.includes("Rahu") || houses[house].planets.includes("Ketu")) {
-                            moonState.push(house);
-                            console.log('Moon with Rahu/Ketu found in House: ' + house + ' hence house is Neutral malefic');
-                            analysis.push('Moon with Rahu/Ketu found in House: ' + house + ' hence house is Neutral malefic');
-                            houses[house].status = 'NM';
-                            neutralMaleficHouses.push(house);
-                            neutralMaleficIndicator = true;
-                        }
-                    }
-                    else if(neutralMaleficIndicator){
+                    if (neutralMaleficIndicator) {
                          houses[house].status = "NM";
                          neutralMaleficHouses.push(house);
-                         console.log(house + ' house is Neutral malefic due to presence of Rahu/Ketu in 4th house');
-                         analysis.push(house + ' house is Neutral malefic due to presence of Rahu/Ketu in 4th house');
+                         console.log(house + ' house is Neutral malefic due to presence of Rahu/Ketu in 4th house or Moon with Rahu/Ketu elsewhere');
+                         analysis.push(house + ' house is Neutral malefic due to presence of Rahu/Ketu in 4th house or Moon with Rahu/Ketu elsewhere');
                     }
                     else {
                         houses[house].status = "NB";
