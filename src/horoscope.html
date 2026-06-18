@@ -780,7 +780,7 @@
                 "karak": "Sun",
                 "house": 1,
                 "friends": ["Moon", "Jupiter", "Mars"],
-                "enemies": ["Venus", "Saturn"],
+                "enemies": ["Venus", "Saturn", "Rahu", "Ketu"],
                 "drishti": ["7"],
                 "percent": 100,
                 "vakri": [],
@@ -1761,7 +1761,7 @@
             }
             for (const house in houses) {
                 // Scan for Neutral Houses only
-                if (!maleficHouses.includes(house) && !beneficHouses.includes(house)) {
+                if (!maleficHouses.includes(house)) {
                     console.log(`Evaluating reality of Neutral House :${house} Current Status: ${house}.status`);
                     // Check if Moon is with Rahu/Ketu in any house or if Rahu/Ketu are occupying the 4th house
                     if (houses[house].planets.includes("Moon")) {
