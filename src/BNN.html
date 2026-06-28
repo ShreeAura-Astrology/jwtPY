@@ -314,12 +314,12 @@
       getUpapadaLagnaDetails(horoscope);
     }
 
-    function addPrediction(list, text, marker) {
+    function addPrediction(list, text, marker, aspectType = marker) {
       const normalized = text?.trim();
       if (!normalized) return;
       const alreadyAdded = list.some(item => item.text === normalized && item.marker === marker);
       if (!alreadyAdded) {
-        list.push({ text: normalized, marker });
+        list.push({ text: normalized, marker, aspectType });
       }
     }
 
@@ -404,14 +404,14 @@
 
             if (g1.sign === g2.sign) {
               conjunctions.push({ pair: [p1, p2], sign: g1.sign, degrees: [g1.degree, g2.degree] });
-              addPrediction(predictions, `${p1} & ${p2}: same sign conjunction`, 'Conjunction');
+              addPrediction(predictions, `${p1} & ${p2}: same sign conjunction`, 'Conjunction', 'Conjunction');
             }
             console.log("Checking if ", g1.degree, "<", g2.degree);
             if (g1.degree < g2.degree) {
               aspects.push({ from: p1, to: p2, note: `${p1} influences ${p2}` });
               const combo = findCombination(p1, p2);
               if (combo) {
-                combo.predictions.forEach(pr => addPrediction(predictions, `${p1} & ${p2}: ${pr}`, 'Aspect'));
+                combo.predictions.forEach(pr => addPrediction(predictions, `${p1} & ${p2}: ${pr}`, 'Aspect', 'Degree-based aspect'));
               }
             }
           }
@@ -427,7 +427,7 @@
             if (trinePlanets[i].sign !== trinePlanets[j].sign) {
               const combo = findCombination(p1, p2);
               if (combo) {
-                combo.predictions.forEach(pr => addPrediction(predictions, `[Trine] ${p1} & ${p2}: ${pr}`, 'Trine'));
+                combo.predictions.forEach(pr => addPrediction(predictions, `[Trine] ${p1} & ${p2}: ${pr}`, 'Trine', 'Trine'));
               }
             }
           }
@@ -471,7 +471,7 @@
         <ul>${g.planets.map(p => `<li>${p.planet}: Sign ${p.sign}, ${p.degree.toFixed(2)}°</li>`).join('')}</ul>
         ${g.conjunctions.length ? `<strong>Conjunctions:</strong><ul>${g.conjunctions.map(c => `<li>${c.pair.join(' & ')} in Sign ${c.sign}</li>`).join('')}</ul>` : ''}
         ${g.aspects.length ? `<strong>Aspects:</strong><ul>${g.aspects.map(a => `<li>${a.note}</li>`).join('')}</ul>` : ''}
-        ${g.predictions.length ? `<strong>Predictions:</strong><ul>${g.predictions.map(p => `<li><span class="prediction-marker">${p.marker}</span> ${p.text}</li>`).join('')}</ul>` : ''}
+        ${g.predictions.length ? `<strong>Predictions:</strong><ul>${g.predictions.map(p => `<li><span class="prediction-marker">${p.marker}</span> <strong>Aspect:</strong> ${p.aspectType} — ${p.text}</li>`).join('')}</ul>` : ''}
       `;
         chart.appendChild(container);
       }
@@ -512,8 +512,8 @@
       const combo = findCombination(p1, p2);
       let predHTML = '';
       if (combo && combo.predictions && combo.predictions.length) {
-        const predictionItems = combo.predictions.map(pr => ({ text: pr, marker: 'Combination Data' }));
-        predHTML = '<strong>Predictions:</strong><ul>' + predictionItems.map(pr => `<li><span class="prediction-marker">${pr.marker}</span> ${pr.text}</li>`).join('') + '</ul>';
+        const predictionItems = combo.predictions.map(pr => ({ text: pr, marker: 'Combination Data', aspectType: 'Combination data' }));
+        predHTML = '<strong>Predictions:</strong><ul>' + predictionItems.map(pr => `<li><span class="prediction-marker">${pr.marker}</span> <strong>Aspect:</strong> ${pr.aspectType} — ${pr.text}</li>`).join('') + '</ul>';
         areConjunct = true;
       } else {
         predHTML = '<p><em>No specific predictions found for this combination.</em></p>';
