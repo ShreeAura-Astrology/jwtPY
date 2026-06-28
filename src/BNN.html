@@ -82,6 +82,18 @@
       background: #f0f8ff;
     }
 
+    .prediction-marker {
+      display: inline-block;
+      margin-right: 8px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #e8f2ff;
+      color: #0b5fff;
+      font-size: 0.8em;
+      font-weight: bold;
+      vertical-align: middle;
+    }
+
     #diamond-chart {
       margin-top: -564px;
       position: fixed;
@@ -302,6 +314,15 @@
       getUpapadaLagnaDetails(horoscope);
     }
 
+    function addPrediction(list, text, marker) {
+      const normalized = text?.trim();
+      if (!normalized) return;
+      const alreadyAdded = list.some(item => item.text === normalized && item.marker === marker);
+      if (!alreadyAdded) {
+        list.push({ text: normalized, marker });
+      }
+    }
+
     /* ---------- CORE LOGIC: TRINES, ASPECTS & PREDICTIONS ---------- */
     function getTrineGroupsWithBNNAspects(horoscope) {
       const trineMap = {
@@ -383,16 +404,14 @@
 
             if (g1.sign === g2.sign) {
               conjunctions.push({ pair: [p1, p2], sign: g1.sign, degrees: [g1.degree, g2.degree] });
+              addPrediction(predictions, `${p1} & ${p2}: same sign conjunction`, 'Conjunction');
             }
             console.log("Checking if ", g1.degree, "<", g2.degree);
             if (g1.degree < g2.degree) {
               aspects.push({ from: p1, to: p2, note: `${p1} influences ${p2}` });
               const combo = findCombination(p1, p2);
               if (combo) {
-                const key = `${p1} & ${p2}`;
-                combo.predictions.forEach(pr => predictions.push(`${p1} & ${p2}: ${pr}`));
-                //if (!predictions[key]) predictions[key] = [];
-                //combo.predictions.forEach(pr => predictions[key].push(pr));
+                combo.predictions.forEach(pr => addPrediction(predictions, `${p1} & ${p2}: ${pr}`, 'Aspect'));
               }
             }
           }
@@ -408,7 +427,7 @@
             if (trinePlanets[i].sign !== trinePlanets[j].sign) {
               const combo = findCombination(p1, p2);
               if (combo) {
-                combo.predictions.forEach(pr => predictions.push(`[Trine] ${p1} & ${p2}: ${pr}`));
+                combo.predictions.forEach(pr => addPrediction(predictions, `[Trine] ${p1} & ${p2}: ${pr}`, 'Trine'));
               }
             }
           }
@@ -420,7 +439,7 @@
           planets: uniqueGroup,
           conjunctions,
           aspects,
-          predictions: [...new Set(predictions)]
+          predictions
         };
       }
 
@@ -452,7 +471,7 @@
         <ul>${g.planets.map(p => `<li>${p.planet}: Sign ${p.sign}, ${p.degree.toFixed(2)}°</li>`).join('')}</ul>
         ${g.conjunctions.length ? `<strong>Conjunctions:</strong><ul>${g.conjunctions.map(c => `<li>${c.pair.join(' & ')} in Sign ${c.sign}</li>`).join('')}</ul>` : ''}
         ${g.aspects.length ? `<strong>Aspects:</strong><ul>${g.aspects.map(a => `<li>${a.note}</li>`).join('')}</ul>` : ''}
-        ${g.predictions.length ? `<strong>Predictions:</strong><ul>${g.predictions.map(p => `<li>${p}</li>`).join('')}</ul>` : ''}
+        ${g.predictions.length ? `<strong>Predictions:</strong><ul>${g.predictions.map(p => `<li><span class="prediction-marker">${p.marker}</span> ${p.text}</li>`).join('')}</ul>` : ''}
       `;
         chart.appendChild(container);
       }
@@ -493,7 +512,8 @@
       const combo = findCombination(p1, p2);
       let predHTML = '';
       if (combo && combo.predictions && combo.predictions.length) {
-        predHTML = '<strong>Predictions:</strong><ul>' + combo.predictions.map(pr => `<li>${pr}</li>`).join('') + '</ul>';
+        const predictionItems = combo.predictions.map(pr => ({ text: pr, marker: 'Combination Data' }));
+        predHTML = '<strong>Predictions:</strong><ul>' + predictionItems.map(pr => `<li><span class="prediction-marker">${pr.marker}</span> ${pr.text}</li>`).join('') + '</ul>';
         areConjunct = true;
       } else {
         predHTML = '<p><em>No specific predictions found for this combination.</em></p>';
