@@ -367,38 +367,20 @@
     var newRefreshToken = "";
     app.controller('myCtrl', function ($scope, $http) {
 
-        $scope.refreshAccessToken = function (chartType, retryAction, retryData) {
-            const onRefreshSuccess = function (response) {
+        $scope.refreshAccessToken = function (chartType) {
+            $http.get('https://67bf6bd0da25caced8fb.appwrite.global/').then(function (response) {
                 console.log('Successfully Refreshed Access Token:', response.data);
-                if (response.data && response.data.token) {
-                    accessToken = response.data.token;
-                }
-                if (response.data && response.data.assertion) {
-                    newRefreshToken = response.data.assertion;
-                }
-
-                let nextConfig = retryData && retryData.config ? angular.copy(retryData.config) : null;
-                if (nextConfig && nextConfig.headers) {
-                    nextConfig.headers.Authorization = 'Bearer ' + accessToken;
-                }
-
-                if (retryAction) {
-                    retryAction({ data: retryData && retryData.data, config: nextConfig });
-                } else if (chartType) {
-                    $scope.pullPushHoroscope(chartType);
-                }
-            };
-
-            $http.get('https://67bf6bd0da25caced8fb.appwrite.global/').then(onRefreshSuccess)
+                accessToken = response.data.token;
+                newRefreshToken = response.data.assertion;
+                $scope.pullPushHoroscope(chartType);
+            })
                 .catch(function (error) {
                     console.error('Error in refreshing access token :', error);
-                    if (retryAction) {
-                        $scope.refreshAccessTokenz(chartType, retryAction, retryData);
-                    }
                 });
 
+
         }
-        $scope.refreshAccessTokenz = function (chartType, retryAction, retryData) {
+        $scope.refreshAccessTokenz = function (chartType) {
 
             var postData = {
                 "client_id": "174274796007-75qmckk51irgj0eentqr7armskkle9qo.apps.googleusercontent.com",
@@ -414,25 +396,11 @@
                 .then(function (response) {
                     console.log('Successfully Refreshed Access Token:', response.data);
                     accessToken = response.data.access_token;
-                    if (response.data.refresh_token) {
-                        newRefreshToken = response.data.refresh_token;
-                    }
-
-                    let nextConfig = retryData && retryData.config ? angular.copy(retryData.config) : null;
-                    if (nextConfig && nextConfig.headers) {
-                        nextConfig.headers.Authorization = 'Bearer ' + accessToken;
-                    }
-
-                    if (retryAction) {
-                        retryAction({ data: retryData && retryData.data, config: nextConfig });
-                    } else if (chartType) {
-                        $scope.pullPushHoroscope(chartType);
-                    }
+                    newRefreshToken = response.data.refresh_token;
+                    $scope.pullPushHoroscope(chartType);
                 })
                 .catch(function (error) {
                     console.error('Error in refreshing access token :', error);
-                    $scope.message = 'Authentication refresh failed. Please reload and try again.';
-                    $scope.toggleMessage = true;
                 });
 
 
@@ -453,154 +421,16 @@
             }
             return encodedString.replace(/%20/g, '+');
         }
-
-        function rowsToHoroscopeMap(rows) {
-            const horoscopes = {};
-            if (!Array.isArray(rows)) {
-                return horoscopes;
-            }
-
-            rows.forEach(function (row) {
-                if (!row) {
-                    return;
-                }
-
-                const recordId = row.recordId || row[0] || row.name || '';
-                if (!recordId) {
-                    return;
-                }
-
-                let horoscopePayload = row.horoscopePayload || row[7] || '{}';
-                if (typeof horoscopePayload !== 'string') {
-                    horoscopePayload = JSON.stringify(horoscopePayload);
-                }
-
-                let horoscopeData = {};
-                try {
-                    horoscopeData = JSON.parse(horoscopePayload);
-                } catch (error) {
-                    console.error('Unable to parse horoscope payload row:', error);
-                    horoscopeData = {};
-                }
-
-                horoscopes[recordId] = {
-                    recordId: recordId,
-                    name: row.name || row[1] || recordId,
-                    charttype: row.charttype || row[2] || 'Lagna',
-                    date: row.date || row[3] || '',
-                    day: row.day || row[4] || '',
-                    month: row.month || row[5] || '',
-                    year: row.year || row[6] || '',
-                    horoscope: horoscopeData
-                };
-            });
-
-            return horoscopes;
-        }
-
-        function buildHoroscopeRows(horoscopeMap) {
-            const rows = [['recordId', 'name', 'charttype', 'date', 'day', 'month', 'year', 'horoscopePayload']];
-            const source = horoscopeMap || {};
-
-            Object.keys(source).forEach(function (recordId) {
-                const record = source[recordId] || {};
-                const horoscopePayload = record.horoscopePayload || JSON.stringify(record.horoscope || {});
-                rows.push([
-                    recordId,
-                    record.name || recordId,
-                    record.charttype || 'Lagna',
-                    record.date || '',
-                    record.day || '',
-                    record.month || '',
-                    record.year || '',
-                    horoscopePayload
-                ]);
-            });
-
-            return rows;
-        }
-
-        function parseStoredHoroscopes(data) {
-            if (!data) {
-                return {};
-            }
-            if (Array.isArray(data)) {
-                return rowsToHoroscopeMap(data);
-            }
-            if (typeof data === 'object') {
-                if (data.recordId) {
-                    return {
-                        [data.recordId]: data
-                    };
-                }
-                return data;
-            }
-            try {
-                const parsed = JSON.parse(data);
-                if (Array.isArray(parsed)) {
-                    return rowsToHoroscopeMap(parsed);
-                }
-                return parsed && typeof parsed === 'object' ? parsed : {};
-            } catch (error) {
-                console.error('Unable to parse horoscope payload:', error);
-                return {};
-            }
-        }
-
         var accessToken = "ya29.a0ARW5m74JFWfhtaXGh7tqpBuwey1N41fzYVRkTsrV7e3A6pGVCJ8bOMSdNKt4nvDJUhI__E8unXwr3c3VuLsiXF8W46DbfUM08VCqzxvNG42pdy511LSBPmUyTRfeSXXuTA4TX3sTj_8mbE0q1qXdT5KCHZbpMEUlw-CxaOW8aCgYKAcsSARESFQHGX2Miiw7vi40oV2Qpm33m2HcEnQ0175";
-        $scope.horoscopes = {};
-        $scope.horoscopeList = [];
-
-        $scope.runSheetsRequest = function (requestType, url, data, config, chartType, successHandler, retryPayload) {
-            const request = requestType === 'put'
-                ? $http.put(url, data, config)
-                : $http.get(url, config);
-
-            request.then(function (response) {
-                successHandler(response);
-            }).catch(function (error) {
-                console.error('Sheets request failed:', error);
-                if (error && (error.status === 401 || error.status === 403)) {
-                    console.log('401/403 received. Attempting to refresh the access token and retry.');
-                    $scope.refreshAccessToken(chartType, function (payload) {
-                        if (requestType === 'put') {
-                            $http.put(url, payload.data, payload.config).then(successHandler).catch(function (retryError) {
-                                console.error('Retry after refresh also failed:', retryError);
-                            });
-                        } else {
-                            $http.get(url, payload.config).then(successHandler).catch(function (retryError) {
-                                console.error('Retry after refresh also failed:', retryError);
-                            });
-                        }
-                    }, { data: data, config: config });
-                }
-            });
-        };
-
-        $scope.refreshHoroscopeList = function () {
-            const source = $scope.horoscopes || {};
-            $scope.horoscopeList = Object.keys(source)
-                .map(function (key) {
-                    const record = source[key] || {};
-                    const displayName = record.name || key;
-                    const chartType = record.charttype || 'Lagna';
-                    return {
-                        label: displayName + ' (' + chartType + ')',
-                        value: key,
-                        record: record
-                    };
-                })
-                .sort(function (a, b) {
-                    return a.label.localeCompare(b.label);
-                });
-        };
-
         $scope.saveKundali = function (horoscopeInfo) {
-            const parsedData = typeof horoscopeInfo === 'string' ? parseStoredHoroscopes(horoscopeInfo) : horoscopeInfo;
-            const sheetRows = buildHoroscopeRows(parsedData);
-            const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/horoscopeData!A1:H' + sheetRows.length + '?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc&valueInputOption=RAW';
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/A2:B2?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc&valueInputOption=RAW';
             const data = {
-                "values": sheetRows
+                "values": [
+                    [
+                        newRefreshToken,
+                        horoscopeInfo
+                    ]
+                ]
             };
 
             const config = {
@@ -610,13 +440,17 @@
                 }
             };
 
-            $scope.runSheetsRequest('put', url, data, config, null, function (response) {
-                console.log('Success:', response.data);
-                $scope.horoscopes = parsedData;
-                $scope.refreshHoroscopeList();
-                $scope.toggleMessage = true;
-                $scope.getKundali();
-            });
+            $http.put(url, data, config)
+                .then(function (response) {
+                    console.log('Success:', response.data);
+                    console.log('saveKundali Data', horoscopeInfo);
+                    $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
+                    $scope.toggleMessage = true;
+                    $scope.getKundali();
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
 
         }
 
@@ -626,42 +460,77 @@
                     'Authorization': 'Bearer ' + accessToken
                 }
             };
-            const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/horoscopeData!A:H?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc';
-            $scope.runSheetsRequest('get', url, null, config, null, function (response) {
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/A2:B2?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc';
+            $http.get(url).then(function (response) {
                 console.log('Success:', response.data);
-                const values = response.data.values || [];
-                const sheetRows = values.slice(1);
-                const storedValue = sheetRows.length > 0 ? sheetRows : [];
-                $scope.horoscopes = parseStoredHoroscopes(storedValue);
-                $scope.refreshHoroscopeList();
+                newRefreshToken = response.data.values[0][0];
+                $scope.horoscopes = JSON.parse(response.data.values[0][1]);
                 console.log(Object.keys($scope.horoscopes).length + ' Horoscopes loaded.');
+                console.log("Refresh_Token:" + newRefreshToken);
                 $scope.message = 'Loaded Horoscope for ' + Object.keys($scope.horoscopes).length;
                 $scope.toggleMessage = true;
-            });
+            })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
         }
 
 
         $scope.pullPushHoroscope = function (chartType) {
-            const recordKey = chartType == 'Lagna'
-                ? $scope.nativeName
-                : $scope.nativeName + '_Varshphal_' + $scope.varshphalAge + '_' + $scope.monthName[$scope.currentVarshMonth];
-
-            const recordData = {
-                "name": recordKey,
-                "horoscope": chartType == 'Lagna' ? $scope.horoscope : $scope.varshphalChart,
-                "date": (new Date()).toDateString(),
-                "day": $scope.selectedDay,
-                "month": $scope.selectedMonth,
-                "year": $scope.selectedYear,
-                "charttype": chartType
+            var getData;
+            var putData;
+            const config = {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                }
             };
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/B2?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc';
+            $http.get(url, config).then(function (response1) {
+                console.log(chartType + ' Get Kundali Response:', response1.data.values[0][0]);
+                $scope.StorageHoroscope = JSON.parse(response1.data.values[0][0]);
+                console.log($scope.StorageHoroscope, $scope.nativeName);
+                if (chartType == 'Lagna') {
+                    $scope.StorageHoroscope[$scope.nativeName] = {};
+                    $scope.StorageHoroscope[$scope.nativeName] = {
+                        "name": $scope.nativeName,
+                        "horoscope": $scope.horoscope,
+                        "date": (new Date()).toDateString(),
+                        "day": $scope.selectedDay,
+                        "month": $scope.selectedMonth,
+                        "year": $scope.selectedYear,
+                        "charttype": "Lagna"
+                    };
+                }
+                else {
+                    $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge + "_" + $scope.monthName[$scope.currentVarshMonth]] = {};
+                    $scope.StorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge + "_" + $scope.monthName[$scope.currentVarshMonth]] = {
+                        "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge + "_" + $scope.monthName[$scope.currentVarshMonth],
+                        "horoscope": $scope.varshphalChart,
+                        "date": (new Date()).toDateString(),
+                        "day": $scope.selectedDay,
+                        "month": $scope.selectedMonth,
+                        "year": $scope.selectedYear,
+                        "charttype": "Varshphal"
+                    };
+                }
+                console.log($scope.StorageHoroscope);
+                //localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+                $scope.saveKundali(JSON.stringify($scope.StorageHoroscope));
+                //alert('Saved Horoscope for ' + $scope.nativeName);
+                $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
+                $scope.toggleMessage = true;
+                // Second API Call after the first completes
+                // return $http.put(purl, pdata, pconfig);
+            })
+                .catch(function (error) {
+                    console.error('Error in API calls:', error);
+                    if (error.status == '401') {
+                        console.log("Attempting to refresh the Access Token");
+                        $scope.refreshAccessToken(chartType);
 
-            const storageHoroscope = angular.copy($scope.horoscopes || {});
-            storageHoroscope[recordKey] = recordData;
-            $scope.horoscopes = storageHoroscope;
-            $scope.saveKundali(storageHoroscope);
-            $scope.message = chartType == 'Lagna' ? 'Saved Horoscope for ' + $scope.nativeName : 'Saved Varshaphal Horoscope for ' + $scope.nativeName;
-            $scope.toggleMessage = true;
+                    }
+                });
+
         }
         var varshphalHouses = {
             "1": {
@@ -2567,54 +2436,116 @@
         $scope.saveHoroscope = function (chartType) {
             if ($scope.nativeName != undefined && $scope.selectedDay != undefined && $scope.selectedMonth != undefined && $scope.selectedYear != undefined) {
                 $scope.pullPushHoroscope(chartType);
+                if (localStorage.getItem("horoscope") !== null) {
+                    $scope.localStorageHoroscope = JSON.parse(localStorage.getItem("horoscope"));
+                    if (chartType == 'Lagna') {
+                        $scope.localStorageHoroscope[$scope.nativeName] = {
+                            "name": $scope.nativeName,
+                            "horoscope": $scope.horoscope,
+                            "date": (new Date()).toDateString(),
+                            "day": $scope.selectedDay,
+                            "month": $scope.selectedMonth,
+                            "year": $scope.selectedYear,
+                            "charttype": "Lagna"
+                        };
+                        localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+                        //alert('Saved Horoscope for ' + $scope.nativeName);
+                        $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
+                        $scope.toggleMessage = true;
+                    }
+                    else {
+                        $scope.localStorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
+                            "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge + '_' + $scope.monthName[$scope.currentVarshMonth],
+                            "horoscope": $scope.varshphalChart,
+                            "date": (new Date()).toDateString(),
+                            "day": $scope.selectedDay,
+                            "month": $scope.selectedMonth,
+                            "year": $scope.selectedYear,
+                            "charttype": "Varshphal"
+                        };
+                        localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+                        //alert('Saved Varshaphal Horoscope for ' + $scope.nativeName + 'with as ' + $scope.nativeName + "_Varshphal_" + $scope.varshphalAge);
+                        $scope.message = 'Saved Varshaphal Horoscope for ' + $scope.nativeName + 'with as ' + $scope.nativeName + "_Varshphal_" + $scope.varshphalAge;
+                        $scope.toggleMessage = true;
+                    }
+
+
+                }
+                else {
+                    console.log('Local Storage Not found. Creating localStorage with name: horoscope');
+                    $scope.localStorageHoroscope = {};
+                    if (chartType == 'Lagna') {
+                        $scope.localStorageHoroscope[$scope.nativeName] = {
+                            "name": chartType == 'Lagna' ? $scope.nativeName : $scope.nativeName + "_Varshphal_" + $scope.varshphalAge,
+                            "horoscope": chartType == 'Lagna' ? $scope.horoscope : $scope.varshphalChart,
+                            "date": (new Date()).toDateString(),
+                            "day": $scope.selectedDay,
+                            "month": $scope.selectedMonth,
+                            "year": $scope.selectedYear,
+                            "charttype": "Lagna"
+                        };
+                        localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+                    }
+                    else {
+                        $scope.localStorageHoroscope[$scope.nativeName + "_Varshphal_" + $scope.varshphalAge] = {
+                            "name": $scope.nativeName + "_Varshphal_" + $scope.varshphalAge + '_' + $scope.monthName[$scope.currentVarshMonth],
+                            "horoscope": $scope.varshphalChart,
+                            "date": (new Date()).toDateString(),
+                            "day": $scope.selectedDay,
+                            "month": $scope.selectedMonth,
+                            "year": $scope.selectedYear,
+                            "charttype": "Varshphal"
+                        };
+                        localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+                    }
+                }
+                //alert('Saved Horoscope for ' + $scope.nativeName);
+                $scope.message = 'Saved Horoscope for ' + $scope.nativeName;
+                $scope.toggleMessage = true;
             }
             else {
                 $scope.message = 'Please enter a name and age details of this horoscope';
                 $scope.toggleMessage = true;
+                //alert('Please enter a name and age details of this horoscope');
             }
         }
-
         $scope.getHoroscope = function () {
             $scope.resetConfig();
-            if (!$scope.selectedHoroscope || !$scope.selectedHoroscope.record) {
-                return;
-            }
-
-            const record = $scope.selectedHoroscope.record;
-            houses = JSON.parse(JSON.stringify(record.horoscope || {}));
-            $scope.nativeName = record.name || $scope.selectedHoroscope.value;
-            $scope.selectedDay = record.day;
-            $scope.selectedMonth = record.month;
-            $scope.selectedYear = record.year;
-            $scope.horoscope = houses;
+            console.log($scope.selectedHoroscope);
+            houses = JSON.parse(JSON.stringify($scope.selectedHoroscope.horoscope));
+            $scope.nativeName = $scope.selectedHoroscope.name;
+            $scope.selectedDay = $scope.selectedHoroscope.day;
+            $scope.selectedMonth = $scope.selectedHoroscope.month;
+            $scope.selectedYear = $scope.selectedHoroscope.year;
+            //$scope.$apply();
             $scope.getHouseStatus();
+
+            console.log($scope.nativeName, $scope.selectedHoroscope.name);
         }
 
         $scope.loadHoroscopes = function () {
             $scope.getKundali();
-            if (localStorage.getItem('horoscope') !== null) {
+            if (localStorage.getItem("horoscope") !== null) {
                 console.log('Local Storage found with name: horoscope');
+                // $scope.horoscopes = JSON.parse(localStorage.getItem("horoscope"));
+                // console.log(Object.keys($scope.horoscopes).length + ' Horoscopes loaded.');
             }
             else {
                 console.log('Local Storage Not found. Creating localStorage with name: horoscope');
-                localStorage.setItem('horoscope', JSON.stringify({}));
+                localStorage.setItem("horoscope", JSON.stringify({}));
+                //$scope.horoscopes = JSON.parse(localStorage.getItem("horoscope"));
+                //console.log('No horoscopes present. Hence creating it');
             }
         }
 
         $scope.deleteHoroscope = function () {
-            if (!$scope.selectedHoroscope || !$scope.selectedHoroscope.value) {
-                return;
-            }
-
-            const selectedKey = $scope.selectedHoroscope.value;
-            if ($scope.horoscopes && $scope.horoscopes[selectedKey]) {
-                delete $scope.horoscopes[selectedKey];
-                $scope.saveKundali($scope.horoscopes);
-                $scope.message = 'Removed the ' + selectedKey;
-                $scope.toggleMessage = true;
-                $scope.selectedHoroscope = null;
-                $scope.refreshHoroscopeList();
-            }
+            $scope.localStorageHoroscope = JSON.parse(localStorage.getItem("horoscope"));
+            delete $scope.localStorageHoroscope[$scope.selectedHoroscope.name];
+            localStorage.setItem("horoscope", JSON.stringify($scope.localStorageHoroscope));
+            //alert('Removed the ' + $scope.selectedHoroscope.name);
+            $scope.message = 'Removed the ' + $scope.selectedHoroscope.name;
+            $scope.toggleMessage = true;
+            location.reload();
         }
 
         function getPlanetStatus() { }
@@ -6622,7 +6553,7 @@ Team Mahesh Mankar
                 <div ng-init="loadHoroscopes()">
                     <label for="Saved Horoscopes">Open a Horoscope:</label>
                     <select id="horoscopesDropdown" ng-model="selectedHoroscope" ng-change="getHoroscope()"
-                        ng-options="item as item.label for item in horoscopeList">
+                        ng-options="x for (x,y) in horoscopes">
                     </select>
 
                 </div>
