@@ -796,8 +796,7 @@
       const housePlanets = Array.from({ length: 12 }, () => []);
       const fixedHouse = {};//Array.from({ length: 12 }, () => []);
 
-      const ascendant = deriveLagnaSignFromHouse1(horoscope);
-      var idx = 1;
+      const ascendant = parseInt(document.getElementById('Ascendant-sign')?.value || '1');      var idx = 1;
       for (const [planet, { sign, degree, house }] of Object.entries(horoscope)) {
         console.log('Redering Diamond Chart');
         console.log(sign, degree, house);
