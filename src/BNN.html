@@ -3490,24 +3490,36 @@ function buildAllBhinnashtakavarga(horoscope, distributions) {
 // Render Bhinnashtakavarga tables and show in a card
 function renderBhinnashtakavargaTables(bhvData) {
   if (!bhvData) return;
+  // For each target planet, render a matrix: rows = contributors, cols = signs 1..12
   let html = '<div class="bhv-wrapper">';
-  Object.entries(bhvData).forEach(([planet, data]) => {
-    html += `<h4 style="margin-bottom:6px">${planet} — total points ${data.total_points}</h4>`;
-    html += '<table class="bhv-table" style="border-collapse:collapse;margin-bottom:16px;width:100%"><thead><tr>';
+  Object.entries(bhvData).forEach(([targetPlanet, data]) => {
+    // collect unique contributors
+    const contribSet = new Set();
+    Object.values(data.contributors || {}).forEach(arr => arr.forEach(o => contribSet.add(o.planet)));
+    const contributors = Array.from(contribSet);
+    // header
+    html += `<h4 style="margin-bottom:6px">${targetPlanet} — total points ${data.total_points}</h4>`;
+    html += '<table class="bhv-table" style="border-collapse:collapse;margin-bottom:16px;width:100%">';
+    html += '<thead><tr><th style="border:1px solid #ccc;padding:6px;background:#f0f0f0">Contributor</th>';
     for (let s = 1; s <= 12; s++) html += `<th style="border:1px solid #ccc;padding:6px;background:#f6f6f6">${s}</th>`;
     html += '</tr></thead><tbody>';
-    // counts row
-    html += '<tr>';
+
+    // contributor rows
+    contributors.forEach(contributor => {
+      html += `<tr><td style="border:1px solid #ddd;padding:6px;font-weight:600">${contributor}</td>`;
+      for (let s = 1; s <= 12; s++) {
+        const arr = (data.contributors[s] || []).filter(x => x.planet === contributor);
+        const cell = arr.length ? arr.map(a => a.ref).join(',') : '';
+        html += `<td style="border:1px solid #eee;padding:6px;text-align:center;font-size:12px">${cell}</td>`;
+      }
+      html += '</tr>';
+    });
+
+    // totals row (counts per sign)
+    html += '<tr><td style="border:1px solid #ddd;padding:6px;font-weight:700">Sign Totals</td>';
     for (let i = 0; i < 12; i++) html += `<td style="border:1px solid #ddd;padding:6px;text-align:center">${data.counts[i] || 0}</td>`;
     html += '</tr>';
-    // contributors row
-    html += '<tr>';
-    for (let s = 1; s <= 12; s++) {
-      const arr = data.contributors[s] || [];
-      const cell = arr.map(a => `${a.planet}(${a.ref})`).join(', ');
-      html += `<td style="border:1px solid #eee;padding:6px;font-size:12px">${cell}</td>`;
-    }
-    html += '</tr>';
+
     html += '</tbody></table>';
   });
   html += '</div>';
