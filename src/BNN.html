@@ -408,6 +408,9 @@
           console.error('Error generating Bhinnashtakavarga:', e);
         }
       }
+      else{
+        console.warn('Bhinnashtakavarga distribution data is not available. Skipping Bhinnashtakavarga generation.');
+      }
     }
 
     function addPrediction(list, text, marker, aspectType = marker) {
