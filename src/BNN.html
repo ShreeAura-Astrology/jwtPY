@@ -285,7 +285,8 @@
           Mercury: [3, 5, 6, 9, 10, 11, 12],
           Jupiter: [5, 6, 9, 11],
           Venus: [6, 7, 12],
-          Saturn: [1, 2, 4, 7, 8, 9, 10, 11]
+          Saturn: [1, 2, 4, 7, 8, 9, 10, 11],
+          Lagna: [3, 4, 6, 10, 11, 12],
         }
       },
       Moon: {
@@ -297,7 +298,8 @@
           Mercury: [1, 3, 4, 5, 7, 8, 10, 11],
           Jupiter: [1, 4, 7, 8, 10, 11, 12],
           Venus: [3, 4, 5, 7, 9, 10, 11],
-          Saturn: [3, 5, 6, 11]
+          Saturn: [3, 5, 6, 11],
+          Lagna: [3, 6, 10, 11],
         }
       },
       Mars: {
@@ -309,7 +311,8 @@
           Mercury: [3, 5, 6, 11],
           Jupiter: [6, 10, 11, 12],
           Venus: [6, 8, 11, 12],
-          Saturn: [1, 4, 7, 8, 9, 10, 11]
+          Saturn: [1, 4, 7, 8, 9, 10, 11],
+          Lagna: [1, 3, 6, 10, 11],
         }
       },
       Mercury: {
@@ -321,7 +324,8 @@
           Mercury: [1, 3, 5, 6, 9, 10, 11, 12],
           Jupiter: [6, 8, 11, 12],
           Venus: [1, 2, 3, 4, 5, 8, 9, 11],
-          Saturn: [1, 2, 4, 7, 8, 9, 10, 11]
+          Saturn: [1, 2, 4, 7, 8, 9, 10, 11],
+          Lagna: [1, 2, 4, 6, 8, 10, 11],
         }
       },
       Jupiter: {
@@ -333,7 +337,8 @@
           Mercury: [1, 2, 4, 5, 6, 9, 10, 11],
           Jupiter: [1, 2, 3, 4, 7, 8, 10, 11],
           Venus: [2, 5, 6, 9, 10, 11],
-          Saturn: [3, 5, 6, 12]
+          Saturn: [3, 5, 6, 12],
+          Lagna: [1, 2, 4, 5, 6, 9, 10, 11],
         }
       },
       Venus: {
@@ -345,7 +350,8 @@
           Mercury: [3, 5, 6, 9, 11],
           Jupiter: [5, 8, 9, 10, 11],
           Venus: [1, 2, 3, 4, 5, 8, 9, 10, 11],
-          Saturn: [3, 4, 5, 8, 9, 10, 11]
+          Saturn: [3, 4, 5, 8, 9, 10, 11],
+          Lagna: [1, 2, 3, 4, 5, 8, 9, 11],
         }
       },
       Saturn: {
@@ -357,7 +363,8 @@
           Mercury: [6, 8, 9, 10, 11, 12],
           Jupiter: [5, 6, 11, 12],
           Venus: [6, 11, 12],
-          Saturn: [3, 5, 6, 11]
+          Saturn: [3, 5, 6, 11],
+          Lagna: [1, 3, 4, 6, 10, 11],
         }
       }
     };
@@ -745,11 +752,51 @@
       console.log('Cyclic Horoscope:', cyclicHoroscope);
       return cyclicHoroscope;
     }
+
+    function deriveLagnaSignFromHouse1(horoscope) {
+      if (!horoscope || typeof horoscope !== 'object') return 1;
+
+      const house1Entry = Object.entries(horoscope).find(([_, details]) => {
+        return details && typeof details === 'object' && Number(details.house) === 1;
+      });
+
+      const house1Sign = house1Entry?.[1]?.sign;
+      if (Number.isInteger(house1Sign) && house1Sign >= 1 && house1Sign <= 12) {
+        return house1Sign;
+      }
+
+      const ascendantInput = parseInt(document.getElementById('Ascendant-sign')?.value || '', 10);
+      if (Number.isInteger(ascendantInput) && ascendantInput >= 1 && ascendantInput <= 12) {
+        return ascendantInput;
+      }
+
+      const fallbackSign = Number(createCyclicJSON(horoscope)[1]?.sign);
+      if (Number.isInteger(fallbackSign) && fallbackSign >= 1 && fallbackSign <= 12) {
+        return fallbackSign;
+      }
+
+      return 1;
+    }
+
+    function getContributorSign(horoscope, contributor) {
+      if (!horoscope || typeof horoscope !== 'object') return null;
+      if (contributor === 'Lagna' || contributor === 'Ascendant') {
+        return deriveLagnaSignFromHouse1(horoscope);
+      }
+
+      const sign = horoscope[contributor]?.sign;
+      if (Number.isInteger(sign) && sign >= 1 && sign <= 12) {
+        return sign;
+      }
+
+      return null;
+    }
+
     function renderDiamondChart(horoscope) {
       const housePlanets = Array.from({ length: 12 }, () => []);
       const fixedHouse = {};//Array.from({ length: 12 }, () => []);
 
-      const ascendant = parseInt(document.getElementById('Ascendant-sign')?.value || '1');
+      const ascendant = deriveLagnaSignFromHouse1(horoscope);
       var idx = 1;
       for (const [planet, { sign, degree, house }] of Object.entries(horoscope)) {
         console.log('Redering Diamond Chart');
@@ -3468,8 +3515,8 @@ function buildAllBhinnashtakavarga(horoscope, distributions) {
     const contributors = {}; // signNumber -> [{planet, ref}]
     const refsObj = dist.reference_points || {};
     Object.entries(refsObj).forEach(([contributor, refs]) => {
-      const contributorSign = horoscope[contributor]?.sign;
-      if (!contributorSign) return; // skip if contributor not present in horoscope
+      const contributorSign = getContributorSign(horoscope, contributor);
+      if (!contributorSign) return; // skip if contributor not present in horoscope and not a Lagna/Ascendant reference
       (refs || []).forEach(r => {
         // distance-based inclusive mapping: target = ((s-1) + (r-1)) % 12 + 1
         const target = ((contributorSign - 1 + (r - 1)) % 12) + 1;
