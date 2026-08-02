@@ -425,17 +425,28 @@
           horoscope[p] = { sign, degree, house, retrograde, nakshatra, nakshatraPad, nakshatraLord };
         }
       });
-      const ascSign = parseInt(document.getElementById('Ascendant-sign')?.value);
-      const ascDegree = parseFloat(document.getElementById('Ascendant-deg')?.value);
-      const ascHouse = parseInt(document.getElementById('Ascendant-house')?.value);
-      if (!isNaN(ascSign)) {
-        const ascendant = {
-          sign: ascSign,
-          degree: isNaN(ascDegree) ? 0 : ascDegree,
-          house: !isNaN(ascHouse) ? ascHouse : ascSign
+      const houseOnePlanets = Object.values(horoscope).filter(entry => entry.house === 1);
+      if (houseOnePlanets.length > 0) {
+        const lagna = {
+          sign: houseOnePlanets[0].sign,
+          degree: houseOnePlanets[0].degree || 0,
+          house: 1
         };
-        horoscope.Ascendant = ascendant;
-        horoscope.Lagna = { ...ascendant };
+        horoscope.Ascendant = lagna;
+        horoscope.Lagna = { ...lagna };
+      } else {
+        const ascSign = parseInt(document.getElementById('Ascendant-sign')?.value);
+        const ascDegree = parseFloat(document.getElementById('Ascendant-deg')?.value);
+        const ascHouse = parseInt(document.getElementById('Ascendant-house')?.value);
+        if (!isNaN(ascSign)) {
+          const ascendant = {
+            sign: ascSign,
+            degree: isNaN(ascDegree) ? 0 : ascDegree,
+            house: !isNaN(ascHouse) ? ascHouse : ascSign
+          };
+          horoscope.Ascendant = ascendant;
+          horoscope.Lagna = { ...ascendant };
+        }
       }
       nativeHoroscope = horoscope;
       console.log('Native Horoscope:', horoscope);
@@ -808,7 +819,7 @@
       const housePlanets = Array.from({ length: 12 }, () => []);
       const fixedHouse = {};//Array.from({ length: 12 }, () => []);
 
-      const ascendant = parseInt(document.getElementById('Ascendant-sign')?.value || '1');
+      const ascendant = horoscope.Ascendant?.sign || parseInt(document.getElementById('Ascendant-sign')?.value || '1');
       var idx = 1;
       for (const [planet, { sign, degree, house }] of Object.entries(horoscope)) {
         console.log('Redering Diamond Chart');
@@ -3519,10 +3530,7 @@ function getUpapadaLagnaDetails(horoscope) {
 
 function getContributorSign(contributor, horoscope) {
   if (contributor === 'Lagna') {
-    if (horoscope.Ascendant?.sign) return horoscope.Ascendant.sign;
-    if (horoscope.Lagna?.sign) return horoscope.Lagna.sign;
-    const ascEl = document.getElementById('Ascendant-sign');
-    return ascEl ? parseInt(ascEl.value) : null;
+    return horoscope.Lagna?.sign || horoscope.Ascendant?.sign || null;
   }
   return horoscope[contributor]?.sign || null;
 }
