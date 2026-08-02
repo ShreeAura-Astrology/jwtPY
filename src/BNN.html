@@ -28,18 +28,6 @@
       gap: 10px;
     }
 
-    .ascendant-input {
-      background: #eef4ff;
-      border: 1px solid #c5d8f2;
-      border-radius: 10px;
-      padding: 12px 10px;
-    }
-
-    .ascendant-input label {
-      font-weight: 700;
-      color: #1b4074;
-    }
-
     label {
       width: 110px;
     }
@@ -231,21 +219,6 @@
       { "Nakshatra": "Revati", "NakshatraLord": "Mercury", "sequence": 27, "NakshatraAlias": "Revati" }
     ];
 
-    // Create an Ascendant/Lagna input row ahead of planet inputs
-    const ascDiv = document.createElement('div');
-    ascDiv.className = 'planet-input ascendant-input';
-    ascDiv.innerHTML = `
-      <label>Ascendant & Lagna</label>
-      <select id="Ascendant-sign">
-        ${signs.map((s, i) => `<option value="${i + 1}">${s} - ${i + 1}</option>`).join('')}
-      </select>
-      <input id="Ascendant-deg" type="number" min="0" max="29.99" step="0.01" placeholder="Degree (0-29.99)" />
-      <select id="Ascendant-house">
-        ${[...Array(12).keys()].map(i => `<option value="${i + 1}">${i + 1} House</option>`).join('')}
-      </select>
-    `;
-    formDiv.appendChild(ascDiv);
-
     // Create a simple Nakshatra selector above the planet inputs
     const nakDiv = document.createElement('div');
     nakDiv.className = 'planet-input';
@@ -425,29 +398,6 @@
           horoscope[p] = { sign, degree, house, retrograde, nakshatra, nakshatraPad, nakshatraLord };
         }
       });
-      const houseOnePlanets = Object.values(horoscope).filter(entry => entry.house === 1);
-      if (houseOnePlanets.length > 0) {
-        const lagna = {
-          sign: houseOnePlanets[0].sign,
-          degree: houseOnePlanets[0].degree || 0,
-          house: 1
-        };
-        horoscope.Ascendant = lagna;
-        horoscope.Lagna = { ...lagna };
-      } else {
-        const ascSign = parseInt(document.getElementById('Ascendant-sign')?.value);
-        const ascDegree = parseFloat(document.getElementById('Ascendant-deg')?.value);
-        const ascHouse = parseInt(document.getElementById('Ascendant-house')?.value);
-        if (!isNaN(ascSign)) {
-          const ascendant = {
-            sign: ascSign,
-            degree: isNaN(ascDegree) ? 0 : ascDegree,
-            house: !isNaN(ascHouse) ? ascHouse : ascSign
-          };
-          horoscope.Ascendant = ascendant;
-          horoscope.Lagna = { ...ascendant };
-        }
-      }
       nativeHoroscope = horoscope;
       console.log('Native Horoscope:', horoscope);
       const result = getTrineGroupsWithBNNAspects(horoscope);
@@ -819,7 +769,8 @@
       const housePlanets = Array.from({ length: 12 }, () => []);
       const fixedHouse = {};//Array.from({ length: 12 }, () => []);
 
-      const ascendant = horoscope.Ascendant?.sign || parseInt(document.getElementById('Ascendant-sign')?.value || '1');
+      const house1Planets = Object.values(horoscope).filter(p => p.house === 1);
+      const ascendant = house1Planets.length ? house1Planets[0].sign : 1;
       var idx = 1;
       for (const [planet, { sign, degree, house }] of Object.entries(horoscope)) {
         console.log('Redering Diamond Chart');
@@ -3528,13 +3479,6 @@ function getUpapadaLagnaDetails(horoscope) {
     return result;
 }
 
-function getContributorSign(contributor, horoscope) {
-  if (contributor === 'Lagna') {
-    return horoscope.Lagna?.sign || horoscope.Ascendant?.sign || null;
-  }
-  return horoscope[contributor]?.sign || null;
-}
-
 // Build Bhinnashtakavarga for all target planets using distance-based inclusive mapping
 function buildAllBhinnashtakavarga(horoscope, distributions) {
   const result = {};
@@ -3545,7 +3489,7 @@ function buildAllBhinnashtakavarga(horoscope, distributions) {
     const contributors = {}; // signNumber -> [{planet, ref}]
     const refsObj = dist.reference_points || {};
     Object.entries(refsObj).forEach(([contributor, refs]) => {
-      const contributorSign = getContributorSign(contributor, horoscope);
+      const contributorSign = horoscope[contributor]?.sign;
       if (!contributorSign || isNaN(contributorSign)) return; // skip if contributor not present
       (refs || []).forEach(r => {
         // distance-based inclusive mapping: target = ((s-1) + (r-1)) % 12 + 1
@@ -3567,17 +3511,19 @@ function buildAllBhinnashtakavarga(horoscope, distributions) {
 // Render Bhinnashtakavarga tables and show in a card
 function renderBhinnashtakavargaTables(bhvData) {
   if (!bhvData) return;
-  const contributorOrder = ["Sun", "Moon", "Mars", "Mercury", "Venus", "Jupiter", "Saturn", "Rahu", "Ketu", "Lagna"];
   // For each target planet, render a matrix: rows = contributors, cols = signs 1..12
   let html = '<div class="bhv-wrapper">';
   Object.entries(bhvData).forEach(([targetPlanet, data]) => {
+    const contribSet = new Set();
+    Object.values(data.contributors || {}).forEach(arr => arr.forEach(o => contribSet.add(o.planet)));
+    const contributors = Array.from(contribSet);
     html += `<h4 style="margin-bottom:6px">${targetPlanet} — total points ${data.total_points}</h4>`;
     html += '<table class="bhv-table" style="border-collapse:collapse;margin-bottom:16px;width:100%">';
     html += '<thead><tr><th style="border:1px solid #ccc;padding:6px;background:#f0f0f0">Contributor</th>';
     for (let s = 1; s <= 12; s++) html += `<th style="border:1px solid #ccc;padding:6px;background:#f6f6f6">${s}</th>`;
     html += '</tr></thead><tbody>';
 
-    contributorOrder.forEach(contributor => {
+    contributors.forEach(contributor => {
       html += `<tr><td style="border:1px solid #ddd;padding:6px;font-weight:600">${contributor}</td>`;
       for (let s = 1; s <= 12; s++) {
         const arr = (data.contributors[s] || []).filter(x => x.planet === contributor);
