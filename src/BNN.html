@@ -275,6 +275,93 @@
       conjP1Sel.add(opt1);
       conjP2Sel.add(opt2);
     });
+    const bhinnashtakvarga_individual_point_distributions = {
+      Sun: {
+        total_points: 48,
+        reference_points: {
+          Sun: [1, 2, 4, 7, 8, 9, 10, 11],
+          Moon: [3, 6, 10, 11],
+          Mars: [1, 2, 4, 7, 8, 9, 10, 11],
+          Mercury: [3, 5, 6, 9, 10, 11, 12],
+          Jupiter: [5, 6, 9, 11],
+          Venus: [6, 7, 12],
+          Saturn: [1, 2, 4, 7, 8, 9, 10, 11]
+        }
+      },
+      Moon: {
+        total_points: 49,
+        reference_points: {
+          Sun: [3, 6, 7, 8, 10, 11],
+          Moon: [1, 3, 6, 7, 10, 11],
+          Mars: [2, 3, 5, 6, 9, 10, 11],
+          Mercury: [1, 3, 4, 5, 7, 8, 10, 11],
+          Jupiter: [1, 4, 7, 8, 10, 11, 12],
+          Venus: [3, 4, 5, 7, 9, 10, 11],
+          Saturn: [3, 5, 6, 11]
+        }
+      },
+      Mars: {
+        total_points: 39,
+        reference_points: {
+          Sun: [3, 5, 6, 10, 11],
+          Moon: [3, 6, 11],
+          Mars: [1, 2, 4, 7, 8, 10, 11],
+          Mercury: [3, 5, 6, 11],
+          Jupiter: [6, 10, 11, 12],
+          Venus: [6, 8, 11, 12],
+          Saturn: [1, 4, 7, 8, 9, 10, 11]
+        }
+      },
+      Mercury: {
+        total_points: 54,
+        reference_points: {
+          Sun: [5, 6, 9, 10, 11, 12],
+          Moon: [2, 4, 6, 8, 10, 11],
+          Mars: [1, 2, 4, 7, 8, 9, 10, 11],
+          Mercury: [1, 3, 5, 6, 9, 10, 11, 12],
+          Jupiter: [6, 8, 11, 12],
+          Venus: [1, 2, 3, 4, 5, 8, 9, 11],
+          Saturn: [1, 2, 4, 7, 8, 9, 10, 11]
+        }
+      },
+      Jupiter: {
+        total_points: 56,
+        reference_points: {
+          Sun: [1, 2, 3, 4, 7, 8, 9, 10, 11],
+          Moon: [2, 5, 7, 9, 11],
+          Mars: [1, 2, 4, 7, 8, 10, 11],
+          Mercury: [1, 2, 4, 5, 6, 9, 10, 11],
+          Jupiter: [1, 2, 3, 4, 7, 8, 10, 11],
+          Venus: [2, 5, 6, 9, 10, 11],
+          Saturn: [3, 5, 6, 12]
+        }
+      },
+      Venus: {
+        total_points: 52,
+        reference_points: {
+          Sun: [8, 11, 12],
+          Moon: [1, 2, 3, 4, 5, 8, 9, 11, 12],
+          Mars: [3, 5, 6, 9, 11, 12],
+          Mercury: [3, 5, 6, 9, 11],
+          Jupiter: [5, 8, 9, 10, 11],
+          Venus: [1, 2, 3, 4, 5, 8, 9, 10, 11],
+          Saturn: [3, 4, 5, 8, 9, 10, 11]
+        }
+      },
+      Saturn: {
+        total_points: 39,
+        reference_points: {
+          Sun: [1, 2, 4, 7, 8, 10, 11],
+          Moon: [3, 6, 11],
+          Mars: [3, 5, 6, 10, 11, 12],
+          Mercury: [6, 8, 9, 10, 11, 12],
+          Jupiter: [5, 6, 11, 12],
+          Venus: [6, 11, 12],
+          Saturn: [3, 5, 6, 11]
+        }
+      }
+    };
+
     var nativeHoroscope = {};
     /* ---------- ANALYZE HOROSCOPE ---------- */
     function analyzeHoroscope() {
@@ -312,6 +399,15 @@
       mercuryAnalysis(horoscope);
       RahuKetuAxisPrediction(horoscope);
       getUpapadaLagnaDetails(horoscope);
+      // Generate and render Bhinnashtakavarga tables if distribution data is available
+      if (typeof bhinnashtakvarga_individual_point_distributions !== 'undefined') {
+        try {
+          const bhv = buildAllBhinnashtakavarga(horoscope, bhinnashtakvarga_individual_point_distributions);
+          renderBhinnashtakavargaTables(bhv);
+        } catch (e) {
+          console.error('Error generating Bhinnashtakavarga:', e);
+        }
+      }
     }
 
     function addPrediction(list, text, marker, aspectType = marker) {
@@ -3357,6 +3453,62 @@ function getUpapadaLagnaDetails(horoscope) {
 
     createCard('Upapada Lagna Details', html, 'html');
     return result;
+}
+
+// Build Bhinnashtakavarga for all target planets using distance-based inclusive mapping
+function buildAllBhinnashtakavarga(horoscope, distributions) {
+  const result = {};
+  if (!distributions) return result;
+  Object.keys(distributions).forEach(targetPlanet => {
+    const dist = distributions[targetPlanet] || {};
+    const counts = Array(12).fill(0);
+    const contributors = {}; // signNumber -> [{planet, ref}]
+    const refsObj = dist.reference_points || {};
+    Object.entries(refsObj).forEach(([contributor, refs]) => {
+      const contributorSign = horoscope[contributor]?.sign;
+      if (!contributorSign) return; // skip if contributor not present in horoscope
+      (refs || []).forEach(r => {
+        // distance-based inclusive mapping: target = ((s-1) + (r-1)) % 12 + 1
+        const target = ((contributorSign - 1 + (r - 1)) % 12) + 1;
+        counts[target - 1] += 1;
+        if (!contributors[target]) contributors[target] = [];
+        contributors[target].push({ planet: contributor, ref: r });
+      });
+    });
+    result[targetPlanet] = {
+      total_points: dist.total_points || counts.reduce((a, b) => a + b, 0),
+      counts,
+      contributors
+    };
+  });
+  return result;
+}
+
+// Render Bhinnashtakavarga tables and show in a card
+function renderBhinnashtakavargaTables(bhvData) {
+  if (!bhvData) return;
+  let html = '<div class="bhv-wrapper">';
+  Object.entries(bhvData).forEach(([planet, data]) => {
+    html += `<h4 style="margin-bottom:6px">${planet} — total points ${data.total_points}</h4>`;
+    html += '<table class="bhv-table" style="border-collapse:collapse;margin-bottom:16px;width:100%"><thead><tr>';
+    for (let s = 1; s <= 12; s++) html += `<th style="border:1px solid #ccc;padding:6px;background:#f6f6f6">${s}</th>`;
+    html += '</tr></thead><tbody>';
+    // counts row
+    html += '<tr>';
+    for (let i = 0; i < 12; i++) html += `<td style="border:1px solid #ddd;padding:6px;text-align:center">${data.counts[i] || 0}</td>`;
+    html += '</tr>';
+    // contributors row
+    html += '<tr>';
+    for (let s = 1; s <= 12; s++) {
+      const arr = data.contributors[s] || [];
+      const cell = arr.map(a => `${a.planet}(${a.ref})`).join(', ');
+      html += `<td style="border:1px solid #eee;padding:6px;font-size:12px">${cell}</td>`;
+    }
+    html += '</tr>';
+    html += '</tbody></table>';
+  });
+  html += '</div>';
+  createCard('Bhinnashtakavarga', html, 'html');
 }
 
 /**
