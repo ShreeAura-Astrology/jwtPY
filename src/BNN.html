@@ -411,6 +411,7 @@
         try {
           const bhv = buildAllBhinnashtakavarga(horoscope, bhinnashtakvarga_individual_point_distributions);
           renderBhinnashtakavargaTables(bhv);
+          renderSarvastakavargaTables(bhv);
         } catch (e) {
           console.error('Error generating Bhinnashtakavarga:', e);
         }
@@ -3570,6 +3571,45 @@ function renderBhinnashtakavargaTables(bhvData) {
   });
   html += '</div>';
   createCard('Bhinnashtakavarga', html, 'html');
+}
+
+// Render each planet's sign totals together with the Sarvashtakavarga sign totals.
+function renderSarvastakavargaTables(bhvData) {
+  if (!bhvData || typeof bhvData !== 'object') return;
+
+  const planetsWithCounts = Object.entries(bhvData).filter(([, data]) => data && Array.isArray(data.counts));
+  if (planetsWithCounts.length === 0) return;
+
+  const signTotals = Array(12).fill(0);
+  let html = '<div class="sarvashtakavarga-wrapper">';
+  html += '<table class="sarvashtakavarga-table" style="border-collapse:collapse;margin-bottom:16px;width:100%">';
+  html += '<thead><tr><th style="border:1px solid #ccc;padding:6px;background:#f0f0f0">Planet</th>';
+  signs.forEach(sign => {
+    html += `<th style="border:1px solid #ccc;padding:6px;background:#f6f6f6">${sign}</th>`;
+  });
+  html += '<th style="border:1px solid #ccc;padding:6px;background:#f0f0f0">Total</th></tr></thead><tbody>';
+
+  planetsWithCounts.forEach(([planet, data]) => {
+    let planetTotal = 0;
+    html += `<tr><th scope="row" style="border:1px solid #ddd;padding:6px;text-align:left">${planet}</th>`;
+    for (let i = 0; i < 12; i++) {
+      const count = Number(data.counts[i]) || 0;
+      planetTotal += count;
+      signTotals[i] += count;
+      html += `<td style="border:1px solid #eee;padding:6px;text-align:center">${count}</td>`;
+    }
+    html += `<td style="border:1px solid #ddd;padding:6px;text-align:center;font-weight:600">${planetTotal}</td></tr>`;
+  });
+
+  const sarvashtakavargaTotal = signTotals.reduce((total, count) => total + count, 0);
+  html += '<tr><th scope="row" style="border:1px solid #ddd;padding:6px;text-align:left;font-weight:700">Sarvashtakavarga</th>';
+  signTotals.forEach(count => {
+    html += `<td style="border:1px solid #ddd;padding:6px;text-align:center;font-weight:700">${count}</td>`;
+  });
+  html += `<td style="border:1px solid #ddd;padding:6px;text-align:center;font-weight:700">${sarvashtakavargaTotal}</td></tr>`;
+  html += '</tbody></table></div>';
+
+  createCard('Sarvashtakavarga Sign Totals', html, 'html');
 }
 
 /**
