@@ -414,6 +414,11 @@
                         </div>
                         <span class="text-[11px] bg-amber-500/10 text-amber-300 px-3 py-1 rounded-full border border-amber-500/20">Live Chart Diagnostic</span>
                     </div>
+                    <div class="flex flex-wrap gap-3 text-[10px]" aria-label="Outcome indicator color key">
+                        <span class="text-emerald-300"><strong>Green:</strong> supportive indicator</span>
+                        <span class="text-red-300"><strong>Red:</strong> challenging indicator</span>
+                        <span class="text-orange-300"><strong>Orange:</strong> neutral, mixed, or contextual comparison</span>
+                    </div>
 
                     <!-- DYNAMIC CHART OUTCOME CARD -->
                     <div class="bg-gradient-to-br from-slate-900 via-amber-950/30 to-slate-900 p-5 rounded-2xl border border-amber-500/30 space-y-4 shadow-xl">
@@ -451,6 +456,19 @@
                         </div>
                         <p class="text-[10px] leading-relaxed text-slate-400 border-t border-slate-700 pt-3">
                             These are traditional astrological interpretations, not certainties or substitutes for medical, financial, legal, or relationship advice. The house-pair method is a screening framework; a complete reading also considers planetary condition and timing.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-indigo-400/25 space-y-3">
+                        <div>
+                            <h4 class="font-cinzel text-sm font-bold text-indigo-200">Class 3: Planetary Synthesis, Education, Career & Spiritual Themes</h4>
+                            <p class="text-[11px] text-slate-400 mt-1">Chart-specific BAV contributors, house lordships, and SAV comparisons. These traditional indicators describe themes, not guaranteed life events.</p>
+                        </div>
+                        <div id="evalClassThreeOutcomes" class="grid grid-cols-1 xl:grid-cols-2 gap-3" aria-live="polite">
+                            <p class="text-xs text-slate-400">Calculating Class 3 chart synthesis...</p>
+                        </div>
+                        <p class="text-[10px] leading-relaxed text-slate-400 border-t border-slate-700 pt-3">
+                            Educational fields and career themes are broad traditional associations, not exact degree or job predictions. Astrology cannot diagnose health or fertility, guarantee relocation, or replace qualified professional advice.
                         </p>
                     </div>
 
@@ -949,13 +967,23 @@
             const difference = Math.abs(leftScore - rightScore);
             return `The ${strongerSide} side leads by ${difference} bindu${difference === 1 ? '' : 's'} in this comparison.`;
         };
-        const outcomeCard = (title, houses, interpretation, detail = '') => `
+        const indicator = status => ({
+            positive: { label: 'Positive', classes: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' },
+            negative: { label: 'Negative', classes: 'border-red-500/30 bg-red-500/10 text-red-300' },
+            neutral: { label: 'Neutral', classes: 'border-orange-500/30 bg-orange-500/10 text-orange-300' }
+        }[status] || { label: 'Neutral', classes: 'border-orange-500/30 bg-orange-500/10 text-orange-300' });
+        const outcomeCard = (title, houses, interpretation, detail = '', status = 'neutral') => {
+            const badge = indicator(status);
+            return `
             <article class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-700 space-y-1.5">
-                <h5 class="text-xs font-bold text-amber-300">${title}</h5>
+                <h5 class="flex items-center justify-between gap-2 text-xs font-bold text-amber-300">
+                    ${title}<span class="rounded-full border px-2 py-0.5 text-[9px] ${badge.classes}">${badge.label}</span>
+                </h5>
                 <p class="text-[10px] text-slate-400">${scoreEvidence(houses)}</p>
-                <p class="text-xs text-slate-200 leading-relaxed">${interpretation}</p>
+                <p class="text-xs leading-relaxed ${badge.classes.split(' ').find(className => className.startsWith('text-'))}">${interpretation}</p>
                 ${detail ? `<p class="text-[10px] text-slate-400 leading-relaxed">${detail}</p>` : ''}
             </article>`;
+        };
 
         const h1 = houseScore(1);
         const h2 = houseScore(2);
@@ -1081,18 +1109,18 @@
             : `Compare the 8th-house interest (${h8}), 10th-house career (${h10}), and 2nd-house monetization (${h2}); stronger support in all three would more closely match the notes’ combined-profession pattern.`;
 
         const outcomes = [
-            outcomeCard('Four pillars: Lagna, fortune, career & gains', [1, 9, 10, 11], pillarsReading),
-            outcomeCard('Wealth & outflows', [2, 12], compare(h2, h12, 'savings and family resources', 'expenditures and outflows') + (h2 > h12 ? ' The resource side leads in the notes’ wealth-retention comparison.' : ' Review the resources-versus-outflows balance; SAV alone is not a financial forecast.')),
-            outcomeCard('Physical vitality', [1, 6], compare(h1, h6, 'vitality and constitution', 'illness and health-management themes') + ' The notes pair these houses; this is not a diagnosis or health assessment.'),
-            outcomeCard('Employment & jobs', [6, 10], employmentReading),
-            outcomeCard('Business operations', [7, 10], businessReading),
-            outcomeCard('Business vs job (combined SAV)', [10, 7, 6], businessVsJobReading, `Business: 10th (${h10}) + 7th (${h7}) = ${businessVsJobBusiness}. Job: 10th (${h10}) + 6th (${h6}) = ${businessVsJobEmployment}.`),
-            outcomeCard('Debts & loans', [2, 6], debtReading),
-            outcomeCard('Childbirth & conception framework', [5, 6, 8, 12], conceptionReading, conceptionDetail),
-            outcomeCard('Romantic love, marriage & relationship balance', [1, 5, 6, 7, 8], romanceReading, `${marriageFlags.join(' ') } BAV: 6th lord→7th ${sixthLordInSeventh}; 7th lord→6th ${seventhLordInSixth}; Saturn/Mars in 7th ${saturnInSeventh}/${marsInSeventh}; Jupiter/Mercury in 7th ${jupiterInSeventh}/${mercuryInSeventh}.`),
-            outcomeCard('Post-marital fortune', [7, 9], postMarriageReading),
-            outcomeCard('Foreign travel & geographic mobility', [4, 12], mobilityReading),
-            outcomeCard('Occult professions', [2, 8, 10], occultReading)
+            outcomeCard('Four pillars: Lagna, fortune, career & gains', [1, 9, 10, 11], pillarsReading, '', fourPillars.every(value => value >= 30) ? 'positive' : fourPillars.every(value => value < 25) ? 'negative' : 'neutral'),
+            outcomeCard('Wealth & outflows', [2, 12], compare(h2, h12, 'savings and family resources', 'expenditures and outflows') + (h2 > h12 ? ' The resource side leads in the notes’ wealth-retention comparison.' : ' Review the resources-versus-outflows balance; SAV alone is not a financial forecast.'), '', h2 > h12 ? 'positive' : h12 > h2 ? 'negative' : 'neutral'),
+            outcomeCard('Physical vitality', [1, 6], compare(h1, h6, 'vitality and constitution', 'illness and health-management themes') + ' The notes pair these houses; this is not a diagnosis or health assessment.', '', 'neutral'),
+            outcomeCard('Employment & jobs', [6, 10], employmentReading, '', Math.min(h6, h10) >= 30 ? 'positive' : h6 < 25 || h10 < 25 ? 'negative' : 'neutral'),
+            outcomeCard('Business operations', [7, 10], businessReading, '', Math.min(h7, h10) >= 30 ? 'positive' : h7 < 25 || h10 < 25 ? 'negative' : 'neutral'),
+            outcomeCard('Business vs job (combined SAV)', [10, 7, 6], businessVsJobReading, `Business: 10th (${h10}) + 7th (${h7}) = ${businessVsJobBusiness}. Job: 10th (${h10}) + 6th (${h6}) = ${businessVsJobEmployment}.`, 'neutral'),
+            outcomeCard('Debts & loans', [2, 6], debtReading, '', h2 > h6 ? 'positive' : h6 > h2 ? 'negative' : 'neutral'),
+            outcomeCard('Childbirth & conception framework', [5, 6, 8, 12], conceptionReading, conceptionDetail, 'neutral'),
+            outcomeCard('Romantic love, marriage & relationship balance', [1, 5, 6, 7, 8], romanceReading, `${marriageFlags.join(' ') } BAV: 6th lord→7th ${sixthLordInSeventh}; 7th lord→6th ${seventhLordInSixth}; Saturn/Mars in 7th ${saturnInSeventh}/${marsInSeventh}; Jupiter/Mercury in 7th ${jupiterInSeventh}/${mercuryInSeventh}.`, balancedMarriage ? 'positive' : marriageFlags.some(flag => flag.includes('exceeds') || flag.includes('trigger') || flag.includes('high')) ? 'negative' : 'neutral'),
+            outcomeCard('Post-marital fortune', [7, 9], postMarriageReading, '', h7 >= 30 && h9 >= 30 ? 'positive' : h7 < 25 || h9 < 25 ? 'negative' : 'neutral'),
+            outcomeCard('Foreign travel & geographic mobility', [4, 12], mobilityReading, '', 'neutral'),
+            outcomeCard('Occult professions', [2, 8, 10], occultReading, '', h2 >= 30 && h8 >= 30 && h10 >= 30 ? 'positive' : 'neutral')
         ];
         $('evalClassTwoOutcomes').innerHTML = outcomes.join('');
 
@@ -1123,6 +1151,507 @@
         $('evalDignityOverrides').innerHTML = dignityReadings.length
             ? dignityReadings.map(reading => `<div>${reading}</div>`).join('')
             : '<div>No listed dignity/SAV override is triggered among the seven BAV planets in this chart.</div>';
+        updateClassThreeEvaluation(lg, ashtakvargaData);
+    }
+
+    function updateClassThreeEvaluation(lg, ashtakvargaData) {
+        const { bav, sav, planetSigns } = ashtakvargaData;
+        const planets = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'];
+        const naturalMalefics = ['Saturn', 'Mars'];
+        const naturalBenefics = ['Jupiter', 'Venus'];
+        const signRulers = ['Mars', 'Venus', 'Mercury', 'Moon', 'Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Saturn', 'Jupiter'];
+        const signThemes = [
+            'engineering, technical execution, defense, medicine, and sports',
+            'banking, finance, food commerce, hospitality, and agriculture',
+            'information technology, communication, writing, publishing, and marketing',
+            'medicine, nursing, real estate, hospitality, and shipping',
+            'public administration, government, theater, and creative leadership',
+            'mathematics, accounting, law, healthcare, and auditing',
+            'business administration, design, music, trade, and commerce',
+            'investigative research, chemistry, occult studies, surgery, and insurance',
+            'philosophy, law, teaching, religion, and human resources',
+            'civil engineering, executive management, geology, and construction',
+            'space sciences, networking, social organizations, and macroeconomics',
+            'spiritual studies, medicine, hospitality, and international trade'
+        ];
+        const planetSkills = {
+            Sun: 'government, public administration, and leadership',
+            Moon: 'culinary arts, tourism, medicine, and emotional care',
+            Mars: 'engineering, defense, property, and technical execution',
+            Mercury: 'accounting, trade, communication, and information technology',
+            Jupiter: 'banking, financial guidance, teaching, and higher learning',
+            Venus: 'finance, fine arts, music, and beauty services',
+            Saturn: 'construction, heavy industry, mining, and logistics',
+            Rahu: 'foreign trade and software infrastructure',
+            Ketu: 'spiritual or occult practice, meditation, and surgery'
+        };
+        const houseThemes = [
+            'self-leadership, independent work, and personal enterprise',
+            'finance, economics, speech, and food commerce',
+            'communication, publishing, IT networks, and tourism',
+            'foundational education, property, design, and emotional grounding',
+            'college-level learning, teaching, creative arts, and reasoning',
+            'healthcare operations, law, disputes, and salaried service',
+            'partnerships, independent trade, and business',
+            'research, auditing, insurance, and occult subjects',
+            'higher education, research, teaching, and guidance',
+            'executive leadership, systems, and public administration',
+            'large networks, public initiatives, and social organizations',
+            'foreign networks, hospitals, meditation, and international trade'
+        ];
+        const houseSign = house => (lg + house - 1) % 12;
+        const houseScore = house => sav[houseSign(house)];
+        const houseLord = house => signRulers[houseSign(house)];
+        const planetScore = (planet, house) => bav[planet][houseSign(house)];
+        const placementHouse = planet => ((planetSigns[planet] - lg + 12) % 12) + 1;
+        const lordHouses = {};
+        for (let house = 1; house <= 12; house++) {
+            const lord = houseLord(house);
+            if (!lordHouses[lord]) lordHouses[lord] = [];
+            lordHouses[lord].push(house);
+        }
+        const isTrikLord = planet => (lordHouses[planet] || []).some(house => [6, 8, 12].includes(house));
+        const scoreLabel = house => `H${house} ${SIGNS[houseSign(house)]}: ${houseScore(house)}`;
+        const tableRow = (status, ...cells) => [status, ...cells];
+        const outcomeCard = (title, evidence, detail = '', table = '', status = 'neutral') => {
+            const badge = indicatorStyle(status);
+            return `
+            <article class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-700 space-y-1.5">
+                <h5 class="flex items-center justify-between gap-2 text-xs font-bold text-indigo-200">
+                    ${title}<span class="rounded-full border px-2 py-0.5 text-[9px] ${badge.classes}">${badge.label}</span>
+                </h5>
+                <p class="text-[10px] text-slate-400">${evidence}</p>
+                ${detail ? `<p class="text-[10px] text-slate-400 leading-relaxed">${detail}</p>` : ''}
+                ${table}
+            </article>`;
+        };
+        const indicatorStyle = status => ({
+            positive: {
+                label: 'Positive',
+                classes: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+            },
+            negative: {
+                label: 'Negative',
+                classes: 'bg-red-500/10 text-red-300 border-red-500/30'
+            },
+            neutral: {
+                label: 'Neutral',
+                classes: 'bg-orange-500/10 text-orange-300 border-orange-500/30'
+            }
+        }[status] || {
+            label: 'Neutral',
+            classes: 'bg-orange-500/10 text-orange-300 border-orange-500/30'
+        });
+        const dataTable = (headers, rows) => `
+            <div class="overflow-x-auto rounded-lg border border-slate-700">
+                <table class="w-full min-w-[560px] text-left text-[11px] text-slate-200">
+                    <thead class="bg-slate-900 text-indigo-200 uppercase tracking-wide">
+                        <tr><th scope="col" class="px-2.5 py-2">Indicator</th>${headers.map((header, index) =>
+                            `<th scope="col" class="px-2.5 py-2 ${index === 0 ? 'w-1/4' : ''}">${header}</th>`
+                        ).join('')}</tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        ${rows.map(row => {
+                            const hasStatus = ['positive', 'negative', 'neutral'].includes(row[0]);
+                            const [status, ...remainingCells] = row;
+                            const cells = hasStatus ? remainingCells : row;
+                            const style = indicatorStyle(status);
+                            return `<tr class="align-top hover:bg-slate-800/50">
+                                <td class="px-2.5 py-2"><span class="inline-flex rounded-full border px-2 py-0.5 text-[9px] font-semibold ${style.classes}">${style.label}</span></td>${cells.map((cell, index) =>
+                                `<td class="px-2.5 py-2 ${index === 0 ? 'font-medium text-amber-200' : 'text-slate-300'}">${cell}</td>`
+                            ).join('')}</tr>`;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>`;
+
+        const energyRows = [];
+        for (let house = 1; house <= 12; house++) {
+            const highContributors = planets.filter(planet => planetScore(planet, house) >= 5);
+            const mercuryCompany = ['Sun', 'Moon', 'Mars', 'Jupiter', 'Venus', 'Saturn', 'Rahu', 'Ketu']
+                .filter(planet => planetSigns[planet] === planetSigns.Mercury);
+            highContributors.forEach(planet => {
+                const trikHouses = (lordHouses[planet] || []).filter(ruledHouse => [6, 8, 12].includes(ruledHouse));
+                let planetaryClass, interpretation;
+                if (naturalMalefics.includes(planet)) {
+                    planetaryClass = 'Natural malefic';
+                    interpretation = 'Strong activation; the notes flag possible friction or hurdles in this house.';
+                } else if (naturalBenefics.includes(planet) && trikHouses.length) {
+                    planetaryClass = 'Natural benefic · trik lord';
+                    interpretation = `Strong activation; benefic expansion is qualified by trik lordship (H${trikHouses.join(', H')}).`;
+                } else if (naturalBenefics.includes(planet)) {
+                    planetaryClass = 'Natural benefic';
+                    interpretation = 'Strong activation; the notes associate this with support, protection, or expansion.';
+                } else if (planet === 'Sun') {
+                    planetaryClass = 'Semi-malefic';
+                    interpretation = 'Strong activation; the notes classify the Sun as semi-malefic.';
+                } else {
+                    planetaryClass = 'Neutral · context-dependent';
+                    interpretation = `Strong activation; Mercury's expression depends on associations${mercuryCompany.length ? ` with ${mercuryCompany.join(', ')} in the same sign` : ''}.`;
+                }
+                energyRows.push({
+                    house,
+                    planet,
+                    points: planetScore(planet, house),
+                    planetaryClass,
+                    status: naturalMalefics.includes(planet) || planet === 'Sun' || trikHouses.length
+                        ? 'negative'
+                        : naturalBenefics.includes(planet) ? 'positive' : 'neutral',
+                    lordships: (lordHouses[planet] || []).map(ruledHouse => `H${ruledHouse}`).join(', ') || '—',
+                    interpretation
+                });
+            });
+        }
+        const nodePlacements = ['Rahu', 'Ketu'].map(planet =>
+            `${planet} in house ${placementHouse(planet)} (${SIGNS[planetSigns[planet]]})`).join('; ');
+        const energyDetail = `High-contribution threshold follows the notes (5–7 bindus). Jupiter/Venus are treated as natural benefics unless they rule houses 6, 8, or 12; Mars/Saturn are natural malefics. Sun is semi-malefic and Mercury is context-dependent, so neither is classified as a natural malefic here. ${nodePlacements}; Rahu and Ketu are not separate classical BAV contributors.`;
+        const energyTable = energyRows.length
+            ? dataTable(
+                ['House / sign', 'Contributor', 'BAV', 'Class / lordship', 'Class 3 interpretation'],
+                energyRows.map(row => tableRow(row.status,
+                    `H${row.house} · ${SIGNS[houseSign(row.house)]}`,
+                    row.planet,
+                    row.points,
+                    `${row.planetaryClass}<span class="block text-[10px] text-slate-400">Lord of ${row.lordships}</span>`,
+                    row.interpretation
+                ))
+            )
+            : '<p class="text-xs text-slate-300">No planets contribute 5 or more BAV bindus to any house in this chart.</p>';
+
+        const secondMoon = planetScore('Moon', 2);
+        const secondMars = planetScore('Mars', 2);
+        const secondSaturn = planetScore('Saturn', 2);
+        const secondLord = houseLord(2);
+        const secondLordPlacement = placementHouse(houseLord(2));
+        const eighthLordPlacement = placementHouse(houseLord(8));
+        const twelfthLordPlacement = placementHouse(houseLord(12));
+        const savingsSignals = [];
+        if (houseScore(2) > houseScore(12)) savingsSignals.push('2nd-house SAV exceeds 12th-house SAV');
+        if (secondMoon <= 3) savingsSignals.push(`Moon contributes only ${secondMoon} BAV to the 2nd-house sign`);
+        if (secondMars <= 3 && secondSaturn <= 3) savingsSignals.push(`Mars/Saturn contribute ${secondMars}/${secondSaturn} BAV to the 2nd-house sign`);
+        if (secondLordPlacement !== 12 && eighthLordPlacement !== 2 && twelfthLordPlacement !== 2) savingsSignals.push('no 2nd/12th/8th-lord placement link from the notes’ expenditure-heavy checks');
+        const expenditureSignals = [];
+        if (houseScore(12) > houseScore(2)) expenditureSignals.push('12th-house SAV exceeds 2nd-house SAV');
+        if (secondMoon >= 5) expenditureSignals.push(`Moon contributes ${secondMoon} BAV to the 2nd-house sign`);
+        if (secondMars >= 5 || secondSaturn >= 5) expenditureSignals.push(`Mars/Saturn contribute ${secondMars}/${secondSaturn} BAV to the 2nd-house sign`);
+        if (secondLordPlacement === 12) expenditureSignals.push('2nd-house lord is placed in the 12th house');
+        if ((eighthLordPlacement === 2 && planetScore(houseLord(8), 2) >= 5)
+            || (twelfthLordPlacement === 2 && planetScore(houseLord(12), 2) >= 5)) {
+            expenditureSignals.push('8th/12th-house lord is placed in the 2nd house with a high BAV contribution');
+        }
+        const frugalSignals = [];
+        if (houseScore(2) <= 25 && houseScore(12) <= 25) frugalSignals.push('both the 2nd and 12th houses have lower SAV (25 or less)');
+        if (secondMoon <= 1) frugalSignals.push(`Moon contributes ${secondMoon} BAV to the 2nd-house sign`);
+        if (secondMars <= 1 && secondSaturn <= 1) frugalSignals.push(`Mars/Saturn each contribute at most 1 BAV to the 2nd-house sign (${secondMars}/${secondSaturn})`);
+        const beneficResourcePlanet = ['Jupiter', 'Mercury'].find(planet => placementHouse(planet) === 2);
+        if (beneficResourcePlanet) frugalSignals.push(`${beneficResourcePlanet} (natural benefic) is placed in the 2nd house`);
+        const savingsSupported = houseScore(2) > houseScore(12) && secondMoon <= 3 && secondMars <= 3 && secondSaturn <= 3
+            && secondLordPlacement !== 12 && eighthLordPlacement !== 2 && twelfthLordPlacement !== 2;
+        const expenditureSupported = houseScore(12) > houseScore(2)
+            && (secondMoon >= 5 || secondMars >= 5 || secondSaturn >= 5
+                || secondLordPlacement === 12
+                || (eighthLordPlacement === 2 && planetScore(houseLord(8), 2) >= 5)
+                || (twelfthLordPlacement === 2 && planetScore(houseLord(12), 2) >= 5));
+        const financeRows = [
+            tableRow(savingsSupported ? 'positive' : expenditureSupported ? 'negative' : 'neutral', 'Savings-dominant', `${scoreLabel(2)} vs ${scoreLabel(12)}`, savingsSignals.length ? savingsSignals.join('; ') : 'No listed savings-dominant indicators are present.'),
+            tableRow(expenditureSupported ? 'negative' : savingsSupported ? 'positive' : 'neutral', 'Expenditure-heavy', `${scoreLabel(12)} vs ${scoreLabel(2)}`, expenditureSignals.length ? expenditureSignals.join('; ') : 'No listed expenditure-heavy indicators are present.'),
+            tableRow('neutral', 'Low-flow / frugality', `Moon ${secondMoon}; Mars ${secondMars}; Saturn ${secondSaturn} BAV in H2`, frugalSignals.length ? frugalSignals.join('; ') : 'The notes’ low-flow/frugality indicators are not present.'),
+            tableRow('neutral', 'Relevant lord placements', `2nd lord ${secondLord}: H${secondLordPlacement}; 8th lord ${houseLord(8)}: H${eighthLordPlacement}; 12th lord ${houseLord(12)}: H${twelfthLordPlacement}`, 'Lord placements are included as context; interpret alongside the house scores and BAV.')
+        ];
+        const financeTable = dataTable(['Profile / check', 'Chart indicators', 'Class 3 reading'], financeRows);
+        const financeDetail = 'Traditional financial tendencies only; not individual financial advice.';
+
+        const contributorsForHouse = house => planets.map(planet => ({
+            planet,
+            points: planetScore(planet, house)
+        }));
+        const educationHouse = house => {
+            const contributors = contributorsForHouse(house);
+            const highest = Math.max(...contributors.map(item => item.points));
+            const leaders = contributors.filter(item => item.points === highest);
+            const highContributors = contributors.filter(item => item.points >= 5);
+            return {
+                highest,
+                leaders: leaders.map(item => item.planet),
+                house,
+                focus: house === 5
+                    ? 'College-level learning, analytical skills, and technical study'
+                    : 'Postgraduate study, research, professional certification, and higher learning',
+                stream: signThemes[houseSign(house)],
+                contributors: highContributors.length
+                    ? highContributors.map(item => `${item.planet} ${item.points} · ${planetSkills[item.planet]}`).join('; ')
+                    : `No contributor reaches 5; top: ${leaders.map(item => `${item.planet} (${item.points})`).join(', ')}`
+            };
+        };
+        const fifthEducation = educationHouse(5);
+        const ninthEducation = educationHouse(9);
+        const foreignEducationLords = [...new Set([houseLord(12), houseLord(7)])];
+        const foreignEducationHits = [5, 9].flatMap(house => {
+            const leaders = house === 5 ? fifthEducation.leaders : ninthEducation.leaders;
+            return foreignEducationLords.filter(lord => leaders.includes(lord))
+                .map(lord => `${lord} (lord of ${lordHouses[lord].filter(value => [7, 12].includes(value)).map(value => `H${value}`).join('/')}) is a top BAV contributor to H${house}`);
+        });
+        const educationRows = [fifthEducation, ninthEducation].map(result => tableRow(
+            houseScore(result.house) >= 30 ? 'positive' : houseScore(result.house) < 25 ? 'negative' : 'neutral',
+            `H${result.house} · ${SIGNS[houseSign(result.house)]}`,
+            houseScore(result.house),
+            result.focus,
+            result.stream,
+            result.contributors
+        ));
+        educationRows.push(tableRow('neutral',
+            'Foreign-study check',
+            'H5 / H9 lord contributors',
+            '7th/12th-house lord is a top BAV contributor',
+            foreignEducationHits.length
+                ? foreignEducationHits.join('; ')
+                : 'No 7th/12th lord is a top BAV contributor to H5 or H9.',
+            'Traditional indicator only; not a travel prediction.'
+        ));
+        const educationTable = dataTable(
+            ['House / sign', 'SAV', 'Study focus', 'Sign-associated streams', 'Top BAV contributors'],
+            educationRows
+        );
+        const educationDetail = 'Study protocol: assess H5 for college-level learning and H9 for higher study, then compare their sign streams and planetary BAV contributors (5+ is the notes’ high-contribution threshold). The 7th/12th lords are checked for foreign-study associations. These indicators cannot establish a person’s attainment, aptitude, or limitations.';
+        const signProfileRows = SIGNS.map((sign, signIndex) => {
+            const house = ((signIndex - lg + 12) % 12) + 1;
+            const score = sav[signIndex];
+            return tableRow(score >= 30 ? 'positive' : score < 25 ? 'negative' : 'neutral',
+                sign,
+                `H${house}`,
+                score,
+                signThemes[signIndex]);
+        });
+        const signProfileTable = dataTable(
+            ['Sign', 'Chart house', 'SAV', 'Class 3 study / profession themes'],
+            signProfileRows
+        );
+        const functionalDomainRows = houseThemes.map((domain, index) => {
+            const house = index + 1;
+            const score = houseScore(house);
+            return tableRow(score >= 30 ? 'positive' : score < 25 ? 'negative' : 'neutral',
+                `H${house} · ${SIGNS[houseSign(house)]}`,
+                score,
+                domain);
+        });
+        const functionalDomainTable = dataTable(
+            ['House / sign', 'SAV', 'Functional domain'],
+            functionalDomainRows
+        );
+        const karakaRows = planets.map(planet => {
+            const h5Points = planetScore(planet, 5);
+            const h9Points = planetScore(planet, 9);
+            const strongest = Math.max(h5Points, h9Points);
+            return tableRow(strongest >= 5 ? 'positive' : 'neutral',
+                planet,
+                `H${placementHouse(planet)} · ${SIGNS[planetSigns[planet]]}`,
+                planetSkills[planet],
+                `${h5Points} / ${h9Points}`,
+                strongest >= 5 ? 'High BAV contribution in at least one study house (5+).' : 'Below the study-house high-contribution threshold; interpret with the full chart.'
+            );
+        });
+        const karakaTable = dataTable(
+            ['Planet', 'Placement', 'Traditional skill karaka', 'H5 / H9 BAV', 'Reading'],
+            karakaRows
+        );
+        const learningLimitsRows = [
+            tableRow('neutral', 'House focus', 'H5 and H9', 'Differentiate college-level and higher/professional learning themes.'),
+            tableRow('neutral', 'Sign profiles', 'All 12 signs', 'Use the sign-associated streams as broad traditional possibilities, not exclusive career assignments.'),
+            tableRow('neutral', 'Planetary karakas', 'Seven classical BAV planets', 'Skills and interests are contextual; a single planet or score does not confirm ability.'),
+            tableRow('neutral', 'Limitations', 'No deterministic conclusion', 'Do not infer academic failure, disability, or a guaranteed qualification from these indicators.')
+        ];
+        const learningLimitsTable = dataTable(
+            ['Protocol / limitation', 'Scope', 'Guidance'],
+            learningLimitsRows
+        );
+
+        const sixthLord = houseLord(6);
+        const seventhLord = houseLord(7);
+        const tenthLord = houseLord(10);
+        const tenthLordToSixth = planetScore(tenthLord, 6);
+        const tenthLordToSeventh = planetScore(tenthLord, 7);
+        const saturnToSixth = planetScore('Saturn', 6);
+        const saturnToSeventh = planetScore('Saturn', 7);
+        const careerRows = [
+            [
+                'House SAV comparison',
+                `H6 ${houseScore(6)} vs H7 ${houseScore(7)}`,
+                houseScore(6) > houseScore(7) ? 'Employment-side indicator is stronger.' : houseScore(7) > houseScore(6) ? 'Independent-business indicator is stronger.' : 'The job/business house scores are tied.'
+            ],
+            [
+                '10th-lord BAV',
+                `${tenthLord}: H6 ${tenthLordToSixth} vs H7 ${tenthLordToSeventh}`,
+                tenthLordToSixth > tenthLordToSeventh ? 'Contributes more to the employment sign.' : tenthLordToSeventh > tenthLordToSixth ? 'Contributes more to the business sign.' : 'Equal contribution to both signs.'
+            ],
+            [
+                '6th-lord placement',
+                `${sixthLord} placed in H${placementHouse(sixthLord)}`,
+                placementHouse(sixthLord) === 10 ? 'In the 10th house; supports the employment-side check.' : 'Not placed in the 10th house.'
+            ],
+            [
+                '7th-lord placement',
+                `${seventhLord} placed in H${placementHouse(seventhLord)}`,
+                placementHouse(seventhLord) === 10 ? 'In the 10th house; supports the business-side check.' : 'Not placed in the 10th house.'
+            ],
+            [
+                'Saturn BAV',
+                `H6 ${saturnToSixth} vs H7 ${saturnToSeventh}`,
+                saturnToSixth > saturnToSeventh ? 'Leans toward the notes’ job-security indicator.' : saturnToSeventh > saturnToSixth ? 'Leans toward the notes’ independent-business indicator.' : 'Equal contribution; no preference from this check.'
+            ],
+            [
+                'House themes',
+                `H6: ${houseThemes[5]}; H7: ${houseThemes[6]}; H10: ${houseThemes[9]}`,
+                `Sign streams: ${SIGNS[houseSign(6)]} — ${signThemes[houseSign(6)]}; ${SIGNS[houseSign(7)]} — ${signThemes[houseSign(7)]}; ${SIGNS[houseSign(10)]} — ${signThemes[houseSign(10)]}.`
+            ]
+        ];
+        const careerTable = dataTable(['Career check', 'Chart result', 'Interpretation'], careerRows);
+        const careerDetail = 'Class 3 lordship and Saturn checks supplement the Class 2 combined SAV comparison; they are traditional indicators, not career advice.';
+
+        const fifthLord = houseLord(5);
+        const fifthLordToSeventh = planetScore(fifthLord, 7);
+        const seventhLordToFifth = planetScore(seventhLord, 5);
+        const sixthLordToFifth = planetScore(sixthLord, 5);
+        const jupiterToFifth = planetScore('Jupiter', 5);
+        const jupiterToSeventh = planetScore('Jupiter', 7);
+        const relationshipRows = [
+            tableRow(houseScore(6) > houseScore(5) ? 'negative' : houseScore(5) > houseScore(6) ? 'positive' : 'neutral',
+                'Courtship vs friction',
+                `H5 ${houseScore(5)} vs H6 ${houseScore(6)}`,
+                houseScore(6) > houseScore(5) ? '6th-house friction indicator is stronger.' : '6th house does not outscore the 5th in this check.'
+            ),
+            tableRow(sixthLordToFifth >= 5 ? 'negative' : 'neutral',
+                '6th lord contribution to courtship',
+                `${sixthLord} → H5: ${sixthLordToFifth} BAV`,
+                sixthLordToFifth >= 5 ? 'Meets the notes’ high-contribution friction threshold.' : 'Below the notes’ 5+ BAV threshold.'
+            ),
+            tableRow(planetScore('Saturn', 5) >= 5 || planetScore('Mars', 5) >= 5 ? 'negative' : 'neutral',
+                'Saturn / Mars contribution to courtship',
+                `Saturn ${planetScore('Saturn', 5)}; Mars ${planetScore('Mars', 5)} BAV in H5`,
+                planetScore('Saturn', 5) >= 5 || planetScore('Mars', 5) >= 5 ? 'At least one meets the notes’ malefic-interference threshold.' : 'Neither meets the notes’ 5+ BAV threshold.'
+            ),
+            tableRow(houseScore(5) > houseScore(6) && houseScore(7) > houseScore(6) ? 'positive' : houseScore(6) > houseScore(5) && houseScore(6) > houseScore(7) ? 'negative' : 'neutral',
+                'Love-to-marriage house support',
+                `H5 ${houseScore(5)}; H6 ${houseScore(6)}; H7 ${houseScore(7)}`,
+                houseScore(5) > houseScore(6) && houseScore(7) > houseScore(6) ? 'Both 5th and 7th exceed the 6th, matching the supportive house-score pattern.' : 'The 5th and 7th do not both exceed the 6th.'
+            ),
+            tableRow(fifthLordToSeventh >= 5 && seventhLordToFifth >= 5 ? 'positive' : 'neutral',
+                'Mutual 5th/7th lord support',
+                `${fifthLord} → H7: ${fifthLordToSeventh}; ${seventhLord} → H5: ${seventhLordToFifth} BAV`,
+                fifthLordToSeventh >= 5 && seventhLordToFifth >= 5 ? 'Both lords contribute 5+ BAV to the other relationship house.' : 'Both directions do not meet the 5+ BAV threshold.'
+            ),
+            tableRow(jupiterToFifth >= 5 || jupiterToSeventh >= 5 ? 'positive' : 'neutral',
+                'Jupiter’s benefic support',
+                `Jupiter → H5: ${jupiterToFifth}; H7: ${jupiterToSeventh} BAV`,
+                jupiterToFifth >= 5 || jupiterToSeventh >= 5 ? 'Jupiter contributes 5+ BAV to at least one relationship house.' : 'Jupiter does not reach 5 BAV in either relationship house.'
+            )
+        ];
+        const relationshipTable = dataTable(['Relationship check', 'Chart result', 'Class 3 reading'], relationshipRows);
+        const relationshipDetail = 'Traditional relationship indicators, not a prediction or a substitute for personal/legal advice.';
+
+        const moonToThird = planetScore('Moon', 3);
+        const moonToFourth = planetScore('Moon', 4);
+        const moonToTwelfth = planetScore('Moon', 12);
+        const marsToFourth = planetScore('Mars', 4);
+        const saturnToFourth = planetScore('Saturn', 4);
+        const mobilityRows = [
+            [
+                'Home vs foreign-distance comparison',
+                `H4 ${houseScore(4)} vs H12 ${houseScore(12)}`,
+                houseScore(12) > houseScore(4) ? '12th-house distance/foreign themes lead.' : houseScore(4) > houseScore(12) ? '4th-house home/roots themes lead.' : 'The SAV scores are tied.'
+            ],
+            [
+                'Departure-from-home indicator',
+                `H3 ${houseScore(3)} · H4 ${houseScore(4)} · H12 ${houseScore(12)}`,
+                'The notes consider the 3rd as the 12th from the 4th when assessing departure from home.'
+            ],
+            [
+                'Mars / Saturn in the 4th-house sign',
+                `Mars ${marsToFourth}; Saturn ${saturnToFourth} BAV`,
+                marsToFourth >= 5 || saturnToFourth >= 5 ? 'At least one reaches 5+; the notes treat high malefic contribution as a relocation indicator.' : 'Neither reaches the notes’ 5+ BAV threshold.'
+            ],
+            [
+                'Moon mobility tie-breaker',
+                `Moon BAV: H3 ${moonToThird}; H4 ${moonToFourth}; H12 ${moonToTwelfth}`,
+                (moonToThird >= 5 || moonToTwelfth >= 5) && moonToFourth === 1
+                    ? 'Matches the notes’ specific high-3rd/12th and 1-point-4th example.'
+                    : `Does not match the exact example (Moon must score 5+ in H3 or H12 and 1 in H4).`
+            ]
+        ];
+        const mobilityTable = dataTable(['Mobility check', 'Chart result', 'Class 3 reading'], mobilityRows);
+        const mobilityDetail = 'Traditional mobility indicators; they do not guarantee relocation or foreign settlement.';
+
+        const desireLord = houseLord(3);
+        const desireLordHouse = placementHouse(desireLord);
+        const desireHouse = ((desireLordHouse + 5) % 12) + 1;
+        const desireOccupants = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Rahu', 'Ketu']
+            .filter(planet => placementHouse(planet) === desireHouse);
+        const desireRows = [
+            ['Starting point', '3rd house', `Sign: ${SIGNS[houseSign(3)]}; ruler: ${desireLord}.`],
+            ['3rd-house lord placement', desireLord, `Placed in H${desireLordHouse} (${SIGNS[planetSigns[desireLord]]}).`],
+            ['Projected opposite house', `H${desireHouse} · ${SIGNS[houseSign(desireHouse)]}`, houseThemes[desireHouse - 1]],
+            ['Occupying planets', desireOccupants.length ? desireOccupants.join(', ') : 'None', desireOccupants.length ? 'Use these planets as additional traditional context.' : 'No listed planet occupies the projected house.']
+        ];
+        const desireTable = dataTable(['Technique step', 'Chart result', 'Interpretation'], desireRows);
+        const desireDetail = 'Class 3 technique: locate the 3rd-house lord, then project to the house opposite its placement. This is a traditional indicator of active focus.';
+
+        const mokshaHouses = [4, 8, 9, 12];
+        const elevatedMokshaHouses = mokshaHouses.filter(house => houseScore(house) >= 30);
+        const eighthLord = houseLord(8);
+        const twelfthLordForSpirituality = houseLord(12);
+        const spiritualLordRows = [];
+        [[eighthLord, '8th'], [twelfthLordForSpirituality, '12th']].forEach(([lord, label]) => {
+            [1, 4].forEach(house => {
+                const points = planetScore(lord, house);
+                spiritualLordRows.push(tableRow(points >= 5 ? 'positive' : 'neutral',
+                    `${label}-house lord → H${house}`,
+                    `${lord}: ${points} BAV`,
+                    points >= 5 ? 'Meets the notes’ high-contribution spiritual-mind indicator.' : 'Below the notes’ 5+ BAV threshold.'
+                ));
+            });
+        });
+        const sameSign = (first, second) => planetSigns[first] === planetSigns[second];
+        const yogicPairings = [];
+        if (sameSign('Saturn', 'Moon')) yogicPairings.push('Saturn–Moon');
+        if (sameSign('Saturn', 'Ketu')) yogicPairings.push('Saturn–Ketu');
+        if (sameSign('Saturn', 'Ketu') && sameSign('Saturn', 'Venus')) yogicPairings.push('Saturn–Ketu–Venus');
+        const spiritualRows = mokshaHouses.map(house => tableRow(
+            houseScore(house) >= 30 ? 'positive' : 'neutral',
+            `${scoreLabel(house)} SAV`,
+            houseScore(house),
+            houseScore(house) >= 30 ? 'Higher SAV (30+), as used in the notes’ spiritual-axis check.' : 'Below the notes’ higher-SAV reference (30).'
+        ));
+        spiritualRows.push(...spiritualLordRows);
+        spiritualRows.push(tableRow(yogicPairings.length ? 'positive' : 'neutral',
+            'Saturn / Moon / Ketu / Venus conjunctions',
+            yogicPairings.length ? yogicPairings.join(', ') : 'None of the listed pairings',
+            yogicPairings.length ? 'A listed traditional spiritual-practice conjunction is present.' : 'No listed conjunction pattern is present.'
+        ));
+        const spiritualTable = dataTable(['Spiritual indicator', 'Chart result', 'Class 3 reading'], spiritualRows);
+        const spiritualDetail = `${elevatedMokshaHouses.length}/4 houses in the 4/8/9/12 axis score 30+${elevatedMokshaHouses.length ? ` (H${elevatedMokshaHouses.join(', H')})` : ''}. These are traditional spiritual themes, not a measure of a person's beliefs or practice.`;
+        const classThreeRelationshipSupport = Math.abs(houseScore(1) - houseScore(7)) <= 1
+            && houseScore(6) < houseScore(7) && houseScore(8) < houseScore(7)
+            && planetScore('Mars', 7) <= 3 && planetScore('Saturn', 7) <= 3
+            && Math.max(jupiterToSeventh, planetScore('Mercury', 7)) >= 6
+            && sixthLordToSeventh <= 4;
+        const classThreeRelationshipChallenge = houseScore(6) > houseScore(5)
+            || sixthLordToFifth >= 5
+            || planetScore('Saturn', 5) >= 5 || planetScore('Mars', 5) >= 5;
+
+        const outcomes = [
+            outcomeCard('Planetary classes, trik lords & high BAV', 'Planet-by-planet BAV contributions of 5 or more bindus', energyDetail, energyTable, 'neutral'),
+            outcomeCard('Wealth, savings & expenditure profiles', `${scoreLabel(2)} · ${scoreLabel(12)}`, financeDetail, financeTable, savingsSupported ? 'positive' : expenditureSupported ? 'negative' : 'neutral'),
+            outcomeCard('Education, skills & study streams', `${scoreLabel(5)} · ${scoreLabel(9)}`, educationDetail, educationTable, Math.min(houseScore(5), houseScore(9)) >= 30 ? 'positive' : houseScore(5) < 25 && houseScore(9) < 25 ? 'negative' : 'neutral'),
+            outcomeCard('Education & skill-assessment protocol / limitations', 'Reading guardrails from Class 3', 'Use multiple chart factors and real-world context; these traditional associations are not diagnostic or deterministic.', learningLimitsTable, 'neutral'),
+            outcomeCard('Comprehensive sign-wise study & profession profiles', 'All 12 sign profiles considered in the selected chart', 'Each sign is paired with its chart house and SAV; themes are broad traditional associations.', signProfileTable, 'neutral'),
+            outcomeCard('Functional academic & professional domains', 'House-wise domains for all 12 houses', 'House topics provide context for interpreting sign and planetary indications.', functionalDomainTable, 'neutral'),
+            outcomeCard('Planetary karakas for skills', 'Classical planetary skill associations and study-house BAV', 'Skill karakas are descriptive associations, not ability assessments.', karakaTable, 'neutral'),
+            outcomeCard('Career direction: employment vs business', `${scoreLabel(6)} · ${scoreLabel(7)} · 10th lord ${tenthLord}`, careerDetail, careerTable, 'neutral'),
+            outcomeCard('Romantic courtship & love-marriage indicators', `${scoreLabel(5)} · ${scoreLabel(6)} · ${scoreLabel(7)}`, relationshipDetail, relationshipTable, classThreeRelationshipSupport ? 'positive' : classThreeRelationshipChallenge ? 'negative' : 'neutral'),
+            outcomeCard('Home, mobility & foreign settlement', `${scoreLabel(3)} · ${scoreLabel(4)} · ${scoreLabel(12)}`, mobilityDetail, mobilityTable, 'neutral'),
+            outcomeCard('Highest active desire technique', `3rd-house lord ${desireLord} is placed in H${desireLordHouse}; the opposite projected house is H${desireHouse} (${SIGNS[houseSign(desireHouse)]}).`, desireDetail, desireTable, 'neutral'),
+            outcomeCard('Spiritual evolution & ascetic themes', mokshaHouses.map(scoreLabel).join(' · '), spiritualDetail, spiritualTable, elevatedMokshaHouses.length >= 3 ? 'positive' : 'neutral')
+        ];
+        $('evalClassThreeOutcomes').innerHTML = outcomes.join('');
     }
 
     function generateHoroscope(e) {
