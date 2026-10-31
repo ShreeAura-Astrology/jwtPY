@@ -419,6 +419,11 @@
                         <span class="text-red-300"><strong>Red:</strong> challenging indicator</span>
                         <span class="text-orange-300"><strong>Orange:</strong> neutral, mixed, or contextual comparison</span>
                     </div>
+                    <p class="text-[11px] leading-relaxed text-slate-400">
+                        SAV points measure the strength of a house’s activation, not whether that house is inherently good or bad.
+                        About 28 is the average reference; below 25 is relatively low, 25–29 is near average, and 30+ is strong.
+                        Colors describe the specific house-pair principle being assessed: a strong 6th-house score may intensify service themes in a career comparison, but can mean more debt or friction in another comparison. Read the house topics and comparison together; never assign a color from the score alone.
+                    </p>
 
                     <!-- DYNAMIC CHART OUTCOME CARD -->
                     <div class="bg-gradient-to-br from-slate-900 via-amber-950/30 to-slate-900 p-5 rounded-2xl border border-amber-500/30 space-y-4 shadow-xl">
@@ -1102,8 +1107,18 @@
 
         const mobilityReading = compare(h12, h4, 'foreign residence and distant horizons', 'home, roots, and local comfort')
             + (h12 > h4 ? ' The notes associate a stronger 12th-house side with mobility; it does not establish that relocation will occur.' : ' The notes associate a stronger 4th-house side with a stronger pull toward home.');
-        const postMarriageReading = compare(h7, h9, 'partnership', 'fortune and shared prosperity')
-            + ' The notes pair these houses when considering longer-term fortunes after marriage.';
+        let postMarriageReading;
+        if (h7 >= 28 && h9 >= 28) {
+            postMarriageReading = `Both houses reach the 28-bindu joint-prosperity reference (7th ${h7}, 9th ${h9}). Strong 7th-house partnership themes and 9th-house fortune themes can reinforce one another in this traditional framework. ${h9 > h7 ? 'The higher 9th-house score emphasizes fortune supporting partnership.' : h7 > h9 ? 'The higher 7th-house score emphasizes partnership activating fortune.' : 'The equal scores show balanced emphasis between partnership and fortune.'}`;
+        } else if (h9 > h7) {
+            postMarriageReading = `The 9th house leads (${h9} vs ${h7}), emphasizing foundational fortune and grace as support for partnership.${h9 >= 28 ? ' The leading house reaches the 28+ reference.' : h9 < 25 && h7 < 25 ? ' The lead is relative; both houses are below 25, so neither has strong SAV activation.' : ' The lead is relative; the 9th house remains below the 28-bindu reference.'} This is not the full two-house synergy pattern because both houses do not reach 28+.`;
+        } else if (h7 > h9) {
+            postMarriageReading = `The 7th house leads (${h7} vs ${h9}), emphasizing partnership as a catalyst for fortune.${h7 >= 28 ? ' The leading house reaches the 28+ reference.' : h7 < 25 && h9 < 25 ? ' The lead is relative; both houses are below 25, so neither has strong SAV activation.' : ' The lead is relative; the 7th house remains below the 28-bindu reference.'} This is not the full two-house synergy pattern because both houses do not reach 28+.`;
+        } else if (h7 < 25 && h9 < 25) {
+            postMarriageReading = `Both scores are relatively low (7th ${h7}, 9th ${h9}), so this pairing has less SAV support in the chart. This is a prompt to consider the wider chart, not a prediction of relationship or fortune outcomes.`;
+        } else {
+            postMarriageReading = `The scores are mixed around the 28-bindu reference (7th ${h7}, 9th ${h9}); neither a clear 7th-to-9th nor 9th-to-7th support pattern is established by SAV alone.`;
+        }
         const occultReading = h8 >= 30 && h10 >= 30 && h2 >= 30
             ? 'The 8th (occult/hidden sciences), 10th (profession), and 2nd (monetization) all score 30+, aligning with the notes’ combined-profession pattern.'
             : `Compare the 8th-house interest (${h8}), 10th-house career (${h10}), and 2nd-house monetization (${h2}); stronger support in all three would more closely match the notes’ combined-profession pattern.`;
@@ -1116,9 +1131,9 @@
             outcomeCard('Business operations', [7, 10], businessReading, '', Math.min(h7, h10) >= 30 ? 'positive' : h7 < 25 || h10 < 25 ? 'negative' : 'neutral'),
             outcomeCard('Business vs job (combined SAV)', [10, 7, 6], businessVsJobReading, `Business: 10th (${h10}) + 7th (${h7}) = ${businessVsJobBusiness}. Job: 10th (${h10}) + 6th (${h6}) = ${businessVsJobEmployment}.`, 'neutral'),
             outcomeCard('Debts & loans', [2, 6], debtReading, '', h2 > h6 ? 'positive' : h6 > h2 ? 'negative' : 'neutral'),
-            outcomeCard('Childbirth & conception framework', [5, 6, 8, 12], conceptionReading, conceptionDetail, 'neutral'),
-            outcomeCard('Romantic love, marriage & relationship balance', [1, 5, 6, 7, 8], romanceReading, `${marriageFlags.join(' ') } BAV: 6th lord→7th ${sixthLordInSeventh}; 7th lord→6th ${seventhLordInSixth}; Saturn/Mars in 7th ${saturnInSeventh}/${marsInSeventh}; Jupiter/Mercury in 7th ${jupiterInSeventh}/${mercuryInSeventh}.`, balancedMarriage ? 'positive' : marriageFlags.some(flag => flag.includes('exceeds') || flag.includes('trigger') || flag.includes('high')) ? 'negative' : 'neutral'),
-            outcomeCard('Post-marital fortune', [7, 9], postMarriageReading, '', h7 >= 30 && h9 >= 30 ? 'positive' : h7 < 25 || h9 < 25 ? 'negative' : 'neutral'),
+            outcomeCard('Childbirth & conception framework', [5, 6, 8, 12], conceptionReading, conceptionDetail, h5 > h6 && h5 > h8 ? 'positive' : h5 < h6 && h5 < h8 ? 'negative' : 'neutral'),
+            outcomeCard('Romantic love, marriage & relationship balance', [1, 5, 6, 7, 8], romanceReading, `${marriageFlags.join(' ') } BAV: 6th lord→7th ${sixthLordInSeventh}; 7th lord→6th ${seventhLordInSixth}; Saturn/Mars in 7th ${saturnInSeventh}/${marsInSeventh}; Jupiter/Mercury in 7th ${jupiterInSeventh}/${mercuryInSeventh}.`, balancedMarriage ? 'positive' : h6 > h7 || sixthLordInSeventh >= 6 || seventhLordInSixth >= 6 ? 'negative' : 'neutral'),
+            outcomeCard('7th & 9th house synergy: partnership and fortune', [7, 9], postMarriageReading, 'The 28+ threshold is specific to this joint-prosperity comparison. A leading house describes the direction of support; it does not make the other house inherently negative.', h7 >= 28 && h9 >= 28 || (h9 > h7 && h9 >= 28) || (h7 > h9 && h7 >= 28) ? 'positive' : h7 < 25 && h9 < 25 ? 'negative' : 'neutral'),
             outcomeCard('Foreign travel & geographic mobility', [4, 12], mobilityReading, '', 'neutral'),
             outcomeCard('Occult professions', [2, 8, 10], occultReading, '', h2 >= 30 && h8 >= 30 && h10 >= 30 ? 'positive' : 'neutral')
         ];
@@ -1294,9 +1309,7 @@
                     planet,
                     points: planetScore(planet, house),
                     planetaryClass,
-                    status: naturalMalefics.includes(planet) || planet === 'Sun' || trikHouses.length
-                        ? 'negative'
-                        : naturalBenefics.includes(planet) ? 'positive' : 'neutral',
+                    status: 'neutral',
                     lordships: (lordHouses[planet] || []).map(ruledHouse => `H${ruledHouse}`).join(', ') || '—',
                     interpretation
                 });
@@ -1416,7 +1429,7 @@
         const signProfileRows = SIGNS.map((sign, signIndex) => {
             const house = ((signIndex - lg + 12) % 12) + 1;
             const score = sav[signIndex];
-            return tableRow(score >= 30 ? 'positive' : score < 25 ? 'negative' : 'neutral',
+            return tableRow('neutral',
                 sign,
                 `H${house}`,
                 score,
@@ -1429,7 +1442,7 @@
         const functionalDomainRows = houseThemes.map((domain, index) => {
             const house = index + 1;
             const score = houseScore(house);
-            return tableRow(score >= 30 ? 'positive' : score < 25 ? 'negative' : 'neutral',
+            return tableRow('neutral',
                 `H${house} · ${SIGNS[houseSign(house)]}`,
                 score,
                 domain);
@@ -1442,7 +1455,7 @@
             const h5Points = planetScore(planet, 5);
             const h9Points = planetScore(planet, 9);
             const strongest = Math.max(h5Points, h9Points);
-            return tableRow(strongest >= 5 ? 'positive' : 'neutral',
+            return tableRow('neutral',
                 planet,
                 `H${placementHouse(planet)} · ${SIGNS[planetSigns[planet]]}`,
                 planetSkills[planet],
@@ -1506,6 +1519,46 @@
         ];
         const careerTable = dataTable(['Career check', 'Chart result', 'Interpretation'], careerRows);
         const careerDetail = 'Class 3 lordship and Saturn checks supplement the Class 2 combined SAV comparison; they are traditional indicators, not career advice.';
+
+        const relationshipFortuneRows = [
+            tableRow(houseScore(7) >= 28 && houseScore(9) >= 28 ? 'positive' : 'neutral',
+                'Both houses at 28+',
+                `7th ${houseScore(7)}; 9th ${houseScore(9)}`,
+                houseScore(7) >= 28 && houseScore(9) >= 28
+                    ? 'Joint-prosperity pattern: partnership and fortune are both well activated and can reinforce one another.'
+                    : 'The joint-prosperity threshold is not met by both houses.'
+            ),
+            tableRow(houseScore(9) > houseScore(7) && houseScore(9) >= 28 ? 'positive' : 'neutral',
+                '9th higher than 7th',
+                `9th ${houseScore(9)} vs 7th ${houseScore(7)}`,
+                houseScore(9) > houseScore(7)
+                    ? `The 9th-house lead emphasizes fortune, guidance, and grace flowing into partnership${houseScore(9) >= 28 ? '; its score reaches the 28+ reference.' : ', although the leading house remains below the 28+ reference.'}`
+                    : 'The 9th house does not lead in this chart; this direction of support is not indicated.'
+            ),
+            tableRow(houseScore(7) > houseScore(9) && houseScore(7) >= 28 ? 'positive' : 'neutral',
+                '7th higher than 9th',
+                `7th ${houseScore(7)} vs 9th ${houseScore(9)}`,
+                houseScore(7) > houseScore(9)
+                    ? `Partnership and the partner’s entry are emphasized as catalysts for 9th-house fortune themes${houseScore(7) >= 28 ? '; the leading score reaches the 28+ reference.' : ', although the leading house remains below the 28+ reference.'}`
+                    : 'The 7th house does not lead in this chart; this direction of support is not indicated.'
+            ),
+            tableRow(houseScore(7) < 25 && houseScore(9) < 25 ? 'negative' : 'neutral',
+                'Both houses below 25',
+                `7th ${houseScore(7)}; 9th ${houseScore(9)}`,
+                houseScore(7) < 25 && houseScore(9) < 25
+                    ? 'Both houses have relatively low SAV activation; consider the full chart rather than treating this as a prediction.'
+                    : 'This low-activation pattern is not present.'
+            )
+        ];
+        const relationshipFortuneTable = dataTable(
+            ['7th–9th comparison', 'Chart scores', 'Class 3 interpretation'],
+            relationshipFortuneRows
+        );
+        const relationshipFortuneStatus = houseScore(7) >= 28 && houseScore(9) >= 28
+            || (houseScore(9) > houseScore(7) && houseScore(9) >= 28)
+            || (houseScore(7) > houseScore(9) && houseScore(7) >= 28)
+            ? 'positive'
+            : houseScore(7) < 25 && houseScore(9) < 25 ? 'negative' : 'neutral';
 
         const fifthLord = houseLord(5);
         const fifthLordToSeventh = planetScore(fifthLord, 7);
@@ -1646,6 +1699,7 @@
             outcomeCard('Functional academic & professional domains', 'House-wise domains for all 12 houses', 'House topics provide context for interpreting sign and planetary indications.', functionalDomainTable, 'neutral'),
             outcomeCard('Planetary karakas for skills', 'Classical planetary skill associations and study-house BAV', 'Skill karakas are descriptive associations, not ability assessments.', karakaTable, 'neutral'),
             outcomeCard('Career direction: employment vs business', `${scoreLabel(6)} · ${scoreLabel(7)} · 10th lord ${tenthLord}`, careerDetail, careerTable, 'neutral'),
+            outcomeCard('7th & 9th house synergy: partnership and fortune', `${scoreLabel(7)} · ${scoreLabel(9)}`, 'A relative lead explains the direction of support; the 28+ joint-prosperity reference applies when both houses reach it. A higher score is not automatically positive outside this house-pair context.', relationshipFortuneTable, relationshipFortuneStatus),
             outcomeCard('Romantic courtship & love-marriage indicators', `${scoreLabel(5)} · ${scoreLabel(6)} · ${scoreLabel(7)}`, relationshipDetail, relationshipTable, classThreeRelationshipSupport ? 'positive' : classThreeRelationshipChallenge ? 'negative' : 'neutral'),
             outcomeCard('Home, mobility & foreign settlement', `${scoreLabel(3)} · ${scoreLabel(4)} · ${scoreLabel(12)}`, mobilityDetail, mobilityTable, 'neutral'),
             outcomeCard('Highest active desire technique', `3rd-house lord ${desireLord} is placed in H${desireLordHouse}; the opposite projected house is H${desireHouse} (${SIGNS[houseSign(desireHouse)]}).`, desireDetail, desireTable, 'neutral'),
