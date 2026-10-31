@@ -313,7 +313,7 @@
                     </div>
 
                     <p class="text-xs text-slate-300">
-                        Total Sarvashtakvarga (SAV) points distributed across 12 houses relative to Ascendant. Baseline average per house is 28 points. Houses with <span class="text-red-400 font-semibold">&lt;25 points</span> face structural obstacles, while <span class="text-emerald-400 font-semibold">30+ points</span> produce robust growth.
+                        Total Sarvashtakvarga (SAV) points distributed across 12 houses relative to Ascendant. The average is about 28 points per sign; <span class="text-red-400 font-semibold">&lt;25 points</span> indicates comparatively lower support, while <span class="text-emerald-400 font-semibold">30+ points</span> indicates stronger support. Read scores in pairs, not as guaranteed outcomes.
                     </p>
 
                     <div class="overflow-x-auto">
@@ -408,9 +408,9 @@
                     <div class="border-b border-amber-500/20 pb-3 flex justify-between items-center">
                         <div>
                             <h3 class="font-cinzel text-lg font-bold text-amber-300 flex items-center gap-2">
-                                <i data-lucide="compass" class="w-5 h-5 text-amber-400"></i> Part III: Sarvashtakvarga & Predictive Principles
+                                <i data-lucide="compass" class="w-5 h-5 text-amber-400"></i> Class 2: Sarvashtakvarga & Predictive Principles
                             </h3>
-                            <p class="text-xs text-slate-400 mt-1">Applying collective planetary benchmarks and financial flow rules to your active chart[cite: 13, 14].</p>
+                            <p class="text-xs text-slate-400 mt-1">Class 2 house-pair and bindu principles applied to the selected birth chart.</p>
                         </div>
                         <span class="text-[11px] bg-amber-500/10 text-amber-300 px-3 py-1 rounded-full border border-amber-500/20">Live Chart Diagnostic</span>
                     </div>
@@ -437,40 +437,40 @@
                         </div>
                     </div>
 
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-amber-500/20 space-y-3">
+                        <div>
+                            <h4 class="font-cinzel text-sm font-bold text-amber-300">Class 2: Chart-Specific House-Pair Outcomes</h4>
+                            <p class="text-[11px] text-slate-400 mt-1">Each reading compares the relevant whole-sign house SAV scores. The business-vs-job rule compares combined 10th+7th and 10th+6th points. Planetary contribution checks use the chart's BAV. Dasha–Bhukti timing is not applied to these outcomes.</p>
+                        </div>
+                        <div id="evalClassTwoOutcomes" class="grid grid-cols-1 xl:grid-cols-2 gap-3" aria-live="polite">
+                            <p class="text-xs text-slate-400">Calculating chart-specific outcomes...</p>
+                        </div>
+                        <div class="border-t border-slate-700 pt-3">
+                            <h5 class="text-xs font-bold text-amber-300 mb-1">SAV and planetary dignity context</h5>
+                            <div id="evalDignityOverrides" class="text-xs text-slate-300 space-y-1">Calculating...</div>
+                        </div>
+                        <p class="text-[10px] leading-relaxed text-slate-400 border-t border-slate-700 pt-3">
+                            These are traditional astrological interpretations, not certainties or substitutes for medical, financial, legal, or relationship advice. The house-pair method is a screening framework; a complete reading also considers planetary condition and timing.
+                        </p>
+                    </div>
+
                     <!-- Core Benchmarks Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
-                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">1. Auspicious Baseline Threshold (28 Bindus)</h4>
-                            <p class="text-xs text-slate-300 leading-relaxed">Derived by dividing total SAV points (337) by 12 signs. Houses scoring 28+ yield standard auspicious, progressive developments[cite: 13].</p>
+                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Average Reference (~28 Bindus)</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">337 total SAV bindus divided across 12 signs is about 28.1 per sign. Use this as a reference, then compare the relevant house pair.</p>
                         </div>
                         <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
-                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">2. The Buffer Zone (25–30 Bindus)</h4>
-                            <p class="text-xs text-slate-300 leading-relaxed">Scores ranging exactly between 25 and 30 Bindus act as neutral or average indicators[cite: 13].</p>
+                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Middle Band (25–29 Bindus)</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">Scores in this band are neither marked low (&lt;25) nor strong (30+); interpret them in relation to the paired house.</p>
                         </div>
                         <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
-                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">3. Malefic Zone (&lt;25 Bindus)</h4>
-                            <p class="text-xs text-slate-300 leading-relaxed">Any house scoring below 25 is significantly weakened, triggering structural hurdles or localized performance failures[cite: 13].</p>
+                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Lower SAV (&lt;25 Bindus)</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">A lower score indicates comparatively less SAV support for that sign; it does not by itself establish failure in the house's matters.</p>
                         </div>
                         <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
-                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">4. Maximum Auspiciousness (30+ Bindus)</h4>
-                            <p class="text-xs text-slate-300 leading-relaxed">Houses with 30+ points consistently experience robust, unhindered growth[cite: 13].</p>
-                        </div>
-                    </div>
-
-                    <!-- SAV vs. Planetary Dignity -->
-                    <div class="space-y-3">
-                        <h4 class="font-cinzel text-sm font-bold text-amber-300 flex items-center gap-2">
-                            <i data-lucide="shield" class="w-4 h-4 text-amber-400"></i> SAV vs. Planetary Dignity Overrides
-                        </h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-amber-950/20 p-4 rounded-xl border border-amber-500/25 space-y-1.5">
-                                <span class="text-xs font-bold text-amber-400 block">Ineffective Exaltation</span>
-                                <p class="text-xs text-slate-300 leading-relaxed">If a planet is exalted or situated inside its own sign/highly auspicious house, but the native's Sarvashtakvarga score for that sign falls below 25, the planet is rendered fundamentally ineffective, lacking local cosmic backing[cite: 13, 14].</p>
-                            </div>
-                            <div class="bg-emerald-950/20 p-4 rounded-xl border border-emerald-500/25 space-y-1.5">
-                                <span class="text-xs font-bold text-emerald-400 block">Empowered Debilitation</span>
-                                <p class="text-xs text-slate-300 leading-relaxed">Conversely, even if a planet is severely debilitated or positioned in a malefic house (6th, 8th, or 12th), a high local SAV score (30+ Bindus) empowers the planet, bypassing debility to deliver favorable results[cite: 14].</p>
-                            </div>
+                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Higher SAV (30+ Bindus)</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">A higher score indicates comparatively stronger SAV support. It is read alongside the paired house, BAV, dignity, and timing.</p>
                         </div>
                     </div>
 
@@ -479,58 +479,21 @@
                         <div class="space-y-3">
                             <h4 class="font-cinzel text-sm font-bold text-amber-300">The Four Pillars of Prosperity</h4>
                             <ul class="text-xs text-slate-300 space-y-2 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                <li><strong>1st & 9th Houses (Lagna & Fortune):</strong> Establish physical longevity, vitality, and natural ease of success[cite: 14].</li>
-                                <li><strong>10th & 11th Houses (Karma & Gains):</strong> Determine work environment, professional drive, status, and asset conversion[cite: 14].</li>
-                                <li><strong>The Dual Extremes:</strong> 30+ Bindus in all four houses promises exceptional luxury. Under 25 Bindus triggers lifelong struggle and servitude[cite: 14].</li>
+                                <li><strong>1st & 9th Houses:</strong> Compare Lagna and fortune-side support.</li>
+                                <li><strong>10th & 11th Houses:</strong> Compare career/effort and gains-side support.</li>
+                                <li><strong>Reading:</strong> All four at 30+ indicate strong support in this framework; all four below 25 indicate areas needing more attention—not a fixed life outcome.</li>
                             </ul>
                         </div>
                         <div class="space-y-3">
                             <h4 class="font-cinzel text-sm font-bold text-amber-300">The Equations of Financial Flow</h4>
                             <ul class="text-xs text-slate-300 space-y-2 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                <li><strong>Prosperity Standard:</strong> Gains (11th) &gt; Effort (10th) &amp; Gains (11th) &gt; Expenses (12th)[cite: 14].</li>
-                                <li><strong>Wealth Retention Formula:</strong> Retains savings only when Lagna (1st) &gt; Expenses (12th)[cite: 14].</li>
-                                <li><strong>The Work Overload Trap:</strong> If Effort (10th) &gt; Gains (11th), the native works grueling hours with little reward[cite: 14].</li>
+                                <li><strong>Prosperity comparison:</strong> Compare 11th-house gains with both 10th-house effort and 12th-house outflows.</li>
+                                <li><strong>Retention comparison:</strong> Compare 1st-house support with 12th-house outflows.</li>
+                                <li><strong>Interpretation:</strong> These relative scores are prompts for reflection, not financial forecasts.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- Predictive Cases Table -->
-                    <div class="space-y-3">
-                        <h4 class="font-cinzel text-sm font-bold text-amber-300">Practical Predictive Cases &amp; Remedies</h4>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs text-slate-200 border-collapse">
-                                <thead class="bg-slate-900/90 text-amber-400 uppercase font-cinzel border-b border-amber-500/20">
-                                    <tr>
-                                        <th class="py-2.5 px-3">Observation Variable</th>
-                                        <th class="py-2.5 px-3">Structural Astrological Result</th>
-                                        <th class="py-2.5 px-3">Practical Remedial Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-800 text-slate-300">
-                                    <tr class="hover:bg-slate-800/50">
-                                        <td class="py-2.5 px-3 font-semibold text-amber-300">High 6th House Score (35+ pts)</td>
-                                        <td class="py-2.5 px-3">Financial gains depend heavily on service, problem-solving, and physical labor[cite: 14].</td>
-                                        <td class="py-2.5 px-3">Avoid purely passive roles; engage in active consulting, medical work, or law[cite: 14].</td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-800/50">
-                                        <td class="py-2.5 px-3 font-semibold text-amber-300">Weak 9th House Score (&lt;20 pts)</td>
-                                        <td class="py-2.5 px-3">The native receives little or no support from luck, fortune, or cosmic timing[cite: 14].</td>
-                                        <td class="py-2.5 px-3">Reject relying on luck or speculation. Absolute focus on self-earned results[cite: 14].</td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-800/50">
-                                        <td class="py-2.5 px-3 font-semibold text-amber-300">High 12th House / Low Lagna</td>
-                                        <td class="py-2.5 px-3">Heavy, uncontrolled expenses leading to constant financial stress and dissatisfaction[cite: 14].</td>
-                                        <td class="py-2.5 px-3">Migrate away from birthplace; perform international business or lock money in long-term assets[cite: 14].</td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-800/50">
-                                        <td class="py-2.5 px-3 font-semibold text-amber-300">Weak 5th House Score (&lt;20 pts)</td>
-                                        <td class="py-2.5 px-3">High probability of financial loss in speculation or market ventures[cite: 14].</td>
-                                        <td class="py-2.5 px-3">Absolute prohibition from entering stock lotteries, high-risk options trading, or speculation[cite: 14].</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -853,6 +816,8 @@
             Jupiter: Math.floor(pos.Ju / 30),
             Venus: Math.floor(pos.Ve / 30),
             Saturn: Math.floor(pos.Sa / 30),
+            Rahu: Math.floor(pos.Ra / 30),
+            Ketu: Math.floor(pos.Ke / 30),
             Lagna: lagnaSign
         };
 
@@ -911,10 +876,9 @@
             const savVal = savArr[signIdx];
             const bavVal = bavArr[signIdx];
             
-            let statusBadge = '<span class="text-slate-400">Neutral (25-29)</span>';
+            let statusBadge = '<span class="text-slate-400">Middle (25-29)</span>';
             if (savVal >= 30) statusBadge = '<span class="text-emerald-400 font-bold">Strong (30+)</span>';
-            else if (savVal < 25) statusBadge = '<span class="text-red-400 font-bold">Weak (&lt;25)</span>';
-            if (savVal < 21) statusBadge = '<span class="text-red-500 font-extrabold">Annihilation (&lt;21)</span>';
+            else if (savVal < 25) statusBadge = '<span class="text-red-400 font-bold">Lower (&lt;25)</span>';
 
             html += `<tr class="hover:bg-slate-800/50">
                 <td class="py-2.5 px-3 font-semibold text-amber-300">House ${h + 1}</td>
@@ -966,47 +930,199 @@
         $('fullBavBody').innerHTML = bodyHtml;
     }
 
-    function updatePredictiveEvaluation(name, lg, sav) {
+    function updatePredictiveEvaluation(name, lg, sav, ashtakvargaData) {
         $('predictiveActiveName').textContent = name;
-        
-        // Four Pillars: House 1 (Lagna), House 9 (Fortune), House 10 (Karma), House 11 (Gains)
-        const h1 = sav[lg];
-        const h9 = sav[(lg + 8) % 12];
-        const h10 = sav[(lg + 9) % 12];
-        const h11 = sav[(lg + 10) % 12];
-        
+
+        const bav = ashtakvargaData.bav;
+        const planetSigns = ashtakvargaData.planetSigns;
+        const signRulers = ['Mars', 'Venus', 'Mercury', 'Moon', 'Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Saturn', 'Jupiter'];
+        const houseSign = house => (lg + house - 1) % 12;
+        const houseScore = house => sav[houseSign(house)];
+        const houseLord = house => signRulers[houseSign(house)];
+        const planetScore = (planet, house) => bav[planet][houseSign(house)];
+        const band = value => value >= 30 ? 'strong (30+)' : value < 25 ? 'lower (<25)' : 'middle (25-29)';
+        const scoreLabel = house => `H${house} ${SIGNS[houseSign(house)]}: ${houseScore(house)} (${band(houseScore(house))})`;
+        const scoreEvidence = houses => houses.map(scoreLabel).join(' · ');
+        const compare = (leftScore, rightScore, leftSide, rightSide) => {
+            if (leftScore === rightScore) return `The ${leftSide} and ${rightSide} scores are equal; SAV alone does not favor either side.`;
+            const strongerSide = leftScore > rightScore ? leftSide : rightSide;
+            const difference = Math.abs(leftScore - rightScore);
+            return `The ${strongerSide} side leads by ${difference} bindu${difference === 1 ? '' : 's'} in this comparison.`;
+        };
+        const outcomeCard = (title, houses, interpretation, detail = '') => `
+            <article class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-700 space-y-1.5">
+                <h5 class="text-xs font-bold text-amber-300">${title}</h5>
+                <p class="text-[10px] text-slate-400">${scoreEvidence(houses)}</p>
+                <p class="text-xs text-slate-200 leading-relaxed">${interpretation}</p>
+                ${detail ? `<p class="text-[10px] text-slate-400 leading-relaxed">${detail}</p>` : ''}
+            </article>`;
+
+        const h1 = houseScore(1);
+        const h2 = houseScore(2);
+        const h4 = houseScore(4);
+        const h5 = houseScore(5);
+        const h6 = houseScore(6);
+        const h7 = houseScore(7);
+        const h8 = houseScore(8);
+        const h9 = houseScore(9);
+        const h10 = houseScore(10);
+        const h11 = houseScore(11);
+        const h12 = houseScore(12);
+
         const pillarHtml = `
-            <div>1st House (Lagna): <strong class="${h1>=30?'text-emerald-400':h1<25?'text-red-400':'text-amber-300'}">${h1} pts</strong></div>
-            <div>9th House (Fortune): <strong class="${h9>=30?'text-emerald-400':h9<25?'text-red-400':'text-amber-300'}">${h9} pts</strong></div>
-            <div>10th House (Karma): <strong class="${h10>=30?'text-emerald-400':h10<25?'text-red-400':'text-amber-300'}">${h10} pts</strong></div>
-            <div>11th House (Gains): <strong class="${h11>=30?'text-emerald-400':h11<25?'text-red-400':'text-amber-300'}">${h11} pts</strong></div>
+            <div>1st House (Lagna): <strong class="${h1 >= 30 ? 'text-emerald-400' : h1 < 25 ? 'text-red-400' : 'text-amber-300'}">${h1} pts</strong></div>
+            <div>9th House (Fortune): <strong class="${h9 >= 30 ? 'text-emerald-400' : h9 < 25 ? 'text-red-400' : 'text-amber-300'}">${h9} pts</strong></div>
+            <div>10th House (Karma): <strong class="${h10 >= 30 ? 'text-emerald-400' : h10 < 25 ? 'text-red-400' : 'text-amber-300'}">${h10} pts</strong></div>
+            <div>11th House (Gains): <strong class="${h11 >= 30 ? 'text-emerald-400' : h11 < 25 ? 'text-red-400' : 'text-amber-300'}">${h11} pts</strong></div>
         `;
         $('evalFourPillars').innerHTML = pillarHtml;
 
-        // Financial Flow Equations
-        const h12 = sav[(lg + 11) % 12];
-        const gainsVsEffort = h11 > h10 ? '<span class="text-emerald-400 font-semibold">Gains > Effort (Favorable)</span>' : '<span class="text-red-400 font-semibold">Effort > Gains (Work Overload Trap)</span>';
-        const retention = h1 > h12 ? '<span class="text-emerald-400 font-semibold">Lagna > Expenses (Good Retention)</span>' : '<span class="text-red-400 font-semibold">Expenses > Lagna (High Expense Stress)</span>';
-        
+        const gainsComparison = `${compare(h11, h10, '11th-house gains', '10th-house effort')} ${compare(h11, h12, '11th-house gains', '12th-house outflows')}`;
+        const retentionComparison = compare(h1, h12, '1st-house support', '12th-house outflows');
+        const prosperitySupported = h11 > h10 && h11 > h12;
         $('evalFinancialFlow').innerHTML = `
-            <div>${gainsVsEffort}</div>
-            <div>${retention}</div>
-            <div class="text-[11px] text-slate-400 mt-0.5">12th (Expenses): ${h12} pts</div>
+            <div class="${prosperitySupported ? 'text-emerald-400' : 'text-amber-300'} font-semibold">${prosperitySupported ? '11th-house gains exceed both effort and outflows.' : 'The prosperity comparison is mixed; review both effort and outflows.'}</div>
+            <div>${gainsComparison}</div>
+            <div>${retentionComparison}</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">12th House (Outflows): ${h12} pts</div>
         `;
 
-        // Directives & Warnings
-        let directives = [];
-        const h5 = sav[(lg + 4) % 12];
-        const h6 = sav[(lg + 5) % 12];
-        
-        if (h5 < 20) directives.push('⚠️ 5th House < 20 pts: Absolute prohibition from speculation/options trading[cite: 14].');
-        else directives.push('✓ 5th House stable for calculated ventures.');
-
-        if (h6 >= 35) directives.push('💼 High 6th House (35+ pts): Lean towards active service, consulting, or law[cite: 14].');
-        
-        if (h9 < 20) directives.push('⚡ Weak 9th House (< 20 pts): Rely strictly on self-earned results rather than luck[cite: 14].');
-
+        const directives = [];
+        if (h6 >= 35) directives.push('The notes associate a 6th-house score of 35+ with service, problem-solving, and active work themes.');
+        if (h5 < 20) directives.push('The 5th-house score is below 20; review its paired-house and BAV context rather than treating this score alone as a prediction.');
+        if (h1 < 25 && h12 > h1) directives.push('The 12th-house outflow score exceeds the lower 1st-house score; the notes invite closer review of the resource and mobility pairs.');
+        if (!directives.length) directives.push('No special threshold is triggered in this summary; use the chart-specific pair readings below.');
         $('evalDirectives').innerHTML = directives.map(x => `<div>${x}</div>`).join('');
+
+        const employmentReading = compare(h6, h10, 'service and routine', 'career status and achievement')
+            + (h6 >= 30 && h10 >= 30 ? ' Both sides are strong in SAV, linking service routines with career visibility.' : '');
+        const businessReading = compare(h7, h10, 'business and partnership', 'career status')
+            + (h7 >= 30 && h10 >= 30 ? ' Both sides are strong in SAV, supporting both venture and professional-status themes in this framework.' : '');
+        const businessVsJobBusiness = h10 + h7;
+        const businessVsJobEmployment = h10 + h6;
+        let businessVsJobReading;
+        if (businessVsJobBusiness > businessVsJobEmployment) {
+            businessVsJobReading = `The business total leads by ${businessVsJobBusiness - businessVsJobEmployment} points; this comparison favors business themes.`;
+        } else if (businessVsJobEmployment > businessVsJobBusiness) {
+            businessVsJobReading = `The job total leads by ${businessVsJobEmployment - businessVsJobBusiness} points; this comparison favors employment themes.`;
+        } else {
+            businessVsJobReading = 'The totals are equal; this comparison does not favor business or employment.';
+        }
+        businessVsJobReading += ' The 10th-house score is included in both totals, so mathematically the comparison reduces to 7th-house vs 6th-house SAV.';
+        const debtReading = compare(h2, h6, 'liquid resources', 'debt and repayment strain')
+            + (h6 > h2 ? ' The notes suggest reviewing liabilities alongside available resources.' : ' The resource side is not outscored by the debt side.');
+
+        const fifthMars = planetScore('Mars', 5);
+        const fifthSaturn = planetScore('Saturn', 5);
+        const fifthSun = planetScore('Sun', 5);
+        const fifthKetuHouse = ((planetSigns.Ketu - lg + 12) % 12) + 1;
+        const fifthRahuHouse = ((planetSigns.Rahu - lg + 12) % 12) + 1;
+        const twelfthLord = houseLord(12);
+        const twelfthLordInFifth = planetScore(twelfthLord, 5);
+        let conceptionReading;
+        if (h5 > h6 && h5 > h8) {
+            conceptionReading = 'The 5th-house SAV score exceeds both the 6th and 8th, matching the notes’ comparatively supportive conception/delivery benchmark.';
+        } else if (h5 < h6 && h5 < h8) {
+            conceptionReading = 'The 5th-house score trails both the 6th and 8th; the notes flag this pattern for careful review, not as a medical or fertility conclusion.';
+        } else {
+            conceptionReading = 'The 5th-house score does not clearly outscore both challenge houses; this is a mixed comparison in the notes’ framework.';
+        }
+        const conceptionFlags = [];
+        if (fifthSun >= 4 || fifthMars >= 4) conceptionFlags.push('Sun/Mars has an elevated BAV contribution (4+) in the 5th-house sign; the notes describe this as a traditional fire-element flag.');
+        if (fifthSaturn >= 4) conceptionFlags.push('Saturn has an elevated BAV contribution (4+) in the 5th-house sign; the notes describe this as a traditional air-element flag.');
+        if (fifthMars <= 3 && fifthSaturn <= 3 && h5 < h6 && h5 < h8) conceptionFlags.push('Mars and Saturn each contribute 3 or fewer bindus, resembling the notes’ delayed-conception example with fewer such BAV indicators.');
+        if (twelfthLordInFifth === 5) conceptionFlags.push(`The 12th-house lord contributes 5 bindus to the 5th-house sign, matching an expense/hospital-care example in the notes; this is not a prediction of treatment or medical need.`);
+        const conceptionDetail = `BAV in the 5th-house sign — Sun ${fifthSun}, Mars ${fifthMars}, Saturn ${fifthSaturn}; Rahu is in house ${fifthRahuHouse} and Ketu in house ${fifthKetuHouse} (the nodes are not BAV contributors). ${twelfthLord} (12th-house lord) contributes ${twelfthLordInFifth} bindu${twelfthLordInFifth === 1 ? '' : 's'} to the 5th-house sign. ${conceptionFlags.join(' ') || 'No specific elemental or 12th-lord example threshold is triggered.'} Dasha–Bhukti context is required for timing and is not included here.`;
+
+        const sixthLordInSeventh = planetScore(houseLord(6), 7);
+        const seventhLordInSixth = planetScore(houseLord(7), 6);
+        const saturnInFirst = planetScore('Saturn', 1);
+        const saturnOnLagnaLordSign = bav.Saturn[planetSigns[houseLord(1)]];
+        const marsInFirst = planetScore('Mars', 1);
+        const marsInSixth = planetScore('Mars', 6);
+        const marsInSeventh = planetScore('Mars', 7);
+        const saturnInSeventh = planetScore('Saturn', 7);
+        const jupiterInSeventh = planetScore('Jupiter', 7);
+        const mercuryInSeventh = planetScore('Mercury', 7);
+        const marriageFlags = [];
+        if (h6 > h7) marriageFlags.push('The 6th-house score exceeds the 7th, so the notes flag the conflict/friction side for attention.');
+        if (sixthLordInSeventh >= 6 || seventhLordInSixth >= 6) marriageFlags.push(`A high lord contribution reaches the opposing sign (6th lord→7th: ${sixthLordInSeventh}; 7th lord→6th: ${seventhLordInSixth}), a separation trigger described in the notes.`);
+        if (h8 >= 30) marriageFlags.push('The 8th-house SAV is 30+; the notes treat a high 8th-house score as a relationship-trust theme to discuss carefully.');
+        if (h1 - h7 >= 10) marriageFlags.push(`The 1st-house score leads the 7th by ${h1 - h7}; the notes use a 10-point gap as an example of a relationship-balance concern.`);
+        if (h1 - h7 >= 8) marriageFlags.push('The 1st-house score is at least 8 points above the 7th, matching the notes’ example of stronger independence themes.');
+        if (h1 > h7 && h6 > h7) marriageFlags.push('Both the 1st and 6th score above the 7th, a pattern the notes associate with independence outweighing commitment.');
+        if (saturnInFirst >= 4 || saturnOnLagnaLordSign >= 4) marriageFlags.push(`Saturn contributes ${saturnInFirst} bindus to the 1st-house sign and ${saturnOnLagnaLordSign} to the Lagna-lord sign; 4+ is the notes’ marriage-delay indicator.`);
+        if (marsInFirst >= 4 || marsInSixth >= 4) marriageFlags.push(`Mars contributes ${marsInFirst} bindus to the 1st and ${marsInSixth} to the 6th; the notes associate high contributions here with independence themes.`);
+        const competitiveScores = [h1, h6, h7];
+        if (competitiveScores.every(value => value >= 28) && Math.max(...competitiveScores) - Math.min(...competitiveScores) <= 2) {
+            marriageFlags.push('The 1st, 6th, and 7th scores are all 28+ and within 2 points, resembling the notes’ example of competing priorities.');
+        }
+        const balancedMarriage = Math.abs(h1 - h7) <= 1 && h6 < h7 && h8 < h7
+            && marsInSeventh <= 3 && saturnInSeventh <= 3
+            && Math.max(jupiterInSeventh, mercuryInSeventh) >= 6
+            && sixthLordInSeventh <= 4;
+        if (balancedMarriage) marriageFlags.push('The notes’ supportive-marriage checks align: 1st/7th are balanced, 6th/8th are lower than 7th, Mars/Saturn are low in 7th, a benefic scores 6+, and the 6th lord scores 4 or less there.');
+        if (!marriageFlags.length) marriageFlags.push('No specific marriage threshold from the notes is triggered. Compare the 5th/6th/7th SAV scores and BAV contributions in context.');
+        const romanceReading = `${compare(h5, h6, 'romance and courtship', 'daily friction')} ${compare(h5, h7, 'romance and courtship', 'formal partnership')} ${compare(h6, h7, 'daily friction', 'formal partnership')}`
+            + ' The 7th-house score represents the formal partnership side; these three houses should be read together.';
+
+        const fourPillars = [h1, h9, h10, h11];
+        let pillarsReading = 'The four scores are mixed; compare Lagna/fortune (1st/9th) with career/gains (10th/11th).';
+        if (fourPillars.every(value => value >= 30)) pillarsReading = 'All four pillars score 30+, showing strong SAV support across Lagna, fortune, career, and gains in this framework.';
+        else if (fourPillars.every(value => value < 25)) pillarsReading = 'All four pillars are below 25, marking several areas for attention in this framework; this is not a fixed life outcome.';
+        else if (h1 >= 30 && h9 >= 30) pillarsReading = 'The 1st/9th foundation scores are both strong (30+); career and gains (10th/11th) remain separate considerations.';
+
+        const mobilityReading = compare(h12, h4, 'foreign residence and distant horizons', 'home, roots, and local comfort')
+            + (h12 > h4 ? ' The notes associate a stronger 12th-house side with mobility; it does not establish that relocation will occur.' : ' The notes associate a stronger 4th-house side with a stronger pull toward home.');
+        const postMarriageReading = compare(h7, h9, 'partnership', 'fortune and shared prosperity')
+            + ' The notes pair these houses when considering longer-term fortunes after marriage.';
+        const occultReading = h8 >= 30 && h10 >= 30 && h2 >= 30
+            ? 'The 8th (occult/hidden sciences), 10th (profession), and 2nd (monetization) all score 30+, aligning with the notes’ combined-profession pattern.'
+            : `Compare the 8th-house interest (${h8}), 10th-house career (${h10}), and 2nd-house monetization (${h2}); stronger support in all three would more closely match the notes’ combined-profession pattern.`;
+
+        const outcomes = [
+            outcomeCard('Four pillars: Lagna, fortune, career & gains', [1, 9, 10, 11], pillarsReading),
+            outcomeCard('Wealth & outflows', [2, 12], compare(h2, h12, 'savings and family resources', 'expenditures and outflows') + (h2 > h12 ? ' The resource side leads in the notes’ wealth-retention comparison.' : ' Review the resources-versus-outflows balance; SAV alone is not a financial forecast.')),
+            outcomeCard('Physical vitality', [1, 6], compare(h1, h6, 'vitality and constitution', 'illness and health-management themes') + ' The notes pair these houses; this is not a diagnosis or health assessment.'),
+            outcomeCard('Employment & jobs', [6, 10], employmentReading),
+            outcomeCard('Business operations', [7, 10], businessReading),
+            outcomeCard('Business vs job (combined SAV)', [10, 7, 6], businessVsJobReading, `Business: 10th (${h10}) + 7th (${h7}) = ${businessVsJobBusiness}. Job: 10th (${h10}) + 6th (${h6}) = ${businessVsJobEmployment}.`),
+            outcomeCard('Debts & loans', [2, 6], debtReading),
+            outcomeCard('Childbirth & conception framework', [5, 6, 8, 12], conceptionReading, conceptionDetail),
+            outcomeCard('Romantic love, marriage & relationship balance', [1, 5, 6, 7, 8], romanceReading, `${marriageFlags.join(' ') } BAV: 6th lord→7th ${sixthLordInSeventh}; 7th lord→6th ${seventhLordInSixth}; Saturn/Mars in 7th ${saturnInSeventh}/${marsInSeventh}; Jupiter/Mercury in 7th ${jupiterInSeventh}/${mercuryInSeventh}.`),
+            outcomeCard('Post-marital fortune', [7, 9], postMarriageReading),
+            outcomeCard('Foreign travel & geographic mobility', [4, 12], mobilityReading),
+            outcomeCard('Occult professions', [2, 8, 10], occultReading)
+        ];
+        $('evalClassTwoOutcomes').innerHTML = outcomes.join('');
+
+        const dignityRules = {
+            Sun: { own: [4], exalted: 0, debilitated: 6 },
+            Moon: { own: [3], exalted: 1, debilitated: 7 },
+            Mars: { own: [0, 7], exalted: 9, debilitated: 3 },
+            Mercury: { own: [2, 5], exalted: 5, debilitated: 11 },
+            Jupiter: { own: [8, 11], exalted: 3, debilitated: 9 },
+            Venus: { own: [1, 6], exalted: 11, debilitated: 5 },
+            Saturn: { own: [9, 10], exalted: 6, debilitated: 0 }
+        };
+        const dignityReadings = [];
+        Object.entries(dignityRules).forEach(([planet, rule]) => {
+            const sign = planetSigns[planet];
+            const signScore = sav[sign];
+            const house = ((sign - lg + 12) % 12) + 1;
+            const isOwn = rule.own.includes(sign);
+            const isExalted = rule.exalted === sign;
+            const isDebilitated = rule.debilitated === sign;
+            if ((isOwn || isExalted) && signScore < 25) {
+                dignityReadings.push(`${planet} is ${isExalted ? 'exalted' : 'in its own sign'} in ${SIGNS[sign]} (SAV ${signScore}); the notes caution that low local SAV can temper dignity.`);
+            }
+            if ((isDebilitated || [6, 8, 12].includes(house)) && signScore >= 30) {
+                dignityReadings.push(`${planet} is ${isDebilitated ? 'debilitated' : `in house ${house}`} in ${SIGNS[sign]} (SAV ${signScore}); the notes describe 30+ local SAV as support that may cushion the placement.`);
+            }
+        });
+        $('evalDignityOverrides').innerHTML = dignityReadings.length
+            ? dignityReadings.map(reading => `<div>${reading}</div>`).join('')
+            : '<div>No listed dignity/SAV override is triggered among the seven BAV planets in this chart.</div>';
     }
 
     function generateHoroscope(e) {
@@ -1035,7 +1151,7 @@
         const userName = $('fullName').value.trim() || 'User';
 
         // Update Predictive Principles evaluation card
-        updatePredictiveEvaluation(userName, lg, globalAshtakvargaData.sav);
+        updatePredictiveEvaluation(userName, lg, globalAshtakvargaData.sav, globalAshtakvargaData);
 
         // Basic details
         $('resName').textContent = userName;
@@ -1159,13 +1275,23 @@
         $('reportLagnaText').textContent = `Your Ascendant (Lagna) is placed in ${SIGNS[lg]} at ${dm(asc % 30)}. The Ascendant defines your physical outlook, innate strengths, and core personality traits.`;
         $('reportMoonText').textContent = `Your Moon sign (Rashi) is ${SIGNS[Math.floor(pos.Mo / 30)]} placed in ${NAK[ni]} Nakshatra (Pada ${pada}). This dictates your emotional mindset, instincts, and psychological patterns.`;
         
-        const h10Sav = globalAshtakvargaData.sav[(lg + 9) % 12];
-        const h11Sav = globalAshtakvargaData.sav[(lg + 10) % 12];
-        const h9Sav = globalAshtakvargaData.sav[(lg + 8) % 12];
+        const chartSav = globalAshtakvargaData.sav;
+        const reportHouseScore = house => chartSav[(lg + house - 1) % 12];
+        const h1Sav = reportHouseScore(1);
+        const h2Sav = reportHouseScore(2);
+        const h4Sav = reportHouseScore(4);
+        const h6Sav = reportHouseScore(6);
+        const h7Sav = reportHouseScore(7);
+        const h9Sav = reportHouseScore(9);
+        const h10Sav = reportHouseScore(10);
+        const h11Sav = reportHouseScore(11);
+        const h12Sav = reportHouseScore(12);
         $('reportAshtakvargaSummary').innerHTML = `
-            <p><strong>Career & Authority (10th House SAV Score: ${h10Sav} pts):</strong> ${h10Sav >= 30 ? 'High professional command, robust leadership potential, and smooth career advancement.' : h10Sav >= 25 ? 'Steady professional progression with standard effort.' : 'Requires diligent persistence due to moderate localized support.'}</p>
-            <p><strong>Gains & Wealth Flow (11th House SAV Score: ${h11Sav} pts):</strong> ${h11Sav >= 35 ? 'Exceptional income generation, high liquidity, and massive network fulfillment.' : 'Balanced financial inflows with steady asset accumulation.'}</p>
-            <p><strong>Dharma & Higher Learning (9th House SAV Score: ${h9Sav} pts):</strong> ${h9Sav >= 28 ? 'Strong philosophical grounding, long-distance fortune, and mentor blessings.' : 'Moderate fortune requiring personal initiative.'}</p>
+            <p><strong>Wealth & outflows (2nd/12th):</strong> House 2 ${h2Sav} vs House 12 ${h12Sav} bindus. ${h2Sav > h12Sav ? 'The resource score leads the outflow score.' : h2Sav < h12Sav ? 'The outflow score leads the resource score.' : 'The scores are equal.'}</p>
+            <p><strong>Vitality & health-management themes (1st/6th):</strong> House 1 ${h1Sav} vs House 6 ${h6Sav} bindus. This traditional comparison is not a diagnosis.</p>
+            <p><strong>Employment & business (6th/10th and 7th/10th):</strong> House 6 ${h6Sav}, House 7 ${h7Sav}, House 10 ${h10Sav} bindus. These pairs compare service, independent ventures, and career status.</p>
+            <p><strong>Fortune, gains & mobility (9th/10th/11th and 4th/12th):</strong> House 9 ${h9Sav}, House 10 ${h10Sav}, House 11 ${h11Sav}, House 4 ${h4Sav}, House 12 ${h12Sav} bindus. See Predictive Principles for the full Class 2 pair readings.</p>
+            <p class="text-[10px] text-slate-400">Interpretations are traditional and comparative, not certain outcomes or professional advice.</p>
         `;
     }
 
