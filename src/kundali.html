@@ -122,6 +122,7 @@
                                 <!-- Populated dynamically -->
                             </ul>
                         </div>
+                        <p class="mt-1.5 text-[10px] leading-relaxed text-slate-500">Search 150+ Indian cities and major international locations. Select a suggestion to fill its coordinates and timezone; you can adjust them manually.</p>
                     </div>
 
                     <!-- Lat / Lon / Timezone -->
@@ -422,7 +423,7 @@
                     <p class="text-[11px] leading-relaxed text-slate-400">
                         SAV points measure the strength of a house’s activation, not whether that house is inherently good or bad.
                         About 28 is the average reference; below 25 is relatively low, 25–29 is near average, and 30+ is strong.
-                        Colors describe the specific house-pair principle being assessed: a strong 6th-house score may intensify service themes in a career comparison, but can mean more debt or friction in another comparison. Read the house topics and comparison together; never assign a color from the score alone.
+                        Under this reading rule, 30+ SAV in the 6th, 8th, or 12th house is always marked challenging (red), whatever theme it activates; 25–29 is contextual, not a verdict. For other houses, colors describe the specific house-pair principle being assessed. Read the house topics and comparisons together; SAV is not a prediction by itself.
                     </p>
 
                     <!-- DYNAMIC CHART OUTCOME CARD -->
@@ -647,7 +648,121 @@
     <!-- EPHEMERIS & ASHTAKVARGA PREDICTIVE ENGINE -->
     <script>
     const RAW=`Mumbai|Maharashtra, India|19.076|72.8777|K;Pune|Maharashtra, India|18.5204|73.8567|K;Nagpur|Maharashtra, India|21.1458|79.0882|K;Nashik|Maharashtra, India|19.9975|73.7898|K;Thane|Maharashtra, India|19.2183|72.9781|K;Aurangabad|Maharashtra, India|19.8762|75.3433|K;Kolhapur|Maharashtra, India|16.705|74.2433|K;Solapur|Maharashtra, India|17.6599|75.9064|K;Satara|Maharashtra, India|17.6805|74.0183|K;Sangli|Maharashtra, India|16.8524|74.5815|K;Nanded|Maharashtra, India|19.1383|77.321|K;Ahilyanagar (Ahmednagar)|Maharashtra, India|19.0948|74.748|K;Delhi|India|28.6139|77.209|K;Bengaluru|Karnataka, India|12.9716|77.5946|K;Mysuru|Karnataka, India|12.2958|76.6394|K;Mangaluru|Karnataka, India|12.9141|74.856|K;Chennai|Tamil Nadu, India|13.0827|80.2707|K;Coimbatore|Tamil Nadu, India|11.0168|76.9558|K;Madurai|Tamil Nadu, India|9.9252|78.1198|K;Kolkata|West Bengal, India|22.5726|88.3639|K;Hyderabad|Telangana, India|17.385|78.4867|K;Visakhapatnam|Andhra Pradesh, India|17.6868|83.2185|K;Vijayawada|Andhra Pradesh, India|16.5062|80.648|K;Ahmedabad|Gujarat, India|23.0225|72.5714|K;Surat|Gujarat, India|21.1702|72.8311|K;Vadodara|Gujarat, India|22.3072|73.1812|K;Jaipur|Rajasthan, India|26.9124|75.7873|K;Jodhpur|Rajasthan, India|26.2389|73.0243|K;Udaipur|Rajasthan, India|24.5854|73.7125|K;Lucknow|Uttar Pradesh, India|26.8467|80.9462|K;Kanpur|Uttar Pradesh, India|26.4499|80.3319|K;Varanasi|Uttar Pradesh, India|25.3176|82.9739|K;Agra|Uttar Pradesh, India|27.1767|78.0081|K;Prayagraj|Uttar Pradesh, India|25.4358|81.8463|K;Mathura|Uttar Pradesh, India|27.4924|77.6737|K;Indore|Madhya Pradesh, India|22.7196|75.8577|K;Bhopal|Madhya Pradesh, India|23.2599|77.4126|K;Ujjain|Madhya Pradesh, India|23.1765|75.7885|K;Gwalior|Madhya Pradesh, India|26.2183|78.1828|K;Raipur|Chhattisgarh, India|21.2514|81.6296|K;Patna|Bihar, India|25.5941|85.1376|K;Ranchi|Jharkhand, India|23.3441|85.3096|K;Bhubaneswar|Odisha, India|20.2961|85.8245|K;Guwahati|Assam, India|26.1445|91.7362|K;Amritsar|Punjab, India|31.634|74.8723|K;Ludhiana|Punjab, India|30.901|75.8573|K;Chandigarh|India|30.7333|76.7794|K;Dehradun|Uttarakhand, India|30.3165|78.0322|K;Haridwar|Uttarakhand, India|29.9457|78.1642|K;Shimla|Himachal Pradesh, India|31.1048|77.1734|K;Srinagar|Jammu & Kashmir, India|34.0837|74.7973|K;Panaji|Goa, India|15.4909|73.8278|K;Kochi|Kerala, India|9.9312|76.2673|K;Thiruvananthapuram|Kerala, India|8.5241|76.9366|K;Kathmandu|Nepal|27.7172|85.324|Asia/Kathmandu;Colombo|Sri Lanka|6.9271|79.8612|Asia/Colombo;Dhaka|Bangladesh|23.8103|90.4125|Asia/Dhaka;Karachi|Pakistan|24.8607|67.0011|Asia/Karachi;Lahore|Pakistan|31.5204|74.3587|Asia/Karachi;Dubai|UAE|25.2048|55.2708|Asia/Dubai;Abu Dhabi|UAE|24.4539|54.3773|Asia/Dubai;Muscat|Oman|23.588|58.3829|Asia/Muscat;Doha|Qatar|25.2854|51.531|Asia/Qatar;Riyadh|Saudi Arabia|24.7136|46.6753|Asia/Riyadh;Singapore|Singapore|1.3521|103.8198|Asia/Singapore;Kuala Lumpur|Malaysia|3.139|101.6869|Asia/Kuala_Lumpur;Bangkok|Thailand|13.7563|100.5018|Asia/Bangkok;Hong Kong|China|22.3193|114.1694|Asia/Hong_Kong;Tokyo|Japan|35.6762|139.6503|Asia/Tokyo;Sydney|Australia|-33.8688|151.2093|Australia/Sydney;Melbourne|Australia|-37.8136|144.9631|Australia/Melbourne;Auckland|New Zealand|-36.8485|174.7633|Pacific/Auckland;London|United Kingdom|51.5074|-0.1278|Europe/London;Paris|France|48.8566|2.3522|Europe/Paris;Berlin|Germany|52.52|13.405|Europe/Berlin;Nairobi|Kenya|-1.2921|36.8219|Africa/Nairobi;Johannesburg|South Africa|-26.2041|28.0473|Africa/Johannesburg;Port Louis|Mauritius|-20.1609|57.5012|Indian/Mauritius;New York|USA|40.7128|-74.006|America/New_York;Edison, NJ|USA|40.5187|-74.4121|America/New_York;Chicago|USA|41.8781|-87.6298|America/Chicago;Houston|USA|29.7604|-95.3698|America/Chicago;Dallas|USA|32.7767|-96.797|America/Chicago;Los Angeles|USA|34.0522|-118.2437|America/Los_Angeles;San Francisco|USA|37.7749|-122.4194|America/Los_Angeles;San Jose|USA|37.3382|-121.8863|America/Los_Angeles;Seattle|USA|47.6062|-122.3321|America/Los_Angeles;Toronto|Canada|43.6532|-79.3832|America/Toronto;Vancouver|Canada|49.2827|-123.1207|America/Vancouver`;
-    const CITIES=RAW.split(';').map(s=>{const a=s.split('|');return{n:a[0],r:a[1],lat:+a[2],lon:+a[3],tz:a[4]==='K'?'Asia/Kolkata':a[4]}});
+    const INDIAN_CITIES = [
+        { n: 'Tirupati', r: 'Andhra Pradesh, India', lat: 13.6288, lon: 79.4192 },
+        { n: 'Guntur', r: 'Andhra Pradesh, India', lat: 16.3067, lon: 80.4365 },
+        { n: 'Kurnool', r: 'Andhra Pradesh, India', lat: 15.8281, lon: 78.0373 },
+        { n: 'Rajahmundry', r: 'Andhra Pradesh, India', lat: 17.0005, lon: 81.8040 },
+        { n: 'Nellore', r: 'Andhra Pradesh, India', lat: 14.4426, lon: 79.9865 },
+        { n: 'Anantapur', r: 'Andhra Pradesh, India', lat: 14.6819, lon: 77.6006 },
+        { n: 'Kadapa', r: 'Andhra Pradesh, India', lat: 14.4674, lon: 78.8241 },
+        { n: 'Kakinada', r: 'Andhra Pradesh, India', lat: 16.9891, lon: 82.2475 },
+        { n: 'Itanagar', r: 'Arunachal Pradesh, India', lat: 27.0844, lon: 93.6053 },
+        { n: 'Tawang', r: 'Arunachal Pradesh, India', lat: 27.5861, lon: 91.8594 },
+        { n: 'Silchar', r: 'Assam, India', lat: 24.8333, lon: 92.7789 },
+        { n: 'Dibrugarh', r: 'Assam, India', lat: 27.4728, lon: 94.9120 },
+        { n: 'Jorhat', r: 'Assam, India', lat: 26.7509, lon: 94.2037 },
+        { n: 'Gaya', r: 'Bihar, India', lat: 24.7914, lon: 85.0002 },
+        { n: 'Muzaffarpur', r: 'Bihar, India', lat: 26.1209, lon: 85.3647 },
+        { n: 'Bhagalpur', r: 'Bihar, India', lat: 25.2425, lon: 86.9842 },
+        { n: 'Darbhanga', r: 'Bihar, India', lat: 26.1542, lon: 85.8918 },
+        { n: 'Bilaspur', r: 'Chhattisgarh, India', lat: 22.0797, lon: 82.1409 },
+        { n: 'Durg', r: 'Chhattisgarh, India', lat: 21.1904, lon: 81.2849 },
+        { n: 'Margao', r: 'Goa, India', lat: 15.2832, lon: 73.9862 },
+        { n: 'Rajkot', r: 'Gujarat, India', lat: 22.3039, lon: 70.8022 },
+        { n: 'Bhavnagar', r: 'Gujarat, India', lat: 21.7645, lon: 72.1519 },
+        { n: 'Jamnagar', r: 'Gujarat, India', lat: 22.4707, lon: 70.0577 },
+        { n: 'Gandhinagar', r: 'Gujarat, India', lat: 23.2156, lon: 72.6369 },
+        { n: 'Junagadh', r: 'Gujarat, India', lat: 21.5222, lon: 70.4579 },
+        { n: 'Anand', r: 'Gujarat, India', lat: 22.5645, lon: 72.9289 },
+        { n: 'Gurugram', r: 'Haryana, India', lat: 28.4595, lon: 77.0266 },
+        { n: 'Faridabad', r: 'Haryana, India', lat: 28.4089, lon: 77.3178 },
+        { n: 'Panipat', r: 'Haryana, India', lat: 29.3909, lon: 76.9635 },
+        { n: 'Ambala', r: 'Haryana, India', lat: 30.3782, lon: 76.7767 },
+        { n: 'Hisar', r: 'Haryana, India', lat: 29.1492, lon: 75.7217 },
+        { n: 'Dharamshala', r: 'Himachal Pradesh, India', lat: 32.2190, lon: 76.3234 },
+        { n: 'Manali', r: 'Himachal Pradesh, India', lat: 32.2432, lon: 77.1892 },
+        { n: 'Mandi', r: 'Himachal Pradesh, India', lat: 31.7080, lon: 76.9320 },
+        { n: 'Solan', r: 'Himachal Pradesh, India', lat: 30.9045, lon: 77.0967 },
+        { n: 'Jammu', r: 'Jammu and Kashmir, India', lat: 32.7266, lon: 74.8570 },
+        { n: 'Jamshedpur', r: 'Jharkhand, India', lat: 22.8046, lon: 86.2029 },
+        { n: 'Dhanbad', r: 'Jharkhand, India', lat: 23.7957, lon: 86.4304 },
+        { n: 'Bokaro Steel City', r: 'Jharkhand, India', lat: 23.6693, lon: 86.1511 },
+        { n: 'Hubballi', r: 'Karnataka, India', lat: 15.3647, lon: 75.1240 },
+        { n: 'Dharwad', r: 'Karnataka, India', lat: 15.4589, lon: 75.0078 },
+        { n: 'Belagavi', r: 'Karnataka, India', lat: 15.8497, lon: 74.4977 },
+        { n: 'Kalaburagi', r: 'Karnataka, India', lat: 17.3297, lon: 76.8343 },
+        { n: 'Davanagere', r: 'Karnataka, India', lat: 14.4644, lon: 75.9218 },
+        { n: 'Shivamogga', r: 'Karnataka, India', lat: 13.9299, lon: 75.5681 },
+        { n: 'Ballari', r: 'Karnataka, India', lat: 15.1394, lon: 76.9214 },
+        { n: 'Tumakuru', r: 'Karnataka, India', lat: 13.3379, lon: 77.1173 },
+        { n: 'Kozhikode', r: 'Kerala, India', lat: 11.2588, lon: 75.7804 },
+        { n: 'Thrissur', r: 'Kerala, India', lat: 10.5276, lon: 76.2144 },
+        { n: 'Kollam', r: 'Kerala, India', lat: 8.8932, lon: 76.6141 },
+        { n: 'Alappuzha', r: 'Kerala, India', lat: 9.4981, lon: 76.3388 },
+        { n: 'Palakkad', r: 'Kerala, India', lat: 10.7867, lon: 76.6548 },
+        { n: 'Kannur', r: 'Kerala, India', lat: 11.8745, lon: 75.3704 },
+        { n: 'Kottayam', r: 'Kerala, India', lat: 9.5916, lon: 76.5222 },
+        { n: 'Jabalpur', r: 'Madhya Pradesh, India', lat: 23.1815, lon: 79.9864 },
+        { n: 'Sagar', r: 'Madhya Pradesh, India', lat: 23.8388, lon: 78.7378 },
+        { n: 'Rewa', r: 'Madhya Pradesh, India', lat: 24.5362, lon: 81.3037 },
+        { n: 'Satna', r: 'Madhya Pradesh, India', lat: 24.6005, lon: 80.8322 },
+        { n: 'Jalgaon', r: 'Maharashtra, India', lat: 21.0077, lon: 75.5626 },
+        { n: 'Akola', r: 'Maharashtra, India', lat: 20.7002, lon: 77.0082 },
+        { n: 'Amravati', r: 'Maharashtra, India', lat: 20.9374, lon: 77.7796 },
+        { n: 'Latur', r: 'Maharashtra, India', lat: 18.4088, lon: 76.5604 },
+        { n: 'Dhule', r: 'Maharashtra, India', lat: 20.9042, lon: 74.7749 },
+        { n: 'Chandrapur', r: 'Maharashtra, India', lat: 19.9615, lon: 79.2961 },
+        { n: 'Imphal', r: 'Manipur, India', lat: 24.8170, lon: 93.9368 },
+        { n: 'Shillong', r: 'Meghalaya, India', lat: 25.5788, lon: 91.8933 },
+        { n: 'Aizawl', r: 'Mizoram, India', lat: 23.7271, lon: 92.7176 },
+        { n: 'Kohima', r: 'Nagaland, India', lat: 25.6751, lon: 94.1086 },
+        { n: 'Dimapur', r: 'Nagaland, India', lat: 25.8629, lon: 93.7537 },
+        { n: 'Cuttack', r: 'Odisha, India', lat: 20.4625, lon: 85.8830 },
+        { n: 'Rourkela', r: 'Odisha, India', lat: 22.2604, lon: 84.8536 },
+        { n: 'Puri', r: 'Odisha, India', lat: 19.8135, lon: 85.8312 },
+        { n: 'Sambalpur', r: 'Odisha, India', lat: 21.4669, lon: 83.9812 },
+        { n: 'Jalandhar', r: 'Punjab, India', lat: 31.3260, lon: 75.5762 },
+        { n: 'Patiala', r: 'Punjab, India', lat: 30.3398, lon: 76.3869 },
+        { n: 'Bathinda', r: 'Punjab, India', lat: 30.2100, lon: 74.9455 },
+        { n: 'Kota', r: 'Rajasthan, India', lat: 25.2138, lon: 75.8648 },
+        { n: 'Ajmer', r: 'Rajasthan, India', lat: 26.4499, lon: 74.6399 },
+        { n: 'Bikaner', r: 'Rajasthan, India', lat: 28.0229, lon: 73.3119 },
+        { n: 'Alwar', r: 'Rajasthan, India', lat: 27.5530, lon: 76.6346 },
+        { n: 'Gangtok', r: 'Sikkim, India', lat: 27.3389, lon: 88.6065 },
+        { n: 'Tiruchirappalli', r: 'Tamil Nadu, India', lat: 10.7905, lon: 78.7047 },
+        { n: 'Tirunelveli', r: 'Tamil Nadu, India', lat: 8.7139, lon: 77.7567 },
+        { n: 'Salem', r: 'Tamil Nadu, India', lat: 11.6643, lon: 78.1460 },
+        { n: 'Erode', r: 'Tamil Nadu, India', lat: 11.3410, lon: 77.7172 },
+        { n: 'Thanjavur', r: 'Tamil Nadu, India', lat: 10.7870, lon: 79.1378 },
+        { n: 'Vellore', r: 'Tamil Nadu, India', lat: 12.9165, lon: 79.1325 },
+        { n: 'Tiruppur', r: 'Tamil Nadu, India', lat: 11.1085, lon: 77.3411 },
+        { n: 'Warangal', r: 'Telangana, India', lat: 17.9689, lon: 79.5941 },
+        { n: 'Nizamabad', r: 'Telangana, India', lat: 18.6725, lon: 78.0941 },
+        { n: 'Karimnagar', r: 'Telangana, India', lat: 18.4386, lon: 79.1288 },
+        { n: 'Khammam', r: 'Telangana, India', lat: 17.2473, lon: 80.1514 },
+        { n: 'Agartala', r: 'Tripura, India', lat: 23.8315, lon: 91.2868 },
+        { n: 'Bareilly', r: 'Uttar Pradesh, India', lat: 28.3670, lon: 79.4304 },
+        { n: 'Aligarh', r: 'Uttar Pradesh, India', lat: 27.8974, lon: 78.0880 },
+        { n: 'Gorakhpur', r: 'Uttar Pradesh, India', lat: 26.7606, lon: 83.3732 },
+        { n: 'Jhansi', r: 'Uttar Pradesh, India', lat: 25.4484, lon: 78.5685 },
+        { n: 'Meerut', r: 'Uttar Pradesh, India', lat: 28.9845, lon: 77.7064 },
+        { n: 'Moradabad', r: 'Uttar Pradesh, India', lat: 28.8386, lon: 78.7733 },
+        { n: 'Ghaziabad', r: 'Uttar Pradesh, India', lat: 28.6692, lon: 77.4538 },
+        { n: 'Noida', r: 'Uttar Pradesh, India', lat: 28.5355, lon: 77.3910 },
+        { n: 'Rishikesh', r: 'Uttarakhand, India', lat: 30.0869, lon: 78.2676 },
+        { n: 'Nainital', r: 'Uttarakhand, India', lat: 29.3803, lon: 79.4636 },
+        { n: 'Haldwani', r: 'Uttarakhand, India', lat: 29.2183, lon: 79.5129 },
+        { n: 'Siliguri', r: 'West Bengal, India', lat: 26.7271, lon: 88.3953 },
+        { n: 'Darjeeling', r: 'West Bengal, India', lat: 27.0410, lon: 88.2663 },
+        { n: 'Asansol', r: 'West Bengal, India', lat: 23.6739, lon: 86.9524 },
+        { n: 'Durgapur', r: 'West Bengal, India', lat: 23.5204, lon: 87.3119 },
+        { n: 'Leh', r: 'Ladakh, India', lat: 34.1526, lon: 77.5771 }
+    ].map(city => ({ ...city, tz: 'Asia/Kolkata' }));
+    const CITIES = RAW.split(';').map(s => {
+        const [n, r, lat, lon, tz] = s.split('|');
+        return { n, r, lat: Number(lat), lon: Number(lon), tz: tz === 'K' ? 'Asia/Kolkata' : tz };
+    }).concat(INDIAN_CITIES);
     const $=id=>document.getElementById(id);
 
     const SIGNS=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
@@ -899,8 +1014,10 @@
             const savVal = savArr[signIdx];
             const bavVal = bavArr[signIdx];
             
+            const isChallengingHouse = [6, 8, 12].includes(h + 1);
             let statusBadge = '<span class="text-slate-400">Middle (25-29)</span>';
-            if (savVal >= 30) statusBadge = '<span class="text-emerald-400 font-bold">Strong (30+)</span>';
+            if (savVal >= 30 && isChallengingHouse) statusBadge = '<span class="text-red-400 font-bold">Strong activation · challenging house (30+)</span>';
+            else if (savVal >= 30) statusBadge = '<span class="text-emerald-400 font-bold">Strong (30+)</span>';
             else if (savVal < 25) statusBadge = '<span class="text-red-400 font-bold">Lower (&lt;25)</span>';
 
             html += `<tr class="hover:bg-slate-800/50">
@@ -937,7 +1054,11 @@
             });
             
             const savVal = globalAshtakvargaData.sav[s];
-            bodyHtml += `<td class="py-2 px-3 text-center font-bold text-amber-300 bg-slate-900/60">${savVal}</td></tr>`;
+            const house = ((s - globalLagnaSign + 12) % 12) + 1;
+            const savClass = [6, 8, 12].includes(house) && savVal >= 30
+                ? 'text-red-400'
+                : savVal >= 30 ? 'text-emerald-400' : 'text-amber-300';
+            bodyHtml += `<td class="py-2 px-3 text-center font-bold ${savClass} bg-slate-900/60">${savVal}${[6, 8, 12].includes(house) && savVal >= 30 ? ' · challenging H' + house : ''}</td></tr>`;
         }
 
         // Totals Row
@@ -966,6 +1087,14 @@
         const band = value => value >= 30 ? 'strong (30+)' : value < 25 ? 'lower (<25)' : 'middle (25-29)';
         const scoreLabel = house => `H${house} ${SIGNS[houseSign(house)]}: ${houseScore(house)} (${band(houseScore(house))})`;
         const scoreEvidence = houses => houses.map(scoreLabel).join(' · ');
+        const comparativeGoodLabel = houses => {
+            const comparisons = [];
+            houses.filter(house => ![6, 8, 12].includes(house)).forEach(house => {
+                houses.filter(trikHouse => [6, 8, 12].includes(trikHouse) && houseScore(house) > houseScore(trikHouse))
+                    .forEach(trikHouse => comparisons.push(`Good: H${house} > H${trikHouse}`));
+            });
+            return comparisons.join(', ');
+        };
         const compare = (leftScore, rightScore, leftSide, rightSide) => {
             if (leftScore === rightScore) return `The ${leftSide} and ${rightSide} scores are equal; SAV alone does not favor either side.`;
             const strongerSide = leftScore > rightScore ? leftSide : rightSide;
@@ -979,10 +1108,14 @@
         }[status] || { label: 'Neutral', classes: 'border-orange-500/30 bg-orange-500/10 text-orange-300' });
         const outcomeCard = (title, houses, interpretation, detail = '', status = 'neutral') => {
             const badge = indicator(status);
+            const goodLabel = comparativeGoodLabel(houses);
             return `
             <article class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-700 space-y-1.5">
                 <h5 class="flex items-center justify-between gap-2 text-xs font-bold text-amber-300">
-                    ${title}<span class="rounded-full border px-2 py-0.5 text-[9px] ${badge.classes}">${badge.label}</span>
+                    ${title}<span class="flex shrink-0 items-center gap-1">
+                        <span class="rounded-full border px-2 py-0.5 text-[9px] ${badge.classes}">${badge.label}</span>
+                        ${goodLabel ? `<span class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] text-emerald-300">${goodLabel}</span>` : ''}
+                    </span>
                 </h5>
                 <p class="text-[10px] text-slate-400">${scoreEvidence(houses)}</p>
                 <p class="text-xs leading-relaxed ${badge.classes.split(' ').find(className => className.startsWith('text-'))}">${interpretation}</p>
@@ -1001,6 +1134,8 @@
         const h10 = houseScore(10);
         const h11 = houseScore(11);
         const h12 = houseScore(12);
+        const highTrikHouse = house => [6, 8, 12].includes(house) && houseScore(house) >= 30;
+        const hasHighTrikSAV = [6, 8, 12].some(house => houseScore(house) >= 30);
 
         const pillarHtml = `
             <div>1st House (Lagna): <strong class="${h1 >= 30 ? 'text-emerald-400' : h1 < 25 ? 'text-red-400' : 'text-amber-300'}">${h1} pts</strong></div>
@@ -1013,22 +1148,25 @@
         const gainsComparison = `${compare(h11, h10, '11th-house gains', '10th-house effort')} ${compare(h11, h12, '11th-house gains', '12th-house outflows')}`;
         const retentionComparison = compare(h1, h12, '1st-house support', '12th-house outflows');
         const prosperitySupported = h11 > h10 && h11 > h12;
+        const prosperityChallenged = highTrikHouse(12);
         $('evalFinancialFlow').innerHTML = `
-            <div class="${prosperitySupported ? 'text-emerald-400' : 'text-amber-300'} font-semibold">${prosperitySupported ? '11th-house gains exceed both effort and outflows.' : 'The prosperity comparison is mixed; review both effort and outflows.'}</div>
+            <div class="${prosperityChallenged ? 'text-red-400' : prosperitySupported ? 'text-emerald-400' : 'text-amber-300'} font-semibold">${prosperityChallenged ? 'The 12th house has high SAV, which is treated as challenging under the trik-house rule; review gains and outflows together.' : prosperitySupported ? '11th-house gains exceed both effort and outflows.' : 'The prosperity comparison is mixed; review both effort and outflows.'}</div>
             <div>${gainsComparison}</div>
             <div>${retentionComparison}</div>
             <div class="text-[11px] text-slate-400 mt-0.5">12th House (Outflows): ${h12} pts</div>
         `;
 
         const directives = [];
-        if (h6 >= 35) directives.push('The notes associate a 6th-house score of 35+ with service, problem-solving, and active work themes.');
+        if (h6 >= 35) directives.push('The 6th house is strongly activated (35+ SAV) and is marked challenging under the trik-house rule, even where it activates service or problem-solving themes.');
         if (h5 < 20) directives.push('The 5th-house score is below 20; review its paired-house and BAV context rather than treating this score alone as a prediction.');
         if (h1 < 25 && h12 > h1) directives.push('The 12th-house outflow score exceeds the lower 1st-house score; the notes invite closer review of the resource and mobility pairs.');
         if (!directives.length) directives.push('No special threshold is triggered in this summary; use the chart-specific pair readings below.');
         $('evalDirectives').innerHTML = directives.map(x => `<div>${x}</div>`).join('');
 
-        const employmentReading = compare(h6, h10, 'service and routine', 'career status and achievement')
-            + (h6 >= 30 && h10 >= 30 ? ' Both sides are strong in SAV, linking service routines with career visibility.' : '');
+        const employmentReading = highTrikHouse(6)
+            ? `${compare(h6, h10, 'service and routine', 'career status and achievement')} The 6th-house 30+ SAV is marked challenging under the trik-house rule; a strong score denotes activation, not an automatically favorable outcome.`
+            : compare(h6, h10, 'service and routine', 'career status and achievement')
+                + (h6 >= 30 && h10 >= 30 ? ' Both sides are strong in SAV, linking service routines with career visibility.' : '');
         const businessReading = compare(h7, h10, 'business and partnership', 'career status')
             + (h7 >= 30 && h10 >= 30 ? ' Both sides are strong in SAV, supporting both venture and professional-status themes in this framework.' : '');
         const businessVsJobBusiness = h10 + h7;
@@ -1044,6 +1182,10 @@
         businessVsJobReading += ' The 10th-house score is included in both totals, so mathematically the comparison reduces to 7th-house vs 6th-house SAV.';
         const debtReading = compare(h2, h6, 'liquid resources', 'debt and repayment strain')
             + (h6 > h2 ? ' The notes suggest reviewing liabilities alongside available resources.' : ' The resource side is not outscored by the debt side.');
+        const wealthReading = highTrikHouse(12)
+            ? `The 12th house has high SAV (${h12}), which is marked challenging under the trik-house rule even if the 2nd-house score is higher. Review resources and outflows together.`
+            : compare(h2, h12, 'savings and family resources', 'expenditures and outflows')
+                + (h2 > h12 ? ' The resource side leads in the notes’ wealth-retention comparison.' : ' Review the resources-versus-outflows balance; SAV alone is not a financial forecast.');
 
         const fifthMars = planetScore('Mars', 5);
         const fifthSaturn = planetScore('Saturn', 5);
@@ -1059,6 +1201,9 @@
             conceptionReading = 'The 5th-house score trails both the 6th and 8th; the notes flag this pattern for careful review, not as a medical or fertility conclusion.';
         } else {
             conceptionReading = 'The 5th-house score does not clearly outscore both challenge houses; this is a mixed comparison in the notes’ framework.';
+        }
+        if ([6, 8, 12].some(highTrikHouse)) {
+            conceptionReading += ' Any 30+ SAV in the 6th, 8th, or 12th is marked challenging under the trik-house rule.';
         }
         const conceptionFlags = [];
         if (fifthSun >= 4 || fifthMars >= 4) conceptionFlags.push('Sun/Mars has an elevated BAV contribution (4+) in the 5th-house sign; the notes describe this as a traditional fire-element flag.');
@@ -1090,7 +1235,8 @@
         if (competitiveScores.every(value => value >= 28) && Math.max(...competitiveScores) - Math.min(...competitiveScores) <= 2) {
             marriageFlags.push('The 1st, 6th, and 7th scores are all 28+ and within 2 points, resembling the notes’ example of competing priorities.');
         }
-        const balancedMarriage = Math.abs(h1 - h7) <= 1 && h6 < h7 && h8 < h7
+        const balancedMarriage = !highTrikHouse(6) && !highTrikHouse(8)
+            && Math.abs(h1 - h7) <= 1 && h6 < h7 && h8 < h7
             && marsInSeventh <= 3 && saturnInSeventh <= 3
             && Math.max(jupiterInSeventh, mercuryInSeventh) >= 6
             && sixthLordInSeventh <= 4;
@@ -1125,17 +1271,17 @@
 
         const outcomes = [
             outcomeCard('Four pillars: Lagna, fortune, career & gains', [1, 9, 10, 11], pillarsReading, '', fourPillars.every(value => value >= 30) ? 'positive' : fourPillars.every(value => value < 25) ? 'negative' : 'neutral'),
-            outcomeCard('Wealth & outflows', [2, 12], compare(h2, h12, 'savings and family resources', 'expenditures and outflows') + (h2 > h12 ? ' The resource side leads in the notes’ wealth-retention comparison.' : ' Review the resources-versus-outflows balance; SAV alone is not a financial forecast.'), '', h2 > h12 ? 'positive' : h12 > h2 ? 'negative' : 'neutral'),
-            outcomeCard('Physical vitality', [1, 6], compare(h1, h6, 'vitality and constitution', 'illness and health-management themes') + ' The notes pair these houses; this is not a diagnosis or health assessment.', '', 'neutral'),
-            outcomeCard('Employment & jobs', [6, 10], employmentReading, '', Math.min(h6, h10) >= 30 ? 'positive' : h6 < 25 || h10 < 25 ? 'negative' : 'neutral'),
+            outcomeCard('Wealth & outflows', [2, 12], wealthReading, '', highTrikHouse(12) ? 'negative' : h2 > h12 ? 'positive' : 'neutral'),
+            outcomeCard('Physical vitality', [1, 6], compare(h1, h6, 'vitality and constitution', 'illness and health-management themes') + (highTrikHouse(6) ? ' The 6th-house high SAV is marked challenging under the trik-house rule; this is not a diagnosis or health assessment.' : ' The notes pair these houses; this is not a diagnosis or health assessment.'), '', highTrikHouse(6) ? 'negative' : 'neutral'),
+            outcomeCard('Employment & jobs', [6, 10], employmentReading, '', highTrikHouse(6) ? 'negative' : Math.min(h6, h10) >= 30 ? 'positive' : 'neutral'),
             outcomeCard('Business operations', [7, 10], businessReading, '', Math.min(h7, h10) >= 30 ? 'positive' : h7 < 25 || h10 < 25 ? 'negative' : 'neutral'),
-            outcomeCard('Business vs job (combined SAV)', [10, 7, 6], businessVsJobReading, `Business: 10th (${h10}) + 7th (${h7}) = ${businessVsJobBusiness}. Job: 10th (${h10}) + 6th (${h6}) = ${businessVsJobEmployment}.`, 'neutral'),
-            outcomeCard('Debts & loans', [2, 6], debtReading, '', h2 > h6 ? 'positive' : h6 > h2 ? 'negative' : 'neutral'),
-            outcomeCard('Childbirth & conception framework', [5, 6, 8, 12], conceptionReading, conceptionDetail, h5 > h6 && h5 > h8 ? 'positive' : h5 < h6 && h5 < h8 ? 'negative' : 'neutral'),
-            outcomeCard('Romantic love, marriage & relationship balance', [1, 5, 6, 7, 8], romanceReading, `${marriageFlags.join(' ') } BAV: 6th lord→7th ${sixthLordInSeventh}; 7th lord→6th ${seventhLordInSixth}; Saturn/Mars in 7th ${saturnInSeventh}/${marsInSeventh}; Jupiter/Mercury in 7th ${jupiterInSeventh}/${mercuryInSeventh}.`, balancedMarriage ? 'positive' : h6 > h7 || sixthLordInSeventh >= 6 || seventhLordInSixth >= 6 ? 'negative' : 'neutral'),
+            outcomeCard('Business vs job (combined SAV)', [10, 7, 6], businessVsJobReading, `Business: 10th (${h10}) + 7th (${h7}) = ${businessVsJobBusiness}. Job: 10th (${h10}) + 6th (${h6}) = ${businessVsJobEmployment}. ${highTrikHouse(6) ? 'The 6th-house high SAV is marked challenging; a leading job score indicates path emphasis, not an automatically favorable outcome.' : ''}`, highTrikHouse(6) ? 'negative' : 'neutral'),
+            outcomeCard('Debts & loans', [2, 6], debtReading, '', highTrikHouse(6) ? 'negative' : h2 > h6 ? 'positive' : 'neutral'),
+            outcomeCard('Childbirth & conception framework', [5, 6, 8, 12], conceptionReading, conceptionDetail, [6, 8, 12].some(highTrikHouse) ? 'negative' : h5 > h6 && h5 > h8 ? 'positive' : h5 < h6 && h5 < h8 ? 'negative' : 'neutral'),
+            outcomeCard('Romantic love, marriage & relationship balance', [1, 5, 6, 7, 8], romanceReading, `${marriageFlags.join(' ') } BAV: 6th lord→7th ${sixthLordInSeventh}; 7th lord→6th ${seventhLordInSixth}; Saturn/Mars in 7th ${saturnInSeventh}/${marsInSeventh}; Jupiter/Mercury in 7th ${jupiterInSeventh}/${mercuryInSeventh}.`, [6, 8].some(highTrikHouse) ? 'negative' : balancedMarriage ? 'positive' : h6 > h7 || sixthLordInSeventh >= 6 || seventhLordInSixth >= 6 ? 'negative' : 'neutral'),
             outcomeCard('7th & 9th house synergy: partnership and fortune', [7, 9], postMarriageReading, 'The 28+ threshold is specific to this joint-prosperity comparison. A leading house describes the direction of support; it does not make the other house inherently negative.', h7 >= 28 && h9 >= 28 || (h9 > h7 && h9 >= 28) || (h7 > h9 && h7 >= 28) ? 'positive' : h7 < 25 && h9 < 25 ? 'negative' : 'neutral'),
-            outcomeCard('Foreign travel & geographic mobility', [4, 12], mobilityReading, '', 'neutral'),
-            outcomeCard('Occult professions', [2, 8, 10], occultReading, '', h2 >= 30 && h8 >= 30 && h10 >= 30 ? 'positive' : 'neutral')
+            outcomeCard('Foreign travel & geographic mobility', [4, 12], mobilityReading, '', highTrikHouse(12) ? 'negative' : 'neutral'),
+            outcomeCard('Occult professions', [2, 8, 10], occultReading, '', highTrikHouse(8) ? 'negative' : h2 >= 30 && h8 >= 30 && h10 >= 30 ? 'positive' : 'neutral')
         ];
         $('evalClassTwoOutcomes').innerHTML = outcomes.join('');
 
@@ -1159,8 +1305,11 @@
             if ((isOwn || isExalted) && signScore < 25) {
                 dignityReadings.push(`${planet} is ${isExalted ? 'exalted' : 'in its own sign'} in ${SIGNS[sign]} (SAV ${signScore}); the notes caution that low local SAV can temper dignity.`);
             }
-            if ((isDebilitated || [6, 8, 12].includes(house)) && signScore >= 30) {
+            if (isDebilitated && signScore >= 30) {
                 dignityReadings.push(`${planet} is ${isDebilitated ? 'debilitated' : `in house ${house}`} in ${SIGNS[sign]} (SAV ${signScore}); the notes describe 30+ local SAV as support that may cushion the placement.`);
+            }
+            if ([6, 8, 12].includes(house) && signScore >= 30) {
+                dignityReadings.push(`${planet} is in challenging house ${house} in ${SIGNS[sign]} (SAV ${signScore}); high SAV is marked negative under the trik-house rule.`);
             }
         });
         $('evalDignityOverrides').innerHTML = dignityReadings.length
@@ -1219,6 +1368,20 @@
         const houseLord = house => signRulers[houseSign(house)];
         const planetScore = (planet, house) => bav[planet][houseSign(house)];
         const placementHouse = planet => ((planetSigns[planet] - lg + 12) % 12) + 1;
+        const highTrikSAV = house => [6, 8, 12].includes(house) && houseScore(house) >= 30;
+        const savIndicator = house => highTrikSAV(house) ? 'negative' : 'neutral';
+        const comparativeGoodLabel = houses => {
+            const comparisons = [];
+            houses.filter(house => ![6, 8, 12].includes(house)).forEach(house => {
+                houses.filter(trikHouse => [6, 8, 12].includes(trikHouse) && houseScore(house) > houseScore(trikHouse))
+                    .forEach(trikHouse => comparisons.push(`H${house} > H${trikHouse}`));
+            });
+            return comparisons.length ? `Good: ${comparisons.join(', ')}` : '';
+        };
+        const withComparativeStatus = (status, houses) => {
+            const goodLabel = comparativeGoodLabel(houses);
+            return goodLabel ? `${status}|${goodLabel}` : status;
+        };
         const lordHouses = {};
         for (let house = 1; house <= 12; house++) {
             const lord = houseLord(house);
@@ -1228,12 +1391,21 @@
         const isTrikLord = planet => (lordHouses[planet] || []).some(house => [6, 8, 12].includes(house));
         const scoreLabel = house => `H${house} ${SIGNS[houseSign(house)]}: ${houseScore(house)}`;
         const tableRow = (status, ...cells) => [status, ...cells];
-        const outcomeCard = (title, evidence, detail = '', table = '', status = 'neutral') => {
+        const comparisonRow = (status, houses, ...cells) =>
+            tableRow(withComparativeStatus(status, houses), ...cells);
+        const outcomeCard = (title, evidence, detail = '', table = '', status = 'neutral', houses = []) => {
             const badge = indicatorStyle(status);
+            const evidenceHouses = Array.isArray(evidence)
+                ? evidence
+                : [...String(evidence).matchAll(/\bH(\d+)\b/g)].map(match => Number(match[1]));
+            const goodLabel = comparativeGoodLabel(houses.length ? houses : evidenceHouses);
             return `
             <article class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-700 space-y-1.5">
                 <h5 class="flex items-center justify-between gap-2 text-xs font-bold text-indigo-200">
-                    ${title}<span class="rounded-full border px-2 py-0.5 text-[9px] ${badge.classes}">${badge.label}</span>
+                    ${title}<span class="flex shrink-0 items-center gap-1">
+                        <span class="rounded-full border px-2 py-0.5 text-[9px] ${badge.classes}">${badge.label}</span>
+                        ${goodLabel ? `<span class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] text-emerald-300">${goodLabel}</span>` : ''}
+                    </span>
                 </h5>
                 <p class="text-[10px] text-slate-400">${evidence}</p>
                 ${detail ? `<p class="text-[10px] text-slate-400 leading-relaxed">${detail}</p>` : ''}
@@ -1253,7 +1425,7 @@
                 label: 'Neutral',
                 classes: 'bg-orange-500/10 text-orange-300 border-orange-500/30'
             }
-        }[status] || {
+        }[String(status).split('|')[0]] || {
             label: 'Neutral',
             classes: 'bg-orange-500/10 text-orange-300 border-orange-500/30'
         });
@@ -1267,12 +1439,13 @@
                     </thead>
                     <tbody class="divide-y divide-slate-800">
                         ${rows.map(row => {
-                            const hasStatus = ['positive', 'negative', 'neutral'].includes(row[0]);
-                            const [status, ...remainingCells] = row;
+                            const [statusValue, ...remainingCells] = row;
+                            const [status, goodLabel] = String(statusValue).split('|');
+                            const hasStatus = ['positive', 'negative', 'neutral'].includes(status);
                             const cells = hasStatus ? remainingCells : row;
                             const style = indicatorStyle(status);
                             return `<tr class="align-top hover:bg-slate-800/50">
-                                <td class="px-2.5 py-2"><span class="inline-flex rounded-full border px-2 py-0.5 text-[9px] font-semibold ${style.classes}">${style.label}</span></td>${cells.map((cell, index) =>
+                                <td class="px-2.5 py-2"><span class="inline-flex rounded-full border px-2 py-0.5 text-[9px] font-semibold ${style.classes}">${style.label}</span>${goodLabel ? `<span class="mt-1 inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold text-emerald-300">${goodLabel}</span>` : ''}</td>${cells.map((cell, index) =>
                                 `<td class="px-2.5 py-2 ${index === 0 ? 'font-medium text-amber-200' : 'text-slate-300'}">${cell}</td>`
                             ).join('')}</tr>`;
                         }).join('')}
@@ -1309,7 +1482,7 @@
                     planet,
                     points: planetScore(planet, house),
                     planetaryClass,
-                    status: 'neutral',
+                    status: savIndicator(house),
                     lordships: (lordHouses[planet] || []).map(ruledHouse => `H${ruledHouse}`).join(', ') || '—',
                     interpretation
                 });
@@ -1366,13 +1539,15 @@
                 || (eighthLordPlacement === 2 && planetScore(houseLord(8), 2) >= 5)
                 || (twelfthLordPlacement === 2 && planetScore(houseLord(12), 2) >= 5));
         const financeRows = [
-            tableRow(savingsSupported ? 'positive' : expenditureSupported ? 'negative' : 'neutral', 'Savings-dominant', `${scoreLabel(2)} vs ${scoreLabel(12)}`, savingsSignals.length ? savingsSignals.join('; ') : 'No listed savings-dominant indicators are present.'),
-            tableRow(expenditureSupported ? 'negative' : savingsSupported ? 'positive' : 'neutral', 'Expenditure-heavy', `${scoreLabel(12)} vs ${scoreLabel(2)}`, expenditureSignals.length ? expenditureSignals.join('; ') : 'No listed expenditure-heavy indicators are present.'),
+            comparisonRow(highTrikSAV(12) ? 'negative' : savingsSupported ? 'positive' : expenditureSupported ? 'negative' : 'neutral', [2, 12], 'Savings-dominant', `${scoreLabel(2)} vs ${scoreLabel(12)}`, savingsSignals.length ? savingsSignals.join('; ') : 'No listed savings-dominant indicators are present.'),
+            comparisonRow(highTrikSAV(12) ? 'negative' : expenditureSupported ? 'negative' : savingsSupported ? 'positive' : 'neutral', [12, 2], 'Expenditure-heavy', `${scoreLabel(12)} vs ${scoreLabel(2)}`, expenditureSignals.length ? expenditureSignals.join('; ') : 'No listed expenditure-heavy indicators are present.'),
             tableRow('neutral', 'Low-flow / frugality', `Moon ${secondMoon}; Mars ${secondMars}; Saturn ${secondSaturn} BAV in H2`, frugalSignals.length ? frugalSignals.join('; ') : 'The notes’ low-flow/frugality indicators are not present.'),
             tableRow('neutral', 'Relevant lord placements', `2nd lord ${secondLord}: H${secondLordPlacement}; 8th lord ${houseLord(8)}: H${eighthLordPlacement}; 12th lord ${houseLord(12)}: H${twelfthLordPlacement}`, 'Lord placements are included as context; interpret alongside the house scores and BAV.')
         ];
         const financeTable = dataTable(['Profile / check', 'Chart indicators', 'Class 3 reading'], financeRows);
-        const financeDetail = 'Traditional financial tendencies only; not individual financial advice.';
+        const financeDetail = highTrikSAV(12)
+            ? 'The 12th house has high SAV and is marked challenging under the trik-house rule, even if the 2nd-house score is higher. Traditional tendencies only; not individual financial advice.'
+            : 'Traditional financial tendencies only; not individual financial advice.';
 
         const contributorsForHouse = house => planets.map(planet => ({
             planet,
@@ -1429,7 +1604,7 @@
         const signProfileRows = SIGNS.map((sign, signIndex) => {
             const house = ((signIndex - lg + 12) % 12) + 1;
             const score = sav[signIndex];
-            return tableRow('neutral',
+            return tableRow(savIndicator(house),
                 sign,
                 `H${house}`,
                 score,
@@ -1442,7 +1617,7 @@
         const functionalDomainRows = houseThemes.map((domain, index) => {
             const house = index + 1;
             const score = houseScore(house);
-            return tableRow('neutral',
+            return tableRow(savIndicator(house),
                 `H${house} · ${SIGNS[houseSign(house)]}`,
                 score,
                 domain);
@@ -1486,11 +1661,11 @@
         const saturnToSixth = planetScore('Saturn', 6);
         const saturnToSeventh = planetScore('Saturn', 7);
         const careerRows = [
-            [
+            comparisonRow(highTrikSAV(6) ? 'negative' : 'neutral', [6, 7],
                 'House SAV comparison',
                 `H6 ${houseScore(6)} vs H7 ${houseScore(7)}`,
                 houseScore(6) > houseScore(7) ? 'Employment-side indicator is stronger.' : houseScore(7) > houseScore(6) ? 'Independent-business indicator is stronger.' : 'The job/business house scores are tied.'
-            ],
+            ),
             [
                 '10th-lord BAV',
                 `${tenthLord}: H6 ${tenthLordToSixth} vs H7 ${tenthLordToSeventh}`,
@@ -1518,7 +1693,9 @@
             ]
         ];
         const careerTable = dataTable(['Career check', 'Chart result', 'Interpretation'], careerRows);
-        const careerDetail = 'Class 3 lordship and Saturn checks supplement the Class 2 combined SAV comparison; they are traditional indicators, not career advice.';
+        const careerDetail = highTrikSAV(6)
+            ? 'The 6th house has high SAV and is marked challenging under the trik-house rule; a stronger employment-side score is path emphasis, not an automatically favorable result. Traditional indicators, not career advice.'
+            : 'Class 3 lordship and Saturn checks supplement the Class 2 combined SAV comparison; they are traditional indicators, not career advice.';
 
         const relationshipFortuneRows = [
             tableRow(houseScore(7) >= 28 && houseScore(9) >= 28 ? 'positive' : 'neutral',
@@ -1567,7 +1744,7 @@
         const jupiterToFifth = planetScore('Jupiter', 5);
         const jupiterToSeventh = planetScore('Jupiter', 7);
         const relationshipRows = [
-            tableRow(houseScore(6) > houseScore(5) ? 'negative' : houseScore(5) > houseScore(6) ? 'positive' : 'neutral',
+            comparisonRow(highTrikSAV(6) ? 'negative' : houseScore(6) > houseScore(5) ? 'negative' : houseScore(5) > houseScore(6) ? 'positive' : 'neutral', [5, 6],
                 'Courtship vs friction',
                 `H5 ${houseScore(5)} vs H6 ${houseScore(6)}`,
                 houseScore(6) > houseScore(5) ? '6th-house friction indicator is stronger.' : '6th house does not outscore the 5th in this check.'
@@ -1582,7 +1759,7 @@
                 `Saturn ${planetScore('Saturn', 5)}; Mars ${planetScore('Mars', 5)} BAV in H5`,
                 planetScore('Saturn', 5) >= 5 || planetScore('Mars', 5) >= 5 ? 'At least one meets the notes’ malefic-interference threshold.' : 'Neither meets the notes’ 5+ BAV threshold.'
             ),
-            tableRow(houseScore(5) > houseScore(6) && houseScore(7) > houseScore(6) ? 'positive' : houseScore(6) > houseScore(5) && houseScore(6) > houseScore(7) ? 'negative' : 'neutral',
+            comparisonRow(highTrikSAV(6) ? 'negative' : houseScore(5) > houseScore(6) && houseScore(7) > houseScore(6) ? 'positive' : houseScore(6) > houseScore(5) && houseScore(6) > houseScore(7) ? 'negative' : 'neutral', [5, 6, 7],
                 'Love-to-marriage house support',
                 `H5 ${houseScore(5)}; H6 ${houseScore(6)}; H7 ${houseScore(7)}`,
                 houseScore(5) > houseScore(6) && houseScore(7) > houseScore(6) ? 'Both 5th and 7th exceed the 6th, matching the supportive house-score pattern.' : 'The 5th and 7th do not both exceed the 6th.'
@@ -1607,16 +1784,16 @@
         const marsToFourth = planetScore('Mars', 4);
         const saturnToFourth = planetScore('Saturn', 4);
         const mobilityRows = [
-            [
+            comparisonRow(highTrikSAV(12) ? 'negative' : 'neutral', [4, 12],
                 'Home vs foreign-distance comparison',
                 `H4 ${houseScore(4)} vs H12 ${houseScore(12)}`,
                 houseScore(12) > houseScore(4) ? '12th-house distance/foreign themes lead.' : houseScore(4) > houseScore(12) ? '4th-house home/roots themes lead.' : 'The SAV scores are tied.'
-            ],
-            [
+            ),
+            comparisonRow(highTrikSAV(12) ? 'negative' : 'neutral', [3, 4, 12],
                 'Departure-from-home indicator',
                 `H3 ${houseScore(3)} · H4 ${houseScore(4)} · H12 ${houseScore(12)}`,
                 'The notes consider the 3rd as the 12th from the 4th when assessing departure from home.'
-            ],
+            ),
             [
                 'Mars / Saturn in the 4th-house sign',
                 `Mars ${marsToFourth}; Saturn ${saturnToFourth} BAV`,
@@ -1631,7 +1808,9 @@
             ]
         ];
         const mobilityTable = dataTable(['Mobility check', 'Chart result', 'Class 3 reading'], mobilityRows);
-        const mobilityDetail = 'Traditional mobility indicators; they do not guarantee relocation or foreign settlement.';
+        const mobilityDetail = highTrikSAV(12)
+            ? 'The 12th house has high SAV and is marked challenging under the trik-house rule; its mobility themes are not automatically favorable and do not guarantee relocation.'
+            : 'Traditional mobility indicators; they do not guarantee relocation or foreign settlement.';
 
         const desireLord = houseLord(3);
         const desireLordHouse = placementHouse(desireLord);
@@ -1668,7 +1847,7 @@
         if (sameSign('Saturn', 'Ketu')) yogicPairings.push('Saturn–Ketu');
         if (sameSign('Saturn', 'Ketu') && sameSign('Saturn', 'Venus')) yogicPairings.push('Saturn–Ketu–Venus');
         const spiritualRows = mokshaHouses.map(house => tableRow(
-            houseScore(house) >= 30 ? 'positive' : 'neutral',
+            highTrikSAV(house) ? 'negative' : houseScore(house) >= 30 ? 'positive' : 'neutral',
             `${scoreLabel(house)} SAV`,
             houseScore(house),
             houseScore(house) >= 30 ? 'Higher SAV (30+), as used in the notes’ spiritual-axis check.' : 'Below the notes’ higher-SAV reference (30).'
@@ -1680,7 +1859,7 @@
             yogicPairings.length ? 'A listed traditional spiritual-practice conjunction is present.' : 'No listed conjunction pattern is present.'
         ));
         const spiritualTable = dataTable(['Spiritual indicator', 'Chart result', 'Class 3 reading'], spiritualRows);
-        const spiritualDetail = `${elevatedMokshaHouses.length}/4 houses in the 4/8/9/12 axis score 30+${elevatedMokshaHouses.length ? ` (H${elevatedMokshaHouses.join(', H')})` : ''}. These are traditional spiritual themes, not a measure of a person's beliefs or practice.`;
+        const spiritualDetail = `${elevatedMokshaHouses.length}/4 houses in the 4/8/9/12 axis score 30+${elevatedMokshaHouses.length ? ` (H${elevatedMokshaHouses.join(', H')})` : ''}. High SAV in H8/H12 is marked challenging under the trik-house rule even where spiritual themes are activated. These are traditional themes, not a measure of a person's beliefs or practice.`;
         const classThreeRelationshipSupport = Math.abs(houseScore(1) - houseScore(7)) <= 1
             && houseScore(6) < houseScore(7) && houseScore(8) < houseScore(7)
             && planetScore('Mars', 7) <= 3 && planetScore('Saturn', 7) <= 3
@@ -1691,19 +1870,19 @@
             || planetScore('Saturn', 5) >= 5 || planetScore('Mars', 5) >= 5;
 
         const outcomes = [
-            outcomeCard('Planetary classes, trik lords & high BAV', 'Planet-by-planet BAV contributions of 5 or more bindus', energyDetail, energyTable, 'neutral'),
-            outcomeCard('Wealth, savings & expenditure profiles', `${scoreLabel(2)} · ${scoreLabel(12)}`, financeDetail, financeTable, savingsSupported ? 'positive' : expenditureSupported ? 'negative' : 'neutral'),
+            outcomeCard('Planetary classes, trik lords & high BAV', 'Planet-by-planet BAV contributions of 5 or more bindus', energyDetail, energyTable, [6, 8, 12].some(highTrikSAV) ? 'negative' : 'neutral'),
+            outcomeCard('Wealth, savings & expenditure profiles', `${scoreLabel(2)} · ${scoreLabel(12)}`, financeDetail, financeTable, highTrikSAV(12) ? 'negative' : savingsSupported ? 'positive' : expenditureSupported ? 'negative' : 'neutral'),
             outcomeCard('Education, skills & study streams', `${scoreLabel(5)} · ${scoreLabel(9)}`, educationDetail, educationTable, Math.min(houseScore(5), houseScore(9)) >= 30 ? 'positive' : houseScore(5) < 25 && houseScore(9) < 25 ? 'negative' : 'neutral'),
             outcomeCard('Education & skill-assessment protocol / limitations', 'Reading guardrails from Class 3', 'Use multiple chart factors and real-world context; these traditional associations are not diagnostic or deterministic.', learningLimitsTable, 'neutral'),
-            outcomeCard('Comprehensive sign-wise study & profession profiles', 'All 12 sign profiles considered in the selected chart', 'Each sign is paired with its chart house and SAV; themes are broad traditional associations.', signProfileTable, 'neutral'),
-            outcomeCard('Functional academic & professional domains', 'House-wise domains for all 12 houses', 'House topics provide context for interpreting sign and planetary indications.', functionalDomainTable, 'neutral'),
+            outcomeCard('Comprehensive sign-wise study & profession profiles', 'All 12 sign profiles considered in the selected chart', 'Each sign is paired with its chart house and SAV; themes are broad traditional associations.', signProfileTable, [6, 8, 12].some(highTrikSAV) ? 'negative' : 'neutral'),
+            outcomeCard('Functional academic & professional domains', 'House-wise domains for all 12 houses', 'House topics provide context for interpreting sign and planetary indications.', functionalDomainTable, [6, 8, 12].some(highTrikSAV) ? 'negative' : 'neutral'),
             outcomeCard('Planetary karakas for skills', 'Classical planetary skill associations and study-house BAV', 'Skill karakas are descriptive associations, not ability assessments.', karakaTable, 'neutral'),
-            outcomeCard('Career direction: employment vs business', `${scoreLabel(6)} · ${scoreLabel(7)} · 10th lord ${tenthLord}`, careerDetail, careerTable, 'neutral'),
+            outcomeCard('Career direction: employment vs business', `${scoreLabel(6)} · ${scoreLabel(7)} · 10th lord ${tenthLord}`, careerDetail, careerTable, highTrikSAV(6) ? 'negative' : 'neutral'),
             outcomeCard('7th & 9th house synergy: partnership and fortune', `${scoreLabel(7)} · ${scoreLabel(9)}`, 'A relative lead explains the direction of support; the 28+ joint-prosperity reference applies when both houses reach it. A higher score is not automatically positive outside this house-pair context.', relationshipFortuneTable, relationshipFortuneStatus),
-            outcomeCard('Romantic courtship & love-marriage indicators', `${scoreLabel(5)} · ${scoreLabel(6)} · ${scoreLabel(7)}`, relationshipDetail, relationshipTable, classThreeRelationshipSupport ? 'positive' : classThreeRelationshipChallenge ? 'negative' : 'neutral'),
-            outcomeCard('Home, mobility & foreign settlement', `${scoreLabel(3)} · ${scoreLabel(4)} · ${scoreLabel(12)}`, mobilityDetail, mobilityTable, 'neutral'),
-            outcomeCard('Highest active desire technique', `3rd-house lord ${desireLord} is placed in H${desireLordHouse}; the opposite projected house is H${desireHouse} (${SIGNS[houseSign(desireHouse)]}).`, desireDetail, desireTable, 'neutral'),
-            outcomeCard('Spiritual evolution & ascetic themes', mokshaHouses.map(scoreLabel).join(' · '), spiritualDetail, spiritualTable, elevatedMokshaHouses.length >= 3 ? 'positive' : 'neutral')
+            outcomeCard('Romantic courtship & love-marriage indicators', `${scoreLabel(5)} · ${scoreLabel(6)} · ${scoreLabel(7)}`, relationshipDetail, relationshipTable, highTrikSAV(6) || highTrikSAV(8) ? 'negative' : classThreeRelationshipSupport ? 'positive' : classThreeRelationshipChallenge ? 'negative' : 'neutral'),
+            outcomeCard('Home, mobility & foreign settlement', `${scoreLabel(3)} · ${scoreLabel(4)} · ${scoreLabel(12)}`, mobilityDetail, mobilityTable, highTrikSAV(12) ? 'negative' : 'neutral'),
+            outcomeCard('Highest active desire technique', `3rd-house lord ${desireLord} is placed in H${desireLordHouse}; the opposite projected house is H${desireHouse} (${SIGNS[houseSign(desireHouse)]}).`, desireDetail, desireTable, highTrikSAV(desireHouse) ? 'negative' : 'neutral'),
+            outcomeCard('Spiritual evolution & ascetic themes', mokshaHouses.map(scoreLabel).join(' · '), spiritualDetail, spiritualTable, highTrikSAV(8) || highTrikSAV(12) ? 'negative' : houseScore(4) >= 30 && houseScore(9) >= 30 ? 'positive' : 'neutral')
         ];
         $('evalClassThreeOutcomes').innerHTML = outcomes.join('');
     }
