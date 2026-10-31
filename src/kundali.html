@@ -1463,26 +1463,33 @@
                 let planetaryClass, interpretation;
                 if (naturalMalefics.includes(planet)) {
                     planetaryClass = 'Natural malefic';
-                    interpretation = 'Strong activation; the notes flag possible friction or hurdles in this house.';
+                    interpretation = 'Negative: high BAV activates this house with the natural malefic’s friction or hurdles.';
                 } else if (naturalBenefics.includes(planet) && trikHouses.length) {
                     planetaryClass = 'Natural benefic · trik lord';
-                    interpretation = `Strong activation; benefic expansion is qualified by trik lordship (H${trikHouses.join(', H')}).`;
+                    interpretation = `Negative: trik lordship (H${trikHouses.join(', H')}) overrides the benefic nature; high BAV can bring localized complications here.`;
                 } else if (naturalBenefics.includes(planet)) {
                     planetaryClass = 'Natural benefic';
-                    interpretation = 'Strong activation; the notes associate this with support, protection, or expansion.';
+                    interpretation = 'Positive: high BAV from a non-trik natural benefic supports smooth expansion, protection, or ease.';
                 } else if (planet === 'Sun') {
                     planetaryClass = 'Semi-malefic';
-                    interpretation = 'Strong activation; the notes classify the Sun as semi-malefic.';
+                    interpretation = trikHouses.length
+                        ? `Negative: trik lordship (H${trikHouses.join(', H')}) makes this high contribution challenging.`
+                        : 'Neutral: the Sun is semi-malefic, not classified here as a natural malefic by this rule.';
                 } else {
                     planetaryClass = 'Neutral · context-dependent';
-                    interpretation = `Strong activation; Mercury's expression depends on associations${mercuryCompany.length ? ` with ${mercuryCompany.join(', ')} in the same sign` : ''}.`;
+                    interpretation = trikHouses.length
+                        ? `Negative: trik lordship (H${trikHouses.join(', H')}) makes this high contribution challenging.`
+                        : `Neutral: Mercury's expression depends on associations${mercuryCompany.length ? ` with ${mercuryCompany.join(', ')} in the same sign` : ''}.`;
                 }
+                const status = trikHouses.length || naturalMalefics.includes(planet)
+                    ? 'negative'
+                    : naturalBenefics.includes(planet) ? 'positive' : 'neutral';
                 energyRows.push({
                     house,
                     planet,
                     points: planetScore(planet, house),
                     planetaryClass,
-                    status: savIndicator(house),
+                    status,
                     lordships: (lordHouses[planet] || []).map(ruledHouse => `H${ruledHouse}`).join(', ') || '—',
                     interpretation
                 });
@@ -1490,7 +1497,10 @@
         }
         const nodePlacements = ['Rahu', 'Ketu'].map(planet =>
             `${planet} in house ${placementHouse(planet)} (${SIGNS[planetSigns[planet]]})`).join('; ');
-        const energyDetail = `High-contribution threshold follows the notes (5–7 bindus). Jupiter/Venus are treated as natural benefics unless they rule houses 6, 8, or 12; Mars/Saturn are natural malefics. Sun is semi-malefic and Mercury is context-dependent, so neither is classified as a natural malefic here. ${nodePlacements}; Rahu and Ketu are not separate classical BAV contributors.`;
+        const energyDetail = `For high BAV contributions (5+ bindus), natural malefics and any trik lord are Negative; the trik-lord rule overrides natural benefic status. A natural benefic that is not a trik lord is Positive. The Sun (semi-malefic) and Mercury (context-dependent) are Neutral under this rule unless they are trik lords. Indicators describe the contributing planet's effect on the specific house, not a diagnosis or guaranteed outcome. ${nodePlacements}; Rahu and Ketu are not separate classical BAV contributors.`;
+        const energyStatus = energyRows.some(row => row.status === 'negative')
+            ? 'negative'
+            : energyRows.some(row => row.status === 'positive') ? 'positive' : 'neutral';
         const energyTable = energyRows.length
             ? dataTable(
                 ['House / sign', 'Contributor', 'BAV', 'Class / lordship', 'Class 3 interpretation'],
@@ -1870,7 +1880,7 @@
             || planetScore('Saturn', 5) >= 5 || planetScore('Mars', 5) >= 5;
 
         const outcomes = [
-            outcomeCard('Planetary classes, trik lords & high BAV', 'Planet-by-planet BAV contributions of 5 or more bindus', energyDetail, energyTable, [6, 8, 12].some(highTrikSAV) ? 'negative' : 'neutral'),
+            outcomeCard('Planetary classes, trik lords & high BAV', 'Planet-by-planet BAV contributions of 5 or more bindus', energyDetail, energyTable, energyStatus),
             outcomeCard('Wealth, savings & expenditure profiles', `${scoreLabel(2)} · ${scoreLabel(12)}`, financeDetail, financeTable, highTrikSAV(12) ? 'negative' : savingsSupported ? 'positive' : expenditureSupported ? 'negative' : 'neutral'),
             outcomeCard('Education, skills & study streams', `${scoreLabel(5)} · ${scoreLabel(9)}`, educationDetail, educationTable, Math.min(houseScore(5), houseScore(9)) >= 30 ? 'positive' : houseScore(5) < 25 && houseScore(9) < 25 ? 'negative' : 'neutral'),
             outcomeCard('Education & skill-assessment protocol / limitations', 'Reading guardrails from Class 3', 'Use multiple chart factors and real-world context; these traditional associations are not diagnostic or deterministic.', learningLimitsTable, 'neutral'),
