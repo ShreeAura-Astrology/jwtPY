@@ -402,14 +402,39 @@
                 </div>
             </div>
 
-            <!-- TAB: PREDICTIVE PRINCIPLES (PART III) -->
+            <!-- TAB: PREDICTIVE PRINCIPLES (PART III WITH DYNAMIC EVALUATION) -->
             <div id="tab-predictive" class="tab-content hidden space-y-6">
                 <div class="glass-card rounded-2xl p-6 shadow-lg space-y-6">
-                    <div class="border-b border-amber-500/20 pb-3">
-                        <h3 class="font-cinzel text-lg font-bold text-amber-300 flex items-center gap-2">
-                            <i data-lucide="compass" class="w-5 h-5 text-amber-400"></i> Part III: Sarvashtakvarga & Predictive Principles
-                        </h3>
-                        <p class="text-xs text-slate-400 mt-1">Decoding collective planetary benchmarks, physical overrides, and financial flow structures[cite: 13].</p>
+                    <div class="border-b border-amber-500/20 pb-3 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-cinzel text-lg font-bold text-amber-300 flex items-center gap-2">
+                                <i data-lucide="compass" class="w-5 h-5 text-amber-400"></i> Part III: Sarvashtakvarga & Predictive Principles
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-1">Applying collective planetary benchmarks and financial flow rules to your active chart[cite: 13, 14].</p>
+                        </div>
+                        <span class="text-[11px] bg-amber-500/10 text-amber-300 px-3 py-1 rounded-full border border-amber-500/20">Live Chart Diagnostic</span>
+                    </div>
+
+                    <!-- DYNAMIC CHART OUTCOME CARD -->
+                    <div class="bg-gradient-to-br from-slate-900 via-amber-950/30 to-slate-900 p-5 rounded-2xl border border-amber-500/30 space-y-4 shadow-xl">
+                        <h4 class="font-cinzel text-sm font-bold text-amber-300 flex items-center gap-2">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i> Chart-Specific Outcome & Principle Application (<span id="predictiveActiveName" class="text-amber-200">--</span>)
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                                <span class="text-slate-400 block text-[10px] uppercase font-semibold">Four Pillars Analysis</span>
+                                <div id="evalFourPillars" class="text-slate-200 space-y-1 font-medium">Calculating...</div>
+                            </div>
+                            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                                <span class="text-slate-400 block text-[10px] uppercase font-semibold">Financial Flow Equation</span>
+                                <div id="evalFinancialFlow" class="text-slate-200 space-y-1 font-medium">Calculating...</div>
+                            </div>
+                            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                                <span class="text-slate-400 block text-[10px] uppercase font-semibold">Special Directives & Warnings</span>
+                                <div id="evalDirectives" class="text-slate-200 space-y-1 font-medium">Calculating...</div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Core Benchmarks Grid -->
@@ -462,9 +487,9 @@
                         <div class="space-y-3">
                             <h4 class="font-cinzel text-sm font-bold text-amber-300">The Equations of Financial Flow</h4>
                             <ul class="text-xs text-slate-300 space-y-2 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                <li><strong>Prosperity Standard:</strong> Gains (11th) > Effort (10th) &amp; Gains (11th) > Expenses (12th)[cite: 14].</li>
-                                <li><strong>Wealth Retention Formula:</strong> Retains savings only when Lagna (1st) > Expenses (12th)[cite: 14].</li>
-                                <li><strong>The Work Overload Trap:</strong> If Effort (10th) > Gains (11th), the native works grueling hours with little reward[cite: 14].</li>
+                                <li><strong>Prosperity Standard:</strong> Gains (11th) &gt; Effort (10th) &amp; Gains (11th) &gt; Expenses (12th)[cite: 14].</li>
+                                <li><strong>Wealth Retention Formula:</strong> Retains savings only when Lagna (1st) &gt; Expenses (12th)[cite: 14].</li>
+                                <li><strong>The Work Overload Trap:</strong> If Effort (10th) &gt; Gains (11th), the native works grueling hours with little reward[cite: 14].</li>
                             </ul>
                         </div>
                     </div>
@@ -941,6 +966,49 @@
         $('fullBavBody').innerHTML = bodyHtml;
     }
 
+    function updatePredictiveEvaluation(name, lg, sav) {
+        $('predictiveActiveName').textContent = name;
+        
+        // Four Pillars: House 1 (Lagna), House 9 (Fortune), House 10 (Karma), House 11 (Gains)
+        const h1 = sav[lg];
+        const h9 = sav[(lg + 8) % 12];
+        const h10 = sav[(lg + 9) % 12];
+        const h11 = sav[(lg + 10) % 12];
+        
+        const pillarHtml = `
+            <div>1st House (Lagna): <strong class="${h1>=30?'text-emerald-400':h1<25?'text-red-400':'text-amber-300'}">${h1} pts</strong></div>
+            <div>9th House (Fortune): <strong class="${h9>=30?'text-emerald-400':h9<25?'text-red-400':'text-amber-300'}">${h9} pts</strong></div>
+            <div>10th House (Karma): <strong class="${h10>=30?'text-emerald-400':h10<25?'text-red-400':'text-amber-300'}">${h10} pts</strong></div>
+            <div>11th House (Gains): <strong class="${h11>=30?'text-emerald-400':h11<25?'text-red-400':'text-amber-300'}">${h11} pts</strong></div>
+        `;
+        $('evalFourPillars').innerHTML = pillarHtml;
+
+        // Financial Flow Equations
+        const h12 = sav[(lg + 11) % 12];
+        const gainsVsEffort = h11 > h10 ? '<span class="text-emerald-400 font-semibold">Gains > Effort (Favorable)</span>' : '<span class="text-red-400 font-semibold">Effort > Gains (Work Overload Trap)</span>';
+        const retention = h1 > h12 ? '<span class="text-emerald-400 font-semibold">Lagna > Expenses (Good Retention)</span>' : '<span class="text-red-400 font-semibold">Expenses > Lagna (High Expense Stress)</span>';
+        
+        $('evalFinancialFlow').innerHTML = `
+            <div>${gainsVsEffort}</div>
+            <div>${retention}</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">12th (Expenses): ${h12} pts</div>
+        `;
+
+        // Directives & Warnings
+        let directives = [];
+        const h5 = sav[(lg + 4) % 12];
+        const h6 = sav[(lg + 5) % 12];
+        
+        if (h5 < 20) directives.push('⚠️ 5th House < 20 pts: Absolute prohibition from speculation/options trading[cite: 14].');
+        else directives.push('✓ 5th House stable for calculated ventures.');
+
+        if (h6 >= 35) directives.push('💼 High 6th House (35+ pts): Lean towards active service, consulting, or law[cite: 14].');
+        
+        if (h9 < 20) directives.push('⚡ Weak 9th House (< 20 pts): Rely strictly on self-earned results rather than luck[cite: 14].');
+
+        $('evalDirectives').innerHTML = directives.map(x => `<div>${x}</div>`).join('');
+    }
+
     function generateHoroscope(e) {
         if (e) e.preventDefault();
         const d = $('dob').value, t = $('tob').value, lat = parseFloat($('lat').value), lon = parseFloat($('lon').value), tz = $('tz').value.trim();
@@ -964,9 +1032,13 @@
 
         // Compute Ashtakvarga
         globalAshtakvargaData = computeAshtakvarga(pos, lg);
+        const userName = $('fullName').value.trim() || 'User';
+
+        // Update Predictive Principles evaluation card
+        updatePredictiveEvaluation(userName, lg, globalAshtakvargaData.sav);
 
         // Basic details
-        $('resName').textContent = $('fullName').value.trim() || 'User';
+        $('resName').textContent = userName;
         $('resDob').textContent = d;
         $('resTob').textContent = t;
         $('resPlace').textContent = pi.value || 'Custom Location';
