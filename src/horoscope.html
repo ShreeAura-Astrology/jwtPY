@@ -471,7 +471,7 @@
 
         .house-span {
             color: #8a301e;
-            font-size: clamp(9px, 1.15vw, 14px);
+            font-size: clamp(7px, 1vw, 12px);
         }
 
         #horoscope-chart .hide {
@@ -761,12 +761,28 @@
         body.embedded-lal-kitab #horoscope-chart img,
         body.embedded-lal-kitab #varshphal-horoscope-chart img {
             display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: fill;
+        }
+
+        body.embedded-lal-kitab .chart-diagram {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 7 / 5;
+            overflow: hidden;
             border-radius: 12px;
         }
 
         body.embedded-lal-kitab .house-span {
+            box-sizing: border-box;
+            padding: 2px;
             color: #8a301e;
-            font-size: clamp(9px, 1.15vw, 14px);
+            font-size: clamp(7px, 1vw, 12px);
+            line-height: 1.15;
+            overflow-wrap: anywhere;
+            text-align: center;
         }
 
         body.embedded-lal-kitab #horoscope-chart .hide {
@@ -7277,11 +7293,12 @@ Team Mahesh Mankar
 
             <div id="horoscope-chart">
                 <span style="align-items: center;">{{nativeName}} Horoscope</span>
+                <div class="chart-diagram">
                 <!--img src="https://www.acharyainduprakash.com/blog/wp-content/uploads/2019/03/New-Kundli.png"
                 alt="Indian Horoscope Chart"-->
                 <img src="https://raw.githubusercontent.com/ShreeAura-Astrology/jwtPY/main/New-Kundli.png"
                     alt="Indian Horoscope Chart">
-                <span class="house-span" id="house-1">{{horoscope["1"].planets.toString()}}</span>
+                <span class="house-span" id="house-1">{{horoscope["1"].planets.join(', ')}}</span>
 
                 <span class="hide">Colour, Looks, Nature, Caste, Physique, Forehead, Age, Diseases, Success, Reputation,
                     Wealth, Wisdom, Health
@@ -7299,7 +7316,7 @@ child will survive.
 3. If enemy of the 1st house is sitting in the 2nd house then it will make the person poor.</pre>
                 </span>
 
-                <span class="house-span" id="house-2">{{horoscope["2"].planets.toString()}}</span>
+                <span class="house-span" id="house-2">{{horoscope["2"].planets.join(', ')}}</span>
                 <span class="hide">
                     <pre>Mid May - Jun Mid
                         Lord – Shukra 
@@ -7314,7 +7331,7 @@ Points to learn:-
 4. If Rahu is there in the 2nd house, the person always rely on Guru. 
 5. If Chandra is sitting in the 4th house, every negativity of the 2nd house gets removed.</pre>
                 </span>
-                <span class="house-span" id="house-3">{{horoscope["3"].planets.toString()}}</span>
+                <span class="house-span" id="house-3">{{horoscope["3"].planets.join(', ')}}</span>
                 <span class="hide">
                     <pre> June - July
                         Lord – Budh 
@@ -7328,7 +7345,7 @@ Points to learn:-
 3. Presence of Rahu/Ketu in this house will always give difficult death to the person also 
 early death if 8th house is negative.</pre>
                 </span>
-                <span class="house-span" id="house-4">{{horoscope["4"].planets.toString()}}</span>
+                <span class="house-span" id="house-4">{{horoscope["4"].planets.join(', ')}}</span>
                 <span class="hide">
                     <pre> July - August
                         Lord – Chandra 
@@ -7339,7 +7356,7 @@ Points to learn:-
 1. Take care of miscarriages. 
 2. Mangal’s and Rahu’s presence in this house is always negative.</pre>
                 </span>
-                <span class="house-span" id="house-5">{{horoscope["5"].planets.toString()}}</span>
+                <span class="house-span" id="house-5">{{horoscope["5"].planets.join(', ')}}</span>
                 <span class="hide">
                     <pre> Aug - Sep
                         Lord – Surya 
@@ -7351,7 +7368,7 @@ Points to learn:-
 1. Guru & Surya should not be negative anyhow to get the positive results of the house. 
 2. After the birth of child the effects of 5th house gets transferred to the 9th house.</pre>
                 </span>
-                <span class="house-span" id="house-6">{{horoscope["6"].planets.toString()}}</span>
+                <span class="house-span" id="house-6">{{horoscope["6"].planets.join(', ')}}</span>
                 <span class="hide">
                     <pre> Sep - Oct
                         Lord – Budh 
@@ -7364,7 +7381,7 @@ Points to learn:-
 2. While doing the prediction of this house always concentrate on 6th and 8th house as they 
 are always related.</pre>
                 </span>
-                <span class="house-span" id="house-7">{{horoscope["7"].planets.toString()}}</span>
+                <span class="house-span" id="house-7">{{horoscope["7"].planets.join(', ')}}</span>
                 <span class="hide">
                     <pre> Oct - Nov
                         Lord – Shukra 
@@ -7377,7 +7394,7 @@ Points to learn:-
 3. Combination of Shukra & budh in this house will strengthen the Shani and person 
 definitely becomes rich after marriage. </pre>
                 </span>
-                <span class="house-span" id="house-8">{{horoscope["8"].planets.toString()}}</span>
+                <span class="house-span" id="house-8">{{horoscope["8"].planets.join(', ')}}</span>
                 <span class="hide">
                     <pre> Nov - Dec
                         Lord – Mangal 
@@ -7391,7 +7408,7 @@ house.
 2. Presence of Rahu, Ketu or Shukra in the house will attract the person towards tantra
 mantra, jadu-tona or bhoot prakriya. </pre>
                 </span>
-                <span class="house-span" id="house-9">{{horoscope["9"].planets.toString()}}</span>
+                <span class="house-span" id="house-9">{{horoscope["9"].planets.join(', ')}}</span>
                 <span class="hide">
                     <pre> Dec - Jan
                         Lord – Guru 
@@ -7401,7 +7418,7 @@ Luck, Religion, Higher education, Samadhi, Donations, etc.
 Points to learn:- 
 1. Entire luck is determined by this house.</pre>
                 </span>
-                <span class="house-span" id="house-10">{{horoscope["10"].planets.toString()}}</span>
+                <span class="house-span" id="house-10">{{horoscope["10"].planets.join(', ')}}</span>
                 <span class="hide">
                     <pre> Jan - Feb
                         Lord – Shani 
@@ -7417,7 +7434,7 @@ Government favours and benefits
 the native 
 4. Venus in the 10th house bring the native under the control & guidance of spouse</pre>
                 </span>
-                <span class="house-span" id="house-11">{{horoscope["11"].planets.toString()}}</span>
+                <span class="house-span" id="house-11">{{horoscope["11"].planets.join(', ')}}</span>
                 <span class="hide">
                     <pre> Feb - Mar
                         Lord – Shani 
@@ -7434,7 +7451,7 @@ more powerful.
 don’t bring the things belongs to the planet of the 11th house. 
 5. Positive 9th house + Positive 11th house = Extremely Positive 2nd house.</pre>
                 </span>
-                <span class="house-span" id="house-12">{{horoscope["12"].planets.toString()}}</span>
+                <span class="house-span" id="house-12">{{horoscope["12"].planets.join(', ')}}</span>
                 <span class="hide">
                     <pre>Mar - April
                         Lord – Guru 
@@ -7448,26 +7465,28 @@ Points to learn:-
 belonging to that planet. If Ketu is sitting in the house, the person will get happiness and 
 relaxation from Son as Ketu belongs to Son.</pre>
                 </span>
-
+                </div>
             </div>
             <div id="varshphal-horoscope-chart" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
                 <span style="align-items: center;">{{nativeName}} Varshphal Horoscope</span><span> Age: {{ varshphalAge
                     }} - {{monthName[currentVarshMonth]}}
                 </span>
+                <div class="chart-diagram">
                 <img src="https://raw.githubusercontent.com/ShreeAura-Astrology/jwtPY/main/New-Kundli.png"
                     alt="Indian Varshphal Horoscope Chart">
-                <span class="house-span" id="house-1">{{varshphalChart["1"].planets.toString()}}</span>
-                <span class="house-span" id="house-2">{{varshphalChart["2"].planets.toString()}}</span>
-                <span class="house-span" id="house-3">{{varshphalChart["3"].planets.toString()}}</span>
-                <span class="house-span" id="house-4">{{varshphalChart["4"].planets.toString()}}</span>
-                <span class="house-span" id="house-5">{{varshphalChart["5"].planets.toString()}}</span>
-                <span class="house-span" id="house-6">{{varshphalChart["6"].planets.toString()}}</span>
-                <span class="house-span" id="house-7">{{varshphalChart["7"].planets.toString()}}</span>
-                <span class="house-span" id="house-8">{{varshphalChart["8"].planets.toString()}}</span>
-                <span class="house-span" id="house-9">{{varshphalChart["9"].planets.toString()}}</span>
-                <span class="house-span" id="house-10">{{varshphalChart["10"].planets.toString()}}</span>
-                <span class="house-span" id="house-11">{{varshphalChart["11"].planets.toString()}}</span>
-                <span class="house-span" id="house-12">{{varshphalChart["12"].planets.toString()}}</span>
+                <span class="house-span" id="house-1">{{varshphalChart["1"].planets.join(', ')}}</span>
+                <span class="house-span" id="house-2">{{varshphalChart["2"].planets.join(', ')}}</span>
+                <span class="house-span" id="house-3">{{varshphalChart["3"].planets.join(', ')}}</span>
+                <span class="house-span" id="house-4">{{varshphalChart["4"].planets.join(', ')}}</span>
+                <span class="house-span" id="house-5">{{varshphalChart["5"].planets.join(', ')}}</span>
+                <span class="house-span" id="house-6">{{varshphalChart["6"].planets.join(', ')}}</span>
+                <span class="house-span" id="house-7">{{varshphalChart["7"].planets.join(', ')}}</span>
+                <span class="house-span" id="house-8">{{varshphalChart["8"].planets.join(', ')}}</span>
+                <span class="house-span" id="house-9">{{varshphalChart["9"].planets.join(', ')}}</span>
+                <span class="house-span" id="house-10">{{varshphalChart["10"].planets.join(', ')}}</span>
+                <span class="house-span" id="house-11">{{varshphalChart["11"].planets.join(', ')}}</span>
+                <span class="house-span" id="house-12">{{varshphalChart["12"].planets.join(', ')}}</span>
+                </div>
             </div>
             <div class="result-container">
                 <h2 class="report-heading">Lal Kitab Reading</h2>
