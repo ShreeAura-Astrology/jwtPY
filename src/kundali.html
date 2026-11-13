@@ -122,7 +122,7 @@
                                 <!-- Populated dynamically -->
                             </ul>
                         </div>
-                        <p class="mt-1.5 text-[10px] leading-relaxed text-slate-500">Search 150+ Indian cities and major international locations. Select a suggestion to fill its coordinates and timezone; you can adjust them manually.</p>
+                        <p class="mt-1.5 text-[10px] leading-relaxed text-slate-500">Search places worldwide. Selecting a result fills its coordinates; verify the timezone, which is not provided by the place search service.</p>
                     </div>
 
                     <!-- Lat / Lon / Timezone -->
@@ -831,13 +831,105 @@
     const dm=x=>{const d=Math.floor(x),m=Math.floor((x-d)*60);return d+'°'+String(m).padStart(2,'0')+'′'};
 
     // Auto-suggest logic
-    const pi=$('placeName'),sg=$('sug');let act=-1,cur=[];
-    function show(){const q=pi.value.trim().toLowerCase();if(!q){sg.style.display='none';return}
-     cur=CITIES.filter(c=>c.n.toLowerCase().startsWith(q)).concat(CITIES.filter(c=>!c.n.toLowerCase().startsWith(q)&&(c.n+' '+c.r).toLowerCase().includes(q))).slice(0,8);act=-1;
-     sg.innerHTML=cur.map((c,i)=>`<li class="px-3 py-2 cursor-pointer hover:bg-amber-500/10 text-xs text-slate-200" data-i="${i}">${c.n} <small class="text-slate-400">${c.r}</small></li>`).join('')||'<li class="px-3 py-2 text-xs text-slate-500" style="cursor:default"><small>No match — enter manual lat/lon</small></li>';sg.style.display='block'}
-    function pick(c){pi.value=c.n+', '+c.r;$('lat').value=c.lat;$('lon').value=c.lon;$('tz').value=c.tz;sg.style.display='none';}
+    const pi=$('placeName'),sg=$('sug');
+    let act=-1,cur=[],searchTimeout=null,activeSearch=null,searchSequence=0;
+    const PLACE_SEARCH_URL='https://67bf6bd0da25caced8fb.appwrite.global/api/search';
+    function renderSuggestions(items,message=''){
+        cur=items;
+        act=-1;
+        sg.replaceChildren();
+        if(message){
+            const status=document.createElement('li');
+            status.className='px-3 py-2 text-xs text-slate-400';
+            status.textContent=message;
+            sg.appendChild(status);
+        }
+        items.forEach((place,index)=>{
+            const option=document.createElement('li');
+            option.className='px-3 py-2 cursor-pointer hover:bg-amber-500/10 text-xs text-slate-200';
+            option.dataset.i=String(index);
+            const name=document.createElement('span');
+            name.textContent=place.place;
+            const details=document.createElement('small');
+            details.className='text-slate-400 ml-2';
+            details.textContent=`${place.latitude}, ${place.longitude}`;
+            option.append(name,details);
+            sg.appendChild(option);
+        });
+        if(!items.length&&!message){
+            const empty=document.createElement('li');
+            empty.className='px-3 py-2 text-xs text-slate-500';
+            empty.textContent='No places found. You can enter coordinates manually.';
+            sg.appendChild(empty);
+        }
+        sg.style.display='block';
+    }
+    function localPlaceMatches(query){
+        const normalized=query.toLocaleLowerCase();
+        return CITIES.filter(city=>city.n.toLocaleLowerCase().startsWith(normalized))
+            .concat(CITIES.filter(city=>!city.n.toLocaleLowerCase().startsWith(normalized)
+                &&(city.n+' '+city.r).toLocaleLowerCase().includes(normalized)))
+            .slice(0,8)
+            .map(city=>({place:city.n,latitude:city.lat,longitude:city.lon,timezone:city.tz,city}));
+    }
+    function show(){
+        const query=pi.value.trim();
+        if(searchTimeout)clearTimeout(searchTimeout);
+        if(activeSearch)activeSearch.abort();
+        const sequence=++searchSequence;
+        if(!query){sg.style.display='none';cur=[];return}
+        renderSuggestions([],'Searching places…');
+        searchTimeout=setTimeout(async()=>{
+            activeSearch=new AbortController();
+            try{
+                const response=await fetch(`${PLACE_SEARCH_URL}?q=${encodeURIComponent(query)}`,{signal:activeSearch.signal});
+                if(!response.ok)throw new Error(`Place search failed with status ${response.status}.`);
+                const responseBody=await response.text();
+                let results;
+                try{
+                    results=JSON.parse(responseBody);
+                }catch(parseError){
+                    const normalizedBody=responseBody.replace(/(:\s*)NaN(?=\s*[,}])/g,'$1null');
+                    if(normalizedBody===responseBody)throw parseError;
+                    console.warn('Place search returned non-standard NaN values; treating them as missing.');
+                    results=JSON.parse(normalizedBody);
+                }
+                if(!Array.isArray(results))throw new Error('Place search returned an invalid response.');
+                const places=results.filter(item=>item&&typeof item.place==='string'
+                    &&Number.isFinite(item.latitude)&&Number.isFinite(item.longitude))
+                    .slice(0,10)
+                    .map(item=>({
+                        place:item.place,
+                        latitude:item.latitude,
+                        longitude:item.longitude,
+                        keywords:typeof item.keywords==='string'?item.keywords:''
+                    }));
+                if(sequence===searchSequence)renderSuggestions(places);
+            }catch(error){
+                if(error.name==='AbortError'||sequence!==searchSequence)return;
+                console.error('Unable to search places:',error);
+                renderSuggestions(localPlaceMatches(query),'Online place search unavailable. Showing built-in matches.');
+            }
+        },250);
+    }
+    function pick(place){
+        if(searchTimeout)clearTimeout(searchTimeout);
+        if(activeSearch)activeSearch.abort();
+        searchSequence++;
+        pi.value=place.place;
+        $('lat').value=place.latitude;
+        $('lon').value=place.longitude;
+        const knownCity=place.city||CITIES.find(city=>{
+            const cityName=city.n.trim().toLocaleLowerCase();
+            return cityName===place.place.trim().toLocaleLowerCase()
+                ||(typeof place.keywords==='string'
+                    &&place.keywords.split(',').some(keyword=>keyword.trim().toLocaleLowerCase()===cityName));
+        });
+        if(knownCity)$('tz').value=knownCity.tz;
+        sg.style.display='none';
+    }
     pi.addEventListener('input',show);pi.addEventListener('focus',show);
-    pi.addEventListener('keydown',e=>{const li=sg.querySelectorAll('li[data-i]');if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();act=(act+(e.key==='ArrowDown'?1:-1)+li.length)%li.length;li.forEach((x,i)=>x.classList.toggle('bg-amber-500/20',i===act))}else if(e.key==='Enter'&&act>=0){e.preventDefault();pick(cur[act])}else if(e.key==='Escape')sg.style.display='none'});
+    pi.addEventListener('keydown',e=>{const li=sg.querySelectorAll('li[data-i]');if(e.key==='ArrowDown'||e.key==='ArrowUp'){if(!li.length)return;e.preventDefault();act=(act+(e.key==='ArrowDown'?1:-1)+li.length)%li.length;li.forEach((x,i)=>x.classList.toggle('bg-amber-500/20',i===act))}else if(e.key==='Enter'&&act>=0){e.preventDefault();pick(cur[act])}else if(e.key==='Escape')sg.style.display='none'});
     sg.addEventListener('mousedown',e=>{const li=e.target.closest('li[data-i]');if(li)pick(cur[+li.dataset.i])});
     document.addEventListener('click',e=>{if(!e.target.closest('.relative'))sg.style.display='none'});
 

@@ -8,6 +8,7 @@ import datetime
 import time
 import requests
 import json
+import math
 from pathlib import Path
 
 import pandas as pd
@@ -23,15 +24,27 @@ def search_places_logic(query_str: str):
 
     matches = []
     for row in places_data:
-        place_name = str(row.get("Place", "")).casefold()
-        keywords = str(row.get("Keywords", "")).casefold()
+        place = row.get("Place")
+        if not isinstance(place, str) or not place.strip():
+            continue
+
+        place_name = place.casefold()
+        keywords_value = row.get("Keywords")
+        keywords = keywords_value.casefold() if isinstance(keywords_value, str) else ""
+        try:
+            latitude = float(row.get("Latitude"))
+            longitude = float(row.get("Longitude"))
+        except (TypeError, ValueError):
+            continue
+        if not math.isfinite(latitude) or not math.isfinite(longitude):
+            continue
 
         if query in place_name or query in keywords:
             matches.append({
-                "place": row.get("Place"),
-                "latitude": row.get("Latitude"),
-                "longitude": row.get("Longitude"),
-                "keywords": row.get("Keywords"),
+                "place": place,
+                "latitude": latitude,
+                "longitude": longitude,
+                "keywords": keywords,
             })
 
         if len(matches) >= 10:
