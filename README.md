@@ -10,6 +10,7 @@ A serverless Python function for Appwrite that serves astrology-related HTML/JS 
 - **Google OAuth2 JWT**: Generates and exchanges a signed JWT for a Google OAuth2 access token (for Drive and Sheets API).
 - **Appwrite Integration**: Uses Appwrite SDK for user and function management.
 - **CORS Support**: Adds CORS headers for cross-origin requests.
+- **Place Search**: Searches the bundled `Geo.xlsx` workbook for place names and keywords.
 
 ---
 
@@ -35,6 +36,8 @@ A serverless Python function for Appwrite that serves astrology-related HTML/JS 
 - `GET /significator.js`  
   Serves the `significator.js` script.
 
+- `GET /api/search?q={query}` returns up to 10 matching places with latitude and longitude.
+
 - `POST /`  
   Returns a Google OAuth2 JWT assertion and access token as JSON.
 
@@ -45,6 +48,8 @@ A serverless Python function for Appwrite that serves astrology-related HTML/JS 
 ```
 src/
   main.py
+  search.py
+  Geo.xlsx
   horoscope.html
   BNN.html
   BNN_Comb.js

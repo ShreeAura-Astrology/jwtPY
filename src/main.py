@@ -8,7 +8,7 @@ import datetime
 import time
 import requests
 import json
-from src.search import search_places_logic
+from search import search_places_logic
 
 # This Appwrite function will be executed every time your function is triggered
 def main(context):
@@ -203,5 +203,4 @@ def create_signed_jwt(private_key_path, payload, algorithm='RS256'):
     # Create the JWT
     token = jwt.encode(payload, private_key, algorithm=algorithm, headers=headers)
     return token
-
 
