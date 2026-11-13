@@ -48,7 +48,6 @@ A serverless Python function for Appwrite that serves astrology-related HTML/JS 
 ```
 src/
   main.py
-  search.py
   Geo.xlsx
   horoscope.html
   BNN.html

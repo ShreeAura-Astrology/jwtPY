@@ -8,7 +8,36 @@ import datetime
 import time
 import requests
 import json
-from search import search_places_logic
+from pathlib import Path
+
+import pandas as pd
+
+places_file = Path(__file__).with_name("Geo.xlsx")
+places_data = pd.read_excel(places_file).to_dict(orient="records")
+
+
+def search_places_logic(query_str: str):
+    query = query_str.strip().casefold()
+    if not query:
+        return []
+
+    matches = []
+    for row in places_data:
+        place_name = str(row.get("Place", "")).casefold()
+        keywords = str(row.get("Keywords", "")).casefold()
+
+        if query in place_name or query in keywords:
+            matches.append({
+                "place": row.get("Place"),
+                "latitude": row.get("Latitude"),
+                "longitude": row.get("Longitude"),
+                "keywords": row.get("Keywords"),
+            })
+
+        if len(matches) >= 10:
+            break
+
+    return matches
 
 # This Appwrite function will be executed every time your function is triggered
 def main(context):
@@ -203,4 +232,3 @@ def create_signed_jwt(private_key_path, payload, algorithm='RS256'):
     # Create the JWT
     token = jwt.encode(payload, private_key, algorithm=algorithm, headers=headers)
     return token
-
