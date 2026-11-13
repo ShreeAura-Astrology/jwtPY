@@ -199,6 +199,9 @@
                 <button onclick="switchTab('charts')" id="tabBtn-charts" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 text-slate-950 transition-all flex items-center gap-2 shadow">
                     <i data-lucide="layout-grid" class="w-4 h-4"></i> Divisional Charts
                 </button>
+                <button onclick="switchTab('lalkitab')" id="tabBtn-lalkitab" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-slate-400 hover:text-slate-200 transition-all flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i> Lal Kitab
+                </button>
                 <button onclick="switchTab('ashtakvarga')" id="tabBtn-ashtakvarga" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-slate-400 hover:text-slate-200 transition-all flex items-center gap-2">
                     <i data-lucide="grid" class="w-4 h-4"></i> SAV & BAV Inspector
                 </button>
@@ -290,6 +293,22 @@
                     </div>
 
                 </div>
+            </div>
+
+            <!-- LAL KITAB: Horoscope and Varshaphal -->
+            <div id="tab-lalkitab" class="tab-content hidden space-y-4">
+                <div class="glass-card rounded-2xl p-4 shadow-lg">
+                    <h3 class="font-cinzel text-base font-bold text-amber-300">Lal Kitab Horoscope &amp; Varshaphal</h3>
+                    <p class="text-xs text-slate-300 mt-1">Planetary house placements are inherited automatically from the generated D1 chart. Birth date and native name are synchronized as well.</p>
+                </div>
+                <iframe
+                    id="lalKitabHoroscopeFrame"
+                    src="horoscope.html?embedded=lal-kitab"
+                    title="Lal Kitab horoscope and Varshaphal"
+                    onload="lalKitabFrameLoaded()"
+                    class="w-full min-h-[900px] h-[calc(100vh-12rem)] rounded-2xl border border-amber-500/25 bg-white"
+                    loading="lazy">
+                </iframe>
             </div>
 
             <!-- TAB 2: SAV & BAV INSPECTOR -->
@@ -997,6 +1016,25 @@
         const activeBtn = document.getElementById(`tabBtn-${tabId}`);
         activeBtn.classList.remove('bg-slate-900', 'text-slate-400');
         activeBtn.classList.add('bg-amber-500', 'text-slate-950', 'shadow');
+        if (tabId === 'lalkitab') {
+            sendLalKitabChartData();
+        }
+    }
+
+    let lalKitabChartData = null;
+    let lalKitabFrameIsLoaded = false;
+
+    function lalKitabFrameLoaded() {
+        lalKitabFrameIsLoaded = true;
+        sendLalKitabChartData();
+    }
+
+    function sendLalKitabChartData() {
+        const frame = $('lalKitabHoroscopeFrame');
+        if (lalKitabFrameIsLoaded && frame && frame.contentWindow && lalKitabChartData) {
+            const targetOrigin = window.location.origin === 'null' ? '*' : window.location.origin;
+            frame.contentWindow.postMessage(lalKitabChartData, targetOrigin);
+        }
     }
 
     let globalAshtakvargaData = null;
@@ -1921,6 +1959,18 @@
         // Compute Ashtakvarga
         globalAshtakvargaData = computeAshtakvarga(pos, lg);
         const userName = $('fullName').value.trim() || 'User';
+        const planetHouses = {};
+        AB.forEach((key, index) => {
+            const sign = Math.floor(pos[key] / 30);
+            planetHouses[FULL[index]] = (sign - lg + 12) % 12 + 1;
+        });
+        lalKitabChartData = {
+            type: 'lal-kitab-load-chart',
+            name: userName,
+            dateOfBirth: d,
+            planetHouses
+        };
+        sendLalKitabChartData();
 
         // Update Predictive Principles evaluation card
         updatePredictiveEvaluation(userName, lg, globalAshtakvargaData.sav, globalAshtakvargaData);

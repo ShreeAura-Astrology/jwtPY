@@ -8,6 +8,8 @@ import datetime
 import time
 import requests
 import json
+from src.search import search_places_logic
+
 # This Appwrite function will be executed every time your function is triggered
 def main(context):
     # You can use the Appwrite SDK to interact with other services
@@ -127,6 +129,13 @@ def main(context):
         return context.res.binary(imag, 200, {
             "content-type": "image/png"
         })
+    # Handle the place search / autofill API endpoint
+    if context.req.path == "/api/search":
+      # Extract query parameter 'q' from Appwrite's request context
+      query_param = context.req.query.get("q", "")
+      results = search_places_logic(query_param)
+
+      return context.res.json(results, 200, {"Access-Control-Allow-Origin": "*"})
     # Example usage
     private_key_path = '/usr/local/server/src/function/src/private.key'  
     iat = time.time()

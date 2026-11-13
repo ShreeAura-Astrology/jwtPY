@@ -360,12 +360,562 @@
             display: block;
             color: white;
         }
+
+        body {
+            zoom: 100%;
+            min-height: 100%;
+            background: #f5f3ee;
+            color: #292524;
+            font-family: Inter, "Segoe UI", sans-serif;
+        }
+
+        .container {
+            width: min(100% - 32px, 1440px);
+            margin: 0 auto;
+            padding: 28px 0 56px;
+        }
+
+        .container > [ng-controller] {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: start;
+            gap: 20px;
+        }
+
+        .select-container {
+            position: relative;
+            grid-column: 1 / -1;
+            width: auto;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 24px;
+            border: 1px solid #e7e1d5;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #fffefa, #f8f5ed);
+            box-shadow: 0 12px 32px rgba(58, 45, 28, .07);
+        }
+
+        .select-container > label,
+        .select-container .age-container > label {
+            margin: 14px 0 7px;
+            color: #62513a;
+            font-size: 13px;
+            font-weight: 650;
+            letter-spacing: .025em;
+        }
+
+        .select-container input,
+        .select-container select {
+            width: min(100%, 360px);
+            min-height: 42px;
+            box-sizing: border-box;
+            padding: 9px 12px;
+            border: 1px solid #ded5c5;
+            border-radius: 10px;
+            background: #fff;
+            color: #292524;
+            font: inherit;
+        }
+
+        .select-container input:focus,
+        .select-container select:focus {
+            border-color: #b7791f;
+            outline: 3px solid rgba(183, 121, 31, .15);
+        }
+
+        #search-container,
+        #results-container,
+        #house-buttons,
+        #planet-buttons {
+            margin-top: 16px;
+        }
+
+        .select-container p {
+            color: #685c4b;
+            font-size: 13px;
+        }
+
+        #horoscope-chart,
+        #varshphal-horoscope-chart {
+            position: relative;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            top: auto !important;
+            left: auto !important;
+            transform: none;
+            margin: 0;
+            padding: 18px;
+            overflow: hidden;
+            border: 1px solid #e7e1d5;
+            border-radius: 20px;
+            background: #fffefa;
+            box-shadow: 0 12px 32px rgba(58, 45, 28, .07);
+        }
+
+        #horoscope-chart > span:first-child,
+        #varshphal-horoscope-chart > span:first-child {
+            display: block;
+            margin: 2px 0 12px;
+            color: #45351f;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        #horoscope-chart img,
+        #varshphal-horoscope-chart img {
+            display: block;
+            border-radius: 12px;
+        }
+
+        .house-span {
+            color: #8a301e;
+            font-size: clamp(9px, 1.15vw, 14px);
+        }
+
+        #horoscope-chart .hide {
+            max-width: min(460px, 80vw);
+            max-height: 50vh;
+            margin: 0;
+            overflow: auto;
+            padding: 16px;
+            background: #292524;
+            color: #fff7e6;
+            font-size: 13px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, .24);
+        }
+
+        #varshphal-horoscope-chart > span:nth-child(2) {
+            display: block;
+            margin: -4px 0 12px;
+            color: #77664d;
+            font-size: 13px;
+        }
+
+        .result-container {
+            position: relative;
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            width: auto;
+            box-sizing: border-box;
+            top: auto !important;
+            left: auto !important;
+            margin: 0;
+            padding: 24px;
+            border: 1px solid #e7e1d5;
+            border-radius: 22px;
+            background: linear-gradient(145deg, #fffefa, #f8f5ed);
+            box-shadow: 0 12px 32px rgba(58, 45, 28, .07);
+        }
+
+        .report-heading,
+        .report-intro,
+        .report-controls {
+            grid-column: 1 / -1;
+        }
+
+        .report-heading {
+            margin: 0 0 2px;
+            color: #45351f;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(22px, 2.5vw, 30px);
+        }
+
+        .report-intro {
+            margin: -10px 0 4px;
+            color: #766b5c;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .report-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 14px;
+            border: 1px solid #e7e1d5;
+            border-radius: 14px;
+            background: #f7f3eb;
+        }
+
+        .lagnaCtrl,
+        .varshphalCtrl,
+        .varshphalMonthCtrl {
+            position: static;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0;
+        }
+
+        .varshphalMonthCtrl {
+            margin-left: 0;
+        }
+
+        .report-controls button {
+            min-height: 38px;
+            padding: 9px 14px;
+            border: 1px solid #a77931;
+            border-radius: 10px;
+            background: #886023;
+            color: #fffdf8;
+            font-size: 13px;
+            font-weight: 650;
+            box-shadow: none;
+        }
+
+        .report-controls button:hover {
+            background: #684715;
+        }
+
+        .report-card {
+            min-width: 0;
+            margin: 0;
+            padding: 18px;
+            border: 1px solid #e8e2d7;
+            border-radius: 16px;
+            background: #fff;
+            box-shadow: 0 5px 16px rgba(58, 45, 28, .045);
+        }
+
+        .report-card__title {
+            display: block;
+            margin: 0 0 12px;
+            color: #574329;
+            font-size: 14px;
+            font-weight: 750;
+            letter-spacing: .015em;
+        }
+
+        .report-card__content {
+            display: block;
+            min-width: 0;
+            color: #49433a;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.75;
+            overflow-wrap: anywhere;
+        }
+
+        .report-card__content span {
+            color: inherit;
+            font-weight: inherit;
+        }
+
+        .report-card__content br + br {
+            content: "";
+            display: block;
+            margin-top: 7px;
+        }
+
+        .report-card__content table {
+            display: block;
+            max-width: 100%;
+            margin: 14px 0;
+            overflow-x: auto;
+            border: 1px solid #e5dfd4 !important;
+            border-radius: 10px;
+            border-collapse: separate !important;
+            border-spacing: 0;
+            background: #fffefa;
+            color: #49433a;
+            font-family: inherit !important;
+            font-size: 12px;
+        }
+
+        .report-card__content th,
+        .report-card__content td {
+            min-width: 100px;
+            padding: 9px 11px !important;
+            border: 0 !important;
+            border-bottom: 1px solid #eee8dd !important;
+            border-right: 1px solid #eee8dd !important;
+            background: transparent !important;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .report-card__content th {
+            background: #f3eee4 !important;
+            color: #594629;
+            font-weight: 700;
+        }
+
+        .report-card--wide {
+            grid-column: 1 / -1;
+        }
+
+        .report-card--highlight {
+            border-color: #dfc99e;
+            background: #fffaf0;
+        }
+
+        body.embedded-lal-kitab {
+            zoom: 100%;
+        }
+
+        body.embedded-lal-kitab {
+            min-height: 100%;
+            background: #f5f3ee;
+            color: #292524;
+            font-family: Inter, "Segoe UI", sans-serif;
+        }
+
+        body.embedded-lal-kitab .container {
+            width: min(100% - 32px, 1440px);
+            margin: 0 auto;
+            padding: 28px 0 56px;
+        }
+
+        body.embedded-lal-kitab .container > [ng-controller] {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: start;
+            gap: 20px;
+        }
+
+        body.embedded-lal-kitab .select-container {
+            position: relative;
+            grid-column: 1 / -1;
+            width: auto;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 24px;
+            border: 1px solid #e7e1d5;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #fffefa, #f8f5ed);
+            box-shadow: 0 12px 32px rgba(58, 45, 28, .07);
+        }
+
+        body.embedded-lal-kitab .select-container > label,
+        body.embedded-lal-kitab .select-container .age-container > label {
+            margin: 14px 0 7px;
+            color: #62513a;
+            font-size: 13px;
+            font-weight: 650;
+            letter-spacing: .025em;
+        }
+
+        body.embedded-lal-kitab .select-container input,
+        body.embedded-lal-kitab .select-container select {
+            width: min(100%, 360px);
+            min-height: 42px;
+            box-sizing: border-box;
+            padding: 9px 12px;
+            border: 1px solid #ded5c5;
+            border-radius: 10px;
+            background: #fff;
+            color: #292524;
+            font: inherit;
+        }
+
+        body.embedded-lal-kitab .select-container input:focus,
+        body.embedded-lal-kitab .select-container select:focus {
+            border-color: #b7791f;
+            outline: 3px solid rgba(183, 121, 31, .15);
+        }
+
+        body.embedded-lal-kitab #search-container,
+        body.embedded-lal-kitab #results-container,
+        body.embedded-lal-kitab #house-buttons,
+        body.embedded-lal-kitab #planet-buttons {
+            margin-top: 16px;
+        }
+
+        body.embedded-lal-kitab .select-container p {
+            color: #685c4b;
+            font-size: 13px;
+        }
+
+        body.embedded-lal-kitab #horoscope-chart,
+        body.embedded-lal-kitab #varshphal-horoscope-chart {
+            position: relative;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            top: auto !important;
+            left: auto !important;
+            transform: none;
+            margin: 0;
+            padding: 18px;
+            overflow: hidden;
+            border: 1px solid #e7e1d5;
+            border-radius: 20px;
+            background: #fffefa;
+            box-shadow: 0 12px 32px rgba(58, 45, 28, .07);
+        }
+
+        body.embedded-lal-kitab #horoscope-chart > span:first-child,
+        body.embedded-lal-kitab #varshphal-horoscope-chart > span:first-child {
+            display: block;
+            margin: 2px 0 12px;
+            color: #45351f;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        body.embedded-lal-kitab #horoscope-chart img,
+        body.embedded-lal-kitab #varshphal-horoscope-chart img {
+            display: block;
+            border-radius: 12px;
+        }
+
+        body.embedded-lal-kitab .house-span {
+            color: #8a301e;
+            font-size: clamp(9px, 1.15vw, 14px);
+        }
+
+        body.embedded-lal-kitab #horoscope-chart .hide {
+            max-width: min(460px, 80vw);
+            max-height: 50vh;
+            margin: 0;
+            overflow: auto;
+            padding: 16px;
+            background: #292524;
+            color: #fff7e6;
+            font-size: 13px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, .24);
+        }
+
+        body.embedded-lal-kitab #varshphal-horoscope-chart > span:nth-child(2) {
+            display: block;
+            margin: -4px 0 12px;
+            color: #77664d;
+            font-size: 13px;
+        }
+
+        body.embedded-lal-kitab .result-container {
+            position: relative;
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            width: auto;
+            box-sizing: border-box;
+            top: auto !important;
+            left: auto !important;
+            margin: 0;
+            padding: 24px;
+            border: 1px solid #e7e1d5;
+            border-radius: 22px;
+            background: linear-gradient(145deg, #fffefa, #f8f5ed);
+            box-shadow: 0 12px 32px rgba(58, 45, 28, .07);
+        }
+
+        body.embedded-lal-kitab .report-controls button,
+        body.embedded-lal-kitab .select-container button {
+            min-height: 38px;
+            padding: 9px 14px;
+            border: 1px solid #a77931;
+            border-radius: 10px;
+            background: #886023;
+            color: #fffdf8;
+            font-size: 13px;
+            font-weight: 650;
+            box-shadow: none;
+        }
+
+        body.embedded-lal-kitab .report-controls button:hover,
+        body.embedded-lal-kitab .select-container button:hover {
+            background: #684715;
+        }
+
+        body.embedded-lal-kitab .outer {
+            color: #292524;
+        }
+
+        body.embedded-lal-kitab .popup {
+            height: auto;
+            min-height: 180px;
+            padding: 28px;
+            box-sizing: border-box;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .24);
+        }
+
+        body.embedded-lal-kitab .popup h2 {
+            color: #45351f;
+        }
+
+        @media only screen and (max-width: 820px) {
+            .container {
+                width: min(100% - 20px, 680px);
+                padding-top: 12px;
+            }
+
+            .container > [ng-controller] {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 14px;
+            }
+
+            #horoscope-chart,
+            #varshphal-horoscope-chart,
+            .result-container {
+                grid-column: 1;
+            }
+
+            .result-container {
+                grid-template-columns: minmax(0, 1fr);
+                padding: 16px;
+            }
+
+            .report-card--wide,
+            .report-heading,
+            .report-intro,
+            .report-controls {
+                grid-column: 1;
+            }
+
+            .select-container {
+                padding: 16px;
+            }
+        }
+
+        @media only screen and (max-width: 767px) {
+            body.embedded-lal-kitab .container {
+                width: min(100% - 20px, 680px);
+                padding-top: 12px;
+            }
+
+            body.embedded-lal-kitab .container > [ng-controller] {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 14px;
+            }
+
+            body.embedded-lal-kitab #horoscope-chart,
+            body.embedded-lal-kitab #varshphal-horoscope-chart,
+            body.embedded-lal-kitab .result-container {
+                grid-column: 1;
+            }
+
+            body.embedded-lal-kitab .result-container {
+                grid-template-columns: minmax(0, 1fr);
+                padding: 16px;
+            }
+
+            body.embedded-lal-kitab .report-card--wide,
+            body.embedded-lal-kitab .report-heading,
+            body.embedded-lal-kitab .report-intro,
+            body.embedded-lal-kitab .report-controls {
+                grid-column: 1;
+            }
+
+            body.embedded-lal-kitab .select-container {
+                padding: 16px;
+            }
+        }
     </style>
 </head>
 <script>
     var app = angular.module('myApp', ['ngSanitize']);
     var newRefreshToken = "";
     app.controller('myCtrl', function ($scope, $http) {
+        if (new URLSearchParams(window.location.search).get('embedded') === 'lal-kitab') {
+            document.body.classList.add('embedded-lal-kitab');
+        }
 
         $scope.refreshAccessToken = function (chartType, retryAction, retryData) {
             const onRefreshSuccess = function (response) {
@@ -2563,6 +3113,47 @@
 
 
         }
+
+        window.addEventListener('message', function (event) {
+            if (event.source !== window.parent
+                || event.origin !== window.location.origin
+                || !event.data
+                || event.data.type !== 'lal-kitab-load-chart') {
+                return;
+            }
+
+            const { name, dateOfBirth, planetHouses } = event.data;
+            const birthDateParts = typeof dateOfBirth === 'string' ? dateOfBirth.split('-').map(Number) : [];
+            const validPlanets = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Rahu', 'Ketu'];
+            if (!birthDateParts || birthDateParts.length !== 3
+                || birthDateParts.some(part => !Number.isInteger(part))
+                || !planetHouses || typeof planetHouses !== 'object'
+                || !validPlanets.every(planet => Number.isInteger(planetHouses[planet]) && planetHouses[planet] >= 1 && planetHouses[planet] <= 12)) {
+                console.error('Unable to load Lal Kitab data: D1 chart payload is incomplete or invalid.');
+                return;
+            }
+
+            $scope.$applyAsync(function () {
+                $scope.resetConfig();
+                for (let houseNumber = 1; houseNumber <= 12; houseNumber++) {
+                    houses[String(houseNumber)] = {
+                        status: 'N',
+                        struggle: '',
+                        rakesheffect: false,
+                        planets: []
+                    };
+                }
+                validPlanets.forEach(function (planet) {
+                    houses[String(planetHouses[planet])].planets.push(planet);
+                });
+                $scope.nativeName = typeof name === 'string' && name.trim() ? name.trim() : 'User';
+                $scope.selectedDay = birthDateParts[2];
+                $scope.selectedMonth = birthDateParts[1];
+                $scope.selectedYear = birthDateParts[0];
+                $scope.horoscope = houses;
+                $scope.getHouseStatus();
+            });
+        });
 
         $scope.saveHoroscope = function (chartType) {
             if ($scope.nativeName != undefined && $scope.selectedDay != undefined && $scope.selectedMonth != undefined && $scope.selectedYear != undefined) {
@@ -6879,36 +7470,70 @@ relaxation from Son as Ketu belongs to Son.</pre>
                 <span class="house-span" id="house-12">{{varshphalChart["12"].planets.toString()}}</span>
             </div>
             <div class="result-container">
-                <span class="lagnaCtrl">
-                    <span><button ng-click="getHouseStatus()">Predict House Status</button></span>
-                    <span><button ng-click="saveHoroscope('Lagna')">Save</button></span>
-                    <span><button ng-click="deleteHoroscope()">Remove Horoscope</button></span>
-                    <span><button ng-click="reset()">Reset</button></span>
-
-                </span>
-                <span class="varshphalCtrl" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
-                    <button ng-click="prevVarshphal()">
-                        < Previous Age</button>
-                            <button ng-click="saveHoroscope('Varshphal')">Save Varshaphal</button>
-                            <button ng-click="nextVarshphal()">Next Age ></button>
-                </span>
-                <div class="varshphalMonthCtrl" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
-                    <button ng-click="rotateVarshphal('right')">
-                        < Previous Month</button>
-                            <button ng-click="resetVarshphal()">Reset Varshaphal</button>
-                            <button ng-click="rotateVarshphal('left')"> Next Month ></button>
+                <h2 class="report-heading">Lal Kitab Reading</h2>
+                <p class="report-intro">A structured view of the chart’s house and planetary indications, with annual Varshaphal controls and supporting interpretations.</p>
+                <div class="report-controls">
+                    <span class="lagnaCtrl">
+                        <button ng-click="getHouseStatus()">Refresh Reading</button>
+                        <button ng-click="saveHoroscope('Lagna')">Save Horoscope</button>
+                        <button ng-click="deleteHoroscope()">Remove Horoscope</button>
+                        <button ng-click="reset()">Reset</button>
+                    </span>
+                    <span class="varshphalCtrl" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
+                        <button ng-click="prevVarshphal()">&lt; Previous Age</button>
+                        <button ng-click="saveHoroscope('Varshphal')">Save Varshaphal</button>
+                        <button ng-click="nextVarshphal()">Next Age &gt;</button>
+                    </span>
+                    <span class="varshphalMonthCtrl" ng-if="!(nativeName.indexOf('Varshphal') > -1)">
+                        <button ng-click="rotateVarshphal('right')">&lt; Previous Month</button>
+                        <button ng-click="resetVarshphal()">Reset Month</button>
+                        <button ng-click="rotateVarshphal('left')">Next Month &gt;</button>
+                    </span>
                 </div>
-                <p> Melefic Houses : <span id="M"></span></p>
-                <p> Benefic Houses : <span id="B"></span></p>
-                <p> Neutral Benific Houses : <span id="NB"></span></p>
-                <p> Neutral Malefic Houses : <span id="NM"></span></p>
-                <p> Malefic Planets : <span id="MP"></span></p>
-                <p> Benefic Planets : <span id="BP"></span></p>
-                <p> Neutral Planets : <span id="NP"></span></p>
-                <p> Travel Prediction by Ketu in Varshphal : <span id="TP">{{ketuTravel}}</span></p>
-                <p> Dhoka Planet By Age:<span id="DH">{{dhokhaplanetbyAge}}</span>
-                <p> 35 Saala Chkkar <span id="CH" ng-bind-html="saalaChakkar"></span>
-                <p> Vakri drishti : <span id="VD"></span></p>
+                <section class="report-card report-card--highlight">
+                    <h3 class="report-card__title">Malefic houses</h3>
+                    <div class="report-card__content" id="M"></div>
+                </section>
+                <section class="report-card report-card--highlight">
+                    <h3 class="report-card__title">Benefic houses</h3>
+                    <div class="report-card__content" id="B"></div>
+                </section>
+                <section class="report-card">
+                    <h3 class="report-card__title">Neutral benefic houses</h3>
+                    <div class="report-card__content" id="NB"></div>
+                </section>
+                <section class="report-card">
+                    <h3 class="report-card__title">Neutral malefic houses</h3>
+                    <div class="report-card__content" id="NM"></div>
+                </section>
+                <section class="report-card report-card--highlight">
+                    <h3 class="report-card__title">Malefic planets</h3>
+                    <div class="report-card__content" id="MP"></div>
+                </section>
+                <section class="report-card">
+                    <h3 class="report-card__title">Benefic planets</h3>
+                    <div class="report-card__content" id="BP"></div>
+                </section>
+                <section class="report-card report-card--wide">
+                    <h3 class="report-card__title">Neutral planets &amp; additional findings</h3>
+                    <div class="report-card__content" id="NP"></div>
+                </section>
+                <section class="report-card report-card--highlight">
+                    <h3 class="report-card__title">Varshaphal travel indication</h3>
+                    <div class="report-card__content" id="TP">{{ketuTravel}}</div>
+                </section>
+                <section class="report-card">
+                    <h3 class="report-card__title">Dhoka planet by age</h3>
+                    <div class="report-card__content" id="DH">{{dhokhaplanetbyAge}}</div>
+                </section>
+                <section class="report-card">
+                    <h3 class="report-card__title">35-year cycle</h3>
+                    <div class="report-card__content" id="CH" ng-bind-html="saalaChakkar"></div>
+                </section>
+                <section class="report-card report-card--wide">
+                    <h3 class="report-card__title">Drishti, debts &amp; detailed analysis</h3>
+                    <div class="report-card__content" id="VD"></div>
+                </section>
             </div>
             <div class="outer" ng-show="toggleMessage">
                 <div class="popup">

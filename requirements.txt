@@ -1,3 +1,7 @@
 appwrite
 pyjwt[crypto]
 requests
+fastapi
+uvicorn
+pandas
+openpyxl
