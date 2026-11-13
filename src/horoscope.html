@@ -3148,7 +3148,7 @@
                 });
                 $scope.nativeName = typeof name === 'string' && name.trim() ? name.trim() : 'User';
                 $scope.selectedDay = birthDateParts[2];
-                $scope.selectedMonth = birthDateParts[1];
+                $scope.selectedMonth = String(birthDateParts[1]);
                 $scope.selectedYear = birthDateParts[0];
                 $scope.horoscope = houses;
                 $scope.getHouseStatus();
