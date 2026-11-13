@@ -934,21 +934,20 @@
     document.addEventListener('click',e=>{if(!e.target.closest('.relative'))sg.style.display='none'});
 
     // Chart Renderer with Retrograde Asterisk (*) Marking
-    // D1 uses natal sign placement. D9 (Navamsha) uses the navamsha sign mapping and a shifted lagna.
     const HC=[[200,95],[100,45],[45,100],[100,195],[45,300],[100,350],[200,300],[300,350],[355,300],[300,195],[355,100],[300,45]];
-    function getChartSignIndex(deg, customLgOffset = 0) {
-        if (customLgOffset === 8) {
-            // Navamsha mapping: each sign is divided into 9 equal sub-division points.
-            return Math.floor(((deg * 9) % 360) / 30);
-        }
-        return Math.floor(deg / 30);
-    }
+    // Navamsa (D9) sign index (0=Aries): each sign has 9 parts of 3°20'.
+    // Movable signs start from themselves, fixed from the 9th, dual from the 5th -- this is
+    // exactly floor(longitude / 3°20') mod 12.
+    const navamsaSign = l => Math.floor((((l % 360) + 360) % 360) / (10 / 3)) % 12;
+    const rashiSign = l => Math.floor((((l % 360) + 360) % 360) / 30);
 
-    function renderChartSvg(lg, pos, customLgOffset=0) {
-        const effectiveLg = (lg + customLgOffset) % 12;
+    // lgSign: sign index of the lagna for THIS chart (D1: rashi of ascendant, D9: navamsa of ascendant)
+    // signOf: maps a sidereal longitude to the sign index for THIS chart
+    function renderChartSvg(lgSign, pos, signOf = rashiSign) {
+        const effectiveLg = lgSign;
         const H = Array.from({length: 12}, () => []);
         AB.forEach(k => {
-            const signIdx = getChartSignIndex(pos[k], customLgOffset);
+            const signIdx = signOf(pos[k]);
             const hIdx = (signIdx - effectiveLg + 12) % 12;
             const isRx = pos.rx && pos.rx[k];
             H[hIdx].push(k + (isRx ? '*' : ''));
@@ -2136,8 +2135,8 @@
         $('pRituAyana').textContent = `${rituNames[rituIdx]} • ${ayana}`;
 
         // Render SVG Charts
-        $('svgD1').innerHTML = renderChartSvg(lg, pos, 0);
-        $('svgD9').innerHTML = renderChartSvg(lg, pos, 8);
+        $('svgD1').innerHTML = renderChartSvg(lg, pos, rashiSign);
+        $('svgD9').innerHTML = renderChartSvg(navamsaSign(asc), pos, navamsaSign);
 
         // Planetary Table with Retrograde Column
         let tbl = '';
