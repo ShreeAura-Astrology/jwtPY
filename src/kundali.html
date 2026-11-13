@@ -934,16 +934,22 @@
     document.addEventListener('click',e=>{if(!e.target.closest('.relative'))sg.style.display='none'});
 
     // Chart Renderer with Retrograde Asterisk (*) Marking
+    // D1 uses natal sign placement. D9 (Navamsha) uses the navamsha sign mapping and a shifted lagna.
     const HC=[[200,95],[100,45],[45,100],[100,195],[45,300],[100,350],[200,300],[300,350],[355,300],[300,195],[355,100],[300,45]];
+    function getChartSignIndex(deg, customLgOffset = 0) {
+        if (customLgOffset === 8) {
+            // Navamsha mapping: each sign is divided into 9 equal sub-division points.
+            return Math.floor(((deg * 9) % 360) / 30);
+        }
+        return Math.floor(deg / 30);
+    }
+
     function renderChartSvg(lg, pos, customLgOffset=0) {
         const effectiveLg = (lg + customLgOffset) % 12;
         const H = Array.from({length: 12}, () => []);
         AB.forEach(k => {
-            let signIdx = Math.floor(pos[k] / 30);
-            if (customLgOffset !== 0) {
-                signIdx = Math.floor(((pos[k] * (customLgOffset === 8 ? 9 : 1)) % 360) / 30);
-            }
-            let hIdx = (signIdx - effectiveLg + 12) % 12;
+            const signIdx = getChartSignIndex(pos[k], customLgOffset);
+            const hIdx = (signIdx - effectiveLg + 12) % 12;
             const isRx = pos.rx && pos.rx[k];
             H[hIdx].push(k + (isRx ? '*' : ''));
         });
