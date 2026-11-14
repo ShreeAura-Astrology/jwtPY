@@ -134,7 +134,7 @@ def main(context):
         return context.res.text(html, 200, {
             "content-type": "text/html"
         })
-    
+
     static_asset = STATIC_ASSETS.get(context.req.path)
     if static_asset:
         asset_name, content_type = static_asset
@@ -143,9 +143,15 @@ def main(context):
             asset_data = asset_path.read_bytes()
         except FileNotFoundError:
             context.error(f"Static asset not found: {asset_path.name}")
-            return context.res.text("Not found", 404, {"content-type": "text/plain"})
+            return context.res.text("Not found", 404, {
+                "content-type": "text/plain",
+                "Cache-Control": "no-store",
+            })
 
-        headers = {"content-type": content_type}
+        headers = {
+            "content-type": content_type,
+            "Cache-Control": "no-store",
+        }
         if content_type.startswith("image/"):
             return context.res.binary(asset_data, 200, headers)
         return context.res.text(asset_data.decode("utf-8"), 200, headers)
@@ -159,7 +165,10 @@ def main(context):
       return context.res.json(results, 200, {"Access-Control-Allow-Origin": "*"})
 
     if context.req.path != "/":
-        return context.res.text("Not found", 404, {"content-type": "text/plain"})
+        return context.res.text("Not found", 404, {
+            "content-type": "text/plain",
+            "Cache-Control": "no-store",
+        })
 
     # Example usage
     private_key_path = '/usr/local/server/src/function/src/private.key'  
@@ -194,7 +203,8 @@ def main(context):
             "assertion" : token,
             "token" : responsejson["access_token"]
         }, 200, {
-            "Access-Control-Allow-Origin": "*"
+            "Access-Control-Allow-Origin": "*",
+            "Cache-Control": "no-store",
         }
     )
 
