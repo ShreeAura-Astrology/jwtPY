@@ -6,7 +6,7 @@ A serverless Python function for Appwrite that serves astrology-related HTML/JS 
 
 ## 🚀 Features
 
-- **Static File Serving**: Serves astrology web apps and scripts (`horoscope.html`, `BNN.html`, `BNN_Comb.js`, `transit.js`, `significator.js`) via HTTP endpoints.
+- **Static File Serving**: Serves astrology web apps, scripts, stylesheets, and chart images via explicit HTTP endpoints.
 - **Google OAuth2 JWT**: Generates and exchanges a signed JWT for a Google OAuth2 access token (for Drive and Sheets API).
 - **Appwrite Integration**: Uses Appwrite SDK for user and function management.
 - **CORS Support**: Adds CORS headers for cross-origin requests.
@@ -24,8 +24,14 @@ A serverless Python function for Appwrite that serves astrology-related HTML/JS 
 - `GET /horoscope`  
   Serves the `horoscope.html` astrology web app.
 
+- `GET /kundali`
+  Serves the Kundali app.
+
 - `GET /bnn`  
   Serves the `BNN.html` astrology web app.
+
+- `GET /lalkitab`
+  Serves the `lalkitab.html` astrology web app.
 
 - `GET /BNN_Comb.js`  
   Serves the `BNN_Comb.js` script.
@@ -36,10 +42,21 @@ A serverless Python function for Appwrite that serves astrology-related HTML/JS 
 - `GET /significator.js`  
   Serves the `significator.js` script.
 
+- `GET /lal-kitab.js` and `GET /lal-kitab-report.css`
+  Serve the shared Lal Kitab logic and report styles.
+
+- `GET /houseLord.js`, `GET /rahuketuaxis.js`
+  Serve scripts used by the BNN app.
+
+- `GET /New-Kundli.png`
+  Serves the Kundali chart image. `/kundali.png` remains an alias.
+
 - `GET /api/search?q={query}` returns up to 10 matching places with latitude and longitude.
 
-- `POST /`  
-  Returns a Google OAuth2 JWT assertion and access token as JSON.
+- `GET /`
+  Returns a Google OAuth2 JWT assertion and access token as JSON for the Lal Kitab app.
+
+- Unknown paths return `404 Not found`.
 
 ---
 

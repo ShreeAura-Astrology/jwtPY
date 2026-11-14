@@ -16,6 +16,18 @@ import pandas as pd
 places_file = Path(__file__).with_name("Geo.xlsx")
 places_data = pd.read_excel(places_file).to_dict(orient="records")
 
+STATIC_ASSETS = {
+    "/BNN_Comb.js": ("BNN_Comb.js", "text/javascript"),
+    "/transit.js": ("transit.js", "text/javascript"),
+    "/significator.js": ("significator.js", "text/javascript"),
+    "/houseLord.js": ("houseLord.js", "text/javascript"),
+    "/rahuketuaxis.js": ("rahuketuaxis.js", "text/javascript"),
+    "/lal-kitab.js": ("lal-kitab.js", "text/javascript"),
+    "/lal-kitab-report.css": ("lal-kitab-report.css", "text/css"),
+    "/New-Kundli.png": ("New-Kundli.png", "image/png"),
+    "/kundali.png": ("New-Kundli.png", "image/png"),
+}
+
 
 def search_places_logic(query_str: str):
     query = query_str.strip().casefold()
@@ -123,65 +135,21 @@ def main(context):
             "content-type": "text/html"
         })
     
-     # The req object contains html the request data
-    if context.req.path == "/BNN_Comb.js":
-        # Use res object to respond with text(), json(), or binary()
-        # Don't forget to return a response!
-        # Read the private key
-        with open('/usr/local/server/src/function/src/BNN_Comb.js', 'r') as js_file:
-            js = js_file.read()
-        return context.res.text(js, 200, {
-            "content-type": "text/javascript"
-        })
-     # The req object contains html the request data
-    if context.req.path == "/transit.js":
-        # Use res object to respond with text(), json(), or binary()
-        # Don't forget to return a response!
-        # Read the private key
-        with open('/usr/local/server/src/function/src/transit.js', 'r') as js_file:
-            js = js_file.read()
-        return context.res.text(js, 200, {
-            "content-type": "text/javascript"
-        })
-    # The req object contains significator.js the request data
-    if context.req.path == "/significator.js":
-        # Use res object to respond with text(), json(), or binary()
-        # Don't forget to return a response!
-        # Read the private key
-        with open('/usr/local/server/src/function/src/significator.js', 'r') as js_file:
-            js = js_file.read()
-        return context.res.text(js, 200, {
-            "content-type": "text/javascript"
-        })
-    # The req object contains houseLord.js the request data
-    if context.req.path == "/houseLord.js":
-        # Use res object to respond with text(), json(), or binary()
-        # Don't forget to return a response!
-        # Read the private key
-        with open('/usr/local/server/src/function/src/houseLord.js', 'r') as js_file:
-            js = js_file.read()
-        return context.res.text(js, 200, {
-            "content-type": "text/javascript"
-        })
-    # The req object contains rahuketuaxis.js the request data
-    if context.req.path == "/rahuketuaxis.js":
-        # Use res object to respond with text(), json(), or binary()
-        # Don't forget to return a response!
-        # Read the private key
-        with open('/usr/local/server/src/function/src/rahuketuaxis.js', 'r') as js_file:
-            js = js_file.read()
-        return context.res.text(js, 200, {
-            "content-type": "text/javascript"
-        })
-    # The req object contains the request data
-    if context.req.path == "/kundali.png":
-        # Serve the New-Kundali.png image
-        with open('/usr/local/server/src/function/src/New-Kundali.png', 'rb') as img_file:
-            imag = img_file.read()
-        # Use res object to respond with binary()
-        return context.res.binary(imag, 200, {
-            "content-type": "image/png"
-        })
+    static_asset = STATIC_ASSETS.get(context.req.path)
+    if static_asset:
+        asset_name, content_type = static_asset
+        asset_path = Path(__file__).with_name(asset_name)
+        try:
+            asset_data = asset_path.read_bytes()
+        except FileNotFoundError:
+            context.error(f"Static asset not found: {asset_path.name}")
+            return context.res.text("Not found", 404, {"content-type": "text/plain"})
+
+        headers = {"content-type": content_type}
+        if content_type.startswith("image/"):
+            return context.res.binary(asset_data, 200, headers)
+        return context.res.text(asset_data.decode("utf-8"), 200, headers)
+
     # Handle the place search / autofill API endpoint
     if context.req.path == "/api/search":
       # Extract query parameter 'q' from Appwrite's request context
@@ -189,6 +157,10 @@ def main(context):
       results = search_places_logic(query_param)
 
       return context.res.json(results, 200, {"Access-Control-Allow-Origin": "*"})
+
+    if context.req.path != "/":
+        return context.res.text("Not found", 404, {"content-type": "text/plain"})
+
     # Example usage
     private_key_path = '/usr/local/server/src/function/src/private.key'  
     iat = time.time()
