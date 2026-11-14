@@ -1,0 +1,6610 @@
+
+    var app = angular.module('myApp', ['ngSanitize']);
+    var newRefreshToken = "";
+    app.controller('myCtrl', function ($scope, $http) {
+        if (new URLSearchParams(window.location.search).get('embedded') === 'lal-kitab') {
+            document.body.classList.add('embedded-lal-kitab');
+        }
+
+        $scope.refreshAccessToken = function (chartType, retryAction, retryData) {
+            const onRefreshSuccess = function (response) {
+                console.log('Successfully Refreshed Access Token:', response.data);
+                if (response.data && response.data.token) {
+                    accessToken = response.data.token;
+                }
+                if (response.data && response.data.assertion) {
+                    newRefreshToken = response.data.assertion;
+                }
+
+                let nextConfig = retryData && retryData.config ? angular.copy(retryData.config) : null;
+                if (nextConfig && nextConfig.headers) {
+                    nextConfig.headers.Authorization = 'Bearer ' + accessToken;
+                }
+
+                if (retryAction) {
+                    retryAction({ data: retryData && retryData.data, config: nextConfig });
+                } else if (chartType) {
+                    $scope.pullPushHoroscope(chartType);
+                }
+            };
+
+            $http.get('https://67bf6bd0da25caced8fb.appwrite.global/').then(onRefreshSuccess)
+                .catch(function (error) {
+                    console.error('Error in refreshing access token :', error);
+                    if (retryAction) {
+                        $scope.refreshAccessTokenz(chartType, retryAction, retryData);
+                    }
+                });
+
+        }
+        $scope.refreshAccessTokenz = function (chartType, retryAction, retryData) {
+
+            var postData = {
+                "client_id": "174274796007-75qmckk51irgj0eentqr7armskkle9qo.apps.googleusercontent.com",
+                "client_secret": "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",
+                "grant_type": "refresh_token",
+                "refresh_token": newRefreshToken
+            }
+            $http.post('https://oauth2.googleapis.com/token', formEncode(postData), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                }
+            })
+                .then(function (response) {
+                    console.log('Successfully Refreshed Access Token:', response.data);
+                    accessToken = response.data.access_token;
+                    if (response.data.refresh_token) {
+                        newRefreshToken = response.data.refresh_token;
+                    }
+
+                    let nextConfig = retryData && retryData.config ? angular.copy(retryData.config) : null;
+                    if (nextConfig && nextConfig.headers) {
+                        nextConfig.headers.Authorization = 'Bearer ' + accessToken;
+                    }
+
+                    if (retryAction) {
+                        retryAction({ data: retryData && retryData.data, config: nextConfig });
+                    } else if (chartType) {
+                        $scope.pullPushHoroscope(chartType);
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error in refreshing access token :', error);
+                    $scope.message = 'Authentication refresh failed. Please reload and try again.';
+                    $scope.toggleMessage = true;
+                });
+
+
+            //.success(function(data) {
+            //do stuff with response
+            //});
+
+        }
+
+        function formEncode(obj) {
+            var encodedString = '';
+            for (var key in obj) {
+                if (encodedString.length !== 0) {
+                    encodedString += '&';
+                }
+
+                encodedString += key + '=' + encodeURIComponent(obj[key]);
+            }
+            return encodedString.replace(/%20/g, '+');
+        }
+
+        function rowsToHoroscopeMap(rows) {
+            const horoscopes = {};
+            if (!Array.isArray(rows)) {
+                return horoscopes;
+            }
+
+            rows.forEach(function (row) {
+                if (!row) {
+                    return;
+                }
+
+                const recordId = row.recordId || row[0] || row.name || '';
+                if (!recordId) {
+                    return;
+                }
+
+                let horoscopePayload = row.horoscopePayload || row[7] || '{}';
+                if (typeof horoscopePayload !== 'string') {
+                    horoscopePayload = JSON.stringify(horoscopePayload);
+                }
+
+                let horoscopeData = {};
+                try {
+                    horoscopeData = JSON.parse(horoscopePayload);
+                } catch (error) {
+                    console.error('Unable to parse horoscope payload row:', error);
+                    horoscopeData = {};
+                }
+
+                horoscopes[recordId] = {
+                    recordId: recordId,
+                    name: row.name || row[1] || recordId,
+                    charttype: row.charttype || row[2] || 'Lagna',
+                    date: row.date || row[3] || '',
+                    day: row.day || row[4] || '',
+                    month: row.month || row[5] || '',
+                    year: row.year || row[6] || '',
+                    horoscope: horoscopeData
+                };
+            });
+
+            return horoscopes;
+        }
+
+        function buildHoroscopeRows(horoscopeMap) {
+            const rows = [['recordId', 'name', 'charttype', 'date', 'day', 'month', 'year', 'horoscopePayload']];
+            const source = horoscopeMap || {};
+
+            Object.keys(source).forEach(function (recordId) {
+                const record = source[recordId] || {};
+                const horoscopePayload = record.horoscopePayload || JSON.stringify(record.horoscope || {});
+                rows.push([
+                    recordId,
+                    record.name || recordId,
+                    record.charttype || 'Lagna',
+                    record.date || '',
+                    record.day || '',
+                    record.month || '',
+                    record.year || '',
+                    horoscopePayload
+                ]);
+            });
+
+            return rows;
+        }
+
+        function parseStoredHoroscopes(data) {
+            if (!data) {
+                return {};
+            }
+            if (Array.isArray(data)) {
+                return rowsToHoroscopeMap(data);
+            }
+            if (typeof data === 'object') {
+                if (data.recordId) {
+                    return {
+                        [data.recordId]: data
+                    };
+                }
+                return data;
+            }
+            try {
+                const parsed = JSON.parse(data);
+                if (Array.isArray(parsed)) {
+                    return rowsToHoroscopeMap(parsed);
+                }
+                return parsed && typeof parsed === 'object' ? parsed : {};
+            } catch (error) {
+                console.error('Unable to parse horoscope payload:', error);
+                return {};
+            }
+        }
+
+        var accessToken = "ya29.a0ARW5m74JFWfhtaXGh7tqpBuwey1N41fzYVRkTsrV7e3A6pGVCJ8bOMSdNKt4nvDJUhI__E8unXwr3c3VuLsiXF8W46DbfUM08VCqzxvNG42pdy511LSBPmUyTRfeSXXuTA4TX3sTj_8mbE0q1qXdT5KCHZbpMEUlw-CxaOW8aCgYKAcsSARESFQHGX2Miiw7vi40oV2Qpm33m2HcEnQ0175";
+        $scope.horoscopes = {};
+        $scope.horoscopeList = [];
+
+        $scope.runSheetsRequest = function (requestType, url, data, config, chartType, successHandler, retryPayload) {
+            const request = requestType === 'put'
+                ? $http.put(url, data, config)
+                : $http.get(url, config);
+
+            request.then(function (response) {
+                successHandler(response);
+            }).catch(function (error) {
+                console.error('Sheets request failed:', error);
+                if (error && (error.status === 401 || error.status === 403)) {
+                    console.log('401/403 received. Attempting to refresh the access token and retry.');
+                    $scope.refreshAccessToken(chartType, function (payload) {
+                        if (requestType === 'put') {
+                            $http.put(url, payload.data, payload.config).then(successHandler).catch(function (retryError) {
+                                console.error('Retry after refresh also failed:', retryError);
+                            });
+                        } else {
+                            $http.get(url, payload.config).then(successHandler).catch(function (retryError) {
+                                console.error('Retry after refresh also failed:', retryError);
+                            });
+                        }
+                    }, { data: data, config: config });
+                }
+            });
+        };
+
+        $scope.refreshHoroscopeList = function () {
+            const source = $scope.horoscopes || {};
+            $scope.horoscopeList = Object.keys(source)
+                .map(function (key) {
+                    const record = source[key] || {};
+                    const displayName = record.name || key;
+                    const chartType = record.charttype || 'Lagna';
+                    return {
+                        label: displayName + ' (' + chartType + ')',
+                        value: key,
+                        record: record
+                    };
+                })
+                .sort(function (a, b) {
+                    return a.label.localeCompare(b.label);
+                });
+        };
+
+        $scope.saveKundali = function (horoscopeInfo) {
+            const parsedData = typeof horoscopeInfo === 'string' ? parseStoredHoroscopes(horoscopeInfo) : horoscopeInfo;
+            const sheetRows = buildHoroscopeRows(parsedData);
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/horoscopeData!A1:H' + sheetRows.length + '?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc&valueInputOption=RAW';
+            const data = {
+                "values": sheetRows
+            };
+
+            const config = {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            $scope.runSheetsRequest('put', url, data, config, null, function (response) {
+                console.log('Success:', response.data);
+                $scope.horoscopes = parsedData;
+                $scope.refreshHoroscopeList();
+                $scope.toggleMessage = true;
+                $scope.getKundali();
+            });
+
+        }
+
+        $scope.getKundali = function () {
+            const config = {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            };
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/19H_Qjs9aHJxDtZ1expcZTX687s5ry_0MZFgLN_waM9k/values/horoscopeData!A:H?key=AIzaSyADyqudhBZGcqnr1KPhYqJLxRyIKIf7Ryc';
+            $scope.runSheetsRequest('get', url, null, config, null, function (response) {
+                console.log('Success:', response.data);
+                const values = response.data.values || [];
+                const sheetRows = values.slice(1);
+                const storedValue = sheetRows.length > 0 ? sheetRows : [];
+                $scope.horoscopes = parseStoredHoroscopes(storedValue);
+                $scope.refreshHoroscopeList();
+                console.log(Object.keys($scope.horoscopes).length + ' Horoscopes loaded.');
+                $scope.message = 'Loaded Horoscope for ' + Object.keys($scope.horoscopes).length;
+                $scope.toggleMessage = true;
+            });
+        }
+
+
+        $scope.pullPushHoroscope = function (chartType) {
+            const recordKey = chartType == 'Lagna'
+                ? $scope.nativeName
+                : $scope.nativeName + '_Varshphal_' + $scope.varshphalAge + '_' + $scope.monthName[$scope.currentVarshMonth];
+
+            const recordData = {
+                "name": recordKey,
+                "horoscope": chartType == 'Lagna' ? $scope.horoscope : $scope.varshphalChart,
+                "date": (new Date()).toDateString(),
+                "day": $scope.selectedDay,
+                "month": $scope.selectedMonth,
+                "year": $scope.selectedYear,
+                "charttype": chartType
+            };
+
+            const storageHoroscope = angular.copy($scope.horoscopes || {});
+            storageHoroscope[recordKey] = recordData;
+            $scope.horoscopes = storageHoroscope;
+            $scope.saveKundali(storageHoroscope);
+            $scope.message = chartType == 'Lagna' ? 'Saved Horoscope for ' + $scope.nativeName : 'Saved Varshaphal Horoscope for ' + $scope.nativeName;
+            $scope.toggleMessage = true;
+        }
+        var varshphalHouses = {
+            "1": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "2": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "3": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "4": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "5": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "6": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "7": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "8": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "9": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "10": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "11": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "12": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            }
+        };
+        var houses = {
+            "1": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "2": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "3": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "4": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "5": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "6": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "7": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "8": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "9": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "10": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "11": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            },
+            "12": {
+                "status": "N",
+                "struggle": "",
+                "rakesheffect": false,
+                "planets": []
+            }
+        };
+        var predictions = [];
+        var rinEffects = [];
+        var maleficPlanets = [];
+        var beneficPlanets = [];
+        var neutralPlanets = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Rahu", "Ketu"];
+        var maleficHouses = [];
+        var beneficHouses = [];
+        var neutralMaleficHouses = [];
+        var neutralBenificHouses = [];
+        var moonState = [];
+        var finalHoro = [];
+        var diseases = [];
+        var rakeshEffect = false;
+        var vakri = [];
+        var analysis = [];
+        var drishti = [];
+        var bala = [];
+        var blindPlanets = [];
+        var balaOfPlanets = {
+            "Sun": 0,
+            "Moon": 0,
+            "Mercury": 0,
+            "Ketu": 0,
+            "Rahu": 0,
+            "Saturn": 0,
+            "Venus": 0,
+            "Jupiter": 0,
+            "Mars": 0
+        };
+        var planetsTable = {
+            "Sun": {
+                "houses": [1],
+                "friends": ["Moon", "Jupiter", "Mars"],
+                "enemies": ["Venus", "Saturn", "Rahu", "Ketu"],
+                "uch": [1],
+                "neech": [7]
+            },
+            "Jupiter": {
+                "houses": [2, 5, 9, 11],
+                "friends": ["Sun", "Moon", "Mars"],
+                "enemies": ["Mercury", "Venus", "Rahu"],
+                "uch": [4],
+                "neech": [10]
+            },
+            "Mars": {
+                "houses": [3],
+                "friends": ["Sun", "Moon", "Jupiter"],
+                "enemies": ["Mercury", "Ketu"],
+                "uch": [10],
+                "neech": [4]
+            },
+            "Moon": {
+                "houses": [4],
+                "friends": ["Sun", "Mercury"],
+                "enemies": ["Rahu", "Ketu"],
+                "uch": [2],
+                "neech": [8]
+            },
+            "Ketu": {
+                "houses": [6],
+                "friends": ["Venus", "Rahu"],
+                "enemies": ["Sun", "Moon", "Mars"],
+                "uch": [9],
+                "neech": [3, 12]
+            },
+            "Venus": {
+                "houses": [7],
+                "friends": ["Mercury", "Saturn", "Ketu"],
+                "enemies": ["Sun", "Moon", "Rahu"],
+                "uch": [12],
+                "neech": [6]
+            },
+            "Saturn": {
+                "houses": [8, 10],
+                "friends": ["Mercury", "Venus", "Rahu"],
+                "enemies": ["Sun", "Moon", "Mars"],
+                "uch": [7],
+                "neech": [1]
+            },
+            "Rahu": {
+                "houses": [12],
+                "friends": ["Mercury", "Saturn", "Ketu"],
+                "enemies": ["Sun", "Moon", "Mars", "Venus"],
+                "uch": [3, 6],
+                "neech": [9]
+            },
+            "Mercury": {
+                "houses": [0],
+                "friends": ["Sun", "Venus", "Rahu"],
+                "enemies": ["Moon"],
+                "uch": [6],
+                "neech": [12]
+            }
+        };
+
+        var housesTable = {
+            "1": {
+                "karak": "Sun",
+                "house": 1,
+                "friends": ["Moon", "Jupiter", "Mars"],
+                "enemies": ["Venus", "Saturn", "Rahu", "Ketu"],
+                "drishti": ["7"],
+                "percent": 100,
+                "vakri": [],
+                "helps": "5"
+            },
+            "2": {
+                "karak": "Jupiter",
+                "house": 2,
+                "friends": ["Sun", "Moon", "Mars"],
+                "enemies": ["Mercury", "Venus"],
+                "drishti": ["6"],
+                "percent": 25,
+                "vakri": [],
+                "helps": "6"
+            },
+            "3": {
+                "karak": "Mars",
+                "house": 3,
+                "friends": ["Sun", "Moon", "Jupiter"],
+                "enemies": ["Mercury", "Ketu"],
+                "drishti": ["9", "11"],
+                "percent": 50,
+                "vakri": [],
+                "helps": "7"
+            },
+            "4": {
+                "karak": "Moon",
+                "house": 4,
+                "friends": ["Sun", "Mercury"],
+                "enemies": ["Rahu", "Ketu"],
+                "drishti": ["10"],
+                "percent": 100,
+                "vakri": [],
+                "helps": "8"
+            },
+            "5": {
+                "karak": "Jupiter",
+                "house": 5,
+                "friends": ["Sun", "Moon", "Mars"],
+                "enemies": ["Mercury", "Venus"],
+                "drishti": ["9"],
+                "percent": 50,
+                "vakri": [],
+                "helps": "9"
+            },
+            "6": {
+                "karak": "Ketu",
+                "house": 6,
+                "friends": ["Venus", "Rahu"],
+                "enemies": ["Sun", "Moon", "Mars"],
+                "drishti": ["12"],
+                "percent": 25,
+                "vakri": ["2"],
+                "helps": "10"
+            },
+            "7": {
+                "karak": "Venus",
+                "house": 7,
+                "friends": ["Mercury", "Saturn", "Ketu"],
+                "enemies": ["Sun", "Moon", "Rahu"],
+                "drishti": [],
+                "percent": 0,
+                "vakri": [],
+                "helps": "11"
+            },
+            "8": {
+                "karak": "Saturn",
+                "house": 8,
+                "friends": ["Mercury", "Venus", "Rahu"],
+                "enemies": ["Sun", "Moon", "Mars"],
+                "drishti": ["12"],
+                "percent": 25,
+                "vakri": ["2"],
+                "helps": "12"
+            },
+            "9": {
+                "karak": "Jupiter",
+                "house": 9,
+                "friends": ["Sun", "Moon", "Mars"],
+                "enemies": ["Mercury", "Venus"],
+                "drishti": [],
+                "percent": 0,
+                "vakri": ["3"],
+                "helps": "1"
+            },
+            "10": {
+                "karak": "Saturn",
+                "house": 10,
+                "friends": ["Mercury", "Venus", "Rahu"],
+                "enemies": ["Sun", "Moon", "Mars"],
+                "drishti": [],
+                "percent": 0,
+                "vakri": [],
+                "helps": "2"
+            },
+            "11": {
+                "karak": "Jupiter",
+                "house": 11,
+                "friends": ["Sun", "Moon", "Mars"],
+                "enemies": ["Mercury", "Venus"],
+                "drishti": [],
+                "percent": 0,
+                "vakri": [],
+                "helps": "3"
+            },
+            "12": {
+                "karak": "Rahu",
+                "house": 12,
+                "friends": ["Mercury", "Saturn", "Ketu"],
+                "enemies": ["Sun", "Moon", "Mars", "Venus"],
+                "drishti": [],
+                "percent": 0,
+                "vakri": [],
+                "helps": "4"
+            }
+
+        };
+        var varshphalMovement = {
+            "1": { "1": 1, "2": 9, "3": 10, "4": 3, "5": 5, "6": 2, "7": 11, "8": 7, "9": 6, "10": 12, "11": 4, "12": 8 },
+            "2": { "1": 4, "2": 1, "3": 12, "4": 9, "5": 3, "6": 7, "7": 5, "8": 6, "9": 2, "10": 8, "11": 10, "12": 11 },
+            "3": { "1": 9, "2": 4, "3": 1, "4": 2, "5": 8, "6": 3, "7": 10, "8": 5, "9": 7, "10": 11, "11": 12, "12": 6 },
+            "4": { "1": 3, "2": 8, "3": 4, "4": 1, "5": 10, "6": 9, "7": 6, "8": 11, "9": 5, "10": 7, "11": 2, "12": 12 },
+            "5": { "1": 11, "2": 3, "3": 8, "4": 4, "5": 1, "6": 5, "7": 9, "8": 2, "9": 12, "10": 6, "11": 7, "12": 10 },
+            "6": { "1": 5, "2": 12, "3": 3, "4": 8, "5": 4, "6": 11, "7": 2, "8": 9, "9": 1, "10": 10, "11": 6, "12": 7 },
+            "7": { "1": 7, "2": 6, "3": 9, "4": 5, "5": 12, "6": 4, "7": 1, "8": 10, "9": 11, "10": 2, "11": 8, "12": 3 },
+            "8": { "1": 2, "2": 7, "3": 6, "4": 12, "5": 9, "6": 10, "7": 3, "8": 1, "9": 8, "10": 5, "11": 11, "12": 4 },
+            "9": { "1": 12, "2": 2, "3": 7, "4": 6, "5": 11, "6": 1, "7": 8, "8": 4, "9": 10, "10": 3, "11": 5, "12": 9 },
+            "10": { "1": 10, "2": 11, "3": 2, "4": 7, "5": 6, "6": 12, "7": 4, "8": 8, "9": 3, "10": 1, "11": 9, "12": 5 },
+            "11": { "1": 8, "2": 5, "3": 11, "4": 10, "5": 7, "6": 6, "7": 12, "8": 3, "9": 9, "10": 4, "11": 1, "12": 2 },
+            "12": { "1": 6, "2": 10, "3": 5, "4": 11, "5": 2, "6": 8, "7": 7, "8": 12, "9": 4, "10": 9, "11": 3, "12": 1 },
+            "13": { "1": 1, "2": 5, "3": 10, "4": 8, "5": 11, "6": 6, "7": 7, "8": 2, "9": 12, "10": 3, "11": 9, "12": 4 },
+            "14": { "1": 4, "2": 1, "3": 3, "4": 2, "5": 5, "6": 7, "7": 8, "8": 11, "9": 6, "10": 12, "11": 10, "12": 9 },
+            "15": { "1": 9, "2": 4, "3": 1, "4": 6, "5": 8, "6": 5, "7": 2, "8": 7, "9": 11, "10": 10, "11": 12, "12": 3 },
+            "16": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 12, "6": 8, "7": 6, "8": 5, "9": 2, "10": 7, "11": 11, "12": 10 },
+            "17": { "1": 11, "2": 3, "3": 9, "4": 4, "5": 1, "6": 10, "7": 5, "8": 6, "9": 7, "10": 8, "11": 2, "12": 12 },
+            "18": { "1": 5, "2": 11, "3": 6, "4": 9, "5": 4, "6": 1, "7": 12, "8": 8, "9": 10, "10": 2, "11": 3, "12": 7 },
+            "19": { "1": 7, "2": 10, "3": 11, "4": 3, "5": 9, "6": 4, "7": 1, "8": 12, "9": 8, "10": 5, "11": 6, "12": 2 },
+            "20": { "1": 2, "2": 7, "3": 5, "4": 12, "5": 3, "6": 9, "7": 10, "8": 1, "9": 4, "10": 6, "11": 8, "12": 11 },
+            "21": { "1": 12, "2": 2, "3": 8, "4": 5, "5": 10, "6": 3, "7": 9, "8": 4, "9": 1, "10": 11, "11": 7, "12": 6 },
+            "22": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 6, "6": 11, "7": 3, "8": 9, "9": 5, "10": 1, "11": 4, "12": 8 },
+            "23": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 7, "6": 2, "7": 11, "8": 3, "9": 9, "10": 4, "11": 1, "12": 5 },
+            "24": { "1": 6, "2": 8, "3": 7, "4": 11, "5": 2, "6": 12, "7": 4, "8": 10, "9": 3, "10": 9, "11": 5, "12": 1 },
+            "25": { "1": 1, "2": 6, "3": 10, "4": 3, "5": 2, "6": 8, "7": 7, "8": 4, "9": 11, "10": 5, "11": 12, "12": 9 },
+            "26": { "1": 4, "2": 1, "3": 3, "4": 8, "5": 6, "6": 7, "7": 2, "8": 11, "9": 12, "10": 9, "11": 5, "12": 10 },
+            "27": { "1": 9, "2": 4, "3": 1, "4": 5, "5": 10, "6": 11, "7": 12, "8": 7, "9": 6, "10": 8, "11": 2, "12": 3 },
+            "28": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 11, "6": 5, "7": 6, "8": 8, "9": 7, "10": 2, "11": 10, "12": 12 },
+            "29": { "1": 11, "2": 3, "3": 9, "4": 4, "5": 1, "6": 6, "7": 8, "8": 2, "9": 10, "10": 12, "11": 7, "12": 5 },
+            "30": { "1": 5, "2": 11, "3": 8, "4": 9, "5": 4, "6": 1, "7": 3, "8": 12, "9": 2, "10": 10, "11": 6, "12": 7 },
+            "31": { "1": 7, "2": 5, "3": 11, "4": 12, "5": 9, "6": 4, "7": 1, "8": 10, "9": 8, "10": 6, "11": 3, "12": 2 },
+            "32": { "1": 2, "2": 7, "3": 5, "4": 11, "5": 3, "6": 12, "7": 10, "8": 6, "9": 4, "10": 1, "11": 9, "12": 8 },
+            "33": { "1": 12, "2": 2, "3": 6, "4": 10, "5": 8, "6": 3, "7": 9, "8": 1, "9": 5, "10": 7, "11": 4, "12": 11 },
+            "34": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 5, "6": 9, "7": 11, "8": 3, "9": 1, "10": 4, "11": 8, "12": 6 },
+            "35": { "1": 8, "2": 10, "3": 12, "4": 6, "5": 7, "6": 2, "7": 4, "8": 5, "9": 9, "10": 3, "11": 11, "12": 1 },
+            "36": { "1": 6, "2": 8, "3": 7, "4": 2, "5": 12, "6": 10, "7": 5, "8": 9, "9": 3, "10": 11, "11": 1, "12": 4 },
+            "37": { "1": 1, "2": 3, "3": 10, "4": 6, "5": 9, "6": 12, "7": 7, "8": 5, "9": 11, "10": 2, "11": 4, "12": 8 },
+            "38": { "1": 4, "2": 1, "3": 3, "4": 8, "5": 6, "6": 5, "7": 2, "8": 7, "9": 12, "10": 10, "11": 11, "12": 9 },
+            "39": { "1": 9, "2": 4, "3": 1, "4": 12, "5": 8, "6": 2, "7": 10, "8": 11, "9": 6, "10": 3, "11": 5, "12": 7 },
+            "40": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 11, "6": 8, "7": 6, "8": 12, "9": 2, "10": 5, "11": 7, "12": 10 },
+            "41": { "1": 11, "2": 7, "3": 9, "4": 4, "5": 1, "6": 6, "7": 8, "8": 2, "9": 10, "10": 12, "11": 3, "12": 5 },
+            "42": { "1": 5, "2": 11, "3": 8, "4": 9, "5": 12, "6": 1, "7": 3, "8": 4, "9": 7, "10": 6, "11": 10, "12": 2 },
+            "43": { "1": 7, "2": 5, "3": 11, "4": 2, "5": 3, "6": 4, "7": 1, "8": 10, "9": 8, "10": 9, "11": 12, "12": 6 },
+            "44": { "1": 2, "2": 10, "3": 5, "4": 3, "5": 4, "6": 9, "7": 12, "8": 8, "9": 1, "10": 7, "11": 6, "12": 11 },
+            "45": { "1": 12, "2": 2, "3": 6, "4": 5, "5": 10, "6": 7, "7": 9, "8": 1, "9": 3, "10": 11, "11": 8, "12": 4 },
+            "46": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 5, "6": 3, "7": 11, "8": 6, "9": 4, "10": 8, "11": 9, "12": 1 },
+            "47": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 7, "6": 11, "7": 4, "8": 9, "9": 5, "10": 1, "11": 2, "12": 3 },
+            "48": { "1": 6, "2": 8, "3": 7, "4": 11, "5": 2, "6": 10, "7": 5, "8": 3, "9": 9, "10": 4, "11": 1, "12": 12 },
+            "49": { "1": 1, "2": 7, "3": 10, "4": 6, "5": 12, "6": 2, "7": 8, "8": 4, "9": 11, "10": 9, "11": 3, "12": 5 },
+            "50": { "1": 4, "2": 1, "3": 8, "4": 3, "5": 6, "6": 12, "7": 5, "8": 11, "9": 2, "10": 7, "11": 10, "12": 9 },
+            "51": { "1": 9, "2": 4, "3": 1, "4": 2, "5": 8, "6": 3, "7": 10, "8": 5, "9": 7, "10": 11, "11": 12, "12": 6 },
+            "52": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 10, "6": 9, "7": 6, "8": 11, "9": 5, "10": 7, "11": 2, "12": 12 },
+            "53": { "1": 11, "2": 3, "3": 8, "4": 4, "5": 1, "6": 5, "7": 9, "8": 2, "9": 12, "10": 6, "11": 7, "12": 10 },
+            "54": { "1": 5, "2": 12, "3": 3, "4": 8, "5": 4, "6": 11, "7": 2, "8": 9, "9": 1, "10": 10, "11": 6, "12": 7 },
+            "55": { "1": 7, "2": 6, "3": 9, "4": 5, "5": 12, "6": 4, "7": 1, "8": 10, "9": 11, "10": 2, "11": 8, "12": 3 },
+            "56": { "1": 2, "2": 7, "3": 6, "4": 12, "5": 9, "6": 10, "7": 3, "8": 1, "9": 8, "10": 5, "11": 11, "12": 4 },
+            "57": { "1": 12, "2": 2, "3": 7, "4": 6, "5": 11, "6": 1, "7": 8, "8": 4, "9": 10, "10": 3, "11": 5, "12": 9 },
+            "58": { "1": 10, "2": 11, "3": 2, "4": 7, "5": 6, "6": 12, "7": 4, "8": 8, "9": 3, "10": 1, "11": 9, "12": 5 },
+            "59": { "1": 8, "2": 5, "3": 11, "4": 10, "5": 7, "6": 6, "7": 12, "8": 3, "9": 9, "10": 4, "11": 1, "12": 2 },
+            "60": { "1": 6, "2": 10, "3": 5, "4": 11, "5": 2, "6": 8, "7": 7, "8": 12, "9": 4, "10": 9, "11": 3, "12": 1 },
+            "61": { "1": 1, "2": 11, "3": 10, "4": 6, "5": 12, "6": 2, "7": 4, "8": 7, "9": 8, "10": 9, "11": 5, "12": 3 },
+            "62": { "1": 4, "2": 1, "3": 6, "4": 8, "5": 3, "6": 12, "7": 2, "8": 10, "9": 9, "10": 5, "11": 7, "12": 11 },
+            "63": { "1": 9, "2": 4, "3": 1, "4": 2, "5": 8, "6": 6, "7": 12, "8": 11, "9": 7, "10": 3, "11": 10, "12": 5 },
+            "64": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 6, "6": 8, "7": 7, "8": 12, "9": 5, "10": 2, "11": 11, "12": 10 },
+            "65": { "1": 11, "2": 2, "3": 9, "4": 4, "5": 1, "6": 5, "7": 8, "8": 3, "9": 10, "10": 12, "11": 6, "12": 7 },
+            "66": { "1": 5, "2": 10, "3": 3, "4": 9, "5": 2, "6": 1, "7": 6, "8": 8, "9": 11, "10": 7, "11": 12, "12": 4 },
+            "67": { "1": 7, "2": 5, "3": 11, "4": 3, "5": 10, "6": 4, "7": 1, "8": 9, "9": 12, "10": 6, "11": 8, "12": 2 },
+            "68": { "1": 2, "2": 3, "3": 5, "4": 11, "5": 9, "6": 7, "7": 10, "8": 1, "9": 6, "10": 8, "11": 4, "12": 12 },
+            "69": { "1": 12, "2": 8, "3": 7, "4": 5, "5": 11, "6": 3, "7": 9, "8": 4, "9": 1, "10": 10, "11": 2, "12": 6 },
+            "70": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 5, "6": 11, "7": 3, "8": 6, "9": 4, "10": 1, "11": 9, "12": 8 },
+            "71": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 7, "6": 9, "7": 11, "8": 5, "9": 2, "10": 4, "11": 3, "12": 1 },
+            "72": { "1": 6, "2": 7, "3": 8, "4": 12, "5": 4, "6": 10, "7": 5, "8": 2, "9": 3, "10": 11, "11": 1, "12": 9 },
+            "73": { "1": 1, "2": 4, "3": 10, "4": 6, "5": 12, "6": 11, "7": 7, "8": 8, "9": 2, "10": 5, "11": 9, "12": 3 },
+            "74": { "1": 4, "2": 2, "3": 3, "4": 8, "5": 6, "6": 12, "7": 1, "8": 11, "9": 7, "10": 10, "11": 5, "12": 9 },
+            "75": { "1": 9, "2": 10, "3": 1, "4": 3, "5": 8, "6": 6, "7": 2, "8": 7, "9": 5, "10": 4, "11": 12, "12": 11 },
+            "76": { "1": 3, "2": 9, "3": 6, "4": 1, "5": 2, "6": 8, "7": 5, "8": 11, "9": 11, "10": 7, "11": 10, "12": 4 },
+            "77": { "1": 11, "2": 3, "3": 9, "4": 4, "5": 1, "6": 2, "7": 8, "8": 10, "9": 12, "10": 6, "11": 7, "12": 5 },
+            "78": { "1": 5, "2": 11, "3": 4, "4": 9, "5": 7, "6": 1, "7": 2, "8": 8, "9": 10, "10": 12, "11": 3, "12": 6 },
+            "79": { "1": 7, "2": 5, "3": 11, "4": 2, "5": 9, "6": 4, "7": 1, "8": 8, "9": 10, "10": 12, "11": 6, "12": 3 },
+            "80": { "1": 2, "2": 7, "3": 5, "4": 11, "5": 3, "6": 9, "7": 4, "8": 1, "9": 8, "10": 10, "11": 12, "12": 6 },
+            "81": { "1": 12, "2": 1, "3": 7, "4": 5, "5": 11, "6": 10, "7": 9, "8": 4, "9": 8, "10": 3, "11": 2, "12": 6 },
+            "82": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 5, "6": 3, "7": 4, "8": 9, "9": 6, "10": 8, "11": 11, "12": 1 },
+            "83": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 3, "6": 5, "7": 11, "8": 1, "9": 9, "10": 2, "11": 4, "12": 7 },
+            "84": { "1": 6, "2": 7, "3": 8, "4": 12, "5": 10, "6": 9, "7": 3, "8": 5, "9": 4, "10": 11, "11": 1, "12": 2 },
+            "85": { "1": 1, "2": 3, "3": 10, "4": 6, "5": 12, "6": 2, "7": 8, "8": 11, "9": 5, "10": 4, "11": 9, "12": 7 },
+            "86": { "1": 4, "2": 1, "3": 8, "4": 3, "5": 6, "6": 12, "7": 11, "8": 2, "9": 7, "10": 9, "11": 10, "12": 5 },
+            "87": { "1": 9, "2": 4, "3": 1, "4": 7, "5": 3, "6": 8, "7": 12, "8": 5, "9": 2, "10": 6, "11": 11, "12": 10 },
+            "88": { "1": 3, "2": 9, "3": 4, "4": 1, "5": 8, "6": 10, "7": 2, "8": 7, "9": 12, "10": 5, "11": 6, "12": 11 },
+            "89": { "1": 11, "2": 10, "3": 9, "4": 4, "5": 1, "6": 6, "7": 7, "8": 12, "9": 3, "10": 8, "11": 5, "12": 2 },
+            "90": { "1": 5, "2": 11, "3": 6, "4": 9, "5": 4, "6": 1, "7": 3, "8": 8, "9": 10, "10": 2, "11": 7, "12": 12 },
+            "91": { "1": 7, "2": 5, "3": 11, "4": 2, "5": 10, "6": 4, "7": 6, "8": 9, "9": 8, "10": 3, "11": 12, "12": 1 },
+            "92": { "1": 2, "2": 7, "3": 5, "4": 11, "5": 9, "6": 3, "7": 10, "8": 4, "9": 1, "10": 12, "11": 8, "12": 6 },
+            "93": { "1": 12, "2": 8, "3": 7, "4": 5, "5": 2, "6": 11, "7": 9, "8": 1, "9": 6, "10": 10, "11": 3, "12": 4 },
+            "94": { "1": 10, "2": 12, "3": 2, "4": 8, "5": 11, "6": 5, "7": 4, "8": 6, "9": 9, "10": 7, "11": 1, "12": 3 },
+            "95": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 5, "6": 7, "7": 1, "8": 3, "9": 4, "10": 11, "11": 2, "12": 9 },
+            "96": { "1": 6, "2": 2, "3": 3, "4": 12, "5": 7, "6": 9, "7": 5, "8": 10, "9": 11, "10": 1, "11": 4, "12": 9 },
+            "97": { "1": 1, "2": 9, "3": 10, "4": 6, "5": 12, "6": 2, "7": 7, "8": 5, "9": 3, "10": 4, "11": 8, "12": 11 },
+            "98": { "1": 4, "2": 1, "3": 6, "4": 8, "5": 10, "6": 12, "7": 11, "8": 2, "9": 9, "10": 7, "11": 3, "12": 5 },
+            "99": { "1": 9, "2": 4, "3": 1, "4": 2, "5": 6, "6": 8, "7": 12, "8": 11, "9": 5, "10": 3, "11": 10, "12": 7 },
+            "100": { "1": 3, "2": 10, "3": 8, "4": 1, "5": 5, "6": 7, "7": 6, "8": 12, "9": 2, "10": 9, "11": 11, "12": 4 },
+            "101": { "1": 11, "2": 3, "3": 9, "4": 4, "5": 1, "6": 6, "7": 8, "8": 10, "9": 7, "10": 5, "11": 12, "12": 2 },
+            "102": { "1": 5, "2": 11, "3": 3, "4": 9, "5": 4, "6": 1, "7": 2, "8": 6, "9": 8, "10": 12, "11": 7, "12": 10 },
+            "103": { "1": 7, "2": 5, "3": 11, "4": 3, "5": 9, "6": 4, "7": 1, "8": 8, "9": 12, "10": 10, "11": 2, "12": 6 },
+            "104": { "1": 2, "2": 7, "3": 5, "4": 11, "5": 3, "6": 9, "7": 10, "8": 1, "9": 6, "10": 8, "11": 4, "12": 12 },
+            "105": { "1": 12, "2": 2, "3": 4, "4": 5, "5": 11, "6": 3, "7": 9, "8": 7, "9": 10, "10": 6, "11": 1, "12": 8 },
+            "106": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 8, "6": 5, "7": 3, "8": 9, "9": 4, "10": 11, "11": 6, "12": 1 },
+            "107": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 7, "6": 11, "7": 4, "8": 3, "9": 1, "10": 2, "11": 5, "12": 9 },
+            "108": { "1": 6, "2": 8, "3": 7, "4": 12, "5": 2, "6": 10, "7": 5, "8": 4, "9": 11, "10": 1, "11": 9, "12": 3 },
+            "109": { "1": 1, "2": 9, "3": 10, "4": 6, "5": 12, "6": 2, "7": 7, "8": 11, "9": 5, "10": 3, "11": 4, "12": 8 },
+            "110": { "1": 4, "2": 1, "3": 6, "4": 8, "5": 10, "6": 12, "7": 11, "8": 2, "9": 9, "10": 7, "11": 3, "12": 5 },
+            "111": { "1": 9, "2": 4, "3": 1, "4": 2, "5": 6, "6": 8, "7": 12, "8": 11, "9": 5, "10": 3, "11": 10, "12": 7 },
+            "112": { "1": 3, "2": 10, "3": 8, "4": 9, "5": 11, "6": 7, "7": 4, "8": 1, "9": 2, "10": 12, "11": 6, "12": 5 },
+            "113": { "1": 11, "2": 3, "3": 9, "4": 4, "5": 1, "6": 6, "7": 2, "8": 7, "9": 10, "10": 5, "11": 8, "12": 12 },
+            "114": { "1": 5, "2": 11, "3": 3, "4": 1, "5": 4, "6": 10, "7": 6, "8": 8, "9": 12, "10": 9, "11": 7, "12": 2 },
+            "115": { "1": 7, "2": 5, "3": 11, "4": 3, "5": 9, "6": 4, "7": 1, "8": 12, "9": 8, "10": 10, "11": 2, "12": 6 },
+            "116": { "1": 2, "2": 7, "3": 5, "4": 11, "5": 3, "6": 9, "7": 10, "8": 1, "9": 6, "10": 8, "11": 4, "12": 12 },
+            "117": { "1": 12, "2": 2, "3": 4, "4": 5, "5": 11, "6": 3, "7": 9, "8": 7, "9": 10, "10": 6, "11": 1, "12": 8 },
+            "118": { "1": 10, "2": 12, "3": 2, "4": 7, "5": 8, "6": 11, "7": 9, "8": 3, "9": 1, "10": 6, "11": 5, "12": 4 },
+            "119": { "1": 8, "2": 6, "3": 12, "4": 10, "5": 7, "6": 5, "7": 11, "8": 2, "9": 9, "10": 4, "11": 1, "12": 3 },
+            "120": { "1": 6, "2": 8, "3": 7, "4": 12, "5": 2, "6": 3, "7": 5, "8": 4, "9": 11, "10": 1, "11": 9, "12": 10 }
+        };
+
+        var planetInHouses = {
+            "1": {
+                "Jupiter": {
+                    "effects": "ghar ke saamne Sundar teacher / consultant hoga<br> Jupiter gets activated when native is well educated<br> best if studied in govt school/ college ( at least one year) if study left in half, Jupiter kharaab ho jaata hai<br>( also first house becomes bad) remedy - take up a course in govt school or institute<br> when these people bless others it always comes true, but if they curse others it back fires to them badly<br> native is beautiful can be a consultant <br> ",
+                    "remedy": "wear silver in nose ( spetum peirce with pure chandi ka tar) no sterling silver"
+                },
+                "Ketu": {
+                    "effects": "native ka birth apne ghar mein nai hota, eg : nani house mein birth hoga ya ghar se door hoga<br> <br>band gali ya gali ke aakhri gahr mein rehna mana hai <br>apne ghar dog nai paalna, bahar ke kutte ki seva acha result dega<br> <br>after marriage of native, father ko pareshaani aati hai<br> <br>aise insaan ko govt se connection ya govt job pasand hai, but will get only if the native is a vegetarian <br>health, name, fame issues aate hain <br>father se doori bani hoti hai, strained relations with father ",
+                    "remedy": "wear a gold chain in neck"
+                },
+                "Mars": {
+                    "effects": "insaaf ki talwaar – very honest, never dishonest<br> bold, progress after 28 years of life, looks like a body builder<br> ek brother ki isske pehle death hui hoti hai, or else not settled in life<br> mostly all family responsibility is on this person should take responsibility else badresults of first house ",
+                    "remedy": "cow ki seva karo"
+                },
+                "Mercury": {
+                    "effects": "choti umar mein laanchan lagti hai<br> headstrong, good in mathematics apni chalane wala<br> business minded, talkative, samajhdaar<br> highly dominating<br> <br>apni wisdom aur talent se kamata hai<br> <br>mostly 1st child is a female of the native<br> <br>avoid egg, alcohol and non veg completely<br> ( if mind or brain related issues) ",
+                    "remedy": "ek jagah baith ke kaam kare, if any issues - avoid eggs"
+                },
+                "Moon": {
+                    "effects": "jitna gyaan mile acha, knowledge ke liye very good placement<br> education mein lagaye hue paise ka worth milta hai<br> yeh native maangi hui aulaad hoti hai, iske birth ke pehle iske kissi sibling ki death hui hoti hai ya mother ka abortion hua hota hai<br> kuch bhi free mein nai lena chaiye loves to take bath, loves to be by himself<br> maa jab tak hai, dhan daulat ka malik hoga<br> ( if mom is no more wear silver chain) ",
+                    "remedy": "do not marry bet age of 24 – 27 yrs"
+                },
+                "Rahu": {
+                    "effects": "bad results here<br> never do work with in laws<br> regular headaches, chakkar aate hain<br>   dimaagi fitoor hota hai<br>  (they want more and more ) sab kuch hote hue, unhappy <br>har kaam mein adhanga aaata hai<br> <br>native ko kissi ki help nehi milti<br> <br>ganje ko kanghi bech aaega<br>  chalaak n tez hota hai<br>  worst if placed with Sun, will get financial ups and downs<br> ",
+                    "remedy": "keep silver solid elephant at home"
+                },
+                "Saturn": {
+                    "effects": "tensions, health issues, low immunity, govt related problems, issues with father/boss, respect issues, financial problems<br> the results of Saturn depends on Rahu and Ketu toota hua makaan negative shani ki nishaani break in education<br> sar par chot lagi hui hoti hai, with stiches<br> gareebi dega band galli ka makaan hota hai<br> ( dead end mein ghar hota hai) ",
+                    "remedy": "never stay in a west facing home feed crow with roti"
+                },
+                "Sun": {
+                    "effects": "yogi, hukumat karne wala, owns house<br> dominating, angry natured, reeti rivaaj nibhane wala, apni mehnat se ameer banta hai<br> face pe tej hoga<br> dharam ka paalan karne se surya ke ache results milenge<br> anyone taking or giving bribe, weakens Sun<br> follow ur rituals for good results ",
+                    "remedy": "rishwat nai lena"
+                },
+                "Venus": {
+                    "effects": "music and arts lover, Sundar & tez wife<br> owner of luxury car, loves being up to date<br> modelling and photography ka shaukeen<br> loves drinking beer<br> loves comfort life <br> they like helping others ",
+                    "remedy": "stop eating gud"
+                }
+            },
+            "11": {
+                "Jupiter": {
+                    "effects": "father in law ki early death hoti hai, ya father in law ka sukh nai milta<br> ghar ke aas paas bada sa temple/ worship place hota hai<br> ghar se door jaakr death hoti hai, never near the house<br> jealous kind of nature hoti hai ",
+                    "remedy": "copper ki bangle pehne "
+                },
+                "Ketu": {
+                    "effects": "logon  se  saamne  apni  problem zyada  describe  karte  hain  ",
+                    "remedy": "11 days 11 mooli donate "
+                },
+                "Mars": {
+                    "effects": "ghar ke aas paas community hall hoga<br>  ghar mein koi doctor hoga taya ki aulaad taraskar hoti hai, ya taaya apni aulaad se pareshaan hota hai<br> high position in job or business<br> ",
+                    "remedy": "offer roti to crow "
+                },
+                "Mercury": {
+                    "effects": "ghar ke aas paas broad leaves wali trees hoti hain<br> initial 35 years full of wrong decision making, 34th year is very difficult<br> here Mercury results depends on Jupiter, if good then Mercury good ",
+                    "remedy": "wear a copper coin in neck "
+                },
+                "Moon": {
+                    "effects": "either fully educated or completely anpadh<br> khule dil ka nai hota<br> (controlled talks) daadi aur pote ka jhagda rehta hai<br> ghar ke aas paas badi aur famous aate ki chakki hoti hai<br> ",
+                    "remedy": "11 units milk bhairon temple pe chadhao after Sunset only once "
+                },
+                "Rahu": {
+                    "effects": "dad aur pote ka jhagda rehta hai<br> ghar ke aas paas koi handicapped person rehta hai, ya jiska ang bhang hua ho<br>  ghar mein kissi ke pairon mein rod lagi hoti hai, ya koi na koi nuksaan hota hai<br>  sarkaari jurmaane lagte rehte hain<br> ",
+                    "remedy": "donate to sweeper "
+                },
+                "Saturn": {
+                    "effects": "if eats non veg – male child nai hoga<br>  ghar ka main gate toota hua hota hai<br>  apna bhagya khud likhta hai  if shani bad results ghar hospital ban jaega<br> if oldage parents is sick and hospital set at home shani karab ho jata hai best if does max dharam pooja path<br> ",
+                    "remedy": "saturday ko no kirtan or jagran<br> by self or others in family  "
+                },
+                "Sun": {
+                    "effects": "native ki nanke parivaar mein kissi ki aankh kharaab hoti hai<br> zubaan ka chaska hota hai<br> aish pasand insaan hota hai<br> dharmic, pooja path karne wala<br> will progress if doesn’t have alcohol and non veg<br> ",
+                    "remedy": "almonds, shalgam, mooli patte samet apne paas rakhien in morn mein dan kar dein – for health n santaan "
+                },
+                "Venus": {
+                    "effects": "runs behind money lifetime<br>  Sundar native, bhola nature<br> wife looks bholi bahli, andar se very clever<br> late child conception hota hai<br> good finance<br>  shani ke saare gunn aa jaenge,  patience well disciplined ",
+                    "remedy": "have fish oil capsules "
+                }
+            },
+            "12": {
+                "Jupiter": {
+                    "effects": " bure ka bhi bhala karta hai – sadhu swabhaav n gyaani person<br> ( likes mehman nawazi) kissi bade sansthaan se connected hote hain, ya wahaan ke trustee hote hai<br> ghar ke paas bada tuition centre hota hai<br> aise insaan ke peeche khud dhan bhaag kar aata hai<br> ghar mein dher saara gangajal hota hai<br> ",
+                    "remedy": "sadhu fakir ko jitna help utna better "
+                },
+                "Ketu": {
+                    "effects": "jitna native aish se rehe, ghoome phire utne ache result of Ketu<br> foreign ka result abhut acha hota hai kabhi kissi beaulaad insaan se property nai khareedni chaiye bada bhai, taya ya mama teeno mein se ek struggling hota hai apna hi beta taarega ",
+                    "remedy": "if child nai ho raha, dip thumb in milk and suck it 43 times everyday for 43 days "
+                },
+                "Mars": {
+                    "effects": "inki oonchi awaaz se saamne wala poora dab jata hai, sasural wale dab ke rehte hain<br>  (daba bol wale lo), very loud very hot headed, apni man marzi chalata hai<br> padosi security wale hote hain, ya unke paas gun hoti hai<br> ",
+                    "remedy": "avoid red cap/ pagdi "
+                },
+                "Mercury": {
+                    "effects": "ghar ke chatt pe kabaad hota hai,  gandagi / khai padi hoti hai<br>  bimar, stress, fights in house always<br> ups and downs in life<br> ",
+                    "remedy": "visit temple regularly "
+                },
+                "Moon": {
+                    "effects": " samajhdaar but gadbad karne wala<br> ( ek problemm jaega phir aega)  ya aisi lady jo bahut jhagdalu hoti hai<br> bina padhe likhe ameer insaan<br> stock market mein invest nai karna chaiye          ( even if Rahu is good) log is native se kaafi jealous feel karte hain<br> kamaya hua dhan barbaad hota hai<br> ",
+                    "remedy": "keep rain water on terrace "
+                },
+                "Rahu": {
+                    "effects": "pados mein koi na koi bahut late marriage ka case hota hai, after 35 ( aaj k tme mein 40) ki shaadi<br> diya hua udhaar doob jaati hai<br> sleep issues<br>  extra expenses,  foreign travel  ",
+                    "remedy": "don’t work with in laws if Rahu is bad<br> eat in kitchen "
+                },
+                "Saturn": {
+                    "effects": "ghar ke nazdeek railway track hoga, ya native ka birth railway track ke nazdeek hua hoga, ya family ke kissi member ka conncetion railway se hoga<br>  apna ghar adhoora sa bana hua hota hai<br>  family members generally pareshaan hote hain<br> kissi family member ki continuos medicines chalti hain, lambi bimaari hoti hai eg dialysis<br> divine help milti hai<br>  ghar ke end mein andhera hota hai – good results of shani will face major problems if alcholic and liar native has eye problems not very attached to money, gets enemies around<br> fall into controversy  ",
+                    "remedy": "normal badaam piswa kar one muthi who aata fishes ko daalein "
+                },
+                "Sun": {
+                    "effects": "bina matlab doosron ki musibat apne sar leta hai<br> raat ki neend subah ka nashta kharaab<br> duniya bhar ka tension sar pe lete hain – choti problem se hyper ho jaate hain, unnecessary tension for othrs, cant or dont hv breakfast,  sleep issues thru out life , addicted to slleeping pills , sleeping issues life long ",
+                    "remedy": "always forgive your enemies "
+                },
+                "Venus": {
+                    "effects": "lattoo ki tarah nature n mood change hota hai  wife se support milega,  good marital life<br>  this native is loving/supportive to spouse father in law ko one eye mein problem hoti hai<br> motive of life of such a native is to enjoy and live<br> ",
+                    "remedy": "lit desi cow ghee ka diya at home for 43 days "
+                }
+            },
+            "2": {
+                "Jupiter": {
+                    "effects": "dharam guru bola gaya hai, vidya ka maalik hota hai<br> highly educated, polite,  helps others with self wisdom<br> ghar ke aas paas dharam sthaan hota hai<br>            very good agricultural gains,  paise judte rehte hain<br>  keeps growing in life always<br>                     sasural ke aas paas education centre hota hai<br>       sasuraal se tarraki milti hai<br>  ( growth after marriage) ",
+                    "remedy": "cow ko chaara dalein ( green grass)"
+                },
+                "Ketu": {
+                    "effects": "<br>santaan zyada poochta nai <br>saale ki patni ghar chod kar jaati hai<br> <br>saale ko aulaad esp boy child ki pareshaani rehti hai<br> <br>sasur ke leg mein nuks <br>sasural se milkar kaam nai karna chaiye <br>old age mein problems badhti hain <br>speculation nai karni chaiye <br>24 ki age ke baad earning shuru karte hain ",
+                    "remedy": "wear  gold earrings in ear"
+                },
+                "Mars": {
+                    "effects": "pradhangiri jhadta hai, kadvi boli<br>  has very strong connection with a govt person<br>  apne bhai ko paalta hai<br>  very helpful in nature<br>  ",
+                    "remedy": "2  kg  gud  ki revdi  mandir mein donate"
+                },
+                "Mercury": {
+                    "effects": " swarthi<br>  koyal si meethi boli<br> runs behind money father ko respiratory issues honge, father par bhari hota hai native<br> aulaad mannaton se hogi<br> difficulty in conceiveing foodie and food lover<br> avoid speculation doosron ko taar dega, jo inse sampark mein aaenge, tarr jaenge – doosron ke liye taaran haar ",
+                    "remedy": "avoid donating green items in temple"
+                },
+                "Moon": {
+                    "effects": " jaaydaad bhi milti hai, maa ka pyaar milta hai gets oppurtunity to do good education  khud paida ki hui maaya ki devi – apne mehnat ke balbute par apnea ap ko establish karta hai<br> native ka bedroom generally 1st floor pe hota hai<br>  ghar mein mandir ki ghanta ya shiv ji ka idol zaroor hota hai ",
+                    "remedy": "keep a square piece of silver at  home entrance"
+                },
+                "Rahu": {
+                    "effects": "never do anything for free shouldn’t keep swing in house<br> loves free things, shouldn’t take free things<br> can be a cheater in family business, even in dhram sthan paise gum hote rehte hain addiction prone,  can be a speculation lover<br>  jhootha number 1<br>  shd not eat for free<br>  ",
+                    "remedy": "keep silver ki thos goli with self"
+                },
+                "Saturn": {
+                    "effects": "sasural ka makaan band gali ka hota hai<br> generally good results as guru ka ghar hai<br> koi na koi famous criminal ghar ke as paas hota hai<br> ancestral jaaydaad milti hai<br> kadvi boli ( matlab se bolte hain )<br>  dental issues ( esp tooth)  non veg ka shaukeen<br>  will earn well  in Saturn’s period esp by profession<br> if Rahu with shani here  he will have pan stains, will have - non veg daru , cigs <br>   ",
+                    "remedy": "feed a brown dog tikka ya tilak nai lagana<br> have non veg"
+                },
+                "Sun": {
+                    "effects": " takes care of family trusts self,  vaani ka kadwa<br> ghar mein desi ghee ka diya khud nai jalaana<br>  langar ka khane wale barbaad hote hain<br> govt ka fal acha hota hai apne hunnar se progress karta hai<br>  should not eat for free even in marriage ",
+                    "remedy": "feed monkey with jaggery"
+                },
+                "Venus": {
+                    "effects": "generally their home is narrow in the beginning and broadens<br> gow mukhi house ghar mein aurtein zyada hoti hain<br>  ishwar se jo maangta hai usko milta hai<br>  maalik se maangne par hi kami poori kare<br> rich native, sweet tongue<br> andar se aashiq (flirty) , loves to be around opp gender ",
+                    "remedy": "avoid south facing home"
+                }
+            },
+            "3": {
+                "Jupiter": {
+                    "effects": "ghar kea as paas ujda hua dharam sthaan ya toota hua school ya cremation ground hoga<br>  girls school hoga<br>                         is insaan ko khushaamad nai karni chaiye<br> bachpan mein typhoid hota hai<br> grahasti bahut achi hoti hai – khandaani guru, grahasta sher kehte hain<br> ( good with family life) iski kismet ka faisla siblings se hota hai<br>      ( connected to younger siblings) ",
+                    "remedy": "kanjak seva best results ( girls below 10 yrs) "
+                },
+                "Ketu": {
+                    "effects": "lifetime financial ups and downs,             can give tan/man/dhan ki problem<br> to an extent of mrityu tulya kasht bhai se rishta banake rakhna chaiye  animal lovers<br>  saala barbaad,( even deaht) ya struggling hota hai<br> ya life mein sukh nai milta usko bhai, ya bhai ke bete ko kamar ya leg ki problem hoti hai<br>  bhai ko bacha hone mein problem band galli ka makaan hota hai ",
+                    "remedy": "wear gold on both ears, apply kesar tilak "
+                },
+                "Mars": {
+                    "effects": "doosron ke liye phalon ka jungle – doosron ke liye faaydemand<br>( people tx advantage of u) saahsi aur courageous chacha ya bhai ko cervical issues honge<br>  sister faces domestic problems<br> apne aap ke liye ashubh hota hai, but lucky for others a good risk taker, bold and courageous person<br>  ",
+                    "remedy": "wear a hathi daant ka locket"
+                },
+                "Mercury": {
+                    "effects": "thookne wala kaudi - thookne ki aadat hoti hai<br> teeth related problems aaenge<br> keeps changing job often<br> kissi fakeer ko follow karte hain<br> <br>has strong communication skills<br> very good result of budh – samjhane ki power<br> <br>logic sahi jagah lagaana<br> good with business not in personal relationship ",
+                    "remedy": "donate white cow"
+                },
+                "Moon": {
+                    "effects": "education mein problem aaeygi<br>              ( native unable to study , he cries as he is not supported or unable to study as per his wish)  jitni zyada education utna father ko money problem<br>                                 maa ki responsibility life mein zyada hoti hai<br> chori aur maut ka rakshak, umar ka farishta – isse maut bhi darti hai<br> jitna zyada acha rishta apni behen se hoga utna zyada paisa aaega<br> apni beti ya behen ke paise kabhi use nehi karni chaiye, never do business with them<br> if lives like a sadhu, then he will get sidhi<br> ",
+                    "remedy": "after  birth  of son  offer  Sun items  as donation,  take care  of sister/bua/beti   in order to gain monetary benfits<br> jab beti ho toh Mercury ki items donate karni chaiye<br> "
+                },
+                "Rahu": {
+                    "effects": "chashma lagta hai at early age, eye sight issues<br> ghar mein toota hua sheesha hota hai<br> owner and lover of luxury cars<br>  very anger oriented person, can be hyper<br>  is chalaak if Rahu good – can give raajyog in its period ",
+                    "remedy": "wear a silver kada in left hand"
+                },
+                "Saturn": {
+                    "effects": "one of worst position,  life time financial ups and downs<br>  ghar ke aakhir mein ek dark corner hota hai<br>  best if keeps a dog at home<br>  aulaad ka fal manda hota hai, esp male child<br>  apne se teesre ghar ke log pareshaan rehte hain, ya ujda hua ghar hota hai<br>  tight finances all life<br>  avoid fighting with chacha<br> agar loan lenge, toh repay nai kar paenge<br>  will get financial gains in its period, can make a raja if shani is getting good drishti or if Rahu Ketu is good<br>  shani represents store room<br>  generally dont like dogs but shd keep dogs<br> paisa mod ke rakte hain<br> ",
+                    "remedy": "keep a imli plant in west direction<br> make son sleep in west direction if u hv a son"
+                },
+                "Sun": {
+                    "effects": "iski sister ki shaadi bahut ki ameer aur bade ghar hui hoti hai<br>  khud kamaakar khaega, dhan sampatti hoti<br> hardworking, efforts se career banata hai<br>  extra bold<br>  has govt connection<br> ",
+                    "remedy": "daily Sun ko jal dedo"
+                },
+                "Venus": {
+                    "effects": "satyavaan aurat, agar wife ko respect karega,  din dugni raat chaugni tarrakki karega<br>  saare decisions wife leti hai, daler n bold type ki<br> isni wife ki iske bhai se kam banegi<br>  ghar mein musical instruments pade hue hote hain<br>  truth speaker ( if Venus in women chart 3rd house) ",
+                    "remedy": "avoid musical instruments at home"
+                }
+            },
+            "4": {
+                "Jupiter": {
+                    "effects": "father/ grandfather would be at a very high rank, eg a trustee, landlord<br>  maa  ka fal acha hota hai<br>                       if Jupiter is bad here, this native loves nudity should keep body covered<br>  aulaad se dukhi hote hain<br>                          could have a bad character,  defemation if Jupiter is negative here<br>                mother of the native will be more prettier than the native ,  will be educated and Jupiter related work   nanke parivar mein women wil be beautiful<br>  will have a education institute near home ",
+                    "remedy": "avoid non veg and never expose"
+                },
+                "Ketu": {
+                    "effects": "aulaad  deri  se  hote  hai,  can  be  beaulaad<br> ghar mein tensions forever rehti hain, esp ghar aate hi<br> maasi ke bete ki death hoti hai,  nani  pariwaar  mein  mushkil se  aulaad hoti hai maa ko sugar ya eyes ki problem hoti hai ",
+                    "remedy": "apply kesar tilak "
+                },
+                "Mars": {
+                    "effects": "generally stomach issues hote hai<br>  maa, naani, saas ya koi janani hamesha bimaar rehti hai ya bedridden honge<br> would have  had a fire accident or fears fire badly<br> bahi se ya property related problem zaroor hogi, continuous mental stress esp at home<br> birth place mein progress impossible<br> theres a decorative elephant kept somewhere at home<br> ",
+                    "remedy": "keep chandi ka square piece with you"
+                },
+                "Mercury": {
+                    "effects": "tensions and stress at home,  has suicidal tendency once in life<br> mother ko maximum stress hota hai maasi ki family mein koi na koi government office mein hoga naanke parivaar mein someone might be epileptic mother may have a less life<br> makes friends very easily<br> generally helpful people ",
+                    "remedy": "no remedy"
+                },
+                "Moon": {
+                    "effects": "apna ghar zaroor banta hai<br>  best placement for mother and education<br><br> life mein hamesha kuch acha hota hai,  jitna dhan kharch kare utna dhan aaye – aamdani ka dariya<br> mama ya nanke bahut ameer hota hai<br> if does overseas business will benefit a lot   <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br> keep feast of food for good prosperity……… ",
+                    "remedy": "any cheating will give bad results "
+                },
+                "Rahu": {
+                    "effects": "dharmic Rahu<br>  ghar ki entrance mein toilet hota hai<br>  ghar ki chatt baar baar toot ti hai<br>  not too worried about money mental stress, as soon as enter home<br> fights n dirtiness at home unnecessary expenses<br> esp in its period  either too clean or clumpsy ",
+                    "remedy": "never keep cactus plant at home<br> water storages should be clean<br>"
+                },
+                "Saturn": {
+                    "effects": "native ke mummy ko knee or joint pain hoga  native looks older than age <br>  mother ko eye sight issues hote hain<br>  ghar mein aate hi tension khushi aate hi tensions hoti hai<br>  fights at home  naanke side/ ya apne ghar mein kissi ne suicide attempt kiya hota hai ya fits aate hain<br>  always keep good character for good results of shani <br> when they have happy time they get tensed ,",
+                    "remedy": "keep chandi ka burada at home"
+                },
+                "Sun": {
+                    "effects": "earns for family  and hardly thinks of self agar kissi se dhoka karega to kamaya hua sab kuch gavaa dega<br>                                      people wil use them ,that’s the purpose of their birth<br>    ",
+                    "remedy": "avoid any kind of greed"
+                },
+                "Venus": {
+                    "effects": "apne se badi umar ki aurat se relations hote hain<br> mother is prettier than natives wife<br>  har tarah ka nasha avoid karna chaiye<br> if bad habits and bad character, fal bahut bura milta hai<br> owner of luxury and comfortable life  luxury makaan milta hai<br>  acha khana pehenne ka shaukeen hota hai<br>  lover of arts and music<br>  like watching live sessions than movies  ",
+                    "remedy": "shaadi ke wakt ladki ka name zaroor change karien ( if any issues)"
+                }
+            },
+            "6": {
+                "Jupiter": {
+                    "effects": "sadhu swabhav,  smooth life<br>                   jitni simple desires hongi, who poore honge<br> weight issues hote hai,  jhooth bolke apni blessings khud satyanaash karte hain  a compulsive liar<br> ",
+                    "remedy": "mandir mein 6 din lagataar 600 gm chane ki daal chadhain "
+                },
+                "Ketu": {
+                    "effects": "spine mein 100% koi na koi problem hoti hai<br> apne aulaad ki legs mein, ya father ki legs mein problem hogi<br>  behen bhua ya beti – inme se kissi ek ki aulaad nai hoti<br> ",
+                    "remedy": "left hand mein gold ki ring in little finger "
+                },
+                "Mars": {
+                    "effects": "aulaad mannatein maang ke aur taras ke hoti hai<br>  wife ko health issues honge<br> mama  pareshaan hota hai<br> native is very hardworking, faces lots of sorrows  but doesn’t hurt anyone dukh<br> shatru hanta yog banta hai – dushman ka apnea ap naash hona<br> can clear sports tests  ",
+                    "remedy": "avoid birthday celebrations, even cake cutting nai karni "
+                },
+                "Mercury": {
+                    "effects": "gumnaam yogi ya dil ka raja<br>  vaak sidhi hoti hai<br> mama ko respiratory issues hote hain,  naani ke family se koi govt servant hota hai<br>  ",
+                    "remedy": "wife ke left hand mein silver ring pehnao also gv to spouse "
+                },
+                "Moon": {
+                    "effects": "rukavat se education hogi<br> ( skip ) nani bed ridden hoti hai, ya nanke parivaar mein kissi ladki ki pairon mein problem hoti hai<br>( could be polio ) maa ya beta mein se koi ek zyada bimaar rehta hai maa ko diabetes ya native ko joint problems – uric acid issues hote hain<br> this placement is bad for natives mother          ( mother will have a struggling life) ",
+                    "remedy": "kharghosh paalein "
+                },
+                "Rahu": {
+                    "effects": "ghar ke gutter mein blockage ( sink) aate rehte hain<br>  ghar ka electronics baar baar  khraab hota hai doesn’t lose a court case, wins against enemy<br> rajyog in its period<br>  chalaak insaan ",
+                    "remedy": "offer 1 blue flower to saraswati maa for 6 days continuous "
+                },
+                "Saturn": {
+                    "effects": "rog, rinn, ya shatru zaroor dega<br>  financial rise in its period  avoid wearing or using leather stuff<br>  ghar ke nazdeek kabaadi shop ya antique cheezon ki dukaan hoti hai<br>  chacha beaulaad ( no male child, if he has son , the son will not settled or death at early age) hota hai<br>  better to marry after 28 years of age ",
+                    "remedy": "donate shoes to a musafir ( random person) "
+                },
+                "Sun": {
+                    "effects": "daulat se befikar apni kismet se santusht, keeps changing job very often<br> has a good immunity, good recovery<br>  conception issues<br>  shatru hanta yog – dushman ka naash karta hai,  content people ,  win over enemies   ( Sun clears competive exams ) ",
+                    "remedy": "Moon ki cheezen daan karein "
+                },
+                "Venus": {
+                    "effects": "ajeeb o gareeb kaam kare and barkat mil jaaye<br> jo education lega, us ko chod doosri line mein ghus jaata hai<br> wife lazy hoti hai<br> generally only child or has one brother<br> possibly have relation with neech kind of women,  has marital issues<br>   shaadi ke baad rog, rinn, ya shatru badh jaate hain<br>  will not hv good feet , shoes get torned, Rahu+Venus - neech rista, fall in love with lower class people ",
+                    "remedy": "feed curd to cow "
+                }
+            },
+            "8": {
+                "Jupiter": {
+                    "effects": "deen dukhiyon ki seva karna pasand<br> musibat ke wakt divine help milti hai<br> koi baba ya kaali maa ki photo ghar mein rakhi hoti hai  school nearby aise insaan ke baare afwaah bahut failti hai<br> ",
+                    "remedy": "feed fakir "
+                },
+                "Ketu": {
+                    "effects": "lambi bimaari hoti hai<br>  ancestral property mein adchan aati hai<br>  mrityu tulya kasht deta hai dogs se darte hain,  inke subordinates wafadaar nai hote<br> leg ya cervical issues rehte hain highly intuitive – to the extent ki doosron ki death pehle se bhaanp lete hain bete ka sukh late milta hai ya nhi milta ",
+                    "remedy": "jup ki daan – very good result<br> "
+                },
+                "Mars": {
+                    "effects": "ghar mein kissi na kissi ki medicines chalti rehti hai<br>  property issue with brother<br>  blood related  problems rehti hain, chota bhai bahut pareshaan rehta hai<br> ghar mein tandoor rakhna mana hai ",
+                    "remedy": "laal chandan ka tika lagain "
+                },
+                "Mercury": {
+                    "effects": "generally  native or someone in family is affected by black magic,   behen bhua ya beti ko mentally koi problem hoti hai<br>   wehmi insaan hota hai<br>  business decisions wrong hote hain<br>   regular health issues<br> ",
+                    "remedy": "pierce nose of daughter with silver "
+                },
+                "Moon": {
+                    "effects": "jitna study utni problem maa ko hogi<br>  Venus ke kaam karna mana hai<br> native doesn’t get mothers support or love   loves 2 number ka kaam,  mood swings hote hain<br> taayi   ke saath jhagda nai karna  , emotionally very strong but small things hurt them  ",
+                    "remedy": "keep cremation ground ka water at home ( shiv k mandir , cresent of Moon with shiv ,  keep in cuborad in plain white bottle, shd nt tell that u hv this watr) "
+                },
+                "Rahu": {
+                    "effects": "ghar ki back side mein koi criminal ya paagal insaan rehta hai<br> gives accidents<br>  issues with police  rukavat karvaega<br> <br>sudden fights in house  udhar wala paisa doobta hai, ( no loan should be taken or given) ",
+                    "remedy": "bijli ke kaam avoid kane chaiye "
+                },
+                "Saturn": {
+                    "effects": "ghar ke aas paas nala ya cremation ground hota hai  good – longetivity<br>  accident zaroor hota hai<br>  har kaam dheere dheere hota hai<br> adchan aati rehti hai<br> band galli ka makaan hotahai<br> hands mein shivering hoti hai<br>  ",
+                    "remedy": "chandi ka chakor tukda pocket mein rakhein "
+                },
+                "Sun": {
+                    "effects": "ghar ka celing ek bar tot tha hai loves imitating others,   very dramatic person<br> inke saamne kissi ki death nai hoti, will do occult esp astrology   ",
+                    "remedy": "safed cow ki seva mana hai, do seva of black cow "
+                },
+                "Venus": {
+                    "effects": "jo kharaab cheez bolegi woh hoga, anger issues<br>  wife zubaan se kadvi and tez hoti hai, kaan se khoon nikaal deti hai<br> ",
+                    "remedy": "43 days balck cow ki seva karein "
+                }
+            },
+            "9": {
+                "Jupiter": {
+                    "effects": "dhani parivaar mein janam hota hai<br>  Sunehri khaandaan ka suchak hota hai – par khud   maya  ka  tyagi  sadhu<br> lucky for father,  loves to make a mandir,  does pooja path,    visits  pilgrimage<br> very good placement<br> kandani family ",
+                    "remedy": " visit  temple  daily ( regularly) "
+                },
+                "Ketu": {
+                    "effects": "jisko ye native aashirwad dega, woh tarr jaega<br>  father ke liye lucky hota hai<br> bhagya ka saath milta hai ",
+                    "remedy": "panditji ko ram ram ki chaddar donate karien "
+                },
+                "Mars": {
+                    "effects": "badon ka bahut saath milta hai, usse tarraki karta  hai<br>  (  will  progress  after  reciving ancestral  property/blessings) <br> buzurg bahut ameer hote hain,  agar bade bhai aur bhabhi ki seva kare toh bahut acha result milta hai<br> is native ke birth se pehle hi ghar mein khushiyaan aani shuru ho jaati hain<br> if Mars badh then badnaami ka karak banta hai<br> ",
+                    "remedy": "43 days temple mein 900 gms rice/gud donate karein "
+                },
+                "Mercury": {
+                    "effects": " if  alone  can  make  native  a  king<br> family mein koi na koi kisssi fakeer ke magar pada hua hota hai,    ya  kissi  lady  ko  mata  aati  hai<br> chacha ya taya haklaata hai<br> ",
+                    "remedy": " avoid  use  of  green colour "
+                },
+                "Moon": {
+                    "effects": "very good result<br> aisi education jo doosron ko help  karti  hai<br> ziddi  jaaydaad ka kaarak khandaani jaaydaad ka sukh milta hai, maalik bhi hota  hai<br> pooja path karne wala, doosron ko sukh dene wala hota hai<br> mother se bahut attachment hoti hai<br> ",
+                    "remedy": "mom ke pair roz chuein "
+                },
+                "Rahu": {
+                    "effects": "blind faith in anyone will be dangerous  many times this person doesn’t know what is boundary<br>  luck mein rukavat<br>  too many expenses<br>  mostly used by others, esp jiska bhala kare, dushman ban jaega <br>( they dont mind their own business) <br>aisa insaan agar kissi ke sar pe haath rakh de, to iski blessing us saamne waale ko zaroor lagti hai<br>  inke parivaar mein kissi na kissi ne dharam badla hua hota hai,  kissi babaji ke magar pade hote hain<br> ( follows god out of their religion )  ",
+                    "remedy": "chandi ki 90gm brick apne paas rakhein "
+                },
+                "Saturn": {
+                    "effects": "male child ghar ka sukh hota hai<br>  bhagya se multiple property milti hai<br> financial gains<br>  doosron ko loans deta hai<br> ghar ki chatt/balcony/staircase par kooda kabhi   nai  rakhna,  else  bad  results<br> if has too much hairy forehead – shows bad results of shani ( get it removed) ",
+                    "remedy": "don’t make more than 3 properties in own name in a row "
+                },
+                "Sun": {
+                    "effects": " lambi  ummar  aur  bhari  khaandaan  ka   maalik<br>(  wealthy) is native ke birth ke baad family mein khush haali aati hai,  does alot for family, doesn’t ask for return<br> ghar mein kissi na kissi ki pension chalti rehti hai<br> Moon ka daan nai lena chaiye – eg doodh, chandi, rice<br>  jiska saath dega, woh insaan tarr jaega ",
+                    "remedy": "eat in pital ke bartan "
+                },
+                "Venus": {
+                    "effects": " mangal badh ho jaata hai ghar mein kissi buzurg ki 2 shaadiyaan hui hoti   hain,  either    naana  ya  daada<br> grand parent rich hote ha ",
+                    "remedy": "cow ki photo nai rakhni, seva nai karni "
+                }
+            },
+            "5": {
+                "Saturn": {
+                    "effects": "won’t ever have a male child unless seeing other placements or a heavy pooja in involved<br>  Conception issues<br>  Ziddi individual<br> Self talented, raja by self<br>  Technical minded<br>  Makaan nai ban paata  baby ka loss hota hai,  abortion or miscarriage  gharki chatt se roshni aati hai<br>  If a man has Saturn in fifth house no male child<br>  ",
+                    "remedy": "kagzi badaam 10 pieces take in temple offer 5 bring back 5 keep in locker – do this for continuous 5 days "
+                },
+                "Rahu": {
+                    "effects": "once in a life current zaroor lagta hai, either to self or own child<br>  Child is either too slow or very sharaarti<br> Rahu 5th house native ke child pe bhaari hota hai<br>  Abortion hota hai conception issues<br>  Technically sound ",
+                    "remedy": "silver taar on entrance is a must "
+                },
+                "Venus": {
+                    "effects": "native ke face pe cut ka nishaan hota hai<br> Wife gol matol si hoti hai<br>  Wife ke hair short hote hain<br>  Desh bhakt kind of person<br>  Shouldn’t marry by going against parents<br> Children around in house always, bhara poora parivaar<br> Wife is very lucky for native<br> Love affair prone<br>  Problems in life as soon as bad character<br> ",
+                    "remedy": "do brown cow ki seva "
+                },
+                "Mercury": {
+                    "effects": " bina soche samjhe boli baathein saach ho jati hai generally studies in a govt school ya institute  kissi na kissi saint ki photo ghar mein zaroor hoti hai<br> Is intelligent and loves to sing<br> ",
+                    "remedy": "no remedy "
+                },
+                "Sun": {
+                    "effects": "paarivari k unnati ka maalik<br>   Complete and real father figure egoistic, ziddi and strict hoga bete ke paida hone ke baad life mein stability aati hai<br>  Reeti rivaaz nibhane wala<br>  Saaf dil n khush mizaaz hota hai<br>  Protocol maker ",
+                    "remedy": "mata ki chunni nai leni "
+                },
+                "Jupiter": {
+                    "effects": "bhram gyaani, very intelligent, like an old soul insaani shifton ka maalik – humanitarian<br> If native is born on thursday, woh native tarr jaega<br>                                       Children bring high rise in life<br> This native loves organized work<br> Either a full dharmic or a full naatsik person<br> If bad placed, child se dukh milta hai<br> ",
+                    "remedy": "doosron se kabhi daan nai lena "
+                },
+                "Moon": {
+                    "effects": "maa ya education mein se ek ka fal kharaab hota hai<br>  If native does technical education then good results<br>  Jitne paison ki need hoti hai, utne paise nai milte<br> ( empty by pocket) they are rehem dil insaan  very soft, emotional<br>very helpful<br> Wins almost every battle doesn’t do beinsaafi with anyone business karne mein bahut zyada pareshaani aati hai natives is helpful by nature which  gives his child good result ",
+                    "remedy": "bachhon ko silver ki gift do ( apne bacho ko) "
+                },
+                "Mars": {
+                    "effects": "mama ke ghar aulaad nai hoti<br>  Ghar mein koi na koi doctor ya hakim ya  chemist ya desi dawai karne wala person hoga ya  with pharma knowledge chemist ya doctor next to home  native ke child ki koi na koi medicine chalti rehti hai<br> Aulaad bahut paise wali hoti hai<br> Technical education karta hai,  worships hanuman ji all life<br> ",
+                    "remedy": "amavasya ke din mein ghar ke elders ke name pe donation karo "
+                },
+                "Ketu": {
+                    "effects": "mama ki life struggling hoti hai,  native ko khud child hone mein delay ya abortion hota hai,  child se dukhi rehta hai,  native khudh chid chid  ",
+                    "remedy": "donate general mars items in temple "
+                }
+            },
+            "7": {
+                "Saturn": {
+                    "effects": "older spouse,  mature looks or age ( looks behavior , attribute)<br> ghar tod kar dobara banata hai<br>  eating non veg gives bad results<br>  marry before 22 years of age<br> ghar mein agar bada pathar ho toh who unch shani ki nishaani hoti hai ",
+                    "remedy": "don’t sponsor a cocktail party "
+                },
+                "Rahu": {
+                    "effects": "ghar ke saamne wala plot ujaad hota hai  lacks physical intimacy with partner<br>  marital issues,  spoils venus<br> sasural se milkar kaam nai karna avoid speculation of all kind laxmi ka dhuan nikaal deta hai<br> ( burns your matarilaistic  and financial comforts ",
+                    "remedy": "7 sukhe nariyal jal parwaah karen "
+                },
+                "Venus": {
+                    "effects": "main gate toota hua hota hai<br>  shouldn’t work with in laws<br>  wife chalaak, vinmra and sundar hoti hai<br>  wife ko skin issues ",
+                    "remedy": "black cow ki seva karo "
+                },
+                "Mercury": {
+                    "effects": "parasmani kaha gaya hai, jisko choo dega tarr dega<br> family mein koi na koi construction work mein zaroor hota hai, ya civil engineer hota hai<br>  ghar ke paas huge construction site hoti hai<br> ghar mein temporary type ka temple hota hai<br> ie movale temple  ",
+                    "remedy": "avoid business partnership "
+                },
+                "Sun": {
+                    "effects": "native ke ghar ke aas paas ya khud apne ghar mein koi mand buddhi wala child rehta hai<br>  marital issues and ego clashes as native is  strict  bhua ki life full of struggles rehti hai,  bhua pareshan hoti hai<br>  govt se chalaan kat te hain<br>  the native  keeps correcting  ",
+                    "remedy": "eat less salt "
+                },
+                "Jupiter": {
+                    "effects": "grahasta mein phansa hua sadhu aur santaan se dukhi bola gaya hai<br> mandir box mein nai rakhna chaiye,  kharaab  musical instrument ghar mein pada milta hai<br> spouse spiritual pooja path wala hota hai<br> ",
+                    "remedy": "lord shiv ki pooja karein "
+                },
+                "Moon": {
+                    "effects": " apni education ka itna acha fal nai hai  but money ka results badiya hota hai<br>        ( daily income business acha hota hai)                 maa aur wife ki aapas main nai banti<br> laxmi ka avatar kaha gaya hai,  jyotish ka shaunk,  astrologer ache bante hain<br> loves new varieties, is multi talented<br> early marriage<br>  mood swing every 15 days ",
+                    "remedy": "doodh ka kaam na karein "
+                },
+                "Mars": {
+                    "effects": "jo maangta hai ishwar se usko zaroor milti hai, divine help<br> beshumaar daulat milti hai<br> if mars is good, then wife ka poora sukh milta hai<br>        ( if with saturn or ketu bad results) wife hitler hoti hai, dominating, angry person, controlling<br> native loves to dominate others  iski property koi na koi hadap leta hai<br> behen, bhua, ya beti ghar waapis aayi hui hoti hai<br> saali ke saath koi bhi rishta barbaad kar dega<br> should avoid doing budh ke kaam<br> ",
+                    "remedy": "meetha khain aur khilain "
+                },
+                "Ketu": {
+                    "effects": "marital issues hote hain  dry marriage<br>  sexual relations ache nai hote, kai baar hote hi nai hain<br> wife ko haathon ya legs pe jale hue ka nishaan hota hai,  wife bold hoti hai, 2nd child thoda late hota hai<br> aise insaan ko apna dukhda rone ki bahut aadat hoti hai,  rehem maangta hai  ( sympathy seeker)– seeks attention  ",
+                    "remedy": "if negative effects do saturn remedy of 7h "
+                }
+            },
+            "10": {
+                "Saturn": {
+                    "effects": "apni kismet khud likhne wala raja<br>  ghar baithe paisa aana eg work from home<br>  if struggles for work, saturn not giving good results here<br> if drinks alcohol will face problem in profession<br>  if has extra relations barbaad honge            dharmaatma nai thoda chalaak hona chaiye<br>  father ka sukh milta hai,  father ki long life hoti hai  paise accumulate nai honge ",
+                    "remedy": "4 days 400 gm chane ki daal jal parwaah karo "
+                },
+                "Rahu": {
+                    "effects": "either too good or too bad<br>  depends on saturn position<br> native keeps changing profession/job<br>  rajyog position<br>  politician se connection zaroor hota hai<br> obsessed with career , can become politician if saturn is good ",
+                    "remedy": "keep honey at home "
+                },
+                "Venus": {
+                    "effects": "dharmic person  khwaabon ki duniya mein rehne waala<br>  gets a lot of income<br> wife zaroorat se zyaada chalaak and active hoti hai<br>  wife ko eye issues<br> office mein female employees zyaada hote hain ",
+                    "remedy": "black cow ki seva karo "
+                },
+                "Mercury": {
+                    "effects": "khushamat karne wala<br> naughty and matlabi,  loves to earn,  bin pendi ka lota<br> if shani good, this budh is good<br>( shani 3 and 5 house is bad) inko zubaan ka chaska hota hai<br> loves non veg and alcohol ",
+                    "remedy": "never sign a document without seeing "
+                },
+                "Sun": {
+                    "effects": "gussewala, kadak, anger issues<br> doesn’t know what the goal o rpurpose of life lifetime business issues hote hain<br> izzat aur sehat ka malik but wehmi (sakhi) ",
+                    "remedy": "43 days 1 tamba coin daily jal parwaaah karein or 43 coins in 1 day "
+                },
+                "Jupiter": {
+                    "effects": " nose blockage bahut zyaada hoti hai ( snoring /sinus)<br>  sona bikta ya gumta zaroor hai<br>  father se help nai milti<br> mandir mein dosh zaroor hota hai<br>  difficulty in luck matters<br>                    ",
+                    "remedy": "kesar ka tilak on forehead  "
+                },
+                "Moon": {
+                    "effects": " jab hospital jaega kissi aur ko dekhne, khud bimaar hoke aaega<br> maa strict hoti hai  apni maa se kam banti hai<br>                      daadke parivaar mein kissi na kissi ko fits aate hain<br> this person loves to work at night,  always stressed ",
+                    "remedy": "daily 1 taambe ka sikka jal parwaah karein for 43 days  "
+                },
+                "Mars": {
+                    "effects": "apne khaandaan ko taar dega<br> ghar mein iske janam ke baad ameeri aati hai<br> aise insaan ko tantra mantra ya short cuts life mein bahut pasand hote hain<br> but should not do agar bahiyon se jhagda ho, toh bahut bure results milenge<br>  sona tak bik jaata hai, sona bechna se  bad effects of mars<br> chacha ke santaan nai hoti,  ya chacha ki eka ankh mein problem hoti hai<br> high position in job or business<br> ",
+                    "remedy": "kissi one eyes person ki ya beaulaad ki seva ache results degi "
+                },
+                "Ketu": {
+                    "effects": "bhai iska saath bahut galat karta hai,  but usko maaf karna chaiye else more bad result of ketu<br> good finance ",
+                    "remedy": "chawal paani mein bahao "
+                }
+            }
+
+
+        };
+
+
+        $scope.dhokhaplanetbyAge = "";
+        $scope.getVarshphal = function (age) {
+            console.log('Calculating Varshphal for Age: ' + age);
+            for (const house in houses) {
+                varshphalHouses[varshphalMovement[age][house]].planets = houses[house].planets;
+                console.log(varshphalMovement[age][house] + " : " + houses[house].planets);
+            }
+            $scope.varshphalChart = varshphalHouses;
+            $scope.currentVarshMonth = $scope.selectedMonth;
+            $scope.dhokhaplanetbyAge = $scope.calculateDhokha(planetPositionsSnapshot);
+            $scope.saalaChakkar = $scope.getLalKitab35YearCycleStatusWithAntardasha(age);
+            $scope.saalaChakkar = $scope.saalaChakkar.toString().replaceAll(',', '<br>');
+            $scope.ketuTravel = $scope.predictKetuTravelEffectVarshphal($scope.varshphalChart);
+        }
+        $scope.resetVarshphal = function () {
+            $scope.varshphalChart = varshphalHouses;
+            $scope.currentVarshMonth = $scope.selectedMonth;
+        }
+        $scope.nextVarshphal = function () {
+            $scope.varshphalAge = $scope.varshphalAge + 1;
+            $scope.getVarshphal($scope.varshphalAge);
+        }
+
+        $scope.prevVarshphal = function () {
+            $scope.varshphalAge = $scope.varshphalAge - 1;
+            $scope.getVarshphal($scope.varshphalAge);
+        }
+
+        $scope.resetConfig = function () {
+            maleficPlanets = [];
+            beneficPlanets = [];
+            neutralPlanets = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Rahu", "Ketu"];
+            maleficHouses = [];
+            beneficHouses = [];
+            neutralMaleficHouses = [];
+            neutralBenificHouses = [];
+            moonState = [];
+            finalHoro = [];
+            diseases = [];
+            rakeshEffect = false;
+            vakri = [];
+            analysis = [];
+            drishti = [];
+            bala = [];
+            blindPlanets = [];
+            rinEffects = [];
+            balaOfPlanets = {
+                "Sun": 0,
+                "Moon": 0,
+                "Mercury": 0,
+                "Ketu": 0,
+                "Rahu": 0,
+                "Saturn": 0,
+                "Venus": 0,
+                "Jupiter": 0,
+                "Mars": 0
+            };
+
+        }
+
+        function isVakri() {
+            if (houses["8"].planets.length > 0 && houses["2"].planets.length > 0) {
+                console.log(houses["8"].planets + ' is/are having vakri drishti on ' + houses["2"].planets);
+                vakri.push(houses["8"].planets + ' is/are having vakri drishti on ' + houses["2"].planets);
+                drishtiRelation.enmical.push({ "from": houses["8"].planets, "to": houses["2"].planets, "type": "vakri" });
+            }
+            if (houses["9"].planets.includes("Mercury") && houses["3"].planets.length > 0) {
+                vakri.push('Mercury of 9th House is vakri drishti on ' + houses["3"].planets);
+                drishtiRelation.enmical.push({ "from": "Mercury", "to": houses["3"].planets, "type": "vakri" });
+            }
+            if (houses["12"].planets.includes("Mercury") && houses["6"].planets.length > 0) {
+                vakri.push('Mercury of 12th house is having vakri drishti on ' + houses["6"].planets);;
+                drishtiRelation.enmical.push({ "from": "Mercury", "to": houses["6"].planets, "type": "vakri" });
+            }
+            if (houses["6"].planets.includes("Saturn") && houses["2"].planets.length > 0) {
+                vakri.push('Saturn of 6th House is having vakri drishti on ' + houses["2"].planets);
+                drishtiRelation.enmical.push({ "from": "Saturn", "to": houses["2"].planets, "type": "vakri" });
+            }
+        }
+
+        function isBlindPlanetKundali() {
+            if (houses["10"].planets.length > 1) {
+                //Check if mutual enmical planets are sitting in the 10th house
+                houses["10"].planets.forEach(function (planetinTenthHouse) {
+                    // Check the enmical relationship of planets here
+                    planetsTable[planetinTenthHouse].enemies.forEach(function (enemyOfPlanetInTenthHouse) {
+                        //Checking if enemy of 10th house planet sitting in 10th house
+                        if (houses["10"].planets.includes(enemyOfPlanetInTenthHouse)) {
+                            blindPlanets.push('Enemy of ' + planetinTenthHouse + ' is sitting in 10th house: ' + enemyOfPlanetInTenthHouse)
+                        }
+                    })
+                })
+            }
+            if (houses["4"].planets.includes("Sun") && houses["7"].planets.includes("Saturn")) {
+                blindPlanets.push("Rathand Kundali present: Native will have unstable profression and disturbed mental peace with lack of domestic happiness");
+            }
+        }
+        var drishtiRelation = {
+            "friendly": [],
+            "enmical": []
+        };
+        var sleepingPlanets = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Rahu', 'Ketu'];
+        var sathiRelation = [];
+        function isSathiRelation(horoscope) {
+            const planetToRuledHouses = {
+                'Mars': [1, 8],
+                'Venus': [2, 7],
+                'Mercury': [3, 6],
+                'Moon': [4],
+                'Sun': [5],
+                'Jupiter': [9, 12],
+                'Saturn': [10, 11]
+            };
+            const houseToRulingPlanet = {
+                1: 'Mars',
+                2: 'Venus',
+                3: 'Mercury',
+                4: 'Moon',
+                5: 'Sun',
+                6: 'Mercury',
+                7: 'Venus',
+                8: 'Mars',
+                9: 'Jupiter',
+                10: 'Saturn',
+                11: 'Saturn',
+                12: 'Jupiter'
+            };
+
+            for (const lordOfHouses in planetToRuledHouses) {
+                //Each house of Mars
+                planetToRuledHouses[lordOfHouses].forEach(function (lordsHouse) {
+                    //enemies of Mars
+                    planetsTable[lordOfHouses].enemies.forEach(function (enemyOfLord) {
+                        //current lords house has its enemy
+                        if (houses[lordsHouse].planets.includes(enemyOfLord) && planetToRuledHouses.hasOwnProperty(enemyOfLord)) {
+                            //Check for the enemies houses if it has presence of its enemy
+                            planetToRuledHouses[enemyOfLord].forEach(function (houseOfEnemy) {
+                                //Check if house of enemy contains Mars
+                                if (houses[houseOfEnemy].planets.includes(lordOfHouses)) {
+                                    sathiRelation.push(lordOfHouses + ' and ' + enemyOfLord + ' are Sathi Grah');
+                                }
+                            })
+                        }
+                    })
+                })
+            }
+
+            if ((houses["1"].planets.includes("Sun") && houses["7"].planets.includes("Saturn")) || (houses["7"].planets.includes("Sun") && houses["1"].planets.includes("Saturn"))) {
+                sathiRelation.push("Sun and Saturn will act as sathi grah");
+            }
+
+        }
+
+        function isBilMukabilRelation(planetA, planetB) {
+            var isBilMukabil = [];
+            const houseToRulingPlanet = {
+                1: 'Mars',
+                2: 'Venus',
+                3: 'Mercury',
+                4: 'Moon',
+                5: 'Sun',
+                6: 'Mercury',
+                7: 'Venus',
+                8: 'Mars',
+                9: 'Jupiter',
+                10: 'Saturn',
+                11: 'Saturn',
+                12: 'Jupiter'
+            };
+            const planetToRuledHouses = {
+                'Mars': [1, 8],
+                'Venus': [2, 7],
+                'Mercury': [3, 6],
+                'Moon': [4],
+                'Sun': [5],
+                'Jupiter': [9, 12],
+                'Saturn': [10, 11]
+            };
+            var mEnemies = planetsTable[planetA].enemies.concat(planetsTable[planetB].enemies);
+            const mutualEnemies = new Set(mEnemies);
+            console.log('mutualEnemies' + mutualEnemies + 'for planets' + planetA + planetB);
+            mutualEnemies.forEach(function (ememyOfPlanets) {
+                console.log('Checking bilmukabil for planetA: ' + planetA + ' enemy: ' + ememyOfPlanets);
+                if (planetToRuledHouses.hasOwnProperty(planetA)) {
+                    planetToRuledHouses[planetA].forEach(function (houseRuled) {
+                        console.log('Looking for ememies for PlanetA in House ' + houseRuled);
+                        if (houses[houseRuled + ""].planets.includes(ememyOfPlanets)) {
+                            isBilMukabil.push('Mutual enemity due to presence of ' + ememyOfPlanets + ' in house ' + houseRuled + "( Ruler " + planetA + " )");
+                        }
+                    });
+                }
+                console.log('Checking bilmukabil for planetB: ' + planetB);
+
+                if (planetToRuledHouses.hasOwnProperty(planetB)) {
+                    planetToRuledHouses[planetB].forEach(function (houseRuled) {
+                        console.log('Looking for ememies for PlanetB in House ' + houseRuled);
+                        if (houses[houseRuled + ""].planets.includes(ememyOfPlanets)) {
+                            isBilMukabil.push('Mutual enemity due to presence of ' + ememyOfPlanets + ' in house ' + houseRuled + "( Ruler " + planetB + " )");
+                        }
+                    });
+                }
+
+            })
+            return isBilMukabil;
+
+        }
+
+
+        function getDhrishti() {
+            for (const house in houses) {
+                if (housesTable[house].drishti.length > 0 && houses[house].planets.length > 0) {
+                    // Checking each to drishti house
+                    housesTable[house].drishti.forEach(function (drishtitoHouse) {
+                        // For Each Planet of current House
+                        houses[house].planets.forEach(function (planetofcurrenthouse) {
+                            if (houses[drishtitoHouse].planets.length > 0) {
+                                //drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% drishti on planet: ' + houses[drishtitoHouse].planets);
+
+                                houses[drishtitoHouse].planets.forEach(function (planetOfToDrishtiHouse) {
+                                    var dhristiPair = {
+                                        "from": "",
+                                        "to": "",
+                                        "type": ""
+                                    };
+                                    if (planetsTable[planetofcurrenthouse].friends.includes(planetOfToDrishtiHouse)) {
+                                        balaOfPlanets[planetOfToDrishtiHouse] += 100;
+                                        drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% friendly drishti on planet: ' + planetOfToDrishtiHouse);
+                                        dhristiPair.from = planetofcurrenthouse;
+                                        dhristiPair.to = planetOfToDrishtiHouse;
+                                        dhristiPair.type = "friendly";
+                                        drishtiRelation.friendly.push(dhristiPair);
+                                        sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
+                                        drishti.push(" -- " + isBilMukabilRelation(planetofcurrenthouse, planetOfToDrishtiHouse));
+                                    }
+                                    else if (planetsTable[planetofcurrenthouse].enemies.includes(planetOfToDrishtiHouse)) {
+                                        balaOfPlanets[planetOfToDrishtiHouse] -= 100;
+                                        drishti.push(planetofcurrenthouse + " is having " + housesTable[house].percent + '% enimical drishti on planet: ' + planetOfToDrishtiHouse);
+                                        dhristiPair.from = planetofcurrenthouse;
+                                        dhristiPair.to = planetOfToDrishtiHouse;
+                                        dhristiPair.type = "enmical";
+                                        drishtiRelation.enmical.push(dhristiPair);
+                                        sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
+                                    }
+                                    else {
+                                        drishti.push(planetofcurrenthouse + ' is having normal drishti on planet: ' + planetOfToDrishtiHouse);
+                                        sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planetofcurrenthouse);
+                                    }
+                                });
+                            }
+                        })
+                    })
+                }
+            }
+            console.log(balaOfPlanets);
+            for (planet in balaOfPlanets) {
+                bala.push(planet + " : " + balaOfPlanets[planet]);
+            }
+            console.log("Dhristi Relationship: ", drishtiRelation);
+        }
+
+        function checkRealityOfNeutralHousesAndRakeshEffect(houses) {
+
+            // Check if Neutral 4th house has either Rahu/Ketu
+            if (houses["4"].status == "N" && (houses["4"].planets.includes("Rahu") || houses["4"].planets.includes("Ketu"))) {
+                houses["4"].status = "NM";
+                neutralMaleficHouses.push("4");
+                console.log("Rahu/Ketu found in 4th house hence 4th house is Neutral malefic");
+                analysis.push("Rahu/Ketu found in 4th house hence 4th house is Neutral malefic");
+            }
+            var neutralMaleficIndicator = false;
+            var moonWithRahuKetuFound = false;
+            for (const h in houses) {
+                if (houses[h].planets.includes("Moon") && (houses[h].planets.includes("Rahu") || houses[h].planets.includes("Ketu"))) {
+                    moonWithRahuKetuFound = true;
+                    break;
+                }
+            }
+            if ((houses["4"].planets.includes("Rahu") || houses["4"].planets.includes("Ketu")) || moonWithRahuKetuFound) {
+                console.log('Rahu/Ketu in 4th house or Moon with Rahu/Ketu found anywhere in horoscope; neutral benefic houses will become Neutral malefic');
+                analysis.push('Rahu/Ketu in 4th house or Moon with Rahu/Ketu found anywhere in horoscope; neutral benefic houses will become Neutral malefic');
+                neutralMaleficIndicator = true;
+            }
+
+            for (const house in houses) {
+                // Scan for Neutral Houses only
+                if (!maleficHouses.includes(house) && !beneficHouses.includes(house)) {
+                    console.log(`Evaluating reality of Neutral House :${house} Current Status: ${house}.status`);
+                    // Check if Moon is with Rahu/Ketu in any house or if Rahu/Ketu are occupying the 4th house
+                    if (neutralMaleficIndicator) {
+                         houses[house].status = "NM";
+                         neutralMaleficHouses.push(house);
+                         console.log(house + ' house is Neutral malefic due to presence of Rahu/Ketu in 4th house or Moon with Rahu/Ketu elsewhere');
+                         analysis.push(house + ' house is Neutral malefic due to presence of Rahu/Ketu in 4th house or Moon with Rahu/Ketu elsewhere');
+                    }
+                    else {
+                        houses[house].status = "NB";
+                        neutralBenificHouses.push(house);
+                        console.log(house + ' house is Neutral benefic');
+                    }
+                }
+                //Evaluating Rakesh Effect
+                if (houses[house].planets.includes("Saturn") && (houses[house].planets.includes("Rahu") || houses[house].planets.includes("Ketu"))) {
+                    houses[house].rakesheffect = "150%";
+                    console.log(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                    analysis.push(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                }
+                else if (!houses[house].planets.includes("Saturn") && (houses[house].planets.includes("Rahu") || houses[house].planets.includes("Ketu"))) {
+                    houses[house].rakesheffect = "100%";
+                    console.log(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                    analysis.push(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                }
+                else if (houses[house].planets.includes("Saturn") && !houses[house].planets.includes("Rahu") && !houses[house].planets.includes("Ketu")) {
+                    houses[house].rakesheffect = "50%";
+                    console.log(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                    analysis.push(houses[house].rakesheffect + ' Rakesh Effect found in House: ' + house);
+                }
+            }
+            if (houses["4"].status == "N") {
+                houses["4"].status = "NB";
+                neutralBenificHouses.push("4");
+                console.log("4th house is Neutral benefic");
+            }
+        }
+
+        function maleficRule1(houses) {
+            for (const house in houses) {
+                console.log(`Evaluating malefic Rule1 House:${house}`);
+                if (houses[house].planets.length > 0) {
+                    //iterate through each plant of current house for karak's enemies presence
+                    houses[house].planets.forEach(function (planet) {
+                        // Current house enemies are karaks enemies
+                        if (housesTable[house].enemies.includes(planet)) {
+                            houses[house].status = "M";
+                            console.log(planet + " is an enemy of " + housesTable[house].karak + " hence " + house + " is malefic");
+                            // Add to the list of malefic houses
+                            if (!maleficHouses.includes(house + "")) {
+                                maleficHouses.push(house + "");
+                            }
+                        }
+                    });
+
+
+                }
+            }
+        }
+
+        function maleficRule2(houses) {
+            console.log(`Evaluating malefic Rule2 for All Houses:${houses}`)
+            for (const house in houses) {
+                console.log(`Evaluating malefic Rule2 House:${house}`);
+                if (houses[house].planets.length > 1) {
+                    //iterate through each planet of current house to find of enemy planets are present in the house
+                    houses[house].planets.forEach(function (planet) {
+                        // Current Planet in check :Sun
+                        planetsTable[planet].enemies.forEach(function (enemy) {
+                            // Each Enemies of Sun say Venus
+                            // Check if Venus is present in Current house
+                            if (houses[house].planets.includes(enemy)) {
+                                // Then mark the house as malefic of which the current planet is karak of
+                                // Find each Karak house of current planet and mark it as malefic
+                                planetsTable[planet].houses.forEach(function (mhouse) {
+                                    // Mark the house as malefic
+                                    console.log('House ' + mhouse + ' is malefic as ' + planet + ' is sitting with its enemy ' + enemy);
+                                    if (houses.hasOwnProperty(mhouse)) {
+                                        houses[mhouse].status = "M";
+                                        if (!maleficHouses.includes(mhouse + "")) {
+                                            maleficHouses.push(mhouse + "");
+                                        }
+                                    }
+                                })
+                                // Adding the current planet to malefic planet as its with its enemy
+                                if (!maleficPlanets.includes(planet)) {
+                                    maleficPlanets.push(planet);
+                                    console.log(planet + ' is sitting with its enemy ' + enemy);
+                                    // Remove the malefic planet from the neutral planets list
+                                    neutralPlanets = neutralPlanets.filter(rmplanet => rmplanet !== planet);
+                                }
+                            }
+                        })
+
+                    });
+                }
+
+            }
+        }
+
+        function benificRule1(houses) {
+            console.log(typeof (maleficHouses[0]));
+            for (const house in houses) {
+                console.log(typeof (house));
+                console.log(`Evaluating benific Rule1 House:${house} Checking if current house ${house} if malefic: ` + maleficHouses.includes(house + ""));
+                // Check if current house is not malefic
+
+                if (houses[house].planets.length > 0 && !maleficHouses.includes(house + "")) {
+                    //Check if current house's karak planet is present in the current house
+                    if (houses[house].planets.includes(housesTable[house].karak)) {
+                        houses[house].status = "B";
+                        console.log(housesTable[house].karak + " is an karak of " + house + " hence " + house + " is benific");
+                        if (!beneficHouses.includes(house + "")) {
+                            beneficHouses.push(house + "");
+                        }
+                    }
+                    // Check if any of friend of current house's Kara planet is sitting in current house
+                    //iterate through each planet of current house and check if its friend of current house karak
+                    else {
+                        houses[house].planets.forEach(function (planet) {
+                            // Current house friends are karaks enemies
+                            if (housesTable[house].friends.includes(planet)) {
+                                houses[house].status = "B";
+                                console.log(planet + " is an friend of " + housesTable[house].karak + " hence " + house + " is benific");
+                                // Add to the list of malefic houses
+                                if (!beneficHouses.includes(house)) {
+                                    beneficHouses.push(house);
+                                }
+                            }
+
+                        });
+                    }
+                }
+                // Check if freindly planets are sitting together
+                houses[house].planets.forEach(function (planet) {
+                    // Proceed for checking benific planet only when current planet is not malefic
+                    if (!maleficPlanets.includes(planet)) {
+                        planetsTable[planet].friends.forEach(function (freindCurrentPlanet) {
+                            if (houses[house].planets.includes(freindCurrentPlanet)) {
+                                if (!beneficPlanets.includes(planet)) {
+                                    beneficPlanets.push(planet);
+                                    // Remove the benific planet from the neutral planets list
+                                    neutralPlanets = neutralPlanets.filter(rmplanet => rmplanet !== planet);
+                                }
+                            }
+                        })
+                    }
+                })
+
+            }
+        }
+
+        function benificRule3(houses) {
+            for (const house in houses) {
+                console.log(`Evaluating benefic Rule3 House:${house}`);
+                // Checking if there are more than 1 planet in the curent house and the house is Neutral - neither benefic nor malefic
+                if (houses[house].planets.length > 1 && !maleficHouses.includes(house + "") && !beneficHouses.includes(house + "")) {
+                    //iterate through each plant of current house to find of if the friendly planets are present together in the house
+                    houses[house].planets.forEach(function (planet) {
+                        // Current Planet in check :Sun
+                        planetsTable[planet].friends.forEach(function (friend) {
+                            // Each Friends of Sun say Moon
+                            // Check if Moon is present in Current house
+                            if (houses[house].planets.includes(friend)) {
+                                // Then mark the house as benific of which the current planet is karak of
+                                // Find each Karak house of current planet and mark it as benific if it not already malefic
+                                planetsTable[planet].houses.forEach(function (bhouse) {
+                                    // Mark the house Sun as benific if its not already malefic
+                                    if (!maleficHouses.includes(bhouse + "")) {
+                                        houses[bhouse].status = "B";
+                                        console.log('House ' + bhouse + ' is benefic as Karaka planet ' + planet + ' of House ' + bhouse + ' is sitting with its friend ' + friend + ' in house ' + house);
+                                        if (!beneficHouses.includes(bhouse + "")) {
+                                            beneficHouses.push(bhouse + "");
+                                        }
+                                    }
+
+                                })
+                            }
+                        })
+
+                    });
+                }
+
+            }
+        }
+
+        function getPredictions() {
+            predictions = [];
+            for (const house in houses) {
+                if (houses[house].planets.length > 0) {
+                    houses[house].planets.forEach(function (planet) {
+                        const placement = planetInHouses[house][planet];
+                        predictions.push({
+                            planet,
+                            house,
+                            effects: placement.effects,
+                            remedy: placement.remedy
+                        });
+                    });
+                }
+            }
+        }
+        var uchGrahas = [];
+        var neechGrahas = [];
+        function uchNeechPlanets() {
+            uchGrahas = [];
+            neechGrahas = [];
+            for (const planet in planetsTable) {
+                console.log("Checking if " + planet + " is present in its uchHouse:" + planetsTable[planet]["uch"] + " neech " + planetsTable[planet]["neech"]);
+                planetsTable[planet]["uch"].forEach(function (uchHouse) {
+                    console.log("Uch House:" + uchHouse);
+                    console.log("Checking uch condition for " + planet + " is present in its uchHouse:" + uchHouse + " Scanning: " + houses[uchHouse].planets);
+                    if (houses[uchHouse].planets.includes(planet)) {
+                        uchGrahas.push(planet);
+                    }
+                });
+                planetsTable[planet]["neech"].forEach(function (neechHouse) {
+                    console.log("neech House:" + neechHouse);
+                    console.log("Checking neech condition for " + planet + " is present in its neechHouse:" + neechHouse + " Scanning: " + houses[neechHouse].planets);
+                    if (houses[neechHouse].planets.includes(planet)) {
+                        neechGrahas.push(planet);
+                    }
+                });
+            }
+        }
+        var houseNegativeIndicatorS = {
+            "1": [
+                "illness",
+                "ego problems",
+                "physical deformity",
+                "loss of vitality",
+                "head-related diseases",
+                "loss of self-confidence",
+                "scar or wound on the body",
+                "poor physical constitution",
+                "early death if severely afflicted",
+                "mental disturbances",
+                "loss of dignity due to health issues"
+            ],
+            "2": [
+                "loss of wealth",
+                "bad speech",
+                "family disputes",
+                "loss of eyesight",
+                "bad reputation",
+                "disputes over family wealth",
+                "poor dietary habits",
+                "disgrace due to speech",
+                "loss through theft or deceit",
+                "speech disorders",
+                "quarrels over inheritance",
+                "food-related illnesses"
+            ],
+            "3": [
+                "issues with siblings",
+                "lack of courage",
+                "problems in communication",
+                "failure in undertakings",
+                "broken relationships with siblings",
+                "failure in artistic pursuits",
+                "loss through short journeys",
+                "loss through writings or communication",
+                "defamation through siblings",
+                "injuries to arms or shoulders"
+            ],
+            "4": [
+                "property disputes",
+                "emotional instability",
+                "loss of mother",
+                "loss of comfort",
+                "trouble with conveyances",
+                "loss of agricultural property",
+                "trouble in academic pursuits",
+                "loss of immovable property",
+                "destruction of domestic peace",
+                "difficulties in completing education",
+                "early separation from mother"
+            ],
+            "5": [
+                "abortions",
+                "problems with children",
+                "failure in education",
+                "immoral pleasures",
+                "loss of fame due to immoral behavior",
+                "speculative losses",
+                "childlessness",
+                "loss through speculation",
+                "disrepute due to children",
+                "fall from position due to immorality"
+            ],
+            "6": [
+                "disease",
+                "debt",
+                "enmity",
+                "legal issues",
+                "humiliation through enemies",
+                "chronic ulcers",
+                "servants turning against the native",
+                "defeat in legal battles",
+                "insurmountable debt",
+                "humiliation by rivals",
+                "incurable diseases"
+            ],
+            "7": [
+                "marital discord",
+                "divorce",
+                "problems in partnerships",
+                "death of spouse",
+                "loss through litigation",
+                "sexual misconduct",
+                "business failures",
+                "loss through spouse’s misdeeds",
+                "public disgrace through illicit relations",
+                "failure in business partnerships"
+            ],
+            "8": [
+                "sudden death",
+                "accidents",
+                "misery",
+                "chronic diseases",
+                "loss through inheritance",
+                "fear of sudden death",
+                "hidden enemies causing harm",
+                "loss through partner's wealth",
+                "unexpected widowhood or widowerhood",
+                "loss through insurances or legacies",
+                "danger from poison or hidden enemies"
+            ],
+            "9": [
+                "loss of fortune",
+                "problems with father",
+                "loss of faith",
+                "bad luck in journeys",
+                "misfortune in pilgrimages",
+                "loss of mentor's support",
+                "failure in higher studies",
+                "loss of reputation in religious circles",
+                "fall from moral standards",
+                "failures in long-distance ventures"
+            ],
+            "10": [
+                "career failure",
+                "loss of status",
+                "disgrace",
+                "obstacles in profession",
+                "scandals in profession",
+                "punishment from government",
+                "public disgrace",
+                "dishonor in public life",
+                "legal penalties affecting career",
+                "loss of authority"
+            ],
+            "11": [
+                "loss of gains",
+                "false friends",
+                "greed",
+                "unfulfilled desires",
+                "loss through friends",
+                "obstacles to ambitions",
+                "disputes in social circles",
+                "betrayal by friends",
+                "loss through speculative investments",
+                "obstacles to fulfillment of hopes"
+            ],
+            "12": [
+                "excessive expenditure",
+                "loss",
+                "isolation",
+                "hospitalization",
+                "imprisonment",
+                "exile or banishment",
+                "secret enemies causing loss",
+                "mental agony due to isolation",
+                "loss through secret enemies",
+                "harm in foreign lands",
+                "mental affliction due to isolation"
+            ]
+        };
+        $scope.findMandaPlanets_ByAnyViolation = function (horoscope) {
+            const pakkaGharLords = {
+                1: 'Sun',
+                2: 'Jupiter',
+                3: 'Mars',
+                4: 'Moon',
+                5: 'Jupiter',
+                6: 'Ketu',
+                7: 'Venus',
+                8: 'Saturn',
+                9: 'Jupiter',
+                10: 'Saturn',
+                11: 'Jupiter',
+                12: 'Rahu'
+            };
+
+            const planetEnemies = {
+                Sun: ['Venus', 'Saturn', 'Rahu'],
+                Moon: ['Rahu', 'Ketu'],
+                Mars: ['Mercury', 'Ketu', 'Venus', 'Saturn', 'Rahu'],
+                Mercury: ['Moon', 'Saturn', 'Ketu', 'Mars', 'Jupiter'],
+                Jupiter: ['Venus', 'Rahu', 'Mercury'],
+                Venus: ['Sun', 'Moon', 'Mars', 'Jupiter', 'Rahu'],
+                Saturn: ['Sun', 'Moon', 'Mars'],
+                Rahu: ['Sun', 'Venus', 'Mars'],
+                Ketu: ['Moon', 'Mars']
+            };
+
+            const neechSigns = {
+                Sun: 7,
+                Moon: 8,
+                Mars: 4,
+                Mercury: 12,
+                Jupiter: 10,
+                Venus: 6,
+                Saturn: 1,
+                Rahu: 9,
+                Ketu: 3
+            };
+
+            // Build house-to-planets map dynamically
+            const houseOccupants = {};
+            for (const [planet, house] of Object.entries(horoscope)) {
+                if (!houseOccupants[house]) houseOccupants[house] = [];
+                houseOccupants[house].push(planet);
+            }
+
+            const mandaPlanets = [];
+
+            for (const [planet, house] of Object.entries(horoscope)) {
+                const enemies = planetEnemies[planet] || [];
+                const reasons = [];
+
+                // Condition 1: Debilitated
+                const isDebilitated = neechSigns[planet] === house;
+                if (isDebilitated) {
+                    reasons.push("Planet is debilitated");
+                }
+
+                // Condition 2: Enemy in same house
+                const coOccupants = houseOccupants[house] || [];
+                const hasEnemyInSameHouse = coOccupants.some(
+                    p => p !== planet && enemies.includes(p)
+                );
+                if (hasEnemyInSameHouse) {
+                    reasons.push("An enemy planet is sitting in the same house");
+                }
+
+                // Condition 3: Enemy in Pakka Ghar
+                const ruledHouses = Object.entries(pakkaGharLords)
+                    .filter(([_, lord]) => lord === planet)
+                    .map(([h]) => parseInt(h));
+
+                let hasEnemyInPakkaGhar = false;
+                for (const h of ruledHouses) {
+                    const occupants = houseOccupants[h] || [];
+                    if (occupants.some(p => enemies.includes(p))) {
+                        hasEnemyInPakkaGhar = true;
+                        break;
+                    }
+                }
+                if (hasEnemyInPakkaGhar) {
+                    reasons.push("Enemy planet found in its Pakka Ghar houses");
+                }
+
+                // Accept planet as Manda if ANY violation occurred
+                if (reasons.length > 0) {
+                    mandaPlanets.push(`<b>${planet}</b> is Manda because: ${reasons.join(' :: or ')}`);
+                    maleficPlanets.push(planet);
+                }
+            }
+
+            return mandaPlanets;
+        }
+
+        /**
+         * Returns probable disease predictions for each malefic planet.
+         * @param {string[]} maleficPlanets - Array of planet names detected as malefic.
+         * @returns {{planet: string, bodyParts: string[], diseases: string[], characteristics: string[]}[]}
+         */
+        const planetBodyParts = {
+            Sun: ["Heart", "Right Eye", "Head", "Bones", "Face"],
+            Moon: ["Left Eye", "Breast", "Stomach", "Blood", "Mind", "Face"],
+            Mars: ["Blood", "Muscles", "Bone Marrow", "Eyebrows", "Teeth"],
+            Mercury: ["Skin", "Nervous System", "Throat", "Tongue", "Hands", "Neck", "Shoulders"],
+            Jupiter: ["Liver", "Thighs", "Nose", "Fat", "Feet"],
+            Venus: ["Cheeks", "Uterus", "Ovaries", "Semen", "Sperm", "Heart"],
+            Saturn: ["Legs", "Teeth", "Knees", "Chin", "Feet", "Buttocks", "Anus"],
+            Rahu: ["Head", "Mouth", "Ears", "Intestines", "Rectum"],
+            Ketu: ["Nerves", "Hairs", "Fingers", "Small Intestine", "Anus"]
+        };
+
+        function getProbableDiseasePredictions(maleficPlanets) {
+            // Example disease mapping for demonstration; expand as needed.
+            const planetDiseaseMap = {
+                Sun: ["Heart disease", "Eye disorders", "Bone issues", "Headache"],
+                Moon: ["Mental stress", "Blood disorders", "Stomach issues", "Eye problems"],
+                Mars: ["Blood pressure", "Accidents", "Dental issues", "Muscle injuries"],
+                Mercury: ["Skin allergies", "Speech disorders", "Nervous issues"],
+                Jupiter: ["Liver problems", "Obesity", "Thigh pain", "Nasal issues"],
+                Venus: ["Reproductive issues", "Diabetes", "Urinary problems"],
+                Saturn: ["Arthritis", "Teeth problems", "Leg pain", "Chronic diseases"],
+                Rahu: ["Intestinal disorders", "Ear problems", "Addictions", "Mental confusion"],
+                Ketu: ["Nerve disorders", "Hair loss", "Digestive issues"]
+            };
+
+            return maleficPlanets.map(planet => ({
+                planet,
+                bodyParts: planetBodyParts[planet] || ["Unknown body parts"],
+                diseases: planetDiseaseMap[planet] || ["General health issues"],
+                characteristics: planetNegativeCharacteristics[planet] || ["Unknown characteristics"]
+            }));
+        }
+        // Negative characteristics for each planet
+        const planetNegativeCharacteristics = {
+            Sun: [
+                "Egoistic", "Arrogant", "Dominating", "Prideful", "Authoritarian", "Harsh", "Stubborn", "Self-centered", "Overbearing", "Intolerant", "Anger issues", "Dictatorial", "Lack of empathy"
+            ],
+            Moon: [
+                "Moody", "Overly emotional", "Unstable", "Indecisive", "Easily influenced", "Anxious", "Depressed", "Overly sensitive", "Escapist", "Lack of willpower", "Restless", "Dependent"
+            ],
+            Mars: [
+                "Aggressive", "Impulsive", "Violent", "Argumentative", "Hot-tempered", "Reckless", "Impatient", "Destructive", "Stubborn", "Ruthless", "Over-competitive", "Quarrelsome"
+            ],
+            Mercury: [
+                "Cunning", "Deceitful", "Restless", "Superficial", "Unreliable", "Gossipy", "Manipulative", "Nervous", "Inconsistent", "Overly critical", "Trickster", "Two-faced"
+            ],
+            Jupiter: [
+                "Overindulgent", "Dogmatic", "Self-righteous", "Overconfident", "Extravagant", "Careless", "Lazy", "Preachy", "Judgmental", "Irresponsible", "Boastful"
+            ],
+            Venus: [
+                "Indulgent", "Materialistic", "Lazy", "Sensual", "Jealous", "Possessive", "Frivolous", "Superficial", "Overly romantic", "Addicted to pleasure", "Unfaithful", "Vain"
+            ],
+            Saturn: [
+                "Pessimistic", "Depressed", "Cold", "Rigid", "Fearful", "Stingy", "Aloof", "Unforgiving", "Obstructive", "Overly critical", "Lonely", "Harsh", "Grudging"
+            ],
+            Rahu: [
+                "Obsessive", "Addictive", "Deceptive", "Illusive", "Unethical", "Restless", "Greedy", "Manipulative", "Unpredictable", "Rebellious", "Confused", "Materialistic"
+            ],
+            Ketu: [
+                "Detached", "Apathetic", "Confused", "Aimless", "Unstable", "Escapist", "Self-destructive", "Secretive", "Withdrawn", "Neglectful", "Indifferent", "Unrealistic"
+            ]
+        };
+        const exhaustiveKarakas = {
+            Sun: [
+                "Soul", "Father", "Eyes", "Bones", "Heart", "Government", "Fame",
+                "Power", "Confidence", "Authority", "Raj Simhasan", "Pride", "Caste", "Success", "Respect", "Face", "Head"
+            ],
+            Moon: [
+                "Mother", "Mind", "Emotions", "Water", "Sleep", "Fluids", "Peace", "Face",
+                "Breast", "Public Image", "Comfort", "Happiness", "Blood", "Imagination"
+            ],
+            Mars: [
+                "Courage", "Energy", "Younger Siblings", "Fire", "Accidents", "Weapons",
+                "Aggression", "Property", "Muscles", "Surgery", "Blood", "Disputes", "Physical Power"
+            ],
+            Mercury: [
+                "Intelligence", "Communication", "Business", "Friends", "Skin", "Nervous System",
+                "Speech", "Logic", "Memory", "Analysis", "Wit", "Trade"
+            ],
+            Jupiter: [
+                "Wisdom", "Knowledge", "Children", "Religion", "Wealth", "Teaching",
+                "Husband (for women)", "Expansion", "Ethics", "Morality", "Spiritual Guidance"
+            ],
+            Venus: [
+                "Wife (for men)", "Love", "Luxury", "Beauty", "Art", "Vehicles", "Comforts",
+                "Semen", "Reproduction", "Entertainment", "Romance", "Creativity", "Fertility"
+            ],
+            Saturn: [
+                "Labor", "Discipline", "Old Age", "Service", "Grief", "Pain", "Longevity",
+                "Legs", "Teeth", "Masses", "Death", "Sorrow", "Duty", "Iron", "Slowness", "Karma"
+            ],
+            Rahu: [
+                "Worldly Desires", "Foreign Travel", "Sudden Events", "Politics", "Drugs",
+                "Illusion", "Confusion", "Deception", "Obsessions", "Shadows", "Electronics"
+            ],
+            Ketu: [
+                "Moksha", "Detachment", "Isolation", "Past-life Karma", "Renunciation",
+                "Loss", "Spirituality", "Dogs", "Hidden Enemies", "Sudden Breaks", "Liberation"
+            ]
+        };
+
+        function getMandaPlanetEffect(mandaPlanetsWithReason) {
+            return mandaPlanetsWithReason.map(entry => {
+                const match = entry.match(/<b>(.*?)<\/b> is Manda because: (.*)$/);
+                const planet = match ? match[1] : entry.split(" ")[0];
+                return {
+                    planet,
+                    reasons: match ? match[2].split(" :: or ") : [entry],
+                    impactedAreas: planetRepresentations[planet] || []
+                };
+            });
+        }
+        var grahanalysis = "";
+        $scope.toggleMessage = false;
+        $scope.horoscope = {};
+        $scope.currentAge = 0;
+        $scope.getHouseStatus = function () {
+
+            $scope.currentAge = $scope.calculateAge();
+            $scope.varshphalAge = $scope.currentAge;
+            $scope.checkName();
+            maleficRule1(houses);
+
+            console.log("maleficHouses from Rule1:", maleficHouses);
+
+            maleficRule2(houses);
+            console.log("maleficHouses from Rule1 and 2 are :", maleficHouses);
+
+            benificRule1(houses);
+            console.log("BenificHouses from Rule1 and Rule2 are:", beneficHouses);
+
+            benificRule3(houses);
+            console.log("BenificHouses from Rule3 are:", beneficHouses);
+
+            checkRealityOfNeutralHousesAndRakeshEffect(houses);
+
+            console.log("Malefic Houses", maleficHouses, "Benific Houses", beneficHouses, "Neutral Malefic Houses", neutralMaleficHouses, "Neutral benefic Houses", neutralBenificHouses);
+
+            console.log(houses);
+            console.log("Malefic Planets", maleficPlanets, getProbableDiseasePredictions(maleficPlanets), "Benific Planets", beneficPlanets, "Nuetral Planets", neutralPlanets);
+            isVakri();
+            getDhrishti();
+            getRinReport();
+            isBlindPlanetKundali();
+            uchNeechPlanets();
+            getPredictions();
+            $scope.twoPlanetPrediction();
+            getPlanetHouses(houses);
+            grahanalysis = generateHTMLTable(detectPlanets(houses), 'Area', 'Results');
+            showResult();
+            $scope.horoscope = houses;
+
+            //$scope.saveHoroscope();
+            $scope.getVarshphal($scope.currentAge);
+
+
+        }
+
+        function loadLalKitabChart(data) {
+            if (!data || typeof data !== 'object') {
+                console.error('Unable to load Lal Kitab data: D1 chart payload is incomplete or invalid.');
+                return;
+            }
+
+            const { name, dateOfBirth, planetHouses } = data;
+            const birthDateParts = typeof dateOfBirth === 'string' ? dateOfBirth.split('-').map(Number) : [];
+            const validPlanets = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Rahu', 'Ketu'];
+            if (!birthDateParts || birthDateParts.length !== 3
+                || birthDateParts.some(part => !Number.isInteger(part))
+                || !planetHouses || typeof planetHouses !== 'object'
+                || !validPlanets.every(planet => Number.isInteger(planetHouses[planet]) && planetHouses[planet] >= 1 && planetHouses[planet] <= 12)) {
+                console.error('Unable to load Lal Kitab data: D1 chart payload is incomplete or invalid.');
+                return;
+            }
+
+            $scope.$applyAsync(function () {
+                $scope.resetConfig();
+                for (let houseNumber = 1; houseNumber <= 12; houseNumber++) {
+                    houses[String(houseNumber)] = {
+                        status: 'N',
+                        struggle: '',
+                        rakesheffect: false,
+                        planets: []
+                    };
+                }
+                validPlanets.forEach(function (planet) {
+                    houses[String(planetHouses[planet])].planets.push(planet);
+                });
+                $scope.nativeName = typeof name === 'string' && name.trim() ? name.trim() : 'User';
+                $scope.selectedDay = birthDateParts[2];
+                $scope.selectedMonth = String(birthDateParts[1]);
+                $scope.selectedYear = birthDateParts[0];
+                $scope.horoscope = houses;
+                $scope.getHouseStatus();
+            });
+        }
+
+        window.addEventListener('message', function (event) {
+            if (event.source !== window.parent
+                || event.origin !== window.location.origin
+                || !event.data
+                || event.data.type !== 'lal-kitab-load-chart') {
+                return;
+            }
+            loadLalKitabChart(event.data);
+        });
+
+        window.addEventListener('lal-kitab-load-chart', function (event) {
+            loadLalKitabChart(event.detail);
+        });
+
+        $scope.saveHoroscope = function (chartType) {
+            if ($scope.nativeName != undefined && $scope.selectedDay != undefined && $scope.selectedMonth != undefined && $scope.selectedYear != undefined) {
+                $scope.pullPushHoroscope(chartType);
+            }
+            else {
+                $scope.message = 'Please enter a name and age details of this horoscope';
+                $scope.toggleMessage = true;
+            }
+        }
+
+        $scope.getHoroscope = function () {
+            $scope.resetConfig();
+            if (!$scope.selectedHoroscope || !$scope.selectedHoroscope.record) {
+                return;
+            }
+
+            const record = $scope.selectedHoroscope.record;
+            houses = JSON.parse(JSON.stringify(record.horoscope || {}));
+            $scope.nativeName = record.name || $scope.selectedHoroscope.value;
+            $scope.selectedDay = record.day;
+            $scope.selectedMonth = record.month;
+            $scope.selectedYear = record.year;
+            $scope.horoscope = houses;
+            $scope.getHouseStatus();
+        }
+
+        $scope.loadHoroscopes = function () {
+            $scope.getKundali();
+            if (localStorage.getItem('horoscope') !== null) {
+                console.log('Local Storage found with name: horoscope');
+            }
+            else {
+                console.log('Local Storage Not found. Creating localStorage with name: horoscope');
+                localStorage.setItem('horoscope', JSON.stringify({}));
+            }
+        }
+
+        $scope.deleteHoroscope = function () {
+            if (!$scope.selectedHoroscope || !$scope.selectedHoroscope.value) {
+                return;
+            }
+
+            const selectedKey = $scope.selectedHoroscope.value;
+            if ($scope.horoscopes && $scope.horoscopes[selectedKey]) {
+                delete $scope.horoscopes[selectedKey];
+                $scope.saveKundali($scope.horoscopes);
+                $scope.message = 'Removed the ' + selectedKey;
+                $scope.toggleMessage = true;
+                $scope.selectedHoroscope = null;
+                $scope.refreshHoroscopeList();
+            }
+        }
+
+        function getPlanetStatus() { }
+
+        /**
+ * Function to detect planets based on Lal Kitab concepts.
+ * @param {Object} horoscope - The horoscope object with houses and their planets.
+ * @returns {Object} - Results for each concept.
+ */
+        function detectPlanets(horoscope) {
+            const results = {};
+
+            // Helper function to check if a house is empty
+            const isHouseEmpty = (house) => !horoscope[house] || horoscope[house].planets.length === 0;
+
+            // Helper function to check if a planet is aspected by another planet
+            const isAspected = (house, planet) => {
+                for (const otherHouse in horoscope) {
+                    if (otherHouse !== house) {
+                        const otherPlanets = horoscope[otherHouse].planets;
+                        if (otherPlanets.includes(planet)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            };
+
+            // Kayam Grah (Permanent Planet)
+            results.kayamGrah = [];
+            for (const house in horoscope) {
+                const planets = horoscope[house].planets;
+                planets.forEach((planet) => {
+                    const rootHouse = getRootHouse(planet); // Function to get the root house of a planet
+                    if (isHouseEmpty(rootHouse) && !isAspected(house, planet)) {
+                        results.kayamGrah.push({ planet, house });
+                    }
+                });
+            }
+
+            // Buniyad Grah (Foundation Planet)
+            results.buniyadGrah = [];
+            for (const house in horoscope) {
+                const planets = horoscope[house].planets;
+                planets.forEach((planet) => {
+                    const foundationHouse = (parseInt(house) + 8) % 12 || 12; // 9th house from the current house
+                    if (horoscope[foundationHouse] && horoscope[foundationHouse].planets.length > 0) {
+                        horoscope[foundationHouse].planets.forEach((foundationPlanet) => {
+                            results.buniyadGrah.push({
+                                planet,
+                                house,
+                                foundationPlanet,
+                                foundationHouse,
+                            });
+                        });
+                    }
+                });
+            }
+
+            // Kismat ka Grah (Planet of Luck)
+            results.kismatKaGrah = null;
+            const kendraHouses = [1, 4, 7, 10];
+            const otherHouses = [2, 3, 5, 6, 8, 9, 11, 12];
+            const housePriority = [9, 3, 11, 5, 2, 6, 12, 8];
+
+            // Step 1: Check for exalted planets in Kendra houses
+            for (const house of kendraHouses) {
+                if (!isHouseEmpty(house)) {
+                    const exaltedPlanet = horoscope[house].planets.find(isExalted); // Function to check if a planet is exalted
+                    if (exaltedPlanet) {
+                        results.kismatKaGrah = { planet: exaltedPlanet, house };
+                        break;
+                    }
+                }
+            }
+
+            // Step 2: Check for exalted planets in other houses
+            if (!results.kismatKaGrah) {
+                for (const house of otherHouses) {
+                    if (!isHouseEmpty(house)) {
+                        const exaltedPlanet = horoscope[house].planets.find(isExalted);
+                        if (exaltedPlanet) {
+                            results.kismatKaGrah = { planet: exaltedPlanet, house };
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Step 3: Check for planets in their own Rashi
+            if (!results.kismatKaGrah) {
+                for (const house in horoscope) {
+                    const planets = horoscope[house].planets;
+                    planets.forEach((planet) => {
+                        if (isOwnRashi(planet, house)) { // Function to check if a planet is in its own Rashi
+                            results.kismatKaGrah = { planet, house };
+                        }
+                    });
+                }
+            }
+
+            // Step 4: Check the priority sequence of houses
+            if (!results.kismatKaGrah) {
+                for (const house of housePriority) {
+                    if (!isHouseEmpty(house)) {
+                        const planet = horoscope[house].planets[0];
+                        results.kismatKaGrah = { planet, house };
+                        break;
+                    }
+                }
+            }
+
+            return results;
+        }
+
+        // Helper functions
+        function getRootHouse(planet) {
+            const rootHouses = {
+                Sun: 5,
+                Moon: 4,
+                Mars: 1,
+                Mercury: 3,
+                Jupiter: 9,
+                Venus: 2,
+                Saturn: 10,
+                Rahu: 12,
+                Ketu: 6,
+            };
+            return rootHouses[planet] || null;
+        }
+
+        function isExalted(planet) {
+            const exaltedPositions = {
+                Sun: 1,
+                Moon: 2,
+                Mars: 10,
+                Mercury: 6,
+                Jupiter: 4,
+                Venus: 12,
+                Saturn: 7,
+                Rahu: 3,
+                Ketu: 9,
+            };
+            return exaltedPositions[planet];
+        }
+
+        function isOwnRashi(planet, house) {
+            const ownRashi = {
+                Sun: [5],
+                Moon: [4],
+                Mars: [1, 8],
+                Mercury: [3, 6],
+                Jupiter: [9, 12],
+                Venus: [2, 7],
+                Saturn: [10, 11],
+                Rahu: [12],
+                Ketu: [6],
+            };
+            return ownRashi[planet] && ownRashi[planet].includes(parseInt(house));
+        }
+
+        function showResult() {
+            function reportItems(value) {
+                if (value === null || typeof value === "undefined" || value === "") {
+                    return [];
+                }
+                if (Array.isArray(value)) {
+                    return value.reduce((items, item) => items.concat(reportItems(item)), []);
+                }
+                return [String(value)];
+            }
+
+            function appendChips(parent, items, tone) {
+                const chipList = document.createElement("div");
+                chipList.className = "lk-chip-list";
+                items.forEach(item => {
+                    const chip = document.createElement("span");
+                    chip.className = `lk-chip lk-chip--${tone || "neutral"}`;
+                    chip.textContent = item;
+                    chipList.appendChild(chip);
+                });
+                parent.appendChild(chipList);
+            }
+
+            function appendEmpty(parent, message) {
+                const empty = document.createElement("p");
+                empty.className = "lk-empty";
+                empty.textContent = message;
+                parent.appendChild(empty);
+            }
+
+            function appendSubheading(parent, text) {
+                const heading = document.createElement("h5");
+                heading.className = "lk-report-subheading";
+                heading.textContent = text;
+                parent.appendChild(heading);
+            }
+
+            function appendDetailGroup(parent, title, values, tone) {
+                const group = document.createElement("div");
+                group.className = "lk-detail-group";
+                const heading = document.createElement("h6");
+                heading.className = "lk-detail-group__title";
+                heading.textContent = title;
+                group.appendChild(heading);
+                const items = reportItems(values);
+                if (items.length) {
+                    appendChips(group, items, tone);
+                } else {
+                    appendEmpty(group, "No details available.");
+                }
+                parent.appendChild(group);
+            }
+
+            function appendDetailText(parent, title, values) {
+                const group = document.createElement("div");
+                group.className = "lk-detail-group";
+                const heading = document.createElement("h6");
+                heading.className = "lk-detail-group__title";
+                heading.textContent = title;
+                group.appendChild(heading);
+
+                const items = reportItems(values);
+                if (!items.length) {
+                    appendEmpty(group, "No details available.");
+                } else {
+                    const list = document.createElement("ul");
+                    list.className = "lk-text-list";
+                    items.forEach(item => {
+                        const listItem = document.createElement("li");
+                        const text = document.createElement("div");
+                        text.innerHTML = item.replace(/<br\s*\/?>/gi, "\n");
+                        listItem.textContent = text.textContent.trim();
+                        listItem.classList.add("lk-pre-line");
+                        list.appendChild(listItem);
+                    });
+                    group.appendChild(list);
+                }
+                parent.appendChild(group);
+            }
+
+            function createInsightCard(parent, title) {
+                const card = document.createElement("article");
+                card.className = "lk-insight-card";
+                const heading = document.createElement("h5");
+                heading.className = "lk-insight-card__title";
+                heading.textContent = title;
+                card.appendChild(heading);
+                parent.appendChild(card);
+                return card;
+            }
+
+            function appendDisclosureGroup(parent, title, values, tone) {
+                const items = reportItems(values);
+                if (!items.length) return;
+                const disclosure = document.createElement("details");
+                disclosure.className = "lk-disclosure";
+                const summary = document.createElement("summary");
+                summary.textContent = `${title} (${items.length})`;
+                disclosure.appendChild(summary);
+                appendChips(disclosure, items, tone);
+                parent.appendChild(disclosure);
+            }
+
+            function renderDiseasePredictions(parent, entries) {
+                if (!entries.length) {
+                    appendEmpty(parent, "No disease predictions for the current chart.");
+                    return;
+                }
+                const grid = document.createElement("div");
+                grid.className = "lk-insight-grid";
+                entries.forEach(entry => {
+                    const card = createInsightCard(grid, entry.planet);
+                    appendDetailGroup(card, "Body parts affected", entry.bodyParts, "neutral");
+                    appendDetailGroup(card, "Probable conditions", entry.diseases, "accent");
+                    appendDetailGroup(card, "Associated characteristics", entry.characteristics, "negative");
+                });
+                parent.appendChild(grid);
+            }
+
+            function renderMandaPlanets(parent, entries) {
+                if (!entries.length) {
+                    appendEmpty(parent, "No Manda planets identified.");
+                    return;
+                }
+                const grid = document.createElement("div");
+                grid.className = "lk-insight-grid";
+                entries.forEach(entry => {
+                    const card = createInsightCard(grid, entry.planet);
+                    appendDetailGroup(card, "Reasons", entry.reasons, "negative");
+                    appendDisclosureGroup(card, "Possible impacted areas", entry.impactedAreas, "accent");
+                });
+                parent.appendChild(grid);
+            }
+
+            function renderRinEffects(parent, entries) {
+                const findings = entries.filter(entry => typeof entry === "string" && !/<table\b/i.test(entry));
+                const remedyTables = entries.filter(entry => typeof entry === "string" && /<table\b/i.test(entry));
+
+                if (!findings.length && !remedyTables.length) {
+                    appendEmpty(parent, "No Rin indicators identified in this chart.");
+                    return;
+                }
+
+                if (findings.length) {
+                    appendSubheading(parent, "Detected Rin indicators");
+                    const grid = document.createElement("div");
+                    grid.className = "lk-insight-grid";
+                    findings.forEach(entry => {
+                        const match = entry.match(/^(.*?) detected in (.*?) due to presence of (.+)$/i);
+                        const card = createInsightCard(grid, match ? match[1] : "Rin indicator");
+                        if (match) {
+                            appendDetailGroup(card, "House placement", [match[2]], "accent");
+                            appendDetailGroup(card, "Planets involved", match[3].split(/[\/,]/).map(planet => planet.trim()), "neutral");
+                        } else {
+                            appendDetailText(card, "Details", [entry]);
+                        }
+                    });
+                    parent.appendChild(grid);
+                }
+
+                if (remedyTables.length) {
+                    appendSubheading(parent, "Remedy guidance");
+                    const grid = document.createElement("div");
+                    grid.className = "lk-remedy-grid";
+                    remedyTables.forEach(tableHTML => {
+                        const table = document.createElement("div");
+                        table.className = "lk-remedy-card";
+                        table.innerHTML = tableHTML;
+                        grid.appendChild(table);
+                    });
+                    parent.appendChild(grid);
+                }
+            }
+
+            function renderPlacementPredictions(parent, entries) {
+                if (!entries.length) {
+                    appendEmpty(parent, "No planet-in-house predictions for this chart.");
+                    return;
+                }
+                const grid = document.createElement("div");
+                grid.className = "lk-insight-grid";
+                entries.forEach(entry => {
+                    const card = createInsightCard(grid, entry.planet);
+                    appendChips(card, [`House ${entry.house}`], "accent");
+                    appendDetailText(card, "Outcomes", [entry.effects]);
+                    appendDetailText(card, "Remedy", [entry.remedy]);
+                });
+                parent.appendChild(grid);
+            }
+
+            function renderTwoPlanetPredictions(parent, entries) {
+                if (!entries.length) {
+                    appendEmpty(parent, "No two-planet combinations identified.");
+                    return;
+                }
+                const grid = document.createElement("div");
+                grid.className = "lk-insight-grid";
+                entries.forEach(entry => {
+                    const combination = entry.combination.replaceAll("_", " + ");
+                    const card = createInsightCard(grid, combination);
+                    appendChips(card, [`House ${entry.house}`], "accent");
+                    appendDetailText(card, "Possible outcomes", entry.predictions);
+                });
+                parent.appendChild(grid);
+            }
+
+            function renderSections(target, sections) {
+                target.innerHTML = "";
+                sections.forEach(sectionData => {
+                    const section = document.createElement("section");
+                    section.className = "lk-result-section";
+
+                    const heading = document.createElement("h4");
+                    heading.className = "lk-result-section__title";
+                    heading.textContent = sectionData.title;
+                    section.appendChild(heading);
+
+                    if (typeof sectionData.renderContent === "function") {
+                        const content = document.createElement("div");
+                        content.className = "lk-rich-content";
+                        sectionData.renderContent(content);
+                        section.appendChild(content);
+                    } else if (Object.prototype.hasOwnProperty.call(sectionData, "richHtml")) {
+                        const content = document.createElement("div");
+                        content.className = "lk-rich-content";
+                        if (sectionData.richHtml) {
+                            content.innerHTML = sectionData.richHtml;
+                        } else {
+                            content.innerHTML = '<p class="lk-empty">No entries found.</p>';
+                        }
+                        section.appendChild(content);
+                    } else {
+                        const items = reportItems(sectionData.items);
+                        if (!items.length) {
+                            const empty = document.createElement("p");
+                            empty.className = "lk-empty";
+                            empty.textContent = "No entries found.";
+                            section.appendChild(empty);
+                        } else if (sectionData.display === "chips") {
+                            appendChips(section, items, sectionData.tone);
+                        } else {
+                            const list = document.createElement("ul");
+                            list.className = "lk-text-list";
+                            items.forEach(item => {
+                                const listItem = document.createElement("li");
+                                listItem.textContent = item;
+                                list.appendChild(listItem);
+                            });
+                            section.appendChild(list);
+                        }
+                    }
+
+                    target.appendChild(section);
+                });
+            }
+
+            function renderHouseOutcomes(target, houses, title, outcomeLabel, outcomeMap, tone) {
+                target.innerHTML = "";
+                renderSections(target, [{
+                    title: "Identified houses",
+                    items: houses.map(house => `House ${house}`),
+                    display: "chips",
+                    tone
+                }]);
+
+                const outcomeSection = document.createElement("section");
+                outcomeSection.className = "lk-result-section";
+                const heading = document.createElement("h4");
+                heading.className = "lk-result-section__title";
+                heading.textContent = outcomeLabel;
+                outcomeSection.appendChild(heading);
+
+                if (!houses.length) {
+                    const empty = document.createElement("p");
+                    empty.className = "lk-empty";
+                    empty.textContent = `No ${title.toLowerCase()} identified.`;
+                    outcomeSection.appendChild(empty);
+                } else {
+                    const grid = document.createElement("div");
+                    grid.className = "lk-house-grid";
+                    houses.forEach(house => {
+                        const card = document.createElement("article");
+                        card.className = "lk-house-card";
+                        const cardTitle = document.createElement("h5");
+                        cardTitle.className = "lk-house-card__title";
+                        cardTitle.textContent = `House ${house}`;
+                        card.appendChild(cardTitle);
+
+                        const outcomes = reportItems(outcomeMap[house]);
+                        if (outcomes.length) {
+                            appendChips(card, outcomes, tone);
+                        } else {
+                            const empty = document.createElement("p");
+                            empty.className = "lk-empty";
+                            empty.textContent = "No outcome details available.";
+                            card.appendChild(empty);
+                        }
+                        grid.appendChild(card);
+                    });
+                    outcomeSection.appendChild(grid);
+                }
+                target.appendChild(outcomeSection);
+            }
+
+            renderHouseOutcomes(
+                document.getElementById("M"),
+                maleficHouses,
+                "Malefic houses",
+                "Negative outcomes by house",
+                houseNegativeIndicator,
+                "negative"
+            );
+            renderHouseOutcomes(
+                document.getElementById("B"),
+                beneficHouses,
+                "Benefic houses",
+                "Positive outcomes by house",
+                BeneficKarakasByHouse,
+                "positive"
+            );
+            const conjunctionSection = document.createElement("div");
+            renderSections(conjunctionSection, [{
+                title: "Planet conjunctions",
+                items: planetConjunctResult
+            }]);
+            document.getElementById("B").appendChild(conjunctionSection.firstElementChild);
+            renderSections(document.getElementById("NM"), [{
+                title: "Neutral malefic houses",
+                items: neutralMaleficHouses,
+                display: "chips",
+                tone: "negative"
+            }]);
+            renderSections(document.getElementById("NB"), [{
+                title: "Neutral benefic houses",
+                items: neutralBenificHouses,
+                display: "chips",
+                tone: "positive"
+            }]);
+
+            maleficPlanetSet = new Set(maleficPlanets);
+            const maleficPlanetList = [...maleficPlanetSet];
+            const diseasePredictions = getProbableDiseasePredictions(maleficPlanetList);
+            renderSections(document.getElementById("MP"), [
+                { title: "Malefic planets", items: maleficPlanetList, display: "chips", tone: "negative" },
+                { title: "Disease predictions", renderContent: content => renderDiseasePredictions(content, diseasePredictions) },
+                { title: "Manda planets", renderContent: content => renderMandaPlanets(content, mandaPlanetsInHoroscope) }
+            ]);
+            renderSections(document.getElementById("BP"), [{
+                title: "Benefic planets",
+                items: beneficPlanets,
+                display: "chips",
+                tone: "positive"
+            }]);
+
+            const neutralPlanetSections = [
+                { title: "Neutral planets", items: neutralPlanets, display: "chips", tone: "neutral" },
+                { title: "Mangal Badh", items: [isMangalBadh ? "Present" : "Not detected"], display: "chips", tone: isMangalBadh ? "accent" : "neutral" },
+                { title: "Mangal Dosh", items: [isMangalDosh ? "Present" : "Not detected"], display: "chips", tone: isMangalDosh ? "accent" : "neutral" },
+                { title: "Budh Nali", items: budhNali },
+                { title: "House building", items: houseOutCome },
+                { title: "Sleeping houses", items: sleepingHouses, display: "chips", tone: "neutral" },
+                { title: "Sleeping planets", items: sleepingPlanets, display: "chips", tone: "neutral" },
+                { title: "Awakened planets", items: awakeInPakkaGhar, display: "chips", tone: "positive" },
+                { title: "Masnui planets", items: masnuiResult, display: "chips", tone: "accent" },
+                { title: "Dhoka (10th aspect)", items: dhokaRelation },
+                { title: "Takkar (8th aspect)", items: takkarRelation },
+                { title: "Helps (5th aspect)", items: helpRelation },
+                { title: "Vedic Drishti (7th aspect)", items: seventhaspect },
+                { title: "All planetary aspects", items: planetaryAspects },
+                { title: "Dharmi Teva", items: dharmiTeva },
+                { title: "Sathi Grahas", items: sathiRelation }
+            ];
+            if (isMangalBadh) {
+                neutralPlanetSections.push({ title: "Mangal Badh remedies", richHtml: mangalBadhRemedies });
+            }
+            if (isMangalDosh) {
+                neutralPlanetSections.push({ title: "Mangal Dosh remedies", richHtml: mangalDoshRemedies });
+            }
+            renderSections(document.getElementById("NP"), neutralPlanetSections);
+
+            renderSections(document.getElementById("VD"), [
+                { title: "Retrograde planets", items: vakri, display: "chips", tone: "accent" },
+                { title: "Normal Drishti", items: drishti },
+                { title: "Rakesh Effect", items: analysis },
+                { title: "Bala", items: bala },
+                { title: "Blind planets in Kundali", items: blindPlanets, display: "chips", tone: "neutral" },
+                { title: "Rin effects", renderContent: content => renderRinEffects(content, rinEffects) },
+                { title: "Uch Grahas", items: uchGrahas, display: "chips", tone: "positive" },
+                { title: "Neech Grahas", items: neechGrahas, display: "chips", tone: "negative" },
+                { title: "Graha analysis", richHtml: grahanalysis },
+                { title: "Predictions", renderContent: content => renderPlacementPredictions(content, predictions) },
+                { title: "Two-planet predictions", renderContent: content => renderTwoPlanetPredictions(content, twoPlanetPredictions) }
+            ]);
+        }
+
+        $scope.planets = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Rahu", "Ketu"];
+        $scope.houses = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+
+        $scope.houseAndPlanetSelected = function () {
+            if ($scope.selectedPlanet != '' && $scope.selectedHouse != '') {
+                houses[$scope.selectedHouse].planets.push($scope.selectedPlanet);
+                //$scope.planets = $scope.planets.filter(planet => planet !== $scope.selectedPlanet);
+                //$scope.houses = $scope.houses.filter(house => house !== $scope.selectedHouse);
+                $scope.horoscope = houses;
+            }
+            else {
+                $scope.horoscope = houses;
+            }
+        }
+
+        $scope.removePlanetFromHouse = function () {
+            houses[$scope.selectedHouse].planets = houses[$scope.selectedHouse].planets.filter(planet => planet !== $scope.selectedPlanet);
+        }
+
+        $scope.removePlanetHouse = function () {
+            if ($scope.selectedPlanet != '' && $scope.selectedHouse != '') {
+                $scope.removePlanetFromHouse($scope.selectedHouse, $scope.selectedPlanet);
+                $scope.horoscope = houses;
+            }
+        }
+        $scope.checkName = function () {
+            console.log('Checking Name:' + $scope.nativeName);
+            if ($scope.nativeName == undefined) {
+                //alert("Please enter the name");
+                $scope.message = "Please enter the name";
+                $scope.toggleMessage = true;
+            }
+        }
+        $scope.days = [];
+        $scope.years = [];
+
+        // Populate day dropdown
+        for (var i = 1; i <= 31; i++) {
+            $scope.days.push(i);
+        }
+
+        // Populate year dropdown
+        var currentYear = new Date().getFullYear();
+        for (var i = currentYear + 20; i >= 1900; i--) {
+            $scope.years.push(i);
+        }
+
+        $scope.calculateAge = function () {
+            var day = parseInt($scope.selectedDay);
+            var month = parseInt($scope.selectedMonth);
+            var year = parseInt($scope.selectedYear);
+            console.log(day, month, year)
+            var today = new Date();
+            var birthDate = new Date(year, month - 1, day); // Month is 0-indexed
+
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+            if (m > 0) {
+                age++;
+            }
+            else if (today.getDate() > birthDate.getDate()) {
+                age++;
+            }
+            // if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            //     age--;
+            // }
+
+            document.getElementById("result").innerHTML = "Your age is: " + age + " years old";
+            return age;
+        }
+
+        $scope.reset = function () {
+            location.reload();
+        }
+
+        function generateHTMLTable(jsonData, column1hdr, column2hdr) {
+            // Helper function to create a table row
+            function createRow(key, value) {
+                return `<tr>
+                    <td style="border: 1px solid #ccc; padding: 8px; font-weight: bold;">${key}</td>
+                    <td style="border: 1px solid #ccc; padding: 8px;">${value}</td>
+                </tr>`;
+            }
+
+            // Recursive function to process JSON data
+            function processJSON(data) {
+                let html = "";
+                for (const key in data) {
+                    if (typeof data[key] === "object" && data[key] !== null) {
+                        // If the value is an object, recursively process it
+                        html += `<tr>
+                            <td colspan="2" style="border: 1px solid #ccc; padding: 8px; background-color: #f9f9f9; font-weight: bold;">${key}</td>
+                         </tr>`;
+                        html += processJSON(data[key]);
+                    } else {
+                        // If the value is a primitive, add it to the table
+                        html += createRow(key, data[key]);
+                    }
+                }
+                return html;
+            }
+
+            // Generate the table structure
+            const tableHTML = `
+        <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
+            <thead>
+                <tr>
+                    <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">${column1hdr}</th>
+                    <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">${column2hdr}</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${processJSON(jsonData)}
+            </tbody>
+        </table>
+    `;
+
+            return tableHTML;
+        }
+
+        var rinTypes = {
+            "GeneralPrinciplesForRemedies": {
+                "Description": "These are overarching principles that apply to the remedies for all nine types of Rin. The debts are considered one of the biggest weaknesses in a horoscope, and clearing them can resolve up to 90% of a person's problems. The remedies are performed to clear the negative karmic effects of actions taken by one's ancestors, as these are passed down through generations.",
+                "MoneyCollection": {
+                    "Method": "Collect an equal amount of money from all blood relatives (खून का रिश्ता).",
+                    "BloodlineDefinition": "The family tree for collection starts with the individual (Jatak) and includes their siblings, children, and their brother's children. It extends to their paternal line (father, paternal uncles, paternal aunts, paternal uncles' children) and maternal line (mother, maternal uncles, maternal aunts, maternal uncles' children). Grandparents (paternal and maternal) and their siblings are also included if known.",
+                    "Exclusions": "The children of female relatives (sisters, daughters, paternal aunts, maternal aunts) are excluded as they belong to a different bloodline. Spouses are also not included. Deceased relatives are not counted.",
+                    "Alternative": "If you cannot or do not want to ask a relative for money, you must contribute **10 times the base amount** on their behalf. For example, if you contribute ₹1 for yourself, you would contribute ₹10 for each relative you do not ask."
+                },
+                "Execution": {
+                    "Frequency": "Remedies for Rin are typically a **one-time, lifetime event** and should not be repeated.",
+                    "Affirmation": "When performing the remedy, you must make a mental affirmation, such as, 'Today, I am freed from the [Name of Rin] accumulated by my ancestors'.",
+                    "ProhibitedDays": "Do not start any long-term remedies on **Chaturthi (4th), Navami (9th), or Chaturdashi (14th)** lunar days, as these are considered 'Rikta Tithis' (empty dates)."
+                }
+            },
+            "Pitru": {
+                "AssociatedPlanet": "Jupiter (Guru)",
+                "PlanetaryCombination": "This debt occurs when Jupiter's enemies—**Venus, Mercury, or Rahu**—are placed in any of Jupiter's houses: the **2nd, 5th, 9th, 11th, or 12th house**. The presence of even one of these planets in any of these houses is sufficient to create the debt, whether alone or with other planets.",
+                "ReasonForDebt": "This karmic debt is believed to be caused by ancestors who may have disrespected their family priest (Kul Purohit), had a temple destroyed or moved, gossiped to get a priest removed from his position, or cut down a Peepal tree.",
+                "PotentialNegativeEffects": "Linked to the houses involved, individuals may face: problems with wealth accumulation and family harmony (2nd house); incomplete education and issues with childbirth (5th house); lack of luck and support from father (9th house); low or unstable income and minor illnesses (11th house); and high expenses, with someone in the family often being sick (12th house).",
+                "PrimaryRemedy": "On a **Thursday**, collect equal amounts of money from all blood relatives. Donate this entire amount to an **elderly priest (over 60 years old)** in a temple. After donating, offer water from a copper pot to a nearby Peepal tree. During both acts, mentally affirm that you are now free from this debt. Do not look back when you leave.",
+                "AlternativeRemedy": "If the collection remedy is not possible, offer water to a Peepal tree for **43 consecutive days**."
+            },
+            "Stri": {
+                "AssociatedPlanet": "Venus (Shukra)",
+                "PlanetaryCombination": "This debt is formed when Venus's enemies—**Sun, Moon, or Rahu**—are in the 2nd or 7th house, which are the houses associated with Venus's zodiac signs (Taurus and Libra). A person with Rahu in the 2nd house will have both Pitri Rin and Stri Rin.",
+                "ReasonForDebt": "Caused by forefathers who may have tortured their wives, harassed them for dowry, or murdered a pregnant woman out of greed.",
+                "PotentialNegativeEffects": "This can lead to disturbances in married life, ill health of the spouse, financial problems, a lack of luxuries, and issues with reproductive organs or semen quality.",
+                "PrimaryRemedy": "On a **Friday**, collect equal amounts of money from blood relatives and use it to feed **100 milking cows (not bulls or infirm cows)** with dry fodder (सूखा चारा)."
+            },
+            "Matri": {
+                "AssociatedPlanet": "Moon (Chandra)",
+                "PlanetaryCombination": "This debt occurs when the Moon's enemy, **Ketu, is in the 4th house**.",
+                "ReasonForDebt": "This may be due to forefathers neglecting or torturing a mother, separating her from her child after birth (e.g., sending the child to a hostel against her wishes), or ignoring her sadness.",
+                "PotentialNegativeEffects": "Individuals may suffer from mental restlessness, stress, depression, anxiety, and a lack of peace and happiness at home. The native's mother's health may also suffer, and there could be problems with wealth and luxury.",
+                "PrimaryRemedy": "On a **Monday**, collect money from blood relatives, purchase a **square piece of silver** with it, and immerse it in a flowing river. Make the mental affirmation and do not look back after performing the remedy."
+            },
+            "Putri": {
+                "AssociatedPlanet": "Mercury (Budh)",
+                "PlanetaryCombination": "Formed when Mercury's enemy, the **Moon, is in the 3rd or 6th house**, which are associated with Mercury.",
+                "ReasonForDebt": "The cause could be that forefathers murdered a young girl or abused, molested, or tortured someone's sister.",
+                "PotentialNegativeEffects": "Effects include poor relationships with sisters, business problems, increased debt, mental stress, communication issues, and financial losses, as the 3rd house is the 'exit door of health and wealth'.",
+                "PrimaryRemedy": "The primary remedy of burning yellow cowries is considered impractical. The effective alternative is to, on a **Wednesday**, collect money from blood relatives and **feed 100 young girls (under the age of 10)**. If providing homemade food like Halwa Puri is not possible, packaged vegetarian foods (with no eggs) can be distributed, for instance, in a government school."
+            },
+            "Swa": {
+                "AssociatedPlanet": "Sun (Surya)",
+                "PlanetaryCombination": "This debt, related to the soul (Atma), occurs when the Sun's enemies—**Venus, Saturn, Rahu, or Ketu**—are in the **5th house**. If Venus or Rahu are in the 5th house, it creates both Pitri Rin and Swa-rin.",
+                "ReasonForDebt": "Caused by forefathers who stopped following family traditions and customs, such as worshipping a family deity (Kuldevta) or a village deity (Gram Devta), thereby losing faith.",
+                "PotentialNegativeEffects": "Individuals may face problems related to childbirth, education, knowledge, love life, and entertainment.",
+                "PrimaryRemedy": "On a **Sunday**, use money collected from blood relatives to **perform or contribute to a Yagya or Havan (fire ritual)**. If one cannot afford a full Yagya, they can contribute to a larger, collective Havan being performed in a temple."
+            },
+            "Bhai": {
+                "AssociatedPlanet": "Mars (Mangal)",
+                "PlanetaryCombination": "This debt is formed when Mars's enemies, **Mercury or Ketu**, are in the **1st or 8th house**, which are ruled by Mars.",
+                "ReasonForDebt": "The cause may be that forefathers, out of jealousy or animosity, set fire to someone's crops, poisoned a person, or killed their livestock.",
+                "PotentialNegativeEffects": "Can lead to a lack of confidence, excessive anger, long-term diseases, frequent conflicts, strained relationships with relatives, and headaches.",
+                "PrimaryRemedy": "On a **Tuesday**, use the money collected from blood relatives to **donate towards the medical treatment of a poor person**. This can be done by paying for their medicines or consultation fee at a hospital or charitable clinic."
+            },
+            "Atyachar": {
+                "AssociatedPlanet": "Saturn (Shani)",
+                "PlanetaryCombination": "Occurs when Saturn's enemies—**Sun, Moon, or Mars**—are in the **10th or 11th house**.",
+                "ReasonForDebt": "Caused by forefathers who cheated someone, forcefully took over a house without payment, or usurped property through tyranny (अत्याचार).",
+                "PotentialNegativeEffects": "Individuals may face problems at work, lack of success, unstable income, and frequent minor illnesses.",
+                "PrimaryRemedy": "On a **Saturday**, use the collected money to either **feed 100 fish** or **feed 100 laborers** (e.g., at a construction site)."
+            },
+            "Ajanma": {
+                "AssociatedPlanet": "Rahu",
+                "PlanetaryCombination": "Formed when Rahu's enemies—**Sun, Venus, or Mars**—are in the **12th house**. If Venus is in the 12th house, it creates both Pitri Rin and Ajanma Rin.",
+                "ReasonForDebt": "This debt is caused by forefathers who betrayed their in-laws, leading to the destruction and ruin of the in-laws' family.",
+                "PrimaryRemedy": "On a **Saturday** (as Rahu is like Saturn), use collected money to **purchase coconuts and immerse them in a flowing river**."
+            },
+            "Kudrat": {
+                "AssociatedPlanet": "Ketu",
+                "PlanetaryCombination": "This debt is formed when **Moon or Mars** are in the **6th house**. If the Moon is in the 6th house, it creates both Putri Rin and Nature's Rin.",
+                "ReasonForDebt": "The cause is that forefathers intentionally killed a living being, such as a dog or even a lizard, or destroyed someone's life to the point of ruin.",
+                "PotentialNegativeEffects": "Problems related to the 6th house, such as diseases, debts, and enemies, may increase.",
+                "PrimaryRemedy": "On a **Tuesday or Thursday** (as Ketu is like Mars and a disciple of Jupiter), use the collected money to **feed 100 dogs**. Food like dalia (broken wheat porridge) or rotis can be given. If the Moon is in the 6th house, avoid giving milk-based products."
+            }
+        };
+        function getRinReport() {
+            // Pitru Rin
+            if (houses[2].planets.includes("Mercury") || houses[2].planets.includes("Venus") || houses[2].planets.includes("Rahu")) {
+                rinEffects.push("Pitru Rin detected in 2nd House due to presence of Mercury/Venus/Rahu");
+            }
+            else if (houses[5].planets.includes("Mercury") || houses[5].planets.includes("Venus") || houses[5].planets.includes("Rahu")) {
+                rinEffects.push("Pitru Rin detected in 5th House due to presence of Mercury/Venus/Rahu");
+            }
+            else if (houses[9].planets.includes("Mercury") || houses[9].planets.includes("Venus") || houses[9].planets.includes("Rahu")) {
+                rinEffects.push("Pitru Rin detected in 9th House due to presence of Mercury/Venus/Rahu");
+            }
+            else if (houses[11].planets.includes("Mercury") || houses[11].planets.includes("Venus") || houses[11].planets.includes("Rahu")) {
+                rinEffects.push("Pitru Rin detected in 11th House due to presence of Mercury/Venus/Rahu");
+            }
+            else if (houses[12].planets.includes("Mercury") || houses[12].planets.includes("Venus") || houses[12].planets.includes("Rahu")) {
+                rinEffects.push("Pitru Rin detected in 12th House due to presence of Mercury/Venus/Rahu");
+            }
+
+
+
+            // Matru Rin
+            if (houses[4].planets.includes("Ketu")) {
+                rinEffects.push("Matru Rin detected in 4th House due to presence of Ketu");
+            }
+
+            // Sva Rin
+            if (houses[5].planets.includes("Venus") || houses[5].planets.includes("Saturn") || houses[5].planets.includes("Rahu") || houses[5].planets.includes("Ketu")) {
+                rinEffects.push("Sva Rin detected in 5th House due to presence of Ketu/Venus/Rahu/Saturn");
+            }
+
+            // Stree Rin
+            if (houses[2].planets.includes("Sun") || houses[2].planets.includes("Moon") || houses[2].planets.includes("Rahu")) {
+                rinEffects.push("Stree Rin detected in 2nd House due to presence of Sum/Moon/Rahu");
+            }
+            else if (houses[7].planets.includes("Sun") || houses[7].planets.includes("Moon") || houses[7].planets.includes("Rahu")) {
+                rinEffects.push("Stree Rin detected in 7th House due to presence of Sum/Moon/Rahu");
+            }
+
+            // Dargahi Rin or Nature's Rin
+            if (houses[6].planets.includes("Mars") && houses[6].planets.includes("Moon")) {
+                rinEffects.push("Dargahi Rin detected in 6th House due to presence of Mars/Moon");
+            }
+
+            //Daughter's Debt
+            if (houses[3].planets.includes("Moon") || houses[6].planets.includes("Moon")) {
+                rinEffects.push("Daughter's Rin detected in 3rd or 6th House due to presence of Moon");
+            }
+
+            //Brother's Debt/ Relative's Debt
+            if (houses[1].planets.includes("Mercury") || houses[1].planets.includes("Ketu") || houses[8].planets.includes("Mercury") || houses[8].planets.includes("Ketu")) {
+                rinEffects.push("Brother's Debt/ Relative's Debt Rin detected in 1st or 8th House due to presence of Mercury/Ketu");
+            }
+
+            //Oppressor's Debt/ Atyachar Rin
+            if (houses[10].planets.includes("Sun") || houses[10].planets.includes("Moon") || houses[10].planets.includes("Mars")) {
+                rinEffects.push("Oppressor's Debt/ Atyachar Rin detected in 10th House due to presence of Sun/Moon/Mars");
+            }
+            else if (houses[11].planets.includes("Sun") || houses[11].planets.includes("Moon") || houses[11].planets.includes("Mars")) {
+                rinEffects.push("Oppressor's Debt/ Atyachar Rin detected in 11th House due to presence of Sun/Moon/Mars");
+            }
+            // Unborn
+            if (houses[12].planets.includes("Sun") && houses[12].planets.includes("Venus") && houses[12].planets.includes("Mars")) {
+                rinEffects.push("Unborn Rin detected in 12th House due to presence of Sun/Venus/Mars");
+            }
+
+            if (rinEffects.toString().indexOf("Pitru Rin") != -1) {
+                rinEffects.push(generateHTMLTable(rinTypes.Pitru, "Pitru Rin - General Principles for Remedies", "Details"));
+            }
+            if (rinEffects.toString().indexOf("Matru Rin") != -1) {
+                rinEffects.push(generateHTMLTable(rinTypes.Matri, "Matru Rin - General Principles for Remedies", "Details"));
+            }
+            if (rinEffects.toString().indexOf("Sva Rin") != -1) {
+                rinEffects.push(generateHTMLTable(rinTypes.Swa, "Sva Rin - General Principles for Remedies", "Details"));
+            }
+            if (rinEffects.toString().indexOf("Stree Rin") != -1) {
+                rinEffects.push(generateHTMLTable(rinTypes.Stri, "Stree Rin - General Principles for Remedies", "Details"));
+            }
+            if (rinEffects.toString().indexOf("Dargahi Rin") != -1) {
+                rinEffects.push(generateHTMLTable(rinTypes.Kudrat, "Dargahi Rin - General Principles for Remedies", "Details"));
+            }
+            if (rinEffects.toString().indexOf("Daughter's Rin") != -1) {
+                rinEffects.push(generateHTMLTable(rinTypes.Putri, "Daughter's Rin - General Principles for Remedies", "Details"));
+            }
+            if (rinEffects.toString().indexOf("Brother's Debt") != -1) {
+                rinEffects.push(generateHTMLTable(rinTypes.Bhai, "Brother's Debt - General Principles for Remedies", "Details"));
+            }
+            if (rinEffects.toString().indexOf("Oppressor's Debt") != -1) {
+                rinEffects.push(generateHTMLTable(rinTypes.Atyachar, "Oppressor's Debt - General Principles for Remedies", "Details"));
+            }
+            if (rinEffects.toString().indexOf("Unborn Rin") != -1) {
+                rinEffects.push(generateHTMLTable(rinTypes.Ajanma, "Unborn Rin - General Principles for Remedies", "Details"));
+            }
+        }
+
+        /**
+ * Finds and returns living and non-living significations for planetary conjunctions in each house.
+ * @param {Object} houses - Horoscope houses object, where each house has a .planets array.
+ * @param {Array} livingSignifications - Array of objects with {planets_conjoined, significations}.
+ * @param {Array} nonLivingSignifications - Array of objects with {planets_conjoined, significations}.
+ * @returns {Array} Array of outcome objects for each house with conjunctions found.
+ */
+        function getConjunctionSignifications(houses, livingSignifications, nonLivingSignifications) {
+            const outcomes = [];
+
+            // Helper to check if all elements of arr1 are in arr2 (order-insensitive)
+            function isSameConjunction(arr1, arr2) {
+                console.log("Comparing conjunctions:", arr1, arr2);
+                if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
+                if (arr1.length !== arr2.length) return false;
+                const sorted1 = [...arr1].sort();
+                const sorted2 = [...arr2].sort();
+                return sorted1.every((val, idx) => val === sorted2[idx]);
+            }
+
+            for (const houseNum in houses) {
+                const planets = houses[houseNum].planets;
+                if (planets.length < 2) continue; // Only check conjunctions
+
+                // Check all possible conjunctions in this house (size 2+)
+                for (let size = 2; size <= planets.length; size++) {
+                    // Generate all combinations of 'size' planets
+                    const combos = getCombinations(planets, size);
+                    combos.forEach(combo => {
+                        // Living significations
+                        livingSignifications.forEach(living => {
+                            if (isSameConjunction(living.planets_conjoined, combo)) {
+                                outcomes.push(`Conjunction of ${combo.join(":: ")} => ${living.significations.join("; ")}`);
+                            }
+                        });
+                        // Non-living significations
+                        nonLivingSignifications.forEach(nonLiving => {
+                            if (isSameConjunction(nonLiving.planets_conjoined, combo)) {
+                                outcomes.push(`Conjunction of ${combo.join(":: ")} => ${nonLiving.significations.join("; ")}`);
+                            }
+                        });
+                    });
+                }
+            }
+            return outcomes;
+        }
+
+        // Helper: Generate all combinations of a given size from an array
+        function getCombinations(arr, size) {
+            const results = [];
+            function combine(start, combo) {
+                if (combo.length === size) {
+                    results.push([...combo]);
+                    return;
+                }
+                for (let i = start; i < arr.length; i++) {
+                    combo.push(arr[i]);
+                    combine(i + 1, combo);
+                    combo.pop();
+                }
+            }
+            combine(0, []);
+            return results;
+        }
+
+        function getRemedies() {
+
+        }
+
+        var planetRepresentations = {
+            "Jupiter": [
+                "Largest planet in Solar system", "Nor too slow nor too fast", "yellow", "Rays of Jupiter are soothing for humans and life on Earth", "Benefic Planet", "yellow part in an egg has life so it denotes birth", "Prana", "Life energy", "Oxygen", "Preacher", "Mentor", "Guide", "Teacher", "Presenter", "Guru",
+                "Education Department", "Education minister", "Judge", "Religious", "Spiritual person", "Development", "Books",
+                "Growth", "Respect", "Divinity", "Nose", "Fat", "Thigh", "Feet", "Puja room", "Vedas", "Temples", "Endowment Department", "self esteem", "patience", "Big parts or bulkiest part of body", "Liver",
+                "Thighs", "Experience and maturity", "Wisdom", "nose and breathing activity (Pranayama)", "Dada", "Bujurg", "Dharamsthan", "Ancestors", "Father"
+            ],
+            "Sun": [
+                "Dominating", "Ruler", "King", "Header", "Harsh", "Hope", "Energy",
+                "Raise", "Metabolism", "Immunity", "Ego", "Attention", "Ruler",
+                "Attitude", "Confidence", "Courage", "Power", "Right Eye",
+                "Government", "Ministers", "Politics", "Administration", "(A country or company is dependent on head or-leader)",
+                "Prestige", "Status", "Respect", "Right Windows of Home",
+                "Sandalwood", "teak", "wood", "Honesty", "Govt. Job", "Father’s Job",
+                "Self respect", "Sacrifice", "Anger", "Courage", "Bones",
+                "(Sun’gravitation keeps solar system in place and-bones",
+                "keep our organs and body in place)", "Heart", "Leader", "Head of Human",
+                "Energy", "Discipline", "activeness", "Atma", "Survival", "Father"
+            ],
+            "Moon": [
+                "Revolves around Earth", "rotates on its axis", "revolves around sun with Earth", "Fastest planet", "Sukla Paksha (Amavasya to Poornima) Growing moon and Krishna Paksha(Poornima to Amavasya) waxing moon",
+                "Mother (eyes of mother always on child)", "Nurturing",
+                "caring", "emotions", "Human cells (grow like moon phases)",
+                "Mind (Man)", "Changes", "Travels", "Left eye", "Fluids in human body",
+                "Water in blood", "Psychology", "Mother feeds child by breast – Milk and Breast and dairy products is moon", "Food", "menstrual cycle", "beauty", "Natural talent", "imagination", "Loss", "Emotions", "Creative", "Mood Swings", "Mind", "Care", "Unconditional Love", "Happiness",
+                "Mental and Emotional Power", "Pleasant Night", "loneliness",
+                "Creation of life", "Change", "Travel", "Mental Stability", "Ups and Downs", "Liquid cash or money", "Shiksha", "Samudra Karobar etc", "Mother"
+            ],
+            "Mars": [
+                "Reddish Planet", "Separated from earth", "Body", "Husband",
+                "Younger Brother", "Technology", "Engineer", "Tools",
+                "Machinery", "Rivalry", "disputes", "Anger", "Power", "energy",
+                "Adamancy", "surgery", "accident", "police", "defense force",
+                "Sportsman", "Union Leader", "Surgeon", "Cultivation",
+                "Agriculture", "eyebrows", "blood", "Male energy", "Bedroom",
+                "Oven", "Fire", "Energy meter", "Electronic transformer", "Meter Board", "Motors", "Heater’s", "stone pillars", "Pillars and beams",
+                "columns", "bat", "wicket", "minerals", "Knife", "spears", "bullet",
+                "enemy", "hard substance", "scissors", "needle", "triangle shaped",
+                "Arrow", "thorn", "horn", "Bhumi Putra (Separated from earth- that is why brother)", "From earth mars appears red All red objects: Blood", "Weapons", "danger symbols", "Thorny plants",
+                "Mars andJupiter has in-between asteroid belt so they act as soldiers and mars is called chief of them", "mars is army",
+                "police", "defense", "Land business(Real estate)", "Pottery",
+                "Tennent", "Barber", "Carpenter", "Gym Trainer", "Physical education teacher", "dentist", "tongs(Chimta)", "Oven", "heater",
+                "electric equipment's", "Constable", "Yoga teacher", "teeth patterns", "Horns", "Sharp objects", "machines", "Bone marrow",
+                "blood", "Fuel tank", "Fuel station", "Tracking", "Hiking",
+                "Anger(Gussa)", "sahanshakti", "{Mahavat}etc", "Brother"
+            ],
+            "Mercury": [
+                "Prince", "Smallest planet", "Green appearance", "Most combust",
+                "Intellect(Budhi)", "Maternal uncle", "Father in law", "friends",
+                "boyfriends", "girlfriends", "support system", "education", "Clarity",
+                "business", "business partner", "Trade and commerce",
+                "philosophy", "diplomacy", "Astrology", "Teacher", "Lecturer",
+                "Professor", "Scientist", "Research engineer", "Book publisher",
+                "Book store", "accountant", "Auditor", "poet", "writer", "comedian",
+                "actor", "Sense of humor", "lawyer", "painter", "Information", "hand",
+                "shoulder", "ball", "Skin", "Forehead", "Tongue",
+                "Communication", "throat", "Visitor hall", "study room", "Balcony",
+                "Plastering of walls", "Parapet(Chajja)", "Green cuttings", "green",
+                "tree or plants", "Beauty walls", "crops", "Leaves", "soil", "Land",
+                "(cultivation and commercial)", "Registration", "Speech",
+                "Knowledge activity", "thoughts", "tricks", "Cunningness",
+                "Softthings", "Documents", "Youth and youngness(Less than age)", "friend", "communication", "(Hand, Throat )", "Gathering of people like school",
+                "park", "playground", "banquet hall etc", "Empty land",
+                "commercial land", "publisher", "book binding", "creepers(Bel)", "Business",
+                "area of interest(Hobby)", "Detective", "Tark Shakti", "Logic",
+                "Agent", "Broker", "collector", "Vakalat karna", "reporter",
+                "Sampadak", "Banking", "Clerk", "Shilpakala etc", "Behen", "Bua", "Beti", "Mausi"
+            ],
+            "Venus": [
+                "Brightest planet(Can be easily seen in sky)", "Not follow conventional system of rotation", "rotates differently",
+                "nonconventional planet(Shukracharya brings dead to life)",
+                "Least Retrograde(18 months)", "Female",
+                "Herself(Characteristics)", "wife", "luxuries", "pleasure", "Money",
+                "Wealth", "Finance", "banking", "sukh", "Vaibhav", "Wine shop",
+                "Cattle field", "Cloth merchant", "love", "poetry", "flower", "sex",
+                "marriage", "assets", "vehicles", "house", "semen", "sperm", "uterus",
+                "ovaries", "cheek", "heart", "right side of chin", "Kitchen", "music",
+                "scent", "sweet", "intoxicants", "dance", "acting", "fancy stores",
+                "dancing ball", "cinema hall", "Fine arts", "Cinema stars", "Face", "A person is dull or bright, attractive or unattractive(all depends on venus)",
+                "Uterus is venus", "Jewelry", "bright objects", "crystals", "cosmetics", "perfumes", "vehicles", "Ghar", "Horse riding",
+                "Aunt", "Ready made Clothes", "fashion", "cosmetics",
+                "photography etc", "Wife"
+            ],
+            "Saturn": [
+                "Karma Karak", "Profession", "Work", "Job", "Industry", "Slowness",
+                "Laziness", "Chin", "Legs", "Buttocks", "Anus", "Knees", "Foreleg",
+                "Digestive Bladder", "Storeroom", "Dump yard", "Dustbin",
+                "Grinding stone", "Dining", "hall", "Windy and gastric health disorders", "Woolen clothes", "iron", "wind", "storm", "oil mines",
+                "Low paid servant", "Labour", "dark place", "cold place", "cough", "Congestion", "Longevity", "karak of Old age", "legs is Saturn",
+                "Caves", "dark room", "Quarry(Khadan)", "Doormat", "Sleep",
+                "Poverty", "Poor people", "Makan", "Chusti", "Chalaki", "Chacha", "Lobh", "Lalach",
+                "Diseases related to body", "Dukh", "Takalif", "Daridratah",
+                "leather", "Karkhana", "Cement", "Lakadi", "Loha", "Chacha"
+            ],
+            "Rahu": [
+                "Dragon head(Rahu)", "Shadow planet", "Mouth", "Snake mouth",
+                "Wide opening", "Main door", "Plastic", "Rubber", "Intestine", "Pond",
+                "lake", "Ocean", "Kaal", "Maya", "desire", "diseases", "Attachment",
+                "Breathing by mouth is rahu", "Dada dadi", "Rahu is beginning",
+                "Main door", "Openings", "Sweeper",
+                "Brilliant", "Chalak", "know how to handle the situation", "Drugs",
+                "Alcohol", "illegal activities", "Crime", "Loss", "Affairs", "Confusion",
+                "illusions", "Mirgi ki bimari", "Migrane", "Headache",
+                "gandagi", "Nasha", "jail",
+                "Mental hospital", "Short cut", "Robbery", "Shadyantra", "Mansik Rog",
+                "Atmavishwas mein kami", "Charitraheen etc", "Dada Dadi", "Sasural"
+            ],
+            "Ketu": [
+                "Shadow planet", "Detachmet", "Snake tail", "nerves", "hairs",
+                "fingers", "male genital organ", "Creepers", "Creeping insects",
+                "anus", "Small intestine", "narrow", "Moksha", "water channels",
+                "(pipes)", "electric wires", "dispersal of waste", "Giver is Ketu so penis is ketu and rahu is Cervix", "Nana nani", "Maternity",
+                "ward", "Split", "break", "Law", "Coding", "Breathing through nose is ketu", "Ketu is backdoor or the road in backside of your house", "Jail(12th house)", "Deep research",
+                "occult", "tantra mantra", "Himsa", "Visphoth", "Achanak Ghatnaye",
+                "Aadhyatma", "Ketu is discrete like discrete body parts", "gyaan",
+                "secret enemy", "Gupth Bhay", "diseases which cannot be identified by any doctors", "Sour (Khatti Cheej) etc", "Nana Nani", "Putra (Male child)", "Jamai", "Mama"
+            ]
+        };
+
+        $scope.searchRepresentations = function () {
+            const searchTerm = document.getElementById("search-input").value.toLowerCase();
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = "";
+
+            let foundMatch = false;
+
+            for (const planet in planetRepresentations) {
+                const matchingItems = planetRepresentations[planet].filter(item =>
+                    item.toLowerCase().includes(searchTerm)
+                );
+
+                if (matchingItems.length > 0) {
+                    foundMatch = true;
+                    const planetResultDiv = document.createElement("div");
+                    planetResultDiv.classList.add("planet-results");
+
+                    const planetNameHeading = document.createElement("h3");
+                    planetNameHeading.classList.add("planet-name");
+                    planetNameHeading.textContent = planet;
+                    planetResultDiv.appendChild(planetNameHeading);
+
+                    const itemsList = document.createElement("ul");
+                    matchingItems.forEach(item => {
+                        const listItem = document.createElement("li");
+                        listItem.classList.add("represented-item");
+                        listItem.textContent = item;
+                        itemsList.appendChild(listItem);
+                    });
+                    planetResultDiv.appendChild(itemsList);
+                    resultsDiv.appendChild(planetResultDiv);
+                }
+            }
+
+            if (!foundMatch && searchTerm.trim() !== "") {
+                resultsDiv.innerHTML = "<p>No matching items found.</p>";
+            } else if (searchTerm.trim() === "") {
+                resultsDiv.innerHTML = "<p>Please enter a search term.</p>";
+            }
+        }
+
+        $scope.showAttributes = function (item, type) {
+
+            const planetData = {
+                jupiter: {
+                    name: "Jupiter/Guru",
+                    description: "Largest planet in Solar system, Benefic Planet",
+                    attributes: [
+                        "Yellow color [1]",
+                        "Soothing rays [1]",
+                        "Denotes birth, Prana, Life energy, Oxygen [1]",
+                        "Preacher, Mentor, Guide, Teacher [1]",
+                        "Education Department, Education minister [2]",
+                        "Judge, Religious, Spiritual person [2]",
+                        "Growth, Respect, Divinity [2]",
+                        "Nose and breathing activity (Pranayama) [2]",
+                        "Deities: Bhrama, Vishnu, Vaman [3]",
+                        "Things: chane ki daal, gold, Tumeric, Kesar [3]",
+                        "Relation: Dada, Bujurg, Dharamsthan, Ancestors, Father [3]",
+                        "Gem: Pukhraj (Yellow Sapphire) (For Donation) [3]"
+                    ],
+                    negativeIndications: [
+                        "Hair loss at the crown of the head [23]",
+                        "Loss of gold [23]",
+                        "Dishonor, spreading false rumors [23]",
+                        "Risk of discontinuation of education [23]",
+                        "Stomach related problems [24]",
+                        "Breathing related illnesses [24]",
+                        "Dishonor from children, education, administration [24]",
+                        "Non-marriage or obstacles in auspicious/manglik work [24]"
+                    ],
+                    generalRemedies: [
+                        "Apply kesar tilak on forehead, tongue, and navel [24]",
+                        "Drink milk with saffron [24]",
+                        "Donate items related to Jupiter (chana daal, gold, kesar, haldi etc.) if Jupiter is 'neech' (debilitated) [25]",
+                        "Seek blessings from Priest, Old aged, Teacher (Guru) [25]",
+                        "Avoid non-veg, alcohol & smoking [25]",
+                        "Avoid deep-fried items [25]",
+                        "Donate Dharmik Books [25]",
+                        "Follow customs and traditions [25]"
+                    ]
+                },
+                sun: {
+                    name: "Sun/Surya",
+                    description: "Dominating, Ruler, King, Header, Harsh, Hope, Energy",
+                    attributes: [
+                        "Wheatish/Red color [5]",
+                        "Right Eye [4]",
+                        "Government, Ministers, Politics, Administration [4]",
+                        "Prestige, Status, Respect [4]",
+                        "Sandalwood, teak, wood, Honesty [4]",
+                        "Govt. Job, Father’s Job, Self respect [4]",
+                        "Courage, Power, Right Windows of Home [4]",
+                        "Bones, Heart, Leader, Head of Human [5]",
+                        "Deities: Narayan, Ram, Vishnu [5]",
+                        "Things: Gehu, Jaggery, Tamba [5]",
+                        "Relation: Self(Atma), Father [5]",
+                        "Gem: Manikya(Ruby) [5]"
+                    ],
+                    negativeIndications: [
+                        "Reduction in respect and prestige in society [26]",
+                        "Weakening of self-confidence [26]",
+                        "Constant saliva from the mouth, even while sleeping [26]",
+                        "Any defect in a body part [27]",
+                        "Death or loss of a red or brown buffalo at home [27]",
+                        "Deterioration of relationship with father or father's ill health affecting family responsibilities [27]",
+                        "Weak bones and reduced immunity [28]",
+                        "Decrease in self-confidence and self-esteem [28]",
+                        "Difficulty in getting a government job or troubles in a government job [28]",
+                        "Obstacles day after day [28]",
+                        "Any disease related to the heart [28]"
+                    ],
+                    generalRemedies: [
+                        "Start any work by eating jaggery and drinking water [28]",
+                        "Pour jaggery in running water [29]",
+                        "Extinguish the fire with milk before sleeping at night [29]",
+                        "Donate Sun-related items like jaggery, wheat, and copper [29]",
+                        "Feed jaggery to red-faced monkeys [29]",
+                        "Respect your father [29]",
+                        "Spend some time in the sun [29]"
+                    ]
+                },
+                moon: {
+                    name: "Chandra/Moon",
+                    description: "Revolves around Earth, Fastest planet, Sukla Paksha (Growing moon) and Krishna Paksha (Waxing moon)",
+                    attributes: [
+                        "White color [8]",
+                        "Mother, Nurturing, caring, emotions [6]",
+                        "Human cells, Mind (Man), Changes, Travels [6]",
+                        "Left eye, Fluids in human body, Water in blood, Psychology [6]",
+                        "Milk and Breast and dairy products [7]",
+                        "Food, menstrual cycle, beauty, Natural talent, imagination [7]",
+                        "Mood Swings, Mind, Care, Unconditional Love, Happiness [7]",
+                        "Deities: Shivshankar, Krishna [8]",
+                        "Things: Chandi, Chawal, Doodh [8]",
+                        "Relation: Mother [8]",
+                        "Gem: Moti(pearl) [8]",
+                        "Shape: Square [8]"
+                    ],
+                    negativeIndications: [
+                        "Death of milk-yielding animals in the house [30]",
+                        "Drying up of water sources like taps, wells, hand pumps, or ponds [30]",
+                        "Loss of the power to feel (Mehsus) [31]",
+                        "Becoming a victim of mental illness [31]",
+                        "Inability to control emotions, becoming easily affected by small things [31]",
+                        "Mother falling chronically ill or unable to fulfill family responsibilities [31]",
+                        "Shortage of cash, inability to meet daily essential expenses [32]",
+                        "Lack of interest in studying in children [32]",
+                        "Inability to earn livelihood from education or education not being effective [32]"
+                    ],
+                    generalRemedies: [
+                        "Keeping water near the bed at night and pouring it into plants in the morning [32]",
+                        "Serving mother and worshiping Shiva [33]",
+                        "Seeking blessings by touching the feet of elders, sages, Brahmins, and old women [33]",
+                        "On Monday, tie sugar candy (Mishri) in a white cloth and let it flow in water [33]",
+                        "Donate things related to the Moon [33]",
+                        "Respect your mother and mother-like women, resolve any differences [33]",
+                        "Offer rice in a religious place [34]",
+                        "Add one or two spoons of milk to bathing water daily [34]"
+                    ]
+                },
+                mars: {
+                    name: "Mars/Mangal",
+                    description: "Reddish Planet, Separated from earth, Body, Husband, Younger Brother",
+                    attributes: [
+                        "Red color (Positive), Shiny Red (Negative) [11]",
+                        "Technology, Engineer, Tools, Machinery [9]",
+                        "Rivalry, disputes, Anger, Power, energy, Adamancy [9]",
+                        "Surgery, accident, police, defense force, Sportsman [9]",
+                        "Agriculture, eyebrows, blood, Male energy, Bedroom [9]",
+                        "Fire, Energy meter, Electronic transformer [10]",
+                        "Stone pillars, Pillars and beams, columns [10]",
+                        "Weapons, danger symbols, Thorny plants [10]",
+                        "Army, police, defense, Land business (Real estate) [10]",
+                        "Deities: Hanuman, Narshimha, Chandi Kaali [11]",
+                        "Things: Desi khand, Masoor Daal, Toor daal, Honey, Tamba, Murgh chal, Saunf, Sindoor [11]",
+                        "Relation: Brother [11]",
+                        "Gem: Moonga(Coral) [11]",
+                        "Shape: Triangle [11]"
+                    ],
+                    negativeIndications: [
+                        "Blood-related diseases like blood infection or high blood pressure [35]",
+                        "Disputes with brothers regarding property [35]",
+                        "Illegal occupation of rented house or shop [35]",
+                        "Decreasing vision in one eye or becoming blind [35]",
+                        "Sudden cracks appearing on the walls of the house [35]",
+                        "Birth and death of children [35]",
+                        "Inability to produce a child despite having the power of sexual intercourse [36]"
+                    ],
+                    generalRemedies: [
+                        "If Sun and Saturn are together, float 'revadiya' or 'batasha' in water [36]",
+                        "If eyesight is affected, apply white 'surma'; visiting Hanuman temple increases luck [36]",
+                        "Feed 8 sweet tandoor rotis to dogs [36]",
+                        "Always keep a square (chaukor) piece of silver to reduce the negative impact of Mars [37]",
+                        "Keep a pot filled with water near your head while sleeping and pour it into plants in the morning [37]",
+                        "If Sun and Saturn are together and Mars is negative, donate whole masoor dal (with skin) to the poor [37]",
+                        "If Sun and Mercury are together in the horoscope but Mars is not giving auspicious results, donate sweets, use Mrigchal [37]"
+                    ]
+                },
+                mercury: {
+                    name: "Mercury/Budh",
+                    description: "Prince, Smallest planet, Green appearance, Most combust, Intellect (Budhi)",
+                    attributes: [
+                        "Green color [14]",
+                        "Maternal uncle, Father in law, friends, boyfriends, girlfriends, support system [12]",
+                        "Education, Clarity, business, business partner, Trade and commerce [12]",
+                        "Teacher, Lecturer, Professor, Scientist, Research engineer, Book publisher [12]",
+                        "Accountant, Auditor, poet, writer, comedian actor [13]",
+                        "Communication, throat, Visitor hall, study room, Balcony [13]",
+                        "Green cuttings, green tree or plants, crops, Leaves, soil, Land (cultivation and commercial) [13]",
+                        "Speech, Knowledge activity, thoughts, tricks, Cunningness [13]",
+                        "Soft things, Documents [13]",
+                        "Deities: Durga Mata, Ganeshji, Buddha [14]",
+                        "Things: Saboot Moong, Chakki, Ghada, Fitkari, Chandi ki Goli [14]",
+                        "Relation: Behen, Bua, Beti, Mausi [14]",
+                        "Gem: Panna(Emerald) [38]",
+                        "Shape: Round Shape [38]"
+                    ],
+                    negativeIndications: [
+                        "Reduced power to produce children [39]",
+                        "Loss of front 3 teeth [39]",
+                        "Weakened sense of smell [39]",
+                        "Troubles faced by sister, aunt, daughter, and Masi [39]",
+                        "Problems with teeth, nerves, and veins [40]",
+                        "Difficulties due to wrong words, only wrong things coming out of the tongue [40]",
+                        "Obstacles in studies in the 17th year [40]",
+                        "Harm to job and business in the 34th year [40]",
+                        "Garbage or bamboo stairs on the roof of the house [41]",
+                        "Lagging behind in mathematics, science, and learning new languages [41]",
+                        "Frequently changing business or facing ups and downs/losses in business [41]",
+                        "Inability to benefit from the stock market [41]",
+                        "Eunuchs leaving the house angry in an atmosphere of happiness [41]",
+                        "Keeping the purse filled with unnecessary papers [42]",
+                        "Lack of self-confidence, inability to present views properly, being ungrateful [42]",
+                        "Confusion, inability to take right decisions, not sticking to decisions [42]"
+                    ],
+                    waysToMakeAuspicious: [
+                        "Put desi ghee, camphor, and sugar in a bronze vessel, pour it in water, wash the vessel, and bring it home [43]",
+                        "Copper coins with holes should be floated in a river [43]",
+                        "Get your nose pierced and insert a silver wire for 96 hours or 96 days [43]",
+                        "Clean teeth with alum for teeth-related problems [43]",
+                        "Worship 'Kanjaks' (young girls), give them food, and seek their blessings [44]",
+                        "Worship Durga [44]",
+                        "Soak green moong dal overnight and feed it to pigeons/birds or goats in the morning (can add a small amount of alum while soaking) [44]",
+                        "Do not keep bells and conch (Shank) in the house [44]",
+                        "Float water from an empty pot once a year [44]",
+                        "Donate green clothes or green items [44]",
+                        "Respect sister, aunt, daughter, and Masi, and keep giving them something [45]",
+                        "Keep donating to eunuchs [45]",
+                        "Keep some grains in empty utensils [45]",
+                        "Do not keep musical instruments (especially hollow ones like Dholki, Tabla, Sitar, Flute) [45]",
+                        "Do not plant basil or broad-leaved plants on the roof [45]"
+                    ]
+                },
+                venus: {
+                    name: "Venus/Shukra",
+                    description: "Brightest planet, Nonconventional planet, Female",
+                    attributes: [
+                        "White color (curd Color) [16]",
+                        "Herself (Characteristics), wife, luxuries, pleasure, Money, Wealth, Finance, banking [15]",
+                        "Wine shop, Cattle field, Cloth merchant, love, poetry, flower, sex, marriage [15]",
+                        "Assets, vehicles, house, semen, sperm, uterus, ovaries, cheek, heart [15]",
+                        "Kitchen, music, scent, sweet, intoxicants, dance, acting [16]",
+                        "Fancy stores, dancing ball, cinema hall, Fine arts, Cinema stars, Face [16]",
+                        "Jewelry, bright objects, crystals, cosmetics, perfumes [16]",
+                        "Aunt, Ready-made Clothes, fashion, cosmetics, photography [16]",
+                        "Deities: lakshmi Maa, Parshuram, Santoshi maa [16]",
+                        "Things: Dahi, Jowar, Mitti [16]",
+                        "Relation: Wife [16]",
+                        "Gem: Diamond(Heera) or Opal [16]",
+                        "Shape: Star ⭐ [16]"
+                    ],
+                    negativeIndications: [
+                        "Damaged skin [46]",
+                        "Bad dreams [46]",
+                        "Dullness appearing on the face [46]",
+                        "Getting cheated in love, rarely getting along with spouses after marriage [46]",
+                        "Becoming extremely sensual or losing sensual feelings completely [46]",
+                        "Constantly running after luxuries, leading to inability to earn money [47]",
+                        "Not respecting women, considering them inferior [47]",
+                        "Flirting with other women despite having a wife [47]",
+                        "Forming relationships based only on attraction, leading to sorrow later [48]",
+                        "Excessive use of credit cards, expenses exceeding income [48]"
+                    ],
+                    generalRemedies: [
+                        "Donation of cow increases good results of Venus (cow is the causative creature) [48]",
+                        "Feed Roti to Cow every day [48]",
+                        "Take special care of clothes; do not wear dirty and torn clothes [48]",
+                        "Spraying of cow urine can be beneficial [48]",
+                        "Feed Jawari or dry grass to the cow [48]",
+                        "Consume nutritious food prepared in desi ghee [48]",
+                        "Do not have sex during the day [48]",
+                        "Keep your character good [48]",
+                        "Respect your wife and all women [17]",
+                        "Keep raw land in the house [17]"
+                    ]
+                },
+                saturn: {
+                    name: "Saturn/Shani",
+                    description: "Karma Karak, Profession, Work, Job, Industry, Slowness, Laziness",
+                    attributes: [
+                        "Black color [18]",
+                        "Chin, Legs, Buttocks, Anus, Knees, Foreleg [17]",
+                        "Digestive Bladder, Storeroom, Dump yard, Dustbin, Grinding stone, Dining hall [18]",
+                        "Windy and gastric health disorders, Woolen clothes, iron, wind, storm, oil mines [18]",
+                        "Low paid servant, Labour, Dark place, cold place, cough, Congestion [18]",
+                        "Longevity, Karak of Old age [18]",
+                        "Caves, dark room, Quarry(Khadan), Doormat, Sleep, Poverty, Poor people [18]",
+                        "Leather, Karkhana, Cement, Lakadi, Loha [18]",
+                        "Deities: Bhairav, Kurma [18]",
+                        "Things: Oil, Sharab, Urad, Neelam, Sabun, Loha, Sarso, Nariyal, Badam [18]",
+                        "Relation: Chacha [18]",
+                        "Gem: Neelam(Blue Sapphire) [18]",
+                        "Shape: Dhanush [18]"
+                    ],
+                    negativeIndications: [
+                        "Death of buffalo kept in the house [49]",
+                        "Accident of fire in the house or collapse of the house [49]",
+                        "Ear diseases, cough, loss of eyesight [49]",
+                        "Lying and flirting too much [49]",
+                        "Excessive consumption of alcohol, meat, and eggs [49]",
+                        "The 'dristi' (aspect) of Saturn on any house spoils the results of that house and related planet [49]"
+                    ],
+                    generalRemedies: [
+                        "Donate Saturn's factors like urad, oil, almonds, iron items, black cloth during 'Neech' (debilitated) Saturn [50]",
+                        "On Saturday, make a 'laddu' of urad and sesame oil and press it in unplowed land [50]",
+                        "Brushing with Kikar/Babul calms Saturn [50]",
+                        "Float urad, almonds, and coconut in water [50]",
+                        "Donate a container of mustard oil (after the afflicted person sees their reflection in it) [51]",
+                        "Donate iron pan, tongs, and fireplace ('angiti') [51]",
+                        "To get wealth, feed bread to crows for 43 days continuously [51]",
+                        "Donate urad, soap, and iron tied in a black cloth [51]"
+                    ],
+                    remediesForSadesati: [
+                        "Light a mustard oil lamp under the Peepal tree on Saturday evening. Chant Shani Chalisa or Shani Mantras [51]",
+                        "Take a bowl, put oil in it, see your face in it, and donate this oil along with the bowl (shadow character donation) [51]",
+                        "Recite Hanuman Chalisa and worship Bholenath [19]",
+                        "Donate things related to Saturn [19]"
+                    ]
+                },
+                rahu: {
+                    name: "Rahu/North Node",
+                    description: "Dragon head (Rahu) Shadow planet, Mouth, Snake mouth, Wide opening",
+                    attributes: [
+                        "Grey Colour [52]",
+                        "Main door, Plastic, Rubber, Intestine, Pond, lake, Ocean [19]",
+                        "Kaal, Maya, desire, diseases, Attachment [19]",
+                        "Breathing by mouth [19]",
+                        "Dada dadi, Beginning, Main door [19]",
+                        "Sweeper, Brilliant, Chalak, knows how to handle situations [20]",
+                        "Drugs, Alcohol, illegal activities, Crime, Loss, Affairs, Confusion, illusions [20]",
+                        "Migraine, Headache, Nastiness (gandagi) [20]",
+                        "Short cut, Robbery, Conspiracy, Mental illness, Lack of self-confidence, Characterless [20]",
+                        "Deities: Saraswati, Kaali, Chinmastika, Varaha [20]",
+                        "Things: Jau, Nariyal [52]",
+                        "Relation: Dada Dadi, Sasural [52]",
+                        "Gem: Gomed(Hessonite) [52]",
+                        "Shape: Soopda (used to clean grains) Wide opening [52]"
+                    ],
+                    negativeIndications: [
+                        "Fighting with elders, children remaining in trouble [53]",
+                        "Just changing the roof of the house [53]",
+                        "Dirty water flowing from below the threshold of the house [54]",
+                        "Loss of a black dog kept in the house or crying of a cat [54]",
+                        "Death of a dark-skinned relative [54]",
+                        "Falling of hand nails [55]",
+                        "Repeated breakdown of electrical items in the house [55]"
+                    ],
+                    generalRemedies: [
+                        "Wearing silver can help if Rahu is inauspicious [55]",
+                        "If bad Rahu is causing diseases, give masoor dal (whole) and rupee money to sweepers for 3 days during illness [55]",
+                        "Float barley or any grain equal to your weight in running water [55]",
+                        "If bad Rahu is causing government disputes, throw raw coal equal to his/her weight in flowing water (when Sun is not in House 8) [55]",
+                        "Soak barley at night, keep it near the pillow, and give it to birds and animals in the morning [21]",
+                        "Make a square bag of red cloth, put some local sugar and a coral in it, and keep it with you [21]",
+                        "Keep giving something to the cleaning staff from time to time [21]"
+                    ]
+                },
+                ketu: {
+                    name: "Ketu/South Node",
+                    description: "Shadow planet, Detachment, Snake tail, nerves, hairs, fingers",
+                    attributes: [
+                        "Dual color, Black and white [56]",
+                        "Male genital organ, Creepers, Creeping insects, anus, Small intestine, narrow [21]",
+                        "Moksha, water channels (pipes), electric wires, dispersal of waste [21]",
+                        "Penis is Ketu and Rahu is Cervix [22]",
+                        "Nana nani, Maternity ward, Split, break, Law, Coding [22]",
+                        "Breathing through nose [22]",
+                        "Backdoor or the road in the backside of your house [22]",
+                        "Jail (12th house), Deep research, occult, tantra mantra, Himsa, Visphoth, Achanak Ghatnaye [22]",
+                        "Aadhyatma, Discrete body parts, gyaan, secret enemy, Gupth Bhay, unidentified diseases [22]",
+                        "Sour (Khatti Cheej) [22]",
+                        "Deities: Ganeshji, Matsya [56]",
+                        "Things: Safed kale Til, Black and white Kambal or garam kapde, Imli, kele ka phal(Kela) [56]",
+                        "Relation: Nana Nani, Putra (Male child) Jamai, Mama [56]",
+                        "Gem: Cats eye(Lasuniya) [57]",
+                        "Shape: Flag (Double triangle) [57]"
+                    ],
+                    negativeIndications: [
+                        "Obstruction in procreation [58]",
+                        "Diseases below the navel, urinary diseases, spine related diseases, boils, diabetes etc. [58]",
+                        "Pain in the joints of the body [58]",
+                        "Son suffering or suffering through the son [58]",
+                        "Poor condition of maternal uncle or maternal grandfather [59]"
+                    ],
+                    generalRemedies: [
+                        "Making Jupiter auspicious is very important [59]",
+                        "Putting gold in the ears makes inauspicious Ketu auspicious (Ear is factor of Ketu, gold of Jupiter) [59]",
+                        "Moon’s remedy will be helpful for health [59]",
+                        "Giving a black and white blanket to a saint in a religious place when a child is in trouble [60]",
+                        "Keeping or serving a dog [60]",
+                        "Insert silver wire in both toes or tie a silk thread on the toe in case of difficulty in urination or feet [60]",
+                        "Worship Lord Ganesha [60]",
+                        "Apply saffron tilak on the navel, tongue, and forehead [60]",
+                        "Donate black and white sesame seeds [60]",
+                        "Serve the poor, donate to old age homes, leprosy homes, or widow homes [60]",
+                        "Install a square gold plate in the house "
+                    ]
+                }
+            };
+            const houseDetails =
+            {
+                "1": {
+                    "Malik": "Mangal (Mesh Rashi)",
+                    "Rashi": "Mesha",
+                    "Rashi Lord": "Mars",
+                    "Karak": "Surya Dev",
+                    "Direction": "East",
+                    "Denotes": [
+                        "Self",
+                        "Body type",
+                        "Behaviour",
+                        "Pride(Maan Prathishta)",
+                        "Immunity",
+                        "You as a person",
+                        "Head",
+                        "Soul",
+                        "Colour",
+                        "Caste",
+                        "Strength",
+                        "Success",
+                        "Wealth owned by you",
+                        "Health",
+                        "Raj Simhasan",
+                        "Baitak Room (Drawing Room)",
+                        "Face",
+                        "Forehead"
+                    ],
+                    "Rules": [
+                        "If 1st house is vacant then Jatak will get auspicious results after 24 years of his age (Bagya Uday) [1]",
+                        "If enemy of first house is placed in 2nd house then jatak will be facing Financial issues (Nirdhanta) But apni avadhi poori hone par shatruta chod dega [1]",
+                        "If two and more planets placed in 1st house then they will act as female planet whereas if two or more planets placed in 7th house then they will act as Male planet [1]",
+                        "King :- 1st House planet [2]",
+                        "Suppose if multiple planet in 7th house and single planet in 1st house then the King will work properly as he has multiple advisors [2]",
+                        "Eight House mein baita hua planet Raja ka Najariya hoga [3]",
+                        "11th house Raja ka foot maana gaya hai hence planet in 11th house order given by King will be implemented [3]",
+                        "If no planet in 11th house King planning sab kuch hoga but implement nahi kar payega [4]",
+                        "Agar pehla ghar khali hoga toh 7th house soya maana jayega [5]"
+                    ]
+                },
+                "2": {
+                    "Malik": "Shukra(Vrishabh Rashi)",
+                    "Rashi": "Vrishabh",
+                    "Rashi Lord": "Venus/Shukra",
+                    "Karak": "Guru Graha",
+                    "Direction": "North West",
+                    "Denotes": [
+                        "Speech",
+                        "Family(kutumb)",
+                        "Bank balance",
+                        "Family Support",
+                        "Wealth",
+                        "Food",
+                        "Mouth",
+                        "Charity",
+                        "Tongue",
+                        "Neck",
+                        "Schooling",
+                        "Dharma sthan",
+                        "Accumulated wealth",
+                        "Domestic animals",
+                        "Planets jiski shaka ko tod kar lagate hai like money plant",
+                        "Neck and Eyebrow ke beech wali jagah jahan tilak lagate hai",
+                        "Cow ko bandne ki jagah",
+                        "Sasural"
+                    ],
+                    "Rules": [
+                        "Guru in 2nd house gives good result, were as rest of the all planets in 2nd house also will give good results but condition is 8th house should be vacant [6]",
+                        "Second House planet will give good results second half of his life (condition is 8th house should be vacant) [7]",
+                        "If 10th house is vacant then this house will consider as Soya hua ghar ( ie 2nd House will be considered as Soya hua ghar) [7]",
+                        "Even though Shukra is enemy of Jupiter, Shukra in 2nd house will not give bad results cause land owner (Zameen) is Shukra [7]",
+                        "When we check the results of 2nd house need to check 8th, 9th and 10th house [7]",
+                        "*****9th mein agar koi planet hai toh wahan se kismat ke badal uthenge 10th house se hote huye 2nd house se aake takrayenge agar 4th house mein koi planet nahi hai toh all the Rain water will go to Patal which is 6th house***** [8]",
+                        "Agar 2nd house acha hua toh 10th house bahut acha result dega [9]",
+                        "Agar 2nd and 8th house mein baite huae planet Neutral hai toh pehle acha phal ayega phir kharab result aayega [9]",
+                        "If planet in 2nd house is enemy of planet placed in 10th house then decision lene mein dikkat aayegi act like andhi kundli at this situation need to check moon [9]",
+                        "2nd house 10th house se jagtha hai. 10th house khali ho toh 2nd soya hoga [9]",
+                        "Agar 4th house and 2nd house khali ho toh last time tak unnati hoti hai [10]",
+                        "Agar 2nd house khali ho toh 8th house and 12th house ke planet aapas mein shatru ho tab mandir nahi jaana chaiye [11]"
+                    ],
+                    "Second_Lord_Conjunctions": [
+                        {
+                            "Conjunction": "With Rahu",
+                            "Summary": "Significantly increases earning capacity, often through unconventional or strategic methods, including destroying competition.",
+                            "Details": [
+                                "**Earning capacity increases significantly**.",
+                                "Generates **unconventional or 'atrengi' (unique) ideas for making money**, possibly through the internet, or even illegal means (though not recommended).",
+                                "**Believes in removing or destroying competition** (e.g., by drastically lowering prices, as seen with Jio).",
+                                "Tends to **learn first before striking** at the right time.",
+                                "**Recommendation**: While competition destruction can be a strategy, it should be balanced and not completely destroy others' livelihoods."
+                            ]
+                        },
+                        {
+                            "Conjunction": "With Ketu",
+                            "Summary": "The person may not keep track of money but receives wealth from unearned or unexpected sources, often from past lives. Donations are a powerful remedy for increasing wealth.",
+                            "Details": [
+                                "The person **does not keep an account of money**; may forget about money lent or rents owed for property.",
+                                "Receives money from **unearned or unexpected sources**.",
+                                "**Major Blessing**: **Continuous donations lead to increased wealth**. The more you donate, the more your money grows.",
+                                "Ketu can provide **extreme wealth (billions)** that is 'unearned' in this life, often coming from past lives.",
+                                "**Strong Recommendation**: **Donate as much as possible** and **help people** to increase wealth and gain peace of mind.",
+                                "The 12th house is often active in millionaires'/billionaires' charts, as it can bring this 'unearned' extreme wealth."
+                            ]
+                        }
+                    ]
+                },
+                "3": {
+                    "Malik": "Budh(Mithun Rashi)",
+                    "Rashi": "Mithun",
+                    "Rashi Lord": "Budh/Mercury",
+                    "Karak": "Mangal Graha",
+                    "Direction": "South",
+                    "Denotes": [
+                        "Hard-work",
+                        "Risk",
+                        "Losses",
+                        "Short travel",
+                        "Ear",
+                        "Age",
+                        "Naukar Chakar(servents)",
+                        "Younger brother",
+                        "Sister",
+                        "Friends",
+                        "Neighbours",
+                        "Shoulders",
+                        "Biceps",
+                        "Power",
+                        "Courage",
+                        "Foreign settlement",
+                        "Mothers age",
+                        "Secret enemies",
+                        "Communication",
+                        "Eye lashes",
+                        "Blood ki Matra",
+                        "Rakth dosh",
+                        "Auazar",
+                        "Hatyar",
+                        "Dhan ke bahar jaane ka rasta (losses)",
+                        "Sala and behnoi",
+                        "Paude and vraksh (if positive plants and trees will give good result else vice versa)",
+                        "Haato ki Kalai"
+                    ],
+                    "Rules": [
+                        "Third house mein jo negative (Manda)planet baitega woh jatak ka bura nahi karega but Khandaan aur Bhaiyo, mitro par bura asar daalega cause 3rd watch (Dristi)11th and 9th {neech ka planet (ketu) in 3rd house apna jeher bahar phenkega) [12, 13]",
+                        "11th house is an entry door of Health and wealth while 3rd house is the exit door of health and wealth [13]",
+                        "3rd House represents the reason of death [13]",
+                        "3rd House planet will get help from 12th house planet ,what ever the relationship between planet but planet will help each other (support from 12th) but rule is ki planet in 3rd house akela hona chaiye [13, 14]",
+                        "3rd house ke planet ko 7th house and 9th house se help milegi agar wahan uss planet ke mitra baite hai toh (get help from) [14]",
+                        "Agar 3rd house mein koi malefic planet ho toh 11th house ka results doubtful hoga (means positive bhi de sakta hai ya negative bhi cause 3rd watches 11th) woh bhi starting ke age mein up to 25 years tak [14]",
+                        "3rd house ka planet 12th ki help karega but 3rd mein single planet hona chaiye [14]",
+                        "3rd ka result(positive or negative) Mangal ka position bhi maine raktha hai agar Mangal acha hai toh acha results milega [15]",
+                        "Budh 12th and shani 3rd house toh ussko amrith kumbh kaha gaya hai (he will get growth) [15]",
+                        "Shukra and Rahu in 12th house 21- 25 years mein shaadi ki toh woh widow( bewa )ho jayega ya ho jayegi but if shani is situated in 3rd house then this is situation will not occur [15]",
+                        "8th house Bimari ka bahana ,11th house bimari aane ka rasta aur 3rd house bahar jane ka rasta agar kisi ke 3no ghar kharab hai toh anth uska dardnak hoga and vice versa [16]",
+                        "Agar 3rd house and 5th house khali ho toh 9th house soya mana jayega [17]",
+                        "If 3rd house is negtive upto the age of 35 Mercury Guru and Chandra will negative result [18]"
+                    ]
+                },
+                "4": {
+                    "Malik": "Chandra(Kark Rashi)",
+                    "Rashi": "Kark",
+                    "Rashi Lord": "Chandra/Moon",
+                    "Karak": "Chandra Graha",
+                    "Direction": "North East",
+                    "Denotes": [
+                        "Mother",
+                        "Luxury",
+                        "Leisure",
+                        "Property",
+                        "Home",
+                        "Land or Farms",
+                        "Hidden treasure",
+                        "Vehicles",
+                        "Chest",
+                        "Lungs",
+                        "Heart",
+                        "Brest",
+                        "Happiness",
+                        "Assets",
+                        "Father in law",
+                        "Prosperity",
+                        "Peace of mind",
+                        "Pani rakhne ka sthan jaise well tank",
+                        "Nana ka ghar",
+                        "Water creature",
+                        "Domestic Milking animals",
+                        "Juicy fruit trees plants"
+                    ],
+                    "Rules": [
+                        "Koi bhi planet 4th mein baitega woh Chandra ke jaise Tasir rakhega ( caring) [19]",
+                        "4th house ke planet raat ko Jagthe hai ya phir musibath mein [19]",
+                        "Yahan baita planet old age mein achi results deta hai [19]",
+                        "4th house ka planet shani jis ghar mein baita hai waisa phal dega (also need to check Chandra position) [19]",
+                        "Chandra aur shani ki yuti se neech ketu ka nirman hota hai ketu ke results kharab milenge [19]",
+                        "Agar 4th house and 2nd house khali ho toh last time tak unnati hoti hai [10]",
+                        "Agar Chandra kahin bhi baita ho woh Acha results dega but condition yeh hai ki 4th house khali hona chaiye [10]",
+                        "Agar 4th house mein paapi planet (Shani Rahu Ketu)bait jaye toh budh aur Shani ache ho jayenge (but 3rd 6th and 8th house mein apas mein shatru graha ho toh results acha nahi milega aur mauth ka bahana 4th house ka planet banega), example if Ketu is placed in 3rd house and mars is placed in 8th house and sun is placed in 4th house hence jatak will have issues related to sun like Heart attack, bone related issues, eye related issues etc ho sakte hai) [10, 20]",
+                        "Guru Surya chandra kahin pe bhi ikkata baite ho unka prabhav issi ghar pe padta hai [20]",
+                        "4th house mein Shani paniwala snake kaha gaya hai , Mangal jala hua hoga matlab neech ka hoga but Rahu Ketu Yahan chup rahenge (Shani tab tak kharab results nahi dega jab tak usko cheda na jaye like Makan ka repair tod phod alteration etc) [20]",
+                        "Jab bhi khana no 4 ka planet Varshfal mein first house mein aayega uss Samay rahu jahan bhi baita ho uss ghar ke negative results dega (suppose Rahu in 11th house then brothers income mein kharabi lagega) [21]",
+                        "Suppose 4th house mein koi bhi planet baita ho aur Chandra Kendra ke ghar jo 1-4-7-10 mein nahi hai toh 4th house acha results dega 8th mein bhi baita ho toh acha results dega [21]",
+                        "4th house ka planet and 9th house ka planet aapas mein shatru hai toh ghar waale hi usko dhutkarenge [21]",
+                        "Agar 10th house khali hai toh 4th house soya hua kehlayega [9]",
+                        "Mangal+Shukra 4th House [22]"
+                    ]
+                },
+                "5": {
+                    "Malik": "Surya(Simha Rashi)",
+                    "Rashi": "Simha",
+                    "Rashi Lord": "Surya/Sun",
+                    "Karak": "Guru Graha",
+                    "Direction": "East Wall",
+                    "Denotes": [
+                        "Growth",
+                        "Knowledge",
+                        "Education",
+                        "Auspicious deeds",
+                        "Kids",
+                        "Pregnancy",
+                        "Trading",
+                        "Sudden money",
+                        "Hidden wealth",
+                        "Love Affairs",
+                        "Stomach",
+                        "Naval",
+                        "Betting",
+                        "Place of home from where air and light enters into home"
+                    ],
+                    "Rules": [
+                        "Surya jaisa hoga waisa phal milega ( Koi bhi ghar mein ) [23]",
+                        "Agar ache graha yaha baite ho toh mama ka support rahega iske vipreet ho toh Aag se daar hamesha bana rahega [24]",
+                        "Santan ke paida hone ke baad 5th house ka result 9th mein aa jata hai [17]",
+                        "Agar 3rd house and 5th house khali ho toh 9th house soya mana jayega [17]",
+                        "Surya+Guru 5th House [22]"
+                    ]
+                },
+                "6": {
+                    "Malik": "Budh(Kanya Rashi)",
+                    "Rashi": "Kanya",
+                    "Rashi Lord": "Mercury /Budh",
+                    "Karak": "Ketu Graha",
+                    "Direction": "North",
+                    "Denotes": [
+                        "Loan",
+                        "Cuts",
+                        "Injuries",
+                        "Turbulence",
+                        "Enemies",
+                        "Diseases",
+                        "Court Cases",
+                        "Tensions",
+                        "Maan Hani",
+                        "Anxiety",
+                        "Competition",
+                        "Services",
+                        "Labour work",
+                        "Sadness",
+                        "Separation",
+                        "Mourning",
+                        "Job",
+                        "Insult",
+                        "Badnami",
+                        "Tehkahna(Secret room basement )",
+                        "Business (customers money)",
+                        "Kutta aur bakri ladka ya ladki ka sasural",
+                        "Vegitables waale paude",
+                        "Dhalti jawani"
+                    ],
+                    "Rules": [
+                        "Budh in 6th house gives good result [25]",
+                        "6th house mein akela ketu baita hai toh ketu ke related cheejon ka result kharab milega [25]",
+                        "6th house mein Chandra ho toh yahan free mein paani ka piyau , Borewell etc nahi karna chaiye [25]",
+                        "6th house ko activate karne ke liye mama ke ghar ki sewa karni chaiye [26]",
+                        "Budh+Ketu 6th House [22]"
+                    ]
+                },
+                "7": {
+                    "Malik": "Shukra (Tula Rashi)",
+                    "Rashi": "Tula",
+                    "Rashi Lord": "Shukra/Venus",
+                    "Karak": "Shukra/Budh Graha",
+                    "Direction": "South West",
+                    "Denotes": [
+                        "Wife",
+                        "Life partner",
+                        "Business partner",
+                        "Partnership",
+                        "Dailywork",
+                        "Liquid Cash",
+                        "Income",
+                        "Sexual desires",
+                        "Marriage",
+                        "Travels",
+                        "Visible enemies",
+                        "Lust",
+                        "Internal private organs",
+                        "Bina sing wale pashu",
+                        "Skin (Janma stan)"
+                    ],
+                    "Rules": [
+                        "Agar pehla ghar khali hoga toh 7th house soya maana jayega [5]",
+                        "Varshfal mein jab 8th house ka planet 8th mein aayega ya lagna mein aayega toh iss ghar ka result shubh ashubh dene mein saksham hoga [5]",
+                        "Business of agriculture can be seen from 7th house [5]",
+                        "If two and more planets placed in 1st house then they will act as female planet whereas if two or more planets placed in 7th house then they will act as Male planet [1]",
+                        "Salahakar/Advisor:- Planet placed in 7th house ( if no planet in 7th house then king will work according to his own will) [2]",
+                        "Multiple planets in 1st House and Single planet in 7th House in this situation, Planets in 7th house will give negative results ( planets Kharab ho jata hai) [2]",
+                        "Suppose if multiple planet in 7th house and single planet in 1st house then the King will work properly as he has multiple advisors [2]",
+                        "3rd house ke planet ko 7th house and 9th house se help milegi agar wahan uss planet ke mitra baite hai toh (get help from) [14]",
+                        "Shukra+Budh 7th House [22]"
+                    ]
+                },
+                "8": {
+                    "Malik": "Mangal( Vrishchik Rashi)",
+                    "Rashi": "Vrishchik",
+                    "Rashi Lord": "Mangal/Mars",
+                    "Karak": "Shani/Mangal Graha",
+                    "Direction": "South Wall",
+                    "Denotes": [
+                        "Death",
+                        "Grave Yard",
+                        "Black magic",
+                        "Jadu tona",
+                        "Sudden gains",
+                        "Accidents",
+                        "Changes",
+                        "Burden",
+                        "Hidden Benefits",
+                        "Research",
+                        "Lottery",
+                        "External private parts",
+                        "Surgery",
+                        "Testicles",
+                        "Sea Travelling",
+                        "In laws family",
+                        "Sexual Disorders (jehrile jeev jantu Bicchu aadi)",
+                        "Trees jisme na phal lagte hai na phool",
+                        "Peeth"
+                    ],
+                    "Rules": [
+                        "8th house Bimari ka bahana ,11th house bimari aane ka rasta aur 3rd house bahar jane ka rasta agar kisi ke 3no ghar kharab hai toh anth uska dardnak hoga and vice versa [16]",
+                        "Dawai rakhne ki jagah, south wall, Bhatti, makan ki chatt [16]",
+                        "Surya chandra Guru yadi akele iss ghar mein hai toh unki shakti yahan kaid ho jayegi parantu varshfal mein agar yeh graha akele ya ikkata yahan aayenge toh mrityu ka ghar nahi rahega (2/12 par nahi jayega Dristi) [16]",
+                        "Rahu Ketu ka bal 8th house mein badh jata hai [16]",
+                        "Budh Shukra yahan ache result nahi denge [27]",
+                        "Shani in 8th house jatak ke purvajo ki mrityu aur khud jatak par chot karta hai(rahu ketu shani bhi yahan acha phal nahi dete) [27]",
+                        "Budh aur Mangal yuti yahan acha result dete hai but 2nd mein shani nahi hona chaiye [27]",
+                        "Eight house ka planet varshfal mein 11th ya 8th mein aaye toh usko vastu khareedna ashubh hoga [27]",
+                        "Eight House mein baita hua planet Raja ka Najariya hoga [3]",
+                        "When we check the results of 2nd house need to check 8th, 9th and 10th house [7]",
+                        "Varshfal mein jab 8th house ka planet 8th mein aayega ya lagna mein aayega toh iss ghar ka result shubh ashubh dene mein saksham hoga [5]",
+                        "Agar 2nd and 8th house mein baite huae planet Neutral hai toh pehle acha phal ayega phir kharab result aayega [9]",
+                        "Ashub Graha ( Rahu, Ketu, Shani) varshfal mein 8th house mein aayega toh ashub result zaroor dega [28]",
+                        "Agar 2nd house khali ho toh 8th house and 12th house ke planet aapas mein shatru ho tab mandir nahi jaana chaiye [11]",
+                        "Mangal+Shani 8th House [22]"
+                    ]
+                },
+                "9": {
+                    "Malik": "Guru( Dhanu Rashi)",
+                    "Rashi": "Dhanu",
+                    "Rashi Lord": "Guru/Jupiter",
+                    "Karak": "Guru /Jupiter Graha",
+                    "Direction": "Brahma Sthan",
+                    "Denotes": [
+                        "Long distance travel",
+                        "Foreign Settlement",
+                        "Religion",
+                        "Luck",
+                        "Higher education",
+                        "Samhadi",
+                        "Affairs with anti religion",
+                        "Yatra(pilgrimage)",
+                        "Younger brother in law and sister in law",
+                        "Thighs",
+                        "Donations (animals and birds Hans, Bulbul, Neel Gayi)",
+                        "Roots of every tree",
+                        "Naak ke Natun"
+                    ],
+                    "Rules": [
+                        "Iss ghar mein 3 house aur 5 house ke graho ka asar bhi aake mil jaata hai [17]",
+                        "Santan ke paida hone ke baad 5th house ka result 9th mein aa jata hai [17]",
+                        "Shani ko chod ke jo planet yahan baitega woh apna shubh phal jatak ke janam se leke 60 years tak dega(First half of life) [17]",
+                        "Agar 3rd house and 5th house khali ho toh 9th house soya mana jayega [17]",
+                        "9th house soya ho toh uss planet ka tilak lagana chaiye [17]",
+                        "3rd house ke planet ko 7th house and 9th house se help milegi agar wahan uss planet ke mitra baite hai toh (get help from) [14]",
+                        "When we check the results of 2nd house need to check 8th, 9th and 10th house [7]",
+                        "4th house ka planet and 9th house ka planet aapas mein shatru hai toh ghar waale hi usko dhutkarenge [21]",
+                        "If in 9th house Ketu if we keep dog in our ancestor’s house planet will ketu will give good results [28]"
+                    ]
+                },
+                "10": {
+                    "Malik": "Shani( Makar Rashi)",
+                    "Rashi": "Makar",
+                    "Rashi Lord": "Shani/Saturn",
+                    "Karak": "Shani Graha",
+                    "Direction": "West",
+                    "Denotes": [
+                        "Karma",
+                        "Office",
+                        "Father",
+                        "Mother in law",
+                        "Knee",
+                        "Work",
+                        "Profession",
+                        "Business",
+                        "Rule",
+                        "Pride",
+                        "Power",
+                        "Energy",
+                        "Rajyog",
+                        "Destiny",
+                        "Society position (Makan kaisa hoga )",
+                        "Makan ki lakadi, loha, malba, pathar",
+                        "Animals mein crocodile and snake",
+                        "Trees mein kikar aur babul jisme kante ho"
+                    ],
+                    "Rules": [
+                        "Agar 2nd house acha hua toh 10th house bahut acha result dega [9]",
+                        "Agar 2nd and 8th house mein baite huae planet Neutral hai toh pehle acha phal ayega phir kharab result aayega [9]",
+                        "If planet in 2nd house is enemy of planet placed in 10th house then decision lene mein dikkat aayegi act like andhi kundli at this situation need to check moon [9]",
+                        "Agar 10th house khali hai toh 4th house soya hua kehlayega [9]",
+                        "2nd house 10th house se jagtha hai. 10th house khali ho toh 2nd soya hoga [9]",
+                        "10th house mein rahu ketu budh shakki honge agar shani acha hoga toh acha result denge [29]",
+                        "When we check the results of 2nd house need to check 8th, 9th and 10th house [7]",
+                        "Budh+Shani 10th House [30]"
+                    ]
+                },
+                "11": {
+                    "Malik": "Shani( Kumbh Rashi)",
+                    "Rashi": "Kumbh",
+                    "Rashi Lord": "Shani/Saturn",
+                    "Karak": "Guru/Jupiter Graha",
+                    "Direction": "West Wall",
+                    "Denotes": [
+                        "Income from work",
+                        "Wish",
+                        "Success",
+                        "Court",
+                        "Elder brother sister",
+                        "Son in-law",
+                        "Daughter in-law",
+                        "Benefits",
+                        "Calves",
+                        "Court( Judgement)",
+                        "Achievements",
+                        "Gains",
+                        "Exterior of our house",
+                        "2 muh ka sarp",
+                        "Peepal bargad, (Chaya waale vriksh usme kante na ho)"
+                    ],
+                    "Rules": [
+                        "11th house mein saare planet Shani jaise hi behave karenge [18]",
+                        "If 3rd house is negtive upto the age of 35 Mercury Guru and Chandra will negative result [18]",
+                        "If in this house 8th planet and 11th planet apas mein shatru ho uss samay agar jatak 11th house mein baite planet ki karak vastu ghar mein lata hai tab unki sehat pe bura asar dega ( Agar aap 11th house mein baite graha ki vastu laate bhi hai tab humko uss planet mitra graho ki karak vastu bhi jaroor laye) [18, 31]",
+                        "11th house mein ketu ho toh Chandra kharab ho jayega and Vice versa [31]",
+                        "11th house mein rahu ho toh Guru kharab ho jayega and Vice Versa [31]",
+                        "11th house is an entry door of Health and wealth while 3rd house is the exit door of health and wealth [13]",
+                        "Agar 3rd house mein koi malefic planet ho toh 11th house ka results doubtful hoga (means positive bhi de sakta hai ya negative bhi cause 3rd watches 11th) woh bhi starting ke age mein up to 25 years tak [14]",
+                        "8th house Bimari ka bahana ,11th house bimari aane ka rasta aur 3rd house bahar jane ka rasta agar kisi ke 3no ghar kharab hai toh anth uska dardnak hoga and vice versa [16]",
+                        "11th house Raja ka foot maana gaya hai hence planet in 11th house order given by King will be implemented [3]",
+                        "If no planet in 11th house King planning sab kuch hoga but implement nahi kar payega [4]",
+                        "Eight house ka planet varshfal mein 11th ya 8th mein aaye toh usko vastu khareedna ashubh hoga [27]",
+                        "11th house ka planet varshfal mein agar 1st house mein aayega tab uska result zaroor dega [28]",
+                        "Guru+Shani  11th House [30]"
+                    ]
+                },
+                "12": {
+                    "Malik": "Guru ( Meen Rashi)",
+                    "Rashi": "Meen",
+                    "Rashi Lord": "Guru/Jupiter",
+                    "Karak": "Rahu Graha",
+                    "Direction": "South East",
+                    "Denotes": [
+                        "Expenses",
+                        "Jail Yatra",
+                        "Losses",
+                        "Feet",
+                        "Moksha",
+                        "Sleep",
+                        "Chacha Bua Tau",
+                        "Compromises",
+                        "Dreams",
+                        "Foreign Settlement",
+                        "Hospitalisation",
+                        "Secret Affairs",
+                        "Sexual Desires",
+                        "Left eye",
+                        "Ghar ko chath",
+                        "Billi (cat) chamkadad (Bat) Machali"
+                    ],
+                    "Rules": [
+                        "12th house mein jo bhi planet ho uske sambandit relation hoga woh aapke liye lucky hoga [32]",
+                        "Agar 2nd house khali ho toh 8th house and 12th house ke planet aapas mein shatru ho tab mandir nahi jaana chaiye [11]",
+                        "Agar Guru 9th and 12th house mein nahi ho toh 12th mein guru hi mana jayega [11]",
+                        "Suppose if Guru is placed in 9th house then 12th house Rahu ka mana jayega [11]",
+                        "3rd House planet will get help from 12th house planet ,what ever the relationship between planet but planet will help each other (support from 12th) but rule is ki planet in 3rd house akela hona chaiye [13, 14]",
+                        "3rd house ka planet 12th ki help karega but 3rd mein single planet hona chaiye [14]",
+                        "Budh 12th and shani 3rd house toh ussko amrith kumbh kaha gaya hai (he will get growth) [15]",
+                        "Shukra and Rahu in 12th house 21- 25 years mein shaadi ki toh woh widow( bewa )ho jayega ya ho jayegi but if shani is situated in 3rd house then this is situation will not occur [15]",
+                        "Guru+Rahu  12th House [30]"
+                    ]
+                }
+            };
+
+            if (type == 'house') {
+                const infoDiv = document.getElementById('house-info');
+                if (houseDetails[item]) {
+                    let attributesHTML = `<span id="closer" ng-click="closeDesc()" class="house-button">Close</span><h2>${item} Attributes</h2><ul>`;
+                    for (const key in houseDetails[item]) {
+                        attributesHTML += `<li><strong>${key}:</strong> ${houseDetails[item][key]}</li>`;
+                    }
+                    attributesHTML += `</ul>`;
+                    infoDiv.innerHTML = attributesHTML.replaceAll(',', "<br>");
+                } else {
+                    infoDiv.innerHTML = `Attributes for ${item} not found.`;
+                }
+            }
+            else {
+                const infoDiv = document.getElementById('planet-info');
+                if (planetData[item]) {
+                    let attributesHTML = ` <span id="closer" ng-click="closeDesc()" class="house-button">Close</span><h2>${item} Attributes</h2><ul>`;
+                    for (const key in planetData[item]) {
+                        attributesHTML += `<li><strong>${key}:</strong> ${planetData[item][key]}</li>`;
+                    }
+                    attributesHTML += `</ul>`;
+                    infoDiv.innerHTML = attributesHTML.replaceAll(',', "<br>");
+                } else {
+                    infoDiv.innerHTML = `Attributes for ${item} not found.`;
+                }
+            }
+
+        }
+
+        var twoPlanets = {
+            "Mars_Saturn": {
+                "combination": "Mars_Saturn",
+                "mars_karak": [
+                    "Brother/Husband",
+                    "Accident/Surgery",
+                    "Problems",
+                    "Stubbornness",
+                    "Land/Property",
+                    "Skills "
+                ],
+                "saturn_karak": [
+                    "Elder brother",
+                    "Profession/ Karma",
+                    "Obstacles",
+                    "Problems",
+                    "Longevity",
+                    "Delay "
+                ],
+                "predictions": [
+                    "Family faced problem after/before birth of brother .",
+                    "Problem in adjustment after/before marriage., Delay in marriage",
+                    "Problems in family after/before birth of brother .",
+                    "Profession should be inspired by mars, some technical skills, engineering, sports , army etc.",
+                    "Problems in profession, work environment not good .",
+                    "There will be stubborn and irritated people in workplace ."
+                ]
+            },
+            "Mars_Rahu": {
+                "combination": "Mars_Rahu",
+                "mars_karak": [
+                    "Brother/Husband",
+                    "Accident/Surgery",
+                    "Problems",
+                    "Stubbornness",
+                    "Land/Property",
+                    "Skills "
+                ],
+                "rahu_karak": [
+                    "Paternal Grand parents",
+                    "Illusions",
+                    "Problems",
+                    "New Beginning",
+                    "Foreign Land",
+                    "Acts like Venus after/beforewards "
+                ],
+                "predictions": [
+                    "Problems in husband’s life after/before marriage .",
+                    "Courage/Anger expanded yoga- Will not hesitate to do bad/risky things .",
+                    "Ve+Ma+Ra , Combination in female chart can show running away from home, molestation, sexual abuse etc.",
+                    "Criminals / gangsters/Jail can be seen through this .",
+                    "Intercaste marriage or cultural change or foreign travel after/before marriage(Female chart)",
+                    "If not one of the above things can show dispute and separation in marriage ."
+                ]
+            },
+            "Mars_Ketu": {
+                "combination": "Mars_Ketu",
+                "mars_karak": [
+                    "Brother/Husband",
+                    "Accident/Surgery",
+                    "Problems",
+                    "Stubbornness",
+                    "Land/Property",
+                    "Skills "
+                ],
+                "ketu_karak": [
+                    "Maternal Grand parents",
+                    "End",
+                    "Tensions",
+                    "Problems",
+                    "Spirituality",
+                    "Dejection "
+                ],
+                "predictions": [
+                    "Problems in life after/before marriage(Female chart)-",
+                    "-3 Possibilities- Separation, Miscarriage, Death in Family",
+                    "Remedy is Suhag things, Mangal Sutra .",
+                    "Husband/Brother lives in lifelong tension .",
+                    "Conflicts arguments with husband .",
+                    "Husband will become spiritual after/before the marriage .",
+                    "If with Ju this combination may signify multiple surgeries/accidents ."
+                ]
+            },
+            "Mercury_Jupiter": {
+                "combination": "Mercury_Jupiter",
+                "mercury_karak": [
+                    "Sister/Daughter",
+                    "Education",
+                    "Intelligence",
+                    "Neighbours / Relatives",
+                    "Friends",
+                    "Business "
+                ],
+                "jupiter_karak": [
+                    "Jeev / Native/ Self",
+                    "Religious",
+                    "Wisdom",
+                    "Public activity",
+                    "Spirituality "
+                ],
+                "predictions": [
+                    "Sister/Daughter has deep wisdom may become religious, involve in public activity .",
+                    "Male Child after/before Sister/Daughter .",
+                    "Eduction is smooth and good .",
+                    "Native is intelligent by birth .",
+                    "Education in spiritual sciences, education(B.Ed Etc.)",
+                    "Relatives/Neighbours are good and pious .",
+                    "If Sun with this combination , he/she is meritious student ."
+                ]
+            },
+            "Mercury_Venus": {
+                "combination": "Mercury_Venus",
+                "mercury_karak": [
+                    "Sister/Daughter",
+                    "Education",
+                    "Intelligence",
+                    "Neighbours / Relatives",
+                    "Friends",
+                    "Business "
+                ],
+                "venus_karak": [
+                    "Wife/ Daughter",
+                    "Money",
+                    "Finance",
+                    "Beauty/ Organized",
+                    "Luxury",
+                    "Happiness",
+                    "Fine Arts "
+                ],
+                "predictions": [
+                    "Sister/Daughter is good looking , has fine arts quality, good finances and enjoys luxuries .",
+                    "Wife is very intelligent .",
+                    "Wife may be a businesswomen even before marriage .",
+                    "Wife has lot of friends and is very talkative .",
+                    "Education may be related to fine arts, humanities, Biology, Finance .",
+                    "As a business, person may have a garment shop, wine shop, Finance company etc. "
+                ]
+            },
+            "Mercury_Saturn": {
+                "combination": "Mercury_Saturn",
+                "mercury_karak": [
+                    "Sister/Daughter",
+                    "Education",
+                    "Intelligence",
+                    "Neighbours / Relatives",
+                    "Friends",
+                    "Business "
+                ],
+                "saturn_karak": [
+                    "Elder brother",
+                    "Profession/ Karma",
+                    "Obstacles",
+                    "Problems",
+                    "Longevity "
+                ],
+                "predictions": [
+                    "Kumbkaran Yoga – Idle Yoga, Person likes to sit idle and do nothing .",
+                    "Lack of interest/Troubles in education/studies .",
+                    "Business in background of Profession(Saturn) so native may continue family business .",
+                    "Sister/Daughter lives has obstacles and troubles .",
+                    "Profession is inspired by mercury .",
+                    "Elder brother is born intelligent ."
+                ]
+            },
+            "Mercury_Rahu": {
+                "combination": "Mercury_Rahu",
+                "mercury_karak": [
+                    "Sister/Daughter",
+                    "Education",
+                    "Intelligence",
+                    "Neighbours / Relatives",
+                    "Friends",
+                    "Business "
+                ],
+                "rahu_karak": [
+                    "Paternal Grand parents",
+                    "Illusions",
+                    "Problems",
+                    "New Beginning",
+                    "Foreign Land",
+                    "Acts like Venus after/beforewards "
+                ],
+                "predictions": [
+                    "Problem in family/New beginning after/before birth of sister/daughter .",
+                    "Education can happen in foreign land .",
+                    "Such a person may have 2 master degrees, there may be a break in education in between but person starts studying it again .",
+                    "Person will not use his degrees correctly, later on can earn money throughthem .",
+                    "Eduaction in software engineering, AI , Tantra , Mystical Sciences .",
+                    "As a business can do online business, Export-Import, etc.",
+                    "Grandparents are already intelligent and may be in business ."
+                ]
+            },
+            "Mercury_Ketu": {
+                "combination": "Mercury_Ketu",
+                "mercury_karak": [
+                    "Sister/Daughter",
+                    "Education",
+                    "Intelligence",
+                    "Neighbours / Relatives",
+                    "Friends",
+                    "Business "
+                ],
+                "ketu_karak": [
+                    "Maternal Grand parents",
+                    "End",
+                    "Tensions",
+                    "Problems",
+                    "Spirituality",
+                    "Dejection "
+                ],
+                "predictions": [
+                    "No child after/before daughter(Female progeny)",
+                    "Sister may be youngest in family, no siblings after/before younger sister .",
+                    "Break in education or incomplete education .",
+                    "Eduaction in Law, Occult, Vastu, Astrology, low skilled work(Barbers, food stalls etc.)",
+                    "- Kujavat Ketu(Ketu acts like Mars)",
+                    "Sister/Daughter has lifelong tensions/worries .",
+                    "Nana-Nani are very intelligent , may have a business .",
+                    "Person may go into reaseach ."
+                ]
+            },
+            "Jupiter_Venus": {
+                "combination": "Jupiter_Venus",
+                "jupiter_karak": [
+                    "Jeev / Native/ Self",
+                    "Religious",
+                    "Wisdom",
+                    "Public activity",
+                    "Spirituality "
+                ],
+                "venus_karak": [
+                    "Wife/ Daughter",
+                    "Money",
+                    "Finance",
+                    "Beauty/ Organized",
+                    "Luxury",
+                    "Happiness",
+                    "Fine Arts "
+                ],
+                "predictions": [
+                    "Native is good looking and attractive .",
+                    "Wife is good looking and pious and good .",
+                    "Wife belongs to a prestigious and good family .",
+                    "This combination gives good wealth and ensures finances .",
+                    "Native is money minded, has desire for luxuries .",
+                    "Native has some fine arts quality(music , dance, acting etc.)",
+                    "Wife is religious/in public activity before marriage ."
+                ]
+            },
+            "Jupiter_Saturn": {
+                "combination": "Jupiter_Saturn",
+                "jupiter_karak": [
+                    "Jeev / Native/ Self",
+                    "Religious",
+                    "Wisdom",
+                    "Public activity",
+                    "Spirituality "
+                ],
+                "saturn_karak": [
+                    "Elder brother",
+                    "Profession/ Karma",
+                    "Obstacles",
+                    "Problems",
+                    "Longevity "
+                ],
+                "predictions": [
+                    "Native’s family encountered problems after/before birth of native .",
+                    "Native is lazy , does procrastination .",
+                    "Profession is inspired by Jupiter",
+                    "Native may have taken tuition classes , teaching profession in early years.(Not by choice) e.g. Son of a priest has do work of priest .",
+                    "Native can suffer from frequent depression and life feels burdensome .",
+                    "Native is pious and good ."
+                ]
+            },
+            "Jupiter_Rahu": {
+                "combination": "Jupiter_Rahu",
+                "jupiter_karak": [
+                    "Jeev / Native/ Self",
+                    "Religious",
+                    "Wisdom",
+                    "Public activity",
+                    "Spirituality "
+                ],
+                "rahu_karak": [
+                    "Paternal Grand parents",
+                    "Illusions",
+                    "Problems",
+                    "New Beginning",
+                    "Foreign Land",
+                    "Acts like Venus after/beforewards",
+                    "Tantra/Mystical sciences "
+                ],
+                "predictions": [
+                    "Native’s family encountered problems after/before birth of native .",
+                    "Native is a day dreamer and lives in illusions, Unlimited desires .",
+                    "Father started a new venture/new beginning after/before birth of native it had problems initially , later did good .",
+                    "Native has health issues(can be severe) in the 1st year of birth .",
+                    "Native may develop interest in tantra , mantra ,mystical sciences. He is susceptible to paranormal energies .",
+                    "Native and grandfather may look alike, Grandparents are religious .",
+                    "A type of Raj yoga(Does well in materialistic world) "
+                ]
+            },
+            "Jupiter_Ketu": {
+                "combination": "Jupiter_Ketu",
+                "jupiter_karak": [
+                    "Jeev / Native/ Self",
+                    "Religious",
+                    "Wisdom",
+                    "Public activity",
+                    "Spirituality "
+                ],
+                "ketu_karak": [
+                    "Maternal Grand parents",
+                    "End",
+                    "Tensions",
+                    "Problems",
+                    "Spirituality",
+                    "Dejection "
+                ],
+                "predictions": [
+                    "Native’s family encountered problems after/before birth of native .",
+                    "Native has lifelong tensions",
+                    "Native is spiritual , will seek moksha , will not be reborn .",
+                    "Native tries to go towards spirituality leaving materialistic world .",
+                    "Ketu here can show miscarriage/mishappening after/before birth of native .",
+                    "As discussed earlier Kujavat ketu(Ketu acts like Mars) it may give blockage, surgery, nervous disorder to native .",
+                    "This is a combination for Nobel prize ."
+                ]
+            },
+            "Venus_Saturn": {
+                "combination": "Venus_Saturn",
+                "venus_karak": [
+                    "Wife/ Daughter",
+                    "Money",
+                    "Finance",
+                    "Beauty/ Organized",
+                    "Luxury",
+                    "Happiness",
+                    "Fine Arts "
+                ],
+                "saturn_karak": [
+                    "Elder brother",
+                    "Profession/ Karma",
+                    "Obstacles",
+                    "Problems",
+                    "Longevity "
+                ],
+                "predictions": [
+                    "Progress/Prosperity In Career/Profession after/before marriage(Sure shot) .",
+                    "Profession is inspired by Venus, Work environment is good(Ve in history of Sa)",
+                    "Wife will face obstacles/problems in adjustment after/before marriage .",
+                    "Wife may be professionally active; May also be from same profession/company .",
+                    "Profession may be related to finance, banking, medicine, fine arts but not by choice .",
+                    "Native will do well professionally ."
+                ]
+            },
+            "Venus_Rahu": {
+                "combination": "Venus_Rahu",
+                "venus_karak": [
+                    "Wife/ Daughter",
+                    "Money",
+                    "Finance",
+                    "Beauty/ Organized",
+                    "Luxury",
+                    "Happiness",
+                    "Fine Arts "
+                ],
+                "rahu_karak": [
+                    "Paternal Grand parents",
+                    "Illusions",
+                    "Problems",
+                    "New Beginning",
+                    "Foreign Land",
+                    "Acts like Venus after/beforewards",
+                    "Tantra/Mystical sciences "
+                ],
+                "predictions": [
+                    "Very Beautiful wife(Venus expanded), Female herself is beautiful .",
+                    "In male chart, this combination shows very strong desire for a good-looking wife .",
+                    "Flirt Yoga(In Male Chart)",
+                    "Grandparents are already rich, have luxurious lifestyle and comforts, may have fine arts qualities .",
+                    "Problems in wife’s life after/before marriage",
+                    "- Intercaste marriage, Foreign tour after/before marriage, Marriage in different culture, wife may be software engineer .",
+                    "Specualtion Yoga(Can do good in Share Market) "
+                ]
+            },
+            "Venus_Ketu": {
+                "combination": "Venus_Ketu",
+                "venus_karak": [
+                    "Wife/ Daughter",
+                    "Money",
+                    "Finance",
+                    "Beauty/ Organized",
+                    "Luxury",
+                    "Happiness",
+                    "Fine Arts "
+                ],
+                "ketu_karak": [
+                    "Maternal Grand parents",
+                    "End",
+                    "Tensions",
+                    "Problems",
+                    "Spirituality",
+                    "Dejection "
+                ],
+                "predictions": [
+                    "Wife in lifelong tension .",
+                    "Problems after/before marriage(Male chart)",
+                    "- 3 possibilities- Separation, Miscarriage, Death in Family(Aspects and conjunctions change a lot of things)",
+                    "Nani- Nana are already rich and have all luxuries and comforts .",
+                    "Diffierence of opinion with wife.(Wife may be argumentative)",
+                    "Native may have 3 bank accounts .",
+                    "Wife may be youngest in her family, no siblings born after/before her ."
+                ]
+            },
+            "Saturn_Rahu": {
+                "combination": "Saturn_Rahu",
+                "saturn_karak": [
+                    "Elder brother",
+                    "Profession/ Karma",
+                    "Obstacles",
+                    "Problems",
+                    "Longevity "
+                ],
+                "rahu_karak": [
+                    "Paternal Grand parents",
+                    "Illusions",
+                    "Problems",
+                    "New Beginning",
+                    "Foreign Land",
+                    "Acts like Venus after/beforewards",
+                    "Tantra/Mystical sciences "
+                ],
+                "predictions": [
+                    "Person has desire to go to foreign country and settle there .",
+                    "Native cannot do great in profession at his/her birthplace, need to travel and go far away from there.(Cultural change should be there) .",
+                    "Native has interest in mantra , tantra , mystical sciences, his karma is bound to it .",
+                    "This combination is called Pitra Karma Dosh(Remedy- Care for elders)",
+                    "Will do profession related to Rahu(IT Sector, online business, digital marketing, foreign country , MNC) .",
+                    "Native can have property in 2-3 different cities .",
+                    "Native is extremely talented and intelligent but seeks easy money ."
+                ]
+            },
+            "Saturn_Ketu": {
+                "combination": "Saturn_Ketu",
+                "saturn_karak": [
+                    "Elder brother",
+                    "Profession/ Karma",
+                    "Obstacles",
+                    "Problems",
+                    "Longevity "
+                ],
+                "ketu_karak": [
+                    "Maternal Grand parents",
+                    "End",
+                    "Tensions",
+                    "Problems",
+                    "Spirituality",
+                    "Dejection "
+                ],
+                "predictions": [
+                    "Hurdles/Problems/Obstacles in professional life .",
+                    "Native does not like to work under anybody, can fight and leave job(Does not like orders)",
+                    "Native will desire to do something of his own.(Own Business)",
+                    "Unsuccessful professional life, three or more changes in job, career .",
+                    "Can do well professionally as an astrologer, occultist, tarot reader, Yoga instructor, spiritual field, Law, Army, Surgery, Low skilled work etc.",
+                    "Person may like meditation and it may be a remedy for his/her restlessness .",
+                    "Native born to end his karma(Karmic cycle) may desire moksha ."
+                ]
+            },
+            "Sun_Moon": {
+                "combination": "Sun_Moon",
+                "sun_karak": [
+                    "Father",
+                    "Son",
+                    "Government",
+                    "Name/Fame",
+                    "Dominance,Ego",
+                    "Deity",
+                    "Attitude,Authority"
+                ],
+                "moon_karak": [
+                    "Mother/Daughter",
+                    "Mind",
+                    "Changes",
+                    "Travels "
+                ],
+                "predictions": [
+                    "Father’s life encountered changes after/before the birth of native, changes may include job change, city change, house change, travel etc.(As moon’s degree is ahead of Sun), Or father may be in transferrable or travelling job .",
+                    "Mother belonged to a family with name , fame and status, she is dominating and will rule the house.(Sun is in history of Moon)",
+                    "Mother is pious, and native’s mind has pious thoughts .",
+                    "Native is very intelligent and will get out of any problem using his/her intelligence. (Sun gives luminosity to mind) "
+                ]
+            },
+            "Sun_Mars": {
+                "combination": "Sun_Mars",
+                "sun_karak": [
+                    "Father",
+                    "Son",
+                    "Government",
+                    "Name/Fame",
+                    "Dominance , Ego",
+                    "Deity",
+                    "Attitude,Authority "
+                ],
+                "mars_karak": [
+                    "Brother/Husband",
+                    "Accident/Surgery",
+                    "Problems",
+                    "Stubbornness",
+                    "Land/Property",
+                    "Skills "
+                ],
+                "predictions": [
+                    "Father may have purchased a land/property after/before birth of native .",
+                    "Father will encounter an accident/surgery in his lifetime .",
+                    "Father’s life encountered obstructions/problems after/before birth of native .",
+                    "Father and brother look alike; Habits may be similar .",
+                    "Father is stubborn .",
+                    "Husband is dominating, egoistic and comes from a status family .",
+                    "Brother is born dominating and egoistic ."
+                ]
+            },
+            "Sun_Mercury": {
+                "combination": "Sun_Mercury",
+                "sun_karak": [
+                    "Father",
+                    "Son",
+                    "Government",
+                    "Name/Fame",
+                    "Dominance , Ego",
+                    "Deity",
+                    "Attitude,Authority"
+                ],
+                "mercury_karak": [
+                    "Sister/Daughter",
+                    "Education",
+                    "Intelligence",
+                    "Neighbours / Relatives",
+                    "Friends",
+                    "Business "
+                ],
+                "predictions": [
+                    "Father is very intelligent .",
+                    "Father may have started a business after/before birth of native .",
+                    "Father is business minded .",
+                    "Sister/ Daughter is dominating by birth (Can be a tool to find which daughter is Ve/Me/Mo)",
+                    "Neighbours/ Relatives may be powerful/in politics/in govt. job ."
+                ]
+            },
+            "Sun_Jupiter": {
+                "combination": "Sun_Jupiter",
+                "sun_karak": [
+                    "Father",
+                    "Son",
+                    "Government",
+                    "Name/Fame",
+                    "Dominance , Ego",
+                    "Deity",
+                    "Attitude,Authority"
+                ],
+                "jupiter_karak": [
+                    "Jeev / Native/ Self",
+                    "Religious",
+                    "Wisdom",
+                    "Public activity",
+                    "Spirituality "
+                ],
+                "predictions": [
+                    "Father and Native look alike, or habits are similar .",
+                    "Father became religious after/before birth of native .",
+                    "Father may have joined social work, institution after/before birth of native .",
+                    "Father has great wisdom .",
+                    "Native has ego, dominance from birth .",
+                    "Native belongs to a family that has name, fame and status ."
+                ]
+            },
+            "Sun_Venus": {
+                "combination": "Sun_Venus",
+                "sun_karak": [
+                    "Father",
+                    "Son",
+                    "Government",
+                    "Name/Fame",
+                    "Dominance , Ego",
+                    "Deity",
+                    "Attitude,Authority"
+                ],
+                "venus_karak": [
+                    "Wife/ Daughter",
+                    "Money",
+                    "Finance",
+                    "Beauty/ Organized",
+                    "Luxury",
+                    "Happiness",
+                    "Fine Arts "
+                ],
+                "predictions": [
+                    "Bhagyashali Santan- Father got prosperity(Finances) after/before native’s birth .",
+                    "Father/Son will be good looking and organized .",
+                    "Father has any fine art quality(Music, dance, acting etc.)",
+                    "Wife belongs to status family, wife will rule the house has ego, attitude and dominance even before marriage .",
+                    "Wife may belong to same cast/ Same city ."
+                ]
+            },
+            "Sun_Saturn": {
+                "combination": "Sun_Saturn",
+                "sun_karak": [
+                    "Father",
+                    "Son",
+                    "Government",
+                    "Name/Fame",
+                    "Dominance , Ego",
+                    "Deity",
+                    "Attitude,Authority"
+                ],
+                "saturn_karak": [
+                    "Elder brother",
+                    "Profession/ Karma",
+                    "Obstacles",
+                    "Problems",
+                    "Longevity "
+                ],
+                "predictions": [
+                    "Father faced obstacles , problems after/before birth of native .",
+                    "Profession of native may be inspired by father .",
+                    "Native may continue father’s business/profession or may do something of his/her father’s will .",
+                    "Elder brother has ego, dominance from his birth .",
+                    "Father and elder brother may look alike, or habits may be similar ."
+                ]
+            },
+            "Sun_Rahu": {
+                "combination": "Sun_Rahu",
+                "sun_karak": [
+                    "Father",
+                    "Son",
+                    "Government",
+                    "Name/Fame",
+                    "Dominance , Ego",
+                    "Deity",
+                    "Attitude,Authority"
+                ],
+                "rahu_karak": [
+                    "Paternal Grand parents",
+                    "Illusions",
+                    "Problems",
+                    "New Beginning",
+                    "Foreign Land",
+                    "Acts like Venus after/beforewards"
+                ],
+                "predictions": [
+                    "Father faced obstacles , problems after/before birth of native .",
+                    "Father is a daydreamer, lives in illusion",
+                    "Father may start something new; the venture will have problems in beginning but later does good .",
+                    "Father and grandfather look alike.(If Ju also there , three of them)",
+                    "Native may have issues/conflicts with father",
+                    "Native will have trouble in having a male progeny, if it did happen the health of the child must be taken care of .",
+                    "Dadi- Dadi has name , fame and status ."
+                ]
+            },
+            "Sun_Ketu": {
+                "combination": "Sun_Ketu",
+                "sun_karak": [
+                    "Father",
+                    "Son",
+                    "Government",
+                    "Name/Fame",
+                    "Dominance , Ego",
+                    "Deity",
+                    "Attitude,Authority"
+                ],
+                "ketu_karak": [
+                    "Maternal Grand parents",
+                    "End",
+                    "Tensions",
+                    "Problems",
+                    "Spirituality "
+                ],
+                "predictions": [
+                    "Father faced obstacles , problems after/before birth of native .",
+                    "Father may be the youngest child , no further siblings after/before birth of father .",
+                    "Father has lifelong tension, worry .",
+                    "Father may be spiritual and like a yogi .",
+                    "If Son is born as the first child, problem in getting second child .",
+                    "Nana- Nani has name, fame and status already ."
+                ]
+            },
+            "Moon_Mars": {
+                "combination": "Moon_Mars",
+                "moon_karak": [
+                    "Mother/Daughter",
+                    "Mind",
+                    "Changes",
+                    "Travels/ Distant Place",
+                    "Nurture/ Care",
+                    "Food "
+                ],
+                "mars_karak": [
+                    "Brother/Husband",
+                    "Accident/Surgery",
+                    "Problems",
+                    "Stubbornness, Roughness",
+                    "Land/Property",
+                    "Skills , Courage",
+                    "Anger , Power "
+                ],
+                "predictions": [
+                    "Mother will face accident/ surgery in her lifetime .",
+                    "Mother will be dominating, rough, harsh, uses foul language, courageous .",
+                    "Husband may come from a distant place .",
+                    "Brother/Husband will be caring and nurturing .",
+                    "If this combination is there in male chart , the person has tendency to see women with wrong intentions.(don’t take anything too seriously aspects, conjunctions change a lot of things) ."
+                ]
+            },
+            "Moon_Mercury": {
+                "combination": "Moon_Mercury",
+                "moon_karak": [
+                    "Mother/Daughter",
+                    "Mind",
+                    "Changes",
+                    "Travels/ Distant Place",
+                    "Nurture/ Care",
+                    "Food "
+                ],
+                "mercury_karak": [
+                    "Sister/Daughter",
+                    "Education",
+                    "Intelligence",
+                    "Neighbours / Relatives",
+                    "Friends",
+                    "Business "
+                ],
+                "predictions": [
+                    "Mother is very intelligent .",
+                    "Mother may become businesswomen after/before birth of native .",
+                    "Sister/Daughter will have good thoughts and well educated",
+                    "Native has elephant memory.(Cannot forget anything).",
+                    "- If moon is afflicted will forget things .",
+                    "Native faces changes in education beyond his control.(Moon is behind)",
+                    "Native is born to be cheated, will not get money back if given to friend, relatives, gets cheated in relationship, business partnership(Kapat Yog) "
+                ]
+            },
+            "Moon_Jupiter": {
+                "combination": "Moon_Jupiter",
+                "moon_karak": [
+                    "Mother/Daughter",
+                    "Mind",
+                    "Changes",
+                    "Travels/ Distant Place",
+                    "Nurture/ Care",
+                    "Food "
+                ],
+                "jupiter_karak": [
+                    "Jeev / Native/ Self",
+                    "Religious",
+                    "Wisdom",
+                    "Public activity",
+                    "Spirituality "
+                ],
+                "predictions": [
+                    "Mother is very intelligent and has wisdom .",
+                    "Mother and native look alike, habits may be similar .",
+                    "Mother may be a social worker, joined a social group after/before birth of native .",
+                    "Mother is religious and pious .",
+                    "Native has flickering mind, changes in life beyond control, travels .",
+                    "Native is a good person, caring and nurturing has good thoughts .",
+                    "Native is fond of dairy products and sweets .",
+                    "Native’s family may have encountered a change before his/her birth ."
+                ]
+            },
+            "Moon_Venus": {
+                "combination": "Moon_Venus",
+                "moon_karak": [
+                    "Mother/Daughter",
+                    "Mind",
+                    "Changes",
+                    "Travels/ Distant Place",
+                    "Nurture/ Care",
+                    "Food "
+                ],
+                "venus_karak": [
+                    "Wife/ Daughter",
+                    "Money",
+                    "Finance",
+                    "Beauty/ Organized",
+                    "Luxury, Comforts",
+                    "Happiness",
+                    "Fine Arts "
+                ],
+                "predictions": [
+                    "Mother is good looking, organized, money minded, may have fine arts qualities",
+                    "Mother will get finances, luxuries, comforts after/before birth of native .",
+                    "Wife may have encountered changes in her life before marriage .",
+                    "Wife may have an elder sister, or she may come from a place near water .",
+                    "Mother may have a younger sister",
+                    "Wife will overpower mother(Ve degree is ahead of Mo)",
+                    "Wife, Mother or females in house suffers from ill health ."
+                ]
+            },
+            "Moon_Saturn": {
+                "combination": "Moon_Saturn",
+                "moon_karak": [
+                    "Mother/Daughter",
+                    "Mind",
+                    "Changes",
+                    "Travels/ Distant Place",
+                    "Nurture/ Care",
+                    "Food "
+                ],
+                "saturn_karak": [
+                    "Elder brother",
+                    "Profession/ Karma",
+                    "Obstacles",
+                    "Problems",
+                    "Longevity "
+                ],
+                "predictions": [
+                    "Mother faced problems, obstacles after/before birth of native .",
+                    "Mother may be professionally active .",
+                    "Profession may be inspired by moon(Food, travels, economics , psychology etc.)",
+                    "Mother is hardworking .",
+                    "Mind feels like it is stuck, and person feels that he/she is not able to move forward in life.(depression)",
+                    "Frequent cold and cough, asthma etc. "
+                ]
+            },
+            "Moon_Rahu": {
+                "combination": "Moon_Rahu",
+                "moon_karak": [
+                    "Mother/Daughter",
+                    "Mind",
+                    "Changes",
+                    "Travels/ Distant Place",
+                    "Nurture/ Care",
+                    "Food "
+                ],
+                "rahu_karak": [
+                    "Paternal Grand parents",
+                    "Illusions",
+                    "Problems",
+                    "New Beginning",
+                    "Foreign Land",
+                    "Acts like Venus after/beforewards"
+                ],
+                "predictions": [
+                    "Mother faced problems, obstacles after/before birth of native, she overcomes later .",
+                    "Mind lives in daydreaming, always in illusions.(Can be said for mother also) .",
+                    "Mind is very intuitive .",
+                    "Native does over expenses; money does not stay .",
+                    "Paternal grandparents migrated from distant place .",
+                    "Mother is homemaker, may be less educated but will always care for family ."
+                ]
+            },
+            "Moon_Ketu": {
+                "combination": "Moon_Ketu",
+                "moon_karak": [
+                    "Mother/Daughter",
+                    "Mind",
+                    "Changes",
+                    "Travels/ Distant Place",
+                    "Nurture/ Care",
+                    "Food "
+                ],
+                "ketu_karak": [
+                    "Maternal Grand parents",
+                    "End",
+                    "Tensions",
+                    "Problems",
+                    "Spirituality",
+                    "Dejection "
+                ],
+                "predictions": [
+                    "Mother faced problems, obstacles after/before birth of native .",
+                    "Mother/ Daughter in lifelong tensions.(Mind is also in tension)",
+                    "Mind has spiritual thoughts; mother may become spiritual",
+                    "Research mind or sometimes mental retardation .",
+                    "No progeny after/before female progeny .",
+                    "Mother may be the last child, no further siblings .",
+                    "Nana- Nani may have migrated from distant land ."
+                ]
+            },
+            "Mars_Mercury": {
+                "combination": "Mars_Mercury",
+                "mars_karak": [
+                    "Brother/Husband",
+                    "Accident/Surgery",
+                    "Problems",
+                    "Stubbornness",
+                    "Land/Property",
+                    "Skills "
+                ],
+                "mercury_karak": [
+                    "Sister/Daughter",
+                    "Education",
+                    "Intelligence",
+                    "Neighbours / Relatives",
+                    "Friends",
+                    "Business",
+                    "Commercial "
+                ],
+                "predictions": [
+                    "Native’s brother is intelligent and well educated .",
+                    "Native can have land/property at commercial place .",
+                    "Sister/ Daughter may be born by surgery, may have a birth mark,may have died due to accident in past life .",
+                    "Problems before birth of sister/daughter .",
+                    "Good calculation power and mathematics .",
+                    "Neighbors and relatives are stubborn and quarrelsome ."
+                ]
+            },
+            "Mars_Jupiter": {
+                "combination": "Mars_Jupiter",
+                "mars_karak": [
+                    "Brother/Husband",
+                    "Accident/Surgery",
+                    "Problems",
+                    "Stubbornness",
+                    "Land/Property",
+                    "Skills "
+                ],
+                "jupiter_karak": [
+                    "Jeev / Native/ Self",
+                    "Religious",
+                    "Wisdom",
+                    "Public activity",
+                    "Spirituality "
+                ],
+                "predictions": [
+                    "Native’s land/property may be near school, public place, place of social gathering, temple etc.",
+                    "Native may have died due to surgery in past life, may have a birthmark .",
+                    "Native may be born by surgery .",
+                    "Native and brother look alike, good compatibility , habits may be similar .",
+                    "Husband will become spiritual and get involved in public activity after/before marriage .",
+                    "Husband will have wisdom and is pious and good ."
+                ]
+            },
+            "Mars_Venus": {
+                "combination": "Mars_Venus",
+                "mars_karak": [
+                    "Brother/Husband",
+                    "Accident/Surgery",
+                    "Problems",
+                    "Stubbornness",
+                    "Land/Property",
+                    "Skills "
+                ],
+                "venus_karak": [
+                    "Wife/ Daughter",
+                    "Money",
+                    "Finance",
+                    "Beauty/ Organized",
+                    "Luxury, Comforts",
+                    "Happiness",
+                    "Fine Arts "
+                ],
+                "predictions": [
+                    "Brother/ Husband is good looking and organized .",
+                    "Native is also attractive and good looking .",
+                    "Husband and wife may be together in past life also .",
+                    "Land/property may be near chemist shop/ garment store .",
+                    "Native’s wife had problems before marriage .",
+                    "Brother may have qualities of fine arts(sports, music, acting etc.)",
+                    "Bhatti Yog- Always ready to do good for others.- As a reward will get a good and beautiful property ."
+                ]
+            }
+        };
+        var twoPlanetPredictions = [];
+        $scope.twoPlanetPrediction = function () {
+            twoPlanetPredictions = [];
+            //for (const house in houses) {
+            for (const comb in twoPlanets) {
+                var planetCombArr = comb.split("_");
+                for (const house in houses) {
+                    console.log("Checking if " + planetCombArr[0] + " and " + planetCombArr[1] + " in " + houses[house].planets);
+                    if (houses[house].planets.includes(planetCombArr[0]) && houses[house].planets.includes(planetCombArr[1])) {
+                        twoPlanetPredictions.push({
+                            combination: twoPlanets[comb].combination,
+                            house,
+                            predictions: twoPlanets[comb].predictions
+                        });
+                    }
+                }
+            }
+        }
+
+        function checkMarsBadh(horoscope) {
+            // Check if the horoscope object is valid and contains necessary data
+            if (!horoscope || typeof horoscope !== 'object') {
+                console.error("Invalid horoscope input.");
+                return false;
+            }
+
+            const { Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu } = horoscope;
+
+            // Helper function to check if planets are in specific houses
+            const isInHouse = (planet, houses) => houses.includes(horoscope[planet]);
+
+            // Helper function to check if two planets are together (in the same house)
+            const areTogether = (planet1, planet2) => horoscope[planet1] === horoscope[planet2];
+
+            // Check for Automatic Cancellation (Mars Baddh Ka Parihaar) [1]
+            if (areTogether('Sun', 'Mercury')) {
+                return false; // Sun + Mercury together (Mars nek hota hai) [1]
+            }
+            if (areTogether('Mars', 'Mercury') && isInHouse('Mars', [8])) {
+                return false; // Mars + Mercury in the 8th house together [1]
+            }
+            if (isInHouse('Sun', [3]) && isInHouse('Mercury', [3])) {
+                return false; // Sun Mercury in the 3rd house [1]
+            }
+            if (isInHouse('Moon', [3])) {
+                return false; // Moon in the 3rd house [1]
+            }
+            if (isInHouse('Moon', [1, 2, 3, 4, 8, 9])) {
+                return false; // Moon in the 1st, 2nd, 3rd, 4th, 8th, or 9th house [1]
+            }
+            // Note: The condition about Sun or Moon assisting Mars is too vague to implement directly [1].
+
+            // Check for Mars Baddh conditions [2, 3]
+            if (
+                areTogether('Sun', 'Saturn') || // Sun + Saturn together anywhere [2]
+                (Mercury === 6 && Ketu === 6) || // Mercury + Ketu in the 6th House [2]
+                areTogether('Mars', 'Mercury') || // Mars + Mercury together anywhere [2]
+                areTogether('Mars', 'Ketu') || // Mars + Ketu together anywhere [2]
+                isInHouse('Ketu', [1, 8]) || // Ketu in the 1st or 8th house [2]
+                isInHouse('Mars', [3]) || // Mars in the 3rd house [2]
+                isInHouse('Venus', [9]) || // Venus in the 9th house [2]
+                isInHouse('Sun', [6, 7, 10, 12]) || // Sun in the 6th, 7th, 10th, 12th house [3]
+                isInHouse('Mars', [6]) || // Mars in the 6th house [3]
+                isInHouse('Mercury', [1, 3, 8]) || // Mercury in the 1st, 3rd or 8th house [3]
+                isInHouse('Rahu', [5, 9]) || // Rahu in the 5th or 9th house [3]
+                isInHouse('Moon', [12]) || // Moon in the 12th house [3]
+                isInHouse('Ketu', [3]) || // Ketu in the 3rd house [3]
+                areTogether('Mercury', 'Venus') || // Mercury + Venus together [3]
+                isInHouse('Sun', [8]) || // Sun in the 8th house [3]
+                isInHouse('Jupiter', [7]) // Jupiter in the 7th house [3]
+                // Note: The condition about Sun and Moon not assisting Mars is too vague to implement directly [3].
+            ) {
+                return true; // Mars Baddh is present
+            }
+
+            return false; // Mars Baddh is not present based on the conditions checked
+        }
+        var isMangalBadh = false;
+        var isMangalDosh = false;
+        function checkMangalDosh(horoscope) {
+            // Check if the horoscope object is valid and contains necessary data
+            if (!horoscope || typeof horoscope !== 'object') {
+                console.error("Invalid horoscope input.");
+                return false;
+            }
+
+            const { Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu } = horoscope;
+
+            // Helper function to check if planets are in specific houses
+            const isInHouse = (planet, houses) => houses.includes(horoscope[planet]);
+
+            if (isInHouse('Mars', [1, 4, 7, 8, 12])) {
+                return true;
+            }
+            return false;
+        }
+        var planetConjunctResult = [];
+        var mandaPlanetsInHoroscope = [];
+        function getPlanetHouses(houses) {
+            var planetSnapShot = {
+                Sun: 1,
+                Moon: 2,
+                Mars: 3,
+                Mercury: 4,
+                Jupiter: 5,
+                Venus: 6,
+                Saturn: 1,
+                Rahu: 8,
+                Ketu: 2,
+            };
+            for (const house in houses) {
+                for (planet in planetSnapShot)
+                    if (houses[house].planets.includes(planet)) {
+                        planetSnapShot[planet] = parseInt(house);
+                    }
+            }
+            console.log("Planet SnapShot: ", planetSnapShot);
+            isMangalBadh = checkMarsBadh(planetSnapShot);
+            isMangalDosh = checkMangalDosh(planetSnapShot);
+            budhNali = calculateBudhKaBhed(planetSnapShot);
+            houseOutCome = suggestHouseOutcome(planetSnapShot);
+            sleepingHouses = findSoyaHuaGhar(houses);
+            sleepingPlanets = detectSleepingPlanetsInfo(planetSnapShot);
+            analyzeMasnuiGrahaForChart(planetSnapShot);
+            dhokaRelation = getNthAspect(10, 'dhokha (10th)');
+            takkarRelation = getNthAspect(8, 'takkar (8th)');
+            helpRelation = getNthAspect(5, 'friendly help (5th)');
+            seventhaspect = getNthAspect(7, 'seventh');
+            $scope.dhokhaplanetbyAge = $scope.calculateDhokha(planetSnapShot);
+            calculateAllPlanetAspects(planetSnapShot);
+            isDharmi(planetSnapShot);
+            isSathiRelation(planetSnapShot);
+            planetConjunctResult = getConjunctionSignifications(houses, property.living_significations, property.non_living_significations);
+            mandaPlanetsInHoroscope = getMandaPlanetEffect($scope.findMandaPlanets_ByAnyViolation(planetSnapShot));
+            console.log("Mangal Badh Result: " + isMangalBadh);
+            console.log("Mangal Dosh Result: " + isMangalDosh);
+        }
+        var dharmiTeva = [];
+        function isDharmi(horoscope) {
+            const areTogether = (planet1, planet2) => horoscope[planet1] === horoscope[planet2];
+            if (areTogether('Saturn', 'Jupiter')) {
+                dharmiTeva.push('Dharmi Teva due to present of Saturn and Jupiter together in House' + horoscope["Saturn"]);
+            }
+
+            if (areTogether('Moon', 'Rahu')) {
+                dharmiTeva.push('Dharmi Teva due to present of Moon and Rahu together in House' + horoscope["Moon"]);
+            }
+
+            if (areTogether('Moon', 'Ketu')) {
+                dharmiTeva.push('Dharmi Teva due to present of Moon and Ketu together in House' + horoscope["Moon"]);
+            }
+
+            if (horoscope["Ketu"] == 4 || horoscope["Rahu"] == 4) {
+                dharmiTeva.push('Dharmi Teva due to present of Rahu or Ketu together in House 4');
+            }
+
+        }
+
+        var budhNali = "";
+        function calculateBudhKaBhed(planetPositions) {
+
+            const planetPowers = {
+                Jupiter: 6,
+                Sun: 9,
+                Moon: 8,
+                Venus: 7,
+                Mars: 5,
+                Mercury: 4,
+                Saturn: 3,
+                Rahu: 2,
+                Ketu: 1,
+            };
+
+            // Ensure all necessary planet positions are provided
+            const requiredPlanets = Object.keys(planetPowers);
+            const providedPlanets = Object.keys(planetPositions);
+            if (requiredPlanets.length !== providedPlanets.length || !requiredPlanets.every(planet => providedPlanets.includes(planet))) {
+                console.log("Error: Please provide the house position for all nine planets (Jupiter, Sun, Moon, Venus, Mars, Mercury, Saturn, Rahu, Ketu).");
+            }
+
+            // Calculate the multiplied total for each planet [2]
+            let multipliedTotals = {};
+            for (const planet in planetPowers) {
+                if (planetPositions.hasOwnProperty(planet)) {
+                    multipliedTotals[planet] = planetPowers[planet] * planetPositions[planet];
+                }
+            }
+
+            // Calculate the sum of all multiplied totals [2]
+            let sumOfTotals = Object.values(multipliedTotals).reduce((sum, value) => sum + value, 0);
+
+            // Divide the sum by 9 and find the remainder [2]
+            const remainder = sumOfTotals % 9;
+
+            // Determine which planet corresponds to the remainder [2]
+            let actingPlanet;
+            for (const planet in planetPowers) {
+                if (planetPowers[planet] === remainder) {
+                    actingPlanet = planet;
+                    break;
+                }
+                else if (remainder === 0) { // Remainder 0 corresponds to Mercury
+                    actingPlanet = "Mercury";
+                    break;
+                }
+            }
+
+            // Information from the source [2]
+            let result = `Budh Nali result is ${remainder}. Therefore, **Mercury (Budh) in the chart will act like ${actingPlanet}**.`;
+
+            return result;
+        }
+
+        function suggestHouseOutcome(planetPositions) {
+            // Information drawn from "Lalkitab Advance Makan Kab Banwaye.pdf"
+
+            if (!planetPositions.hasOwnProperty('Saturn')) {
+                return "Information about Saturn's placement is needed to suggest the outcome of building a house based on the provided source.";
+            }
+
+            const saturnHouse = planetPositions.Saturn;
+            let suggestion = "";
+
+            switch (saturnHouse) {
+                case 1:
+                    suggestion = "**If Saturn is in the 1st house and you build a house, it may lead to poverty. However, if the 7th or 10th house is empty, building a house might be okay** [1].";
+                    break;
+                case 2:
+                    suggestion = "**If Saturn is in the 2nd house, it can be auspicious for you, and building a house in this situation is considered auspicious** [2]. The 2nd house is considered a religious place [2].";
+                    break;
+                case 3:
+                    suggestion = "**If Saturn is in the 3rd house and you want to build a house, it is necessary to keep three dogs at home. Otherwise, you may face financial problems** [2]. If you already have a plot, keeping one dog and a puppy on the plot will help in the construction of the house [2]. The 3rd house is associated with Mercury, and Mars is its significator [2].";
+                    break;
+                case 4:
+                    suggestion = "**If Saturn is in the 4th house and you build a house, it can negatively impact your maternal and in-law families, potentially leading to problems or downfall. Therefore, it is advisable to avoid building a house if Saturn is in the 4th house** [3]. The 4th house is associated with the Moon, and Saturn does not have a good relationship with the Moon [3].";
+                    break;
+                case 5:
+                    suggestion = "**If Saturn is in the 5th house, it can create issues with the construction of the house and may also affect your children negatively** [3]. If Saturn is in the 5th house, it implies that the child may face hardships [4]. If you want to build a house, it is advised to do so only after the age of 48. Before starting construction, bring a buffalo into the house, worship it, feed it well, give it some offering, and then send it away. Only then, and only if very necessary, should you begin building the house [4]. The 5th house is associated with the Sun and is also the house of children [3].";
+                    break;
+                case 6:
+                    suggestion = "**The period of Saturn is from 36 to 39 years. Therefore, if Saturn is in the 6th house, you should build a house only when you are 36 or 39 years old. Building a house before this age may harm your daughter's relatives** [4].";
+                    break;
+                case 7:
+                    suggestion = "**Saturn is exalted in the 7th house. In this situation, a person may get to build more houses, which are very beneficial for them. If houses start selling, preserve the door frame of the old house. Then, the same number of houses will be built again** [5].";
+                    break;
+                case 8:
+                    suggestion = "**When a person starts building a house while Saturn is in the 8th house, the fear of death may increase. Here, the influence of Saturn depends on the positions of Rahu and Ketu. Therefore, a person with Saturn in the 8th house should not build a house** [5].";
+                    break;
+                case 9:
+                    suggestion = "**If Saturn is in the 9th house and a person's wife or mother is pregnant, and the person starts building a house with their own earnings, it will have a negative impact on the father. Once the person builds three houses, the father's death is certain** [6].";
+                    break;
+                case 10:
+                    suggestion = "**When Saturn is in the 10th house, a person receives a lot of wealth. However, if the person buys a ready-made house or builds one, they may become poor. If Saturn is weakening for any reason, there might be issues with the house, and it could remain incomplete. Therefore, it is better not to build a house to avoid financial loss** [6, 7].";
+                    break;
+                case 11:
+                    suggestion = "**If Saturn is in the 11th house, a person should build a house only after the age of 55. They should avoid living in a south-facing house. Living in a south-facing house may lead to chronic diseases and the risk of death** [7].";
+                    break;
+                case 12:
+                    suggestion = "**If Saturn is in the 12th house, the person's house gets built automatically. One should not try to stop the construction; it should be allowed to proceed as it is happening** [7].";
+                    break;
+                default:
+                    suggestion = "Based on the provided source, there is no specific guidance for building a house when Saturn is in the given house.";
+            }
+
+            return suggestion;
+        }
+
+        var mangalDoshRemedies = `<br>Remedy for Mangal Dosh<br>
+        1 House - Silver Chain or Offer Milk + Honey to Shivji on Tuesdays
+        <br>4 House - Offer Sweet Milk to Banyan tree for 43 Days or Wear Silver square in a silver chain.
+                 <br> To avoid havoc from fire, place empty bags of sugar on the roof of your house, shop or factory.
+                  <br>Always keep a square piece of silver with you.
+                  <br>Keep away from black, one-eyed or disabled person.
+        <br>7 House - Place solid piece of silver in the house for prosperity.
+         <br>         Always offer sweets to daughter, sister, sister-in-law and widows.
+          <br>        Repeatedly build a small wall and destroy it.
+        <br>8 House - Obtain blessings of widows and wear a silver chain.
+         <br>         Offer sweet loaves of bread prepared on Tandoor to dogs.
+         <br>         Take your meals in the kitchen.
+         <br>         Build a small dark room at the end of your house and do not allow sun light to enter it.
+         <br>         Offer rice, jaggery and gram pulse at religious places of worship.
+        <br>12 House - Take honey the first thing in the morning.
+          <br>         Eating sweets and offering sweets to another person will increase the wealth of the native.
+        `;
+        var mangalBadhRemedies = `<br>Remedy for Mangal Baddh<br>
+ <br>1.Teen dhatu (1) 1 gram sona, 2 gram chandi aur 4 gram
+ tamba ka chhalla ya kada pehne (bina jod wala).
+ <br>2. Desi khand mitti ke bartan mein bharkar virane mein
+ dabaye.
+ <br>3. Stri 34 gram ka bina jod wala chandi ka kada pehne.
+ Purush 52 gram ka bina jod wala chandi ka kada pehne.
+ <br>4.Mangal Budh = Shani ke saanp ka vish, ya Mangal Budh
+ Shani ki yuti ho to Mrig chhala (hiran ki khaal) ko apne
+ paas rakhe (Mrig chhala par saanp nahi chadhta).
+ <br>5. Ketu ke bure prabhav ko door karne se labh hoga.
+ <br>6. Chandra jis bhav mein ho uska upay labhdayak hoga.
+ (Chandra aayu ka swami hai aur Mangal Baddh sabke liye
+ maut ka phanda hai. Jahan Chandra hoga wahan Mangal
+ Baddh nahi hoga. Jahan Mangal Baddh hoga wahan
+ Chandra nahi hoga.)
+ <br>7.Dharm Sthan Mein Batase Chadhana Mangal-Budh
+Shani Ke Anisht Prabhav Ko Door Karta Hai
+ Advance lalkitab
+Team Mahesh Mankar
+ <br>8.Pratidin Surya Ko Meetha Pani Dena Shubhfal Dayak
+ Hoga.
+ <br>9. Mangal Baddh Ke Samay Mandir Mein Jane Se Mangal
+ Baddh Ka Prabhav Nasht Ho Jayega.
+ <br>10. Pakshiyon Ko Rozana Kuch Meetha Daalain.
+ <br>11. Mehmanon Ko Meetha Avashya Dein.
+ <br>12. Rewdiya Jal Pravah Karein.
+ <br>13. Tandoor Lagi Roti Gareeb Ko Ya Kutte Ko Dein.
+ <br>14. Har Roz Subah Pani Se Daant Saaf Karein.
+ <br>15.Bhai Se Jhagda Na Karein.
+ <br>16. Hanuman Chalisa Ka Paath Karein.
+ <br>17. Chandi Ki Dibbi Mein Chawal Ya Jal Daal Kar Ghar
+ Mein Rakhein.
+ <br>18. Tambe ko dibbi mein saboot moong bhar kar apne ghar
+ mein rakhe.`;
+
+        $scope.cyclicRotateArray = function (arr, k) {
+            // Input validation: Check if arr is actually an array and has elements
+            if (!Array.isArray(arr) || arr.length === 0) {
+                console.warn("Input is not a valid non-empty array.");
+                return []; // Return empty array for invalid input
+            }
+
+            const n = arr.length;
+
+            // Normalize k: Handle rotations larger than the array length and zero rotation
+            // 1. k % n: finds the remainder, effective shift within one full cycle.
+            // 2. + n: ensures the result is non-negative if k % n was negative.
+            // 3. % n: brings it back into the [0, n-1] range if adding n made it >= n.
+            const effectiveK = ((k % n) + n) % n;
+
+            // If the effective rotation is 0, no shift is needed. Return a copy.
+            if (effectiveK === 0) {
+                return [...arr]; // Return a shallow copy
+            }
+
+            // Perform the rotation using array slicing and concatenation:
+            // slice(-effectiveK) extracts the last 'effectiveK' elements (the part that wraps around).
+            // slice(0, n - effectiveK) extracts the first 'n - effectiveK' elements (the part that shifts).
+            const rotatedPart = arr.slice(-effectiveK);
+            const remainingPart = arr.slice(0, n - effectiveK);
+
+            // Concatenate the wrapped part at the beginning and the shifted part after it.
+            return rotatedPart.concat(remainingPart);
+        }
+        var houseIndex = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        $scope.monthName = {
+            "1": "January", // Key: 1 (Month Number), Value: "January" (Month Name)
+            "2": "February", // Key: 2, Value: "February"
+            "3": "March", // Key: 3, Value: "March"
+            "4": "April", // Key: 4, Value: "April"
+            "5": "May", // Key: 5, Value: "May"
+            "6": "June", // Key: 6, Value: "June"
+            "7": "July", // Key: 7, Value: "July"
+            "8": "August", // Key: 8, Value: "August"
+            "9": "September", // Key: 9, Value: "September"
+            "10": "October", // Key: 10, Value: "October"
+            "11": "November", // Key: 11, Value: "November"
+            "12": "December" // Key: 12, Value: "December"
+        };
+        $scope.currentVarshMonth = $scope.selectedMonth;
+        $scope.rotateVarshphal = function (direction) {
+            var index;
+            if (direction == "left") {
+                index = -1;
+            }
+            else {
+                index = 1;
+            }
+            var currentMonth = parseInt($scope.currentVarshMonth);
+            var nextMonth = currentMonth - index;
+            if (nextMonth > 12) {
+                nextMonth = nextMonth - 12;
+            }
+            else if (nextMonth == 0) {
+                nextMonth = 12;
+            }
+            $scope.currentVarshMonth = nextMonth + "";
+            var rotatedHouse = $scope.cyclicRotateArray(houseIndex, index);
+            var rotatedVarshphal = JSON.parse(JSON.stringify($scope.varshphalChart));
+            houseIndex.forEach(function (hnumber, currIndex) {
+                rotatedVarshphal[rotatedHouse[currIndex]] = $scope.varshphalChart[houseIndex[currIndex]];
+            });
+            houseIndex = rotatedHouse;
+            $scope.varshphalChart = rotatedVarshphal;
+        }
+        var sleepingHouses = [];
+        /**
+ * Determines which houses are "Soya Hua" (Sleeping Houses) according to the specific
+ * rules listed for each house in sources [2] and [3].
+ *
+ * @param {Object<string, string[]>} planets - An object where keys are house numbers
+ *                                             (as strings '1' to '12') and values are
+ *                                             arrays of planet names (strings, e.g., 'Sun',
+ *                                             'Mercury', 'Saturn', 'Jupiter', 'Moon',
+ *                                             'Mars', 'Venus', 'Rahu', 'Ketu') present
+ *                                             in that house. Houses with no planets should
+ *                                             have an empty array value, e.g., { '1': [], ... }.
+ *                                             House keys must be strings '1' through '12'.
+ * @returns {number[]} An array of house numbers (integers 1 to 12) that are "Soya Hua".
+ */
+        function findSoyaHuaGhar(planets) {
+            const soyaHuaHouses = [];
+            const houseRemedyPlanet = {
+                1: 'Mars',
+                2: 'Moon',
+                3: 'Mercury',
+                4: 'Moon',
+                5: 'Sun',
+                6: 'Rahu',
+                7: 'Venus',
+                8: 'Moon',
+                9: 'Jupiter',
+                10: 'Saturn',
+                11: 'Jupiter',
+                12: 'Ketu',
+            };
+            // Helper function to check if a house is empty (no planets in it)
+            // Handles cases where the house key might be missing or value is undefined/null
+            const isHouseEmpty = (houseNum) => {
+                const housePlanets = planets[String(houseNum)].planets;
+                return housePlanets === undefined || housePlanets === null || housePlanets.length === 0;
+            };
+
+            // Helper function to check if a specific planet is in a house
+            const isPlanetInHouse = (planet, houseNum) => {
+                const housePlanets = planets[String(houseNum)].planets;
+                return housePlanets !== undefined && housePlanets !== null && housePlanets.includes(planet);
+            };
+
+            // Helper function to check if a specific planet is NOT in a house
+            const isPlanetNotInHouse = (planet, houseNum) => {
+                return !isPlanetInHouse(planet, houseNum);
+            };
+
+            // Check the specific conditions for each house (Sources [2] and [3])
+
+            // **1st House**
+            // Condition: No planet in the 1st House [2]
+            if (isHouseEmpty(1)) {
+                soyaHuaHouses.push("1 - Remedy for " + houseRemedyPlanet[1]);
+            }
+
+            // **2nd House**
+            // Condition: No planet in the 2nd House AND no planet in the 8th House AND no Saturn in the 6th House [2]
+            if (isHouseEmpty(2) && isHouseEmpty(8) && isPlanetNotInHouse('Saturn', 6)) {
+                soyaHuaHouses.push("2  - Remedy for " + houseRemedyPlanet[2]);
+            }
+
+            // **3rd House**
+            // Condition: No Planet in the 3rd House AND no Mercury in the 9th House [2]
+            if (isHouseEmpty(3) && isPlanetNotInHouse('Mercury', 9)) {
+                soyaHuaHouses.push("3  - Remedy for " + houseRemedyPlanet[3]);
+            }
+
+            // **4th House**
+            // Condition: No Planet in the 4th House [2]
+            if (isHouseEmpty(4)) {
+                soyaHuaHouses.push("4   - Remedy for " + houseRemedyPlanet[4]);
+            }
+
+            // **5th House**
+            // Condition: No Planet in the 5th House [2]
+            if (isHouseEmpty(5)) {
+                soyaHuaHouses.push("5   - Remedy for " + houseRemedyPlanet[5]);
+            }
+
+            // **6th House**
+            // Condition: No Planet in the 6th House AND no planet in the 2nd House AND no Mercury in the 12th House [2]
+            if (isHouseEmpty(6) && isHouseEmpty(2) && isPlanetNotInHouse('Mercury', 12)) {
+                soyaHuaHouses.push("6   - Remedy for " + houseRemedyPlanet[6]);
+            }
+
+            // **7th House**
+            // Condition: No Planet in the 7th House AND no Planet in the 1st House [2]
+            if (isHouseEmpty(7) && isHouseEmpty(1)) {
+                soyaHuaHouses.push("7   - Remedy for " + houseRemedyPlanet[7]);
+            }
+
+            // **8th House**
+            // Condition: No planet in the 8th House [2]
+            if (isHouseEmpty(8)) {
+                soyaHuaHouses.push("8  - Remedy for " + houseRemedyPlanet[8]);
+            }
+
+            // **9th House**
+            // Condition: No planet in the 9th House AND No planet in the 3rd House AND no Planet in the 5th House [3]
+            if (isHouseEmpty(9) && isHouseEmpty(3) && isHouseEmpty(5)) {
+                soyaHuaHouses.push("9   - Remedy for " + houseRemedyPlanet[9]);
+            }
+
+            // **10th House**
+            // Condition: No planet in the 10th House AND no planet in the 4th House [3]
+            if (isHouseEmpty(10) && isHouseEmpty(4)) {
+                soyaHuaHouses.push("10 -   - Remedy for " + houseRemedyPlanet[10]);
+            }
+
+            // **11th House**
+            // Condition: No planet in the 11th House AND no planet in the 3rd House [3]
+            if (isHouseEmpty(11) && isHouseEmpty(3)) {
+                soyaHuaHouses.push("11   - Remedy for " + houseRemedyPlanet[11]);
+            }
+
+            // **12th House**
+            // Condition: No planet in the 12th House AND no planet in the 6th House AND no planet in the 8th House [3]
+            if (isHouseEmpty(12) && isHouseEmpty(6) && isHouseEmpty(8)) {
+                soyaHuaHouses.push("12  - Remedy for " + houseRemedyPlanet[12]);
+            }
+
+            return soyaHuaHouses;
+        }
+
+
+        var awakeInPakkaGhar = [];
+        function detectSleepingPlanetsInfo(horoscope) {
+
+            const potentiallySleepingPendingAspectCheck = [];
+            // List of planets as typically used in Lal Kitab
+            const planets = sleepingPlanets;
+
+            // Define pakka ghars based on provided source [3]
+            const pakkaGhars = {
+                Sun: [1],
+                Mars: [3, 8],
+                Jupiter: [2, 5, 9, 12],
+                Moon: [4],
+                Mercury: [6, 7],
+                Venus: [7],
+                Saturn: [8, 10, 11],
+                Ketu: [6],
+                Rahu: [12]
+                // Rahu and Ketu pakka ghars are NOT listed in the provided source [3].
+                // Therefore, based *only* on this source, Rahu and Ketu cannot be identified
+                // as awake *due to being in their pakka ghar* by this function.
+                // Their potential sleeping status would depend solely on the (missing) aspect check.
+            };
+
+            for (const planet of planets) {
+                const currentHouse = horoscope[planet];
+
+                // Validate planet position input
+                if (currentHouse === undefined || typeof currentHouse !== 'number' || currentHouse < 1 || currentHouse > 12) {
+                    console.warn(`Warning: Position for ${planet} is missing, invalid, or outside 1-12 house range (${currentHouse}). Skipping this planet.`);
+                    continue; // Skip this planet if data is bad
+                }
+
+                // Check if the planet is in its pakka ghar based on source [3]
+                if (pakkaGhars[planet] && pakkaGhars[planet].includes(currentHouse)) {
+                    // A planet in its pakka ghar is always considered awake [3].
+                    awakeInPakkaGhar.push(planet);
+                    sleepingPlanets = sleepingPlanets.filter(splanet => splanet != planet);
+
+                }
+            }
+
+            return sleepingPlanets;
+        }
+        var masnuiResult = [];
+        function analyzeMasnuiGrahaForChart(birthChart) {
+            // Masnui Graha mapping
+            const masnuiMapping = {
+                "Jupiter": ["Sun", "Venus"],
+                "Sun": ["Mercury", "Venus"],
+                "Moon": ["Sun", "Jupiter"],
+                "Venus": ["Rahu", "Ketu"],
+                "Mars": ["Sun", "Mercury"],
+                "Mars (Badh)": ["Sun", "Saturn"],
+                "Mercury": ["Jupiter", "Rahu"],
+                "Saturn (Ketu Swabhav)": ["Venus", "Jupiter"],
+                "Saturn (Rahu Swabhav)": ["Mars", "Mercury"],
+                "Rahu (Ucch)": ["Saturn", "Mars"],
+                "Rahu (Neech)": ["Sun", "Saturn"],
+                "Ketu (Ucch)": ["Venus", "Saturn"],
+                "Ketu (Neech)": ["Moon", "Saturn"]
+            };
+
+            for (const masnuiGraha in masnuiMapping) {
+                var isMasnui = false;
+                var houseNumPrev = 0;
+                var hNext = 0;
+                masnuiMapping[masnuiGraha].forEach(function (mplanet) {
+                    hNext = birthChart[mplanet];
+                    if (houseNumPrev == hNext) {
+                        isMasnui = true;
+                    }
+                    else {
+                        isMasnui = false;
+                    }
+                    houseNumPrev = birthChart[mplanet];
+                });
+                if (isMasnui) {
+                    masnuiResult.push(masnuiMapping[masnuiGraha] + " are forming artificial " + masnuiGraha + " in House " + hNext);
+                }
+            }
+        }
+        var dhokaRelation = [];
+        var takkarRelation = [];
+        var helpRelation = [];
+        var seventhaspect = [];
+        function getNthAspect(nth, relation) {
+            var aspects = [];
+            let conditionMet = false;
+            // Iterate through each house in the Lagna Kundli
+            for (let i = 1; i <= 12; i++) {
+                const currentHouse = i;
+                const planetInCurrentHouse = houses[currentHouse].planets;
+
+                if (planetInCurrentHouse.length > 0) {
+                    // Calculate the 10th house from the current house
+                    // House numbers are 1-12. (i + nth) gives the nth house (1-indexed).
+                    // Use modulo 12 and adjust for house 12.
+                    let nthHouseIndex = (i + nth - 1);
+                    if (nthHouseIndex > 12) {
+                        nthHouseIndex -= 12;
+                    }
+                    const nthHouse = nthHouseIndex;
+                    const planetInNthHouse = houses[nthHouse].planets;
+
+                    // The condition is if there are planets in both houses [5].
+                    // Source example: "1st house Planet 10th house mein baite planet ko dhoka dega" [3]
+                    // And "2nd house ke planet ko dhoka 5th house mein baite planet dega AND 2nd house ka planet 11th house mein baite planet ko dhoka dega" [5].
+                    // This implies the relative placement is the key (10th from each other).
+                    // We just need to find *any* pair of houses X and X+9 (mod 12) that *both* contain planets.
+                    if (planetInNthHouse.length > 0) {
+
+                        if (relation == 'takkar (8th)') {
+                            aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse + ' Final Impact on ' + planetInNthHouse.map(planetInNthHouse => getKurbaniKeBakre(planetInNthHouse.toLowerCase())));
+                        }
+                        else if (relation == 'dhokha (10th)') {
+                            aspects.push(planetInNthHouse + ' in ' + nthHouse + ' will give ' + relation + ' to ' + planetInCurrentHouse);
+                        }
+                        else {
+                            aspects.push(planetInCurrentHouse + ' in ' + currentHouse + ' will give ' + relation + ' to ' + planetInNthHouse);
+                        }
+                    }
+                }
+            }
+            return aspects;
+        }
+
+        function calculateDhokeGrahaByAge(age, sunHouse, isFirstHouseVacant, housesInfo) {
+            // --- Input Validation ---
+            if (typeof age !== 'number' || !Number.isInteger(age) || age <= 0) {
+                console.error("Invalid input: age must be a positive integer.");
+                return null;
+            }
+            if (typeof sunHouse !== 'number' || !Number.isInteger(sunHouse) || sunHouse < 1 || sunHouse > 12) {
+                console.error("Invalid input: sunHouse must be an integer between 1 and 12.");
+                return null;
+            }
+            if (typeof isFirstHouseVacant !== 'boolean') {
+                console.error("Invalid input: isFirstHouseVacant must be a boolean.");
+                return null;
+            }
+            // --- End Validation ---
+            var H8 = housesInfo["8"].planets.length < 1 ? "Mars and Saturn" : housesInfo["8"].planets;
+            var H9 = housesInfo["9"].planets.length < 1 ? "Jupiter" : housesInfo["9"].planets;
+            var H12 = housesInfo["12"].planets.length < 1 ? "Jupiter" : housesInfo["12"].planets;
+            // Base sequence of planets according to the source [1]
+            // H8, H9, H12 are part of this specific sequence structure [1, 3]
+            const planetsSequence = ["Sun", "Mooon", "Ketu", "Mars", "Mercury", "Saturn", "Rahu", H8, H9, "Jupiter", "Venus", H12];
+            const sequenceLength = planetsSequence.length; // Which is 12
+
+            // Determine the 0-based index for the house number corresponding to the age
+            // Ages 1-12 map to houses 1-12, Ages 13-24 map to houses 1-12 again, etc. [3]
+            // (age - 1) gives 0 for age 1, 11 for age 12, 12 for age 13, etc.
+            // (age - 1) % 12 gives the 0-based index relative to the 1-12 house cycle.
+            const ageHouseIndex = age > 12 ? age % 12 : age;
+
+            // Determine the effective starting house number (1-12) for the planet sequence rotation.
+            // By default, the sequence starts from the house where the Sun is placed [2].
+            // However, there are special conditions if the 1st house is vacant [4].
+            let effectiveStartHouse = sunHouse;
+
+            if (isFirstHouseVacant) {
+                // If 1st house is vacant AND Sun is in 9th, sequence starts effectively from house 6 [4]
+                if (sunHouse === 9) {
+                    effectiveStartHouse = 6;
+                }
+                // If 1st house is vacant AND Sun is in 7th, sequence starts effectively from house 5 [4]
+                else if (sunHouse === 7) {
+                    effectiveStartHouse = 5;
+                }
+                // If 1st is vacant but Sun is in any other house, the sources don't specify a change
+                // from the general rule, so we assume it starts from the actual sunHouse [2].
+            }
+
+            // Determine the 0-based index in the base sequence where the effective start house corresponds to the first element (Su)
+            // The element at index `i` in `planetsSequence` is placed in the house `(effectiveStartHouse - 1 + i) % 12 + 1`.
+            // We need to find which index `resultIndex` in `planetsSequence` falls into the house corresponding to the age (which is house `ageHouseIndex + 1`).
+            // So, we solve for `resultIndex`: (effectiveStartHouse - 1 + resultIndex) % 12 = ageHouseIndex
+            // Rearranging: resultIndex = (ageHouseIndex - (effectiveStartHouse - 1) + 12) % 12
+            // resultIndex = (ageHouseIndex - effectiveStartHouse + 1 + 12) % 12
+            const effectiveStartIndex = effectiveStartHouse;
+            const resultIndex = (ageHouseIndex - effectiveStartIndex + sequenceLength) % sequenceLength; // Add sequenceLength before modulo to handle negative results
+
+            // The Dhoke ke Graha is the planet at the calculated index in the base sequence
+            const dhokeGraha = planetsSequence[resultIndex];
+
+            return dhokeGraha;
+        }
+        var ageDhokaPlanet = "";
+        var planetPositionsSnapshot;
+        $scope.calculateDhokha = function (snapshot) {
+            planetPositionsSnapshot = snapshot;
+            var isFirstHouseVacant = false;
+            if (houses["1"].planets.length == 0) {
+                isFirstHouseVacant = true;
+            }
+            ageDhokaPlanet = calculateDhokeGrahaByAge($scope.varshphalAge, snapshot["Sun"], isFirstHouseVacant, houses);
+            return ageDhokaPlanet;
+        }
+
+
+        function findPlanetAtNthAspect(horoscope, planetName, n) {
+            // --- Input Validation ---
+            if (
+                typeof horoscope !== 'object' ||
+                horoscope === null ||
+                typeof planetName !== 'string' ||
+                !horoscope.hasOwnProperty(planetName) ||
+                typeof n !== 'number' ||
+                !Number.isInteger(n) ||
+                n <= 0
+            ) {
+                console.error(
+                    'Invalid input: Please provide a valid horoscope object, planet name (present in horoscope), and a positive integer for n.'
+                );
+                return null; // Return null for invalid input
+            }
+
+            // --- Calculation ---
+            const planetHouse = horoscope[planetName];
+
+            // Validate house number
+            if (
+                !Number.isInteger(planetHouse) ||
+                planetHouse < 1 ||
+                planetHouse > 12
+            ) {
+                console.error(
+                    `Invalid house number (${planetHouse}) for planet ${planetName}. House must be between 1 and 12.`
+                );
+                return null;
+            }
+
+            // Calculate the target house number.
+            // (planetHouse + n - 1) gives the target position if houses were infinite.
+            // We use modulo 12 to wrap around.
+            // Since modulo 12 gives results 0-11, and we need 1-12:
+            // 1. Subtract 1 from planetHouse to work with 0-11 index.
+            // 2. Add (n - 1) because aspect counting is inclusive.
+            // 3. Take modulo 12.
+            // 4. Add 1 to shift back to 1-12 range.
+            // Example: House 1, 7th aspect: (1 - 1 + 7 - 1) % 12 + 1 = 6 % 12 + 1 = 7
+            // Example: House 8, 10th aspect: (8 - 1 + 10 - 1) % 12 + 1 = 16 % 12 + 1 = 4 + 1 = 5
+            // Example: House 6, 7th aspect: (6 - 1 + 7 - 1) % 12 + 1 = 11 % 12 + 1 = 11 + 1 = 12
+            const targetHouse = ((planetHouse - 1 + (n - 1)) % 12) + 1;
+
+            // --- Find Planet in Target House ---
+            // Iterate through the horoscope to find which planet occupies the target house.
+            for (const [otherPlanet, house] of Object.entries(horoscope)) {
+                if (house === targetHouse) {
+                    // Ensure we don't return the original planet if n is a multiple of 12 (aspecting itself)
+                    // Although astrologically aspects usually aren't 12, 24 etc.
+                    if (otherPlanet === planetName && n % 12 === 0) {
+                        continue; // Skip if it's the same planet due to full cycle aspect
+                    }
+                    if (house === targetHouse) {
+                        return otherPlanet; // Found the planet in the target house
+                    }
+                }
+            }
+
+            // --- No Planet Found ---
+            return null; // No planet found in the target house
+        }
+        var planetaryAspects = [];
+        function calculateAllPlanetAspects(horoscope) {
+            // Aspect rules provided by the user
+            const aspectRules = {
+                Sun: [7],
+                Mars: [4, 7, 8],
+                Jupiter: [5, 7, 9],
+                Moon: [7],
+                Mercury: [7],
+                Venus: [7],
+                Saturn: [3, 7, 10],
+                Ketu: [7],
+                Rahu: [7]
+            };
+            // --- Input Validation ---
+            if (
+                typeof horoscope !== 'object' ||
+                horoscope === null ||
+                Object.keys(horoscope).length === 0
+            ) {
+                console.error('Invalid input: Horoscope object is required.');
+                return null;
+            }
+            if (
+                typeof aspectRules !== 'object' ||
+                aspectRules === null ||
+                Object.keys(aspectRules).length === 0
+            ) {
+                console.error('Invalid input: Aspect rules object is required.');
+                return null;
+            }
+
+            const allAspectResults = {};
+            // Pre-calculate a map from house number to planet name for faster lookups
+            const houseToPlanetMap = {};
+            for (const [planet, house] of Object.entries(horoscope)) {
+                // Basic validation for house numbers within the loop
+                if (Number.isInteger(house) && house >= 1 && house <= 12) {
+                    // Handle multiple planets in the same house if necessary (though less common)
+                    // For simplicity, this example assumes one planet per house or overwrites.
+                    // A more robust solution might store an array of planets per house.
+                    houseToPlanetMap[house] = planet;
+                } else {
+                    console.warn(`Planet ${planet} has invalid house ${house} in horoscope. Skipping.`);
+                }
+            }
+
+
+            // Iterate through each planet in the horoscope (the aspecting planet)
+            for (const aspectingPlanet in horoscope) {
+                if (!horoscope.hasOwnProperty(aspectingPlanet)) {
+                    continue; // Skip inherited properties
+                }
+
+                // Check if this planet has defined aspect rules
+                if (aspectRules.hasOwnProperty(aspectingPlanet)) {
+                    const aspectNumbers = aspectRules[aspectingPlanet];
+
+                    // Validate the aspect numbers array
+                    if (!Array.isArray(aspectNumbers)) {
+                        console.warn(`Aspect rules for ${aspectingPlanet} is not an array. Skipping.`);
+                        continue;
+                    }
+
+                    allAspectResults[aspectingPlanet] = []; // Initialize array for this planet's aspects
+
+                    const planetHouse = horoscope[aspectingPlanet];
+                    // Validate house number before proceeding
+                    if (!Number.isInteger(planetHouse) || planetHouse < 1 || planetHouse > 12) {
+                        console.warn(`Invalid house number (${planetHouse}) for aspecting planet ${aspectingPlanet}. Skipping aspects.`);
+                        continue; // Skip aspects for this planet if its house is invalid
+                    }
+
+
+                    // Iterate through each aspect number defined for this planet
+                    for (const n of aspectNumbers) {
+                        if (typeof n !== 'number' || !Number.isInteger(n) || n <= 0) {
+                            console.warn(`Invalid aspect number ${n} for ${aspectingPlanet}. Skipping this aspect.`);
+                            continue;
+                        }
+
+                        // Calculate the target house
+                        const targetHouse = ((planetHouse - 1 + (n - 1)) % 12) + 1;
+
+                        // Find which planet (if any) is in the target house using the map
+                        const aspectedPlanet = houseToPlanetMap[targetHouse] || null;
+
+                        // Store the result for this specific aspect
+                        allAspectResults[aspectingPlanet].push({
+                            aspectNumber: n,
+                            targetHouse: targetHouse,
+                            aspectedPlanet: aspectedPlanet,
+                        });
+                    }
+                }
+                // else {
+                // Optional: Handle planets in the horoscope but not in aspectRules
+                // console.log(`No aspect rules defined for ${aspectingPlanet}.`);
+                // }
+            }
+            var allAspects = allAspectResults;
+            console.log("\n--- Calculated Aspects Results ---");
+            // Pretty print the results
+            if (allAspects) {
+                for (const planet in allAspects) {
+                    console.log(`\n${planet} (in House ${horoscope[planet]}) aspects:`);
+                    if (allAspects[planet].length === 0) {
+                        planetaryAspects.push(planet + "  (None based on provided rules)");
+                    } else {
+                        allAspects[planet].forEach(aspect => {
+                            console.log(`${planet}  - ${aspect.aspectNumber}th aspect to House ${aspect.targetHouse} (Contains: ${aspect.aspectedPlanet || 'Empty'})`);
+                            planetaryAspects.push(`${planet}  - ${aspect.aspectNumber}th aspect to House ${aspect.targetHouse} (Contains: ${aspect.aspectedPlanet || 'Empty'})`)
+                        });
+                    }
+                }
+            } else {
+                console.log("Calculation failed due to invalid input.");
+            }
+
+        }
+
+        $scope.closeDesc = function () {
+            document.getElementById('planet-info').innerHTML = '';
+            document.getElementById('house-info').innerHTML = '';
+            document.getElementById('planet-info').display = 'none';
+            document.getElementById('house-info').display = 'none';
+        }
+
+
+        function getKurbaniKeBakre(planetName) {
+            const normalizedPlanet = planetName.trim().toLowerCase();
+
+            switch (normalizedPlanet) {
+                case 'saturn': // Shani
+                    // When Saturn faces trouble (e.g., conflict with Sun), it involves Rahu and Ketu [1].
+                    // Rahu and Ketu are called Saturn's agents [2].
+                    // Rahu and Ketu combined form artificial Venus [2].
+                    // They pass the trouble onto Venus [1].
+                    // Neither Sun nor Saturn are harmed in their conflict because they are father and son [1].
+                    // In this scenario, Venus becomes the sacrifice goat [1].
+                    return "Venus (via Rahu and Ketu)"; // Based on sources [1, 2]
+                case 'mercury': // Budh
+                    // Mercury is described as clever, changing, and slippery, like quicksilver [3].
+                    // Mercury and Venus are considered friends [3].
+                    // However, when Mercury faces trouble, it puts its problems onto Venus and saves itself [3].
+                    // It does not maintain friendship well in this situation [3].
+                    return "Venus"; // Based on source [3]
+                case 'mars': // Mangal
+                    // If Mars is inauspicious, its bad effect falls on Ketu [3].
+                    // Mars has made Ketu its sacrifice goat [3].
+                    // If considering artificial planets, Mangalbad (formed by Sun and Saturn) puts its bad effect on its son, Ketu [4].
+                    // Jupiter and Mars are lords of justice [5].
+                    // When they are in trouble themselves, they sacrifice Ketu [5].
+                    return "Ketu"; // Based on sources [3-5]
+                case 'venus': // Shukra
+                    // Venus has chosen Moon as its sacrifice [4].
+                    // Venus is described as having a mischievous nature ("aurat shaitaan swabhav") [4].
+                    // It puts its own problems or ill effects ("bala ya musibat") onto Moon, which represents the native's mother [4].
+                    return "Moon"; // Based on source [4]
+                case 'jupiter': // Brihaspati / Guru
+                    // Ketu is called the follower ("chela") of Jupiter [6].
+                    // Therefore, Ketu has to be the sacrifice goat for Jupiter [6].
+                    // When Jupiter is badly affected, it puts its trouble onto Ketu [6].
+                    // For example, if Jupiter is in house 5 and Ketu is elsewhere, and an inauspicious dasha of Jupiter comes,
+                    // the result of Ketu's house (house 6) becomes inauspicious [6].
+                    // Jupiter and Mars are lords of justice [5].
+                    // When they are in trouble themselves, they sacrifice Ketu [5].
+                    return "Ketu"; // Based on sources [5, 6]
+                case 'sun': // Surya
+                    // Sun also puts its bad effect on Ketu when it is in trouble [7].
+                    return "Ketu"; // Based on source [7]
+                case 'moon': // Chandra
+                    // Moon's friend planets are Jupiter, Mars, and Sun [8].
+                    // Moon saves itself from bad situations by putting some effect ("thoda-thoda asar") on Jupiter, Mars, and Sun [8].
+                    // The sources do not identify a single "bakra" for Moon; it distributes the effect [8].
+                    return "Spreads effect among friends (Jupiter, Mars, Sun). No single bakra identified."; // Based on source [8]
+                case 'rahu':
+                case 'ketu':
+                    // Rahu and Ketu are planets that bear their own troubles [8].
+                    // They do not transfer their problems onto others [8].
+                    // When Rahu or Ketu are in trouble, things related to these planets (like business or relatives) can be affected [8].
+                    // For example, if Rahu is bad, the native's brother-in-law or sister's husband can be affected [8].
+                    // If Ketu is bad, the son can be affected, or there might be problems in the feet [8].
+                    return "Bears its own trouble. Does not designate a bakra."; // Based on source [8]
+                default:
+                    // Handles cases for planet names not explicitly covered in the source excerpts
+                    return "Information about a 'Kurbani ka bakra' for this planet is not provided in the given sources.";
+            }
+        }
+
+
+        // Data structure for Age Wise 35 Year Cycle (Main periods) from Sources [2, 3]
+        const mainCyclePeriods = [
+            { startAge: 1, endAge: 6, rulingPlanet: "Saturn", duration: 6 },
+            { startAge: 7, endAge: 12, rulingPlanet: "Rahu", duration: 6 },
+            { startAge: 13, endAge: 15, rulingPlanet: "Ketu", duration: 3 },
+            { startAge: 16, endAge: 21, rulingPlanet: "Jupiter", duration: 6 },
+            { startAge: 22, endAge: 23, rulingPlanet: "Sun", duration: 2 },
+            { startAge: 24, endAge: 24, rulingPlanet: "Moon", duration: 1 },
+            { startAge: 25, endAge: 27, rulingPlanet: "Venus", duration: 3 },
+            { startAge: 28, endAge: 33, rulingPlanet: "Mars", duration: 6 },
+            { startAge: 34, endAge: 35, rulingPlanet: "Mercury", duration: 2 }
+        ];
+
+        // Data structure for Antardasha (Dohra) periods from Source [7]
+        // Durations are in years (fractional for months: 8m = 8/12, 4m = 4/12)
+        const antardashaMapping = {
+            "Saturn": [{ planet: "Rahu", duration: 2 }, { planet: "Mercury", duration: 2 }, { planet: "Saturn", duration: 2 }], // Sum 6
+            "Rahu": [{ planet: "Mars", duration: 2 }, { planet: "Ketu", duration: 2 }, { planet: "Rahu", duration: 2 }], // Sum 6
+            "Ketu": [{ planet: "Saturn", duration: 1 }, { planet: "Rahu", duration: 1 }, { planet: "Ketu", duration: 1 }], // Sum 3
+            "Jupiter": [{ planet: "Ketu", duration: 1 }, { planet: "Jupiter", duration: 2 }, { planet: "Sun", duration: 2 }], // Sum 5 (Note: Source [2, 3] says Jupiter is 6 years, but source [7] dohras sum to 5)
+            "Sun": [{ planet: "Sun", duration: 8 / 12 }, { planet: "Moon", duration: 8 / 12 }, { planet: "Mars", duration: 8 / 12 }], // Sum 2 (approx)
+            "Moon": [{ planet: "Jupiter", duration: 4 / 12 }, { planet: "Sun", duration: 4 / 12 }, { planet: "Moon", duration: 4 / 12 }], // Sum 1 (approx)
+            "Venus": [{ planet: "Mars", duration: 1 }, { planet: "Venus", duration: 1 }, { planet: "Mercury", duration: 1 }], // Sum 3
+            "Mars": [{ planet: "Mars", duration: 2 }, { planet: "Saturn", duration: 2 }, { planet: "Venus", duration: 2 }], // Sum 6
+            "Mercury": [{ planet: "Moon", duration: 8 / 12 }, { planet: "Mars", duration: 8 / 12 }, { planet: "Jupiter", duration: 8 / 12 }] // Sum 2 (approx)
+        };
+
+        var saalaChakkar = [];
+        /**
+         * Calculates the current status (Main Dasha and Antardasha/Dohra) within the Lal Kitab 35-year cycle based on age.
+         * This function uses the fixed age-wise mapping from sources [2, 3] and applies the Antardasha (Dohra) logic
+         * from source [7] sequentially within those age ranges.
+         * NOTE: This function follows the Age Wise table [2, 3] and does NOT incorporate the birth time planet
+         * logic for determining the dasha start as mentioned in sources [1, 4, 6].
+         *
+         * @param {number} age - The age of the person (a positive integer). The calculation is for the start of this age year.
+         * @returns {{age: number, cycleNumber: number, cycleAge: number, mainDasha: {rulingPlanet: string|null, duration: number|null, ageRangeInCycle: string|null, startCycleAge: number|null}, antardasha: {completedYearsInMainPeriod: number|null, rulingPlanet: string|null, duration: number|null, dohraNumber: number|null}, notes?: string[]}|string} - An object detailing the cycle status, or an error message string if the age is invalid or status cannot be determined from sources.
+         */
+        $scope.getLalKitab35YearCycleStatusWithAntardasha = function (age) {
+            // Validate input: age must be a positive integer.
+            if (typeof age !== 'number' || !Number.isInteger(age) || age <= 0) {
+                return "Invalid age provided. Age must be a positive integer.";
+            }
+
+            // Determine the current 35-year cycle number [1].
+            // Ages 1-35 are Cycle 1, 36-70 are Cycle 2, etc.
+            const cycleNumber = Math.ceil(age / 35);
+
+            // Calculate the effective age within the 1-35 year cycle structure [1].
+            // This is the age within the current 35-year block (e.g., age 36 maps to cycleAge 1, age 37 to cycleAge 2, age 70 to cycleAge 35).
+            const cycleAge = (age - 1) % 35 + 1;
+
+            let mainDashaInfo = {
+                rulingPlanet: null,
+                mainDashaDuration: null,
+                ageRangeInCycle: null,
+                startCycleAge: null // Needed to calculate progress within the main dasha
+            };
+
+            // Determine the ruling planet (Main Dasha) based on the cycleAge using the Age Wise table [2, 3].
+            const currentPeriod = mainCyclePeriods.find(period => cycleAge >= period.startAge && cycleAge <= period.endAge);
+
+            if (currentPeriod) {
+                mainDashaInfo.rulingPlanet = currentPeriod.rulingPlanet;
+                mainDashaInfo.mainDashaDuration = currentPeriod.duration;
+                mainDashaInfo.ageRangeInCycle = `${currentPeriod.startAge}-${currentPeriod.endAge}`;
+                mainDashaInfo.startCycleAge = currentPeriod.startAge;
+            } else {
+                // This case should logically not be reached with a positive integer age due to the modulo operation covering 1-35.
+                return "Error: Could not determine main dasha status for this age within the 35-year cycle logic derived from sources [2, 3].";
+            }
+
+            // --- Antardasha (Darmyaani Grah) Calculation --- [3, 7]
+
+            let antardashaInfo = {
+                completedYearsInMainPeriod: null, // Number of full years completed since the start of the main Dasha period
+                rulingPlanet: null,
+                duration: null, // Duration of the specific Antardasha segment from the table [7]
+                dohraNumber: null, // 1, 2, or 3 (Pehla, Dusra, Teesra dohra) [7]
+                notes: []
+            };
+
+            // Calculate the number of *full* years completed within the current main Dasha period.
+            // Age 16 (cycleAge 16) is the start of the 1st year of Jupiter period -> 16 - 16 = 0 completed years.
+            // Age 17 (cycleAge 17) is the start of the 2nd year of Jupiter period -> 17 - 16 = 1 completed year.
+            const completedYearsInMainPeriod = cycleAge - mainDashaInfo.startCycleAge;
+            antardashaInfo.completedYearsInMainPeriod = completedYearsInMainPeriod;
+
+
+            const dohraSequence = antardashaMapping[mainDashaInfo.rulingPlanet];
+
+            if (dohraSequence && dohraSequence.length > 0) {
+                let cumulativeDuration = 0;
+                let totalDohraDuration = dohraSequence.reduce((sum, dohra) => sum + dohra.duration, 0);
+                let antardashaFound = false;
+
+                // Determine which Antardasha segment the current completed year falls into.
+                // Segments are [start, end). The last segment is [start, end] if completedYears equals total duration.
+                for (let i = 0; i < dohraSequence.length; i++) {
+                    const dohra = dohraSequence[i];
+                    const segmentStart = cumulativeDuration;
+                    const segmentEnd = cumulativeDuration + dohra.duration;
+
+                    // Check if completedYearsInMainPeriod falls into the segment [segmentStart, segmentEnd)
+                    if (completedYearsInMainPeriod >= segmentStart && completedYearsInMainPeriod < segmentEnd) {
+                        antardashaInfo.rulingPlanet = dohra.planet;
+                        antardashaInfo.duration = dohra.duration;
+                        antardashaInfo.dohraNumber = i + 1;
+                        antardashaFound = true;
+                        break; // Found the current Antardasha
+                    }
+                    cumulativeDuration = segmentEnd;
+                }
+
+                // Special handling for the boundary case where completedYearsInMainPeriod equals
+                // the total listed duration, assigning it to the last dohra.
+                if (!antardashaFound && completedYearsInMainPeriod === totalDohraDuration) {
+                    const lastDohra = dohraSequence[dohraSequence.length - 1];
+                    antardashaInfo.rulingPlanet = lastDohra.planet;
+                    antardashaInfo.duration = lastDohra.duration;
+                    antardashaInfo.dohraNumber = dohraSequence.length;
+                    antardashaFound = true;
+                    antardashaInfo.notes.push("Age falls exactly at the end boundary of the total defined Antardasha durations for this planet in Source [7]. Assigned to the last defined dohra.");
+                }
+
+
+                // Note discrepancy for Jupiter if applicable, based on source data [2, 3, 7]
+                if (mainDashaInfo.rulingPlanet === "Jupiter" && mainDashaInfo.mainDashaDuration === 6 && totalDohraDuration === 5) {
+                    antardashaInfo.notes.push(`Note: Source [7] lists Antardasha durations for Jupiter summing to ${totalDohraDuration} years, while Source [2, 3] states the Jupiter main period is ${mainDashaInfo.mainDashaDuration} years. Status for completed years >= ${totalDohraDuration} within the Jupiter period is not explicitly defined by the dohra durations in Source [7], except for the boundary case handled.`);
+                }
+
+
+                // If Antardasha was still not found (should not happen if completedYears <= totalDohraDuration,
+                // unless there's a floating point issue or data inconsistency beyond the Jupiter note)
+                if (!antardashaFound) {
+                    antardashaInfo.notes.push("Antardasha could not be determined based on completed years within the main period and the durations listed in Source [7]. This might indicate an issue with the input age or the Antardasha mapping logic based on the sources.");
+                }
+
+
+            } else {
+                antardashaInfo.notes.push(`Antardasha sequence data not found for ruling planet: ${mainDashaInfo.rulingPlanet} in Source [7].`);
+            }
+
+            saalaChakkar.push('Age: ' + age);
+            saalaChakkar.push('cycleNumber: ' + cycleNumber);
+            saalaChakkar.push('cycleAge: ' + cycleAge);
+            saalaChakkar.push('mainDasha: ' + mainDashaInfo.rulingPlanet);
+            saalaChakkar.push('antardasha: ' + antardashaInfo.rulingPlanet);
+            saalaChakkar.push('notes: ' + antardashaInfo.notes);
+
+            console.log({
+                age: age,
+                cycleNumber: cycleNumber, // The current 35-year cycle number (e.g., 1st, 2nd) [1]
+                cycleAge: cycleAge,       // The equivalent age within the 1-35 year structure [1]
+                mainDasha: mainDashaInfo, // Information about the main ruling period (Age Wise) [2, 3]
+                antardasha: antardashaInfo, // Information about the sub-period (Darmyaani grah / Dohra) [3, 7]
+                notes: antardashaInfo.notes // Any specific notes about determination, like discrepancies [7]
+            });
+            // Combine results
+            return saalaChakkar;
+        }
+
+        /**
+         * Determines the starting planet for the Lal Kitab 35-year dasha cycle
+         * based on the birth time and Lalkitab Planet Hora timings from the sources.
+         *
+         * @param {number} birthHour - The hour of birth (0-23).
+         * @param {number} birthMinute - The minute of birth (0-59).
+         * @param {number} [sunriseHour] - Optional: The hour of sunrise (0-23) for the birth date and location.
+         * @param {number} [sunriseMinute] - Optional: The minute of sunrise (0-59) for the birth date and location.
+         * @param {number} [sunsetHour] - Optional: The hour of sunset (0-23) for the birth date and location.
+         * @param {number} [sunsetMinute] - Optional: The minute of sunset (0-59) for the birth date and location.
+         * @returns {string} The name of the starting planet, or a string indicating ambiguity/missing data.
+         */
+        function getLalKitabHoraPlanet(birthHour, birthMinute, sunriseHour, sunriseMinute, sunsetHour, sunsetMinute) {
+            'use strict';
+
+            // Convert birth time to total minutes from midnight
+            const totalMinutes = birthHour * 60 + birthMinute;
+            const endOfDay = 24 * 60; // 1440 minutes
+
+            // Define fixed boundary times in minutes from midnight based on Source [5]
+            const boundary4am = 4 * 60;     // 240
+            const boundary8am = 8 * 60;     // 480
+            const boundary10am = 10 * 60;   // 600
+            const boundary11am = 11 * 60;   // 660
+            const boundary1pm = 13 * 60;    // 780
+            const boundary3pm = 15 * 60;    // 900
+            const boundary5pm = 17 * 60;    // 1020
+
+            // Check if optional Sunrise/Sunset data is provided
+            const hasSunriseSunset = sunriseHour !== undefined && sunriseMinute !== undefined &&
+                sunsetHour !== undefined && sunsetMinute !== undefined;
+
+            let totalSunriseMinutes = -1;
+            let totalSunsetMinutes = -1;
+            if (hasSunriseSunset) {
+                totalSunriseMinutes = sunriseHour * 60 + sunriseMinute;
+                totalSunsetMinutes = sunsetHour * 60 + sunsetMinute;
+            }
+
+            // Helper function to check if a time falls within a potentially wrapped interval [start, end)
+            // Used for intervals that cross midnight, like 5 PM to 4 AM.
+            function isInInterval(time, start, end) {
+                if (start <= end) {
+                    // Simple interval [start, end)
+                    return time >= start && time < end;
+                } else {
+                    // Wrapped interval [start, end) is [start, endOfDay) U [0, end)
+                    return time >= start || time < end;
+                }
+            }
+
+            // 1. Check fixed daytime hours (8 am to 5 pm) - These generally do not depend on Sunrise/Sunset relative timings based on the source [5].
+            if (totalMinutes >= boundary8am && totalMinutes < boundary10am) {
+                return 'Sun'; // 8:00 am to 10:00 am [5]
+            } else if (totalMinutes >= boundary10am && totalMinutes < boundary11am) {
+                return 'Moon'; // 10:00 am to 11:00 am [5]
+            } else if (totalMinutes >= boundary11am && totalMinutes < boundary1pm) {
+                return 'Mercury'; // 11:00 am to 1:00 pm [5]
+            } else if (totalMinutes >= boundary1pm && totalMinutes < boundary3pm) {
+                return 'Mars'; // 1:00 pm to 3:00 pm [5]
+            } else if (totalMinutes >= boundary3pm && totalMinutes < boundary5pm) {
+                return 'Venus'; // 3:00 pm to 5:00 pm [5]
+            }
+
+            // 2. Check times dependent on Sunrise/Sunset (4 am to 8 am, and 5 pm to 4 am next day)
+            if (hasSunriseSunset) {
+                // Jupiter/Ketu window: 4 am to 8 am [5]
+                if (totalMinutes >= boundary4am && totalMinutes < boundary8am) {
+                    // Ketu: 4:00 am to Sunrise [5]
+                    if (totalMinutes >= boundary4am && totalMinutes < totalSunriseMinutes) {
+                        return 'Ketu';
+                    }
+                    // Jupiter: Sunrise to 8:00 am [5]
+                    if (totalMinutes >= totalSunriseMinutes && totalMinutes < boundary8am) {
+                        return 'Jupiter';
+                    }
+                    // Edge case within 4am-8am not covered by standard Ketu/Jupiter split based on provided SS
+                    return 'Time within 4am-8am window, but Hora unclear based on provided Sunrise time';
+                }
+
+                // Night window: 5 pm to 4 am (next day) [5], potentially involving Rahu and Saturn
+                // This range wraps around midnight. The interval is [boundary5pm, endOfDay) U [0, boundary4am)
+                const nightIntervalStarts = boundary5pm; // 1020
+                const nightIntervalEnds = boundary4am;   // 240 (interpreted as 4am *next* day)
+
+                if (isInInterval(totalMinutes, nightIntervalStarts, nightIntervalEnds)) {
+                    // Within the general night period (5 pm to 4 am next day)
+                    const rahuStartTime = totalSunsetMinutes + 120; // Rahu starts 2 hours after sunset [5]
+                    const rahuDuration = 120; // **ASSUMPTION**: Rahu Hora lasts 2 hours. Source [5] only says "Rahu 2hrs after sunset".
+                    const rahuEndTime = rahuStartTime + rahuDuration;
+
+                    // Check if time is within the Rahu window (handling wrap-around for Rahu window itself)
+                    if (isInInterval(totalMinutes, rahuStartTime % endOfDay, rahuEndTime % endOfDay)) {
+                        return 'Rahu (based on assuming 2-hour duration starting 2 hrs after sunset)'; // Note assumption
+                    }
+
+                    // If not Rahu and within the night interval, it's Saturn [5] ("Saari raat")
+                    return 'Saturn';
+                }
+
+            } else {
+                // Sunrise/Sunset not provided. Handle times outside fixed 8 am - 5 pm ranges with ambiguity.
+                if (totalMinutes >= boundary4am && totalMinutes < boundary8am) {
+                    return 'Ketu/Jupiter (Needs Sunrise)'; // 4:00 am to 8:00 am [5]
+                } else if (totalMinutes >= boundary5pm || totalMinutes < boundary4am) {
+                    // This covers 5:00 pm onwards, wrapping around midnight until 4:00 am
+                    // Saturn is "Saari raat", Rahu is "2 hrs after sunset". [5]
+                    return 'Saturn/Rahu (Needs Sunset/Sunrise)'; // Night hours [5]
+                }
+            }
+
+            // If none of the above ranges match, there might be a gap in the defined ranges or an input issue.
+            // Based on the provided boundaries (4, 8, 10, 11, 13, 15, 17), all 24 hours *should* be covered
+            // either by fixed ranges, SS-dependent ranges, or the night range. This return
+            // should theoretically not be reached with valid inputs and exhaustive ranges.
+            return 'Could not determine Hora planet based on defined time ranges.';
+        }
+        // console.log(`Birth Time: 14:30, Planet: ${getLalKitabHoraPlanet(14, 30)}`); // Expected: Mars [5]
+
+        /**
+         * Predicts the effect of Ketu on travel (Yatra ka Phal) based on its placement
+         * in the varshphal chart, drawing position data from the input 'houses' object.
+         *
+         * @param {object} houses An object containing detailed house information (Khana numbers 1-12).
+         * @returns {string} The predicted travel outcome and associated conditions, or an error message.
+         */
+        $scope.predictKetuTravelEffectVarshphal = function(houses) {
+
+            let ketuHouse = null;
+            const houseKeys = Object.keys(houses);
+
+            // Step 1: Find Ketu's Position
+            for (const houseNumber of houseKeys) {
+                if (houses[houseNumber] && houses[houseNumber].planets.includes("Ketu")) {
+                    ketuHouse = parseInt(houseNumber);
+                    break;
+                }
+            }
+
+            // Helper function to check if a specific house is empty
+            const isHouseEmpty = (houseNum) => {
+                const houseData = houses[String(houseNum)];
+                return houseData && houseData.planets.length === 0;
+            };
+
+            // Helper function to check if a specific house has any planet
+            const isHouseOccupied = (houseNum) => {
+                const houseData = houses[String(houseNum)];
+                return houseData && houseData.planets.length > 0;
+            };
+
+            if (ketuHouse === null) {
+                return "Error: Ketu position was not found in the provided houses object.";
+            }
+
+            // Step 2: Determine Travel Prediction based on Ketu's Khana
+            switch (ketuHouse) {
+                case 1:
+                    // Ketu Khana Number 1
+                    return "Ketu Khana number 1: Yatra ki tayari ho jati hai aur orders bhi diye jate hain, lekin aakhir mein yatra nahi hoti [2]. Agar hoti bhi hai, toh wapas aana padta hai [2]. 100 din ki yatra ko yatra nahi maana jata [2]. Yatra purab (East) ki taraf hogi [2].";
+
+                case 2:
+                    // Ketu Khana Number 2
+                    let h2_result = "Ketu Khana number 2: Agar progress milti hai to travel bhi hoga, nahi to dono nahi honge [2]. Agar house number eight Manda na ho, Yatra journey **north-west ki taraf hogi** [2].";
+                    // Foreign settlement context [8]
+                    h2_result += " Note: Ketu in 2nd house is also a high chance factor for Foreign settlement if Moon, Guru, Mangal, Rahu is in good position [8].";
+                    return h2_result;
+
+                case 3:
+                    // Ketu House Number 3
+                    let h3_result = "Ketu house number 3: ";
+                    // Check co-position (House 9 empty) [3]
+                    if (isHouseEmpty(9)) {
+                        h3_result += "**Agar house number 9 khali hai to aapko bhai-behno se door ek foreign country me rehna padega** [3]. Journey south ki taraf hogi [3].";
+                    } else {
+                        h3_result += "Journey south ki taraf hogi [3]. (The condition for foreign stay depends on house number 9 being empty [3]).";
+                    }
+                    // Foreign settlement context [6-8]
+                    h3_result += " Note: Short journeys are generally seen from the third house [6]. Ketu in 3rd house is also a high chance factor for Foreign settlement if Moon, Guru, Mangal, Rahu is in good position [8].";
+                    return h3_result;
+
+                case 4:
+                    // Ketu Khana Number 4
+                    return "Ketu Khana number 4: Agar travel nahi hai to bas usi jagah tak hoga jahan maa rehti hain [3]. Place change nahi hoga aur travel Manda Nahi hoga, Jab Khana number 10 sahi hai [3].";
+
+                case 5:
+                    // Ketu Khana Number 5
+                    return "Ketu Khana number 5: Koi bade change nahi honge, na to place ya city change hoga [3]. Shayad department ke andar hi kisi aur jagah par baithna ho [3]. Ye change inauspicious nahi hoga, agar Jupiter benefic hai [3].";
+
+                case 6:
+                    // Ketu Khana Number 6
+                    let h6_result = "Ketu Khana number 6: **North ki taraf travel ka order jaari ho kar, but woh definitely cancel ho jayega** [4]";
+                    // Check co-position (House 12 occupied) [4]
+                    if (isHouseOccupied(12)) {
+                        h6_result += " agar koi planet Khana number 12 me hai toh [4]. (Varshfal ke according [4]).";
+                    } else {
+                        h6_result += ". (Cancellation condition is dependent on any planet being in Khana number 12 [4]).";
+                    }
+                    return h6_result;
+
+                case 7:
+                    // Ketu Khana Number 7
+                    let h7_result = "Ketu Khana number 7: Yatra Progress ke liye nahi hai [4]. Agar vyakti nahi jata to bimaar hone ke baad jana padega [4]. City change zaroori hai [4]. Result achha hoga agar house number 1 theek hai aur house number 1 kisi aur planet se debilitated nahi hai [4].";
+                    // Foreign travel context [7]
+                    h7_result += " Note: Analyzing the seventh house is necessary to know when abroad travel will happen [7].";
+                    return h7_result;
+
+                case 8:
+                    // Ketu Khana Number 8
+                    let h8_result = "Ketu Khana number 8: Koi khaas khushi ki journey nahi hogi [4]. Journey dheere hoga aur against the wishes hoga [4].";
+                    // Foreign travel context [7]
+                    h8_result += " Note: The eighth house is the most important house for abroad travel or foreign country settlement [7].";
+                    return h8_result;
+
+                case 9:
+                    // Ketu Khana Number 9
+                    let h9_result = "Ketu Khana Number 9: Apni marzi se, khushi se, apni marzi se **Ghar baar ki yatra hogi** [5]. Parniam Theek rahega agar khana No 3 Shubh ho toh [5].";
+                    // Foreign settlement context [7, 8]
+                    h9_result += " Note: The ninth house plays an important role in foreign travel [7]. Ketu in 9th house is also a high chance factor for Foreign settlement if Moon, Guru, Mangal, Rahu is in good position [8].";
+                    return h9_result;
+
+                case 10:
+                    // Ketu Khana Number 10
+                    return "Ketu Khana Number 10: Journey bina time ke hogi [5]. Agar Saturn horoscope me auspicious hai to duguna benefit milega [5]. Agar Saturn inauspicious hai to journey inauspicious hogi [5]. Agar khana number 8 Manda hai to journey bhi definitely Mandi hogi, par number 2 ke planets yahan helpful honge [5].";
+
+                case 11:
+                    // Ketu Khana Number 11
+                    return "Ketu Khana Number 11: Travel ka order senior officer se aane ke baad lower level tak nahi pohnchega [6]. **Fake movement hoga**, yani ke fake movement hi hoga [6].";
+
+                case 12:
+                    // Ketu Khana Number 12
+                    let h12_result = "Ketu Khana Number 12: Jab Ketu 12th house mein hota hai, toh yatra ka result yeh hota hai [1]. Jab house number 2 aur 6 auspicious hain tab **auspicious progress hogi**, change ki koi condition nahi hogi [6]. Family ke saath khushi se rehne ka samay milega [6].";
+                    // Travel context [6, 7]
+                    h12_result += " Note: Long journeys are seen from the twelfth house [6]. Analyzing the twelfth house is necessary to know when abroad travel will happen [7].";
+                    return h12_result;
+
+                default:
+                    return "Invalid house number. Please ensure the Ketu position in the Varshphal Khana is between 1 and 12.";
+            }
+        }
+    });
