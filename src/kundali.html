@@ -263,7 +263,7 @@
                         <span class="font-semibold text-amber-300">Retrograde Status:</span>
                         <span id="retrogradeLegendSummary">Checking planetary motion...</span>
                     </div>
-                    <span class="text-[11px] text-slate-400 font-mono">* Denotes Retrograde (Vakra) Motion in Charts</span>
+                    <span class="text-[11px] text-slate-400 font-mono">* Retrograde · Degrees are within the displayed sign (D9: Navamsa degree)</span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -940,27 +940,30 @@
     // exactly floor(longitude / 3°20') mod 12.
     const navamsaSign = l => Math.floor((((l % 360) + 360) % 360) / (10 / 3)) % 12;
     const rashiSign = l => Math.floor((((l % 360) + 360) % 360) / 30);
+    const rashiDegree = l => ((l % 30) + 30) % 30;
+    const navamsaDegree = l => Math.floor(((((l % 360) + 360) % 360) % (10 / 3)) * 9 * 60 + 1e-8) / 60;
 
     // lgSign: sign index of the lagna for THIS chart (D1: rashi of ascendant, D9: navamsa of ascendant)
     // signOf: maps a sidereal longitude to the sign index for THIS chart
-    function renderChartSvg(lgSign, pos, signOf = rashiSign) {
+    function renderChartSvg(lgSign, pos, signOf = rashiSign, degreeOf = rashiDegree) {
         const effectiveLg = lgSign;
         const H = Array.from({length: 12}, () => []);
         AB.forEach(k => {
             const signIdx = signOf(pos[k]);
             const hIdx = (signIdx - effectiveLg + 12) % 12;
             const isRx = pos.rx && pos.rx[k];
-            H[hIdx].push(k + (isRx ? '*' : ''));
+            H[hIdx].push({label: k + (isRx ? '*' : ''), degree: dm(degreeOf(pos[k]))});
         });
         let s = `<svg viewBox="0 0 400 400" class="w-full h-full"><g fill="none" stroke="#fbbf24" stroke-width="2"><rect x="2" y="2" width="396" height="396"/><path d="M2 2L398 398M398 2L2 398M200 2L398 200L200 398L2 200Z"/></g>`;
         HC.forEach((c, i) => {
             const n = (effectiveLg + i) % 12 + 1;
             const pl = H[i];
-            const ls = [];
-            for (let j = 0; j < pl.length; j += 2) ls.push(pl.slice(j, j + 2).join(' '));
-            s += `<text x="${c[0]}" y="${c[1] - (ls.length ? ls.length * 8 : 0) + (i === 0 || i === 3 || i === 6 || i === 9 ? 0 : -4)}" text-anchor="middle" font-size="13" fill="#fbbf24" font-weight="bold">${n}</text>`;
-            ls.forEach((l, j) => {
-                s += `<text x="${c[0]}" y="${c[1] + j * 16 + (i === 0 || i === 3 || i === 6 || i === 9 ? 10 : 6) - (ls.length - 1) * 8}" text-anchor="middle" font-size="14" font-weight="bold" fill="#f3e4cf">${l}</text>`;
+            const labelOffset = i === 0 || i === 3 || i === 6 || i === 9 ? 0 : -4;
+            const rowOffset = i === 0 || i === 3 || i === 6 || i === 9 ? 10 : 6;
+            s += `<text x="${c[0]}" y="${c[1] - pl.length * 6.5 + labelOffset}" text-anchor="middle" font-size="13" fill="#fbbf24" font-weight="bold">${n}</text>`;
+            pl.forEach((planet, j) => {
+                const y = c[1] + j * 13 + rowOffset - (pl.length - 1) * 6.5;
+                s += `<text x="${c[0]}" y="${y}" text-anchor="middle" font-size="10" font-weight="bold" fill="#f3e4cf">${planet.label} ${planet.degree}</text>`;
             });
         });
         return s + '</svg>';
@@ -2135,8 +2138,8 @@
         $('pRituAyana').textContent = `${rituNames[rituIdx]} • ${ayana}`;
 
         // Render SVG Charts
-        $('svgD1').innerHTML = renderChartSvg(lg, pos, rashiSign);
-        $('svgD9').innerHTML = renderChartSvg(navamsaSign(asc), pos, navamsaSign);
+        $('svgD1').innerHTML = renderChartSvg(lg, pos, rashiSign, rashiDegree);
+        $('svgD9').innerHTML = renderChartSvg(navamsaSign(asc), pos, navamsaSign, navamsaDegree);
 
         // Planetary Table with Retrograde Column
         let tbl = '';
